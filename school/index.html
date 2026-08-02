@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Petrilabs for Schools — The international-school advantage, built for your classroom</title>
-<meta name="description" content="NCF 2023-aligned experiential learning for schools. An AI Teacher Council that keeps teachers at the helm, board-mapped desk kits, one shared competency graph across home and school, and a monthly parent report. Pilot-first for CBSE, ICSE and State board schools." />
+<meta name="description" content="NCF 2023-aligned experiential learning for schools. Four offerings: a 10x AI-assisted teacher, board-aligned experiment kits, real-time competency tracking, and a live home–school parent connect. Pilot-first for CBSE, ICSE and State board schools." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -83,6 +83,10 @@
   .card h3{font-size:1.2rem;margin-bottom:9px;font-weight:600}
   .card p{font-size:.96rem}
   .card.light p{color:var(--muted)}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:2px}
+  .card ul li{position:relative;padding-left:20px;font-size:.93rem;color:#C3C8D6}
+  .card ul li:before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .card h3 em{font-style:italic;color:var(--gold)}
   .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
   .badge{font-size:.78rem;font-weight:600;color:var(--navy);background:var(--paper-2);border:1px solid var(--line);padding:6px 14px;border-radius:999px}
   .sec-dark .badge{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff}
@@ -93,8 +97,14 @@
   .panel .pic{position:absolute;top:26px;right:24px;width:40px;height:40px;border-radius:11px;display:grid;place-items:center}
   .panel .pic svg{width:22px;height:22px;fill:none;stroke-width:1.8}
   .panel .tag{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:inline-block;margin-bottom:12px;padding:5px 12px;border-radius:999px}
-  .panel h3{font-size:1.35rem;margin-bottom:10px;padding-right:50px}
+  .panel h3{font-size:1.35rem;margin-bottom:12px;padding-right:50px}
   .panel p{color:var(--muted);font-size:1rem}
+  .panel ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .panel li{position:relative;padding-left:22px;color:var(--muted);font-size:.98rem}
+  .panel li:before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:50%}
+  .panel.mand li:before{background:var(--gold)}
+  .panel.real li:before{background:#BE6459}
+  .panel li strong{color:var(--navy);font-weight:700}
   .panel.mand{background:linear-gradient(180deg,#fff,#FBFAF4);border-left:4px solid var(--gold)}
   .panel.mand .tag{color:var(--gold-dark);background:rgba(198,161,91,.14);border:1px solid rgba(198,161,91,.35)}
   .panel.mand .pic{background:rgba(198,161,91,.14);border:1px solid rgba(198,161,91,.35)}
@@ -106,23 +116,16 @@
   .panel.real h3{color:#7C4A44}
   .bridge-line{margin-top:30px;text-align:center;font-family:'Playfair Display',serif;font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:600;color:var(--navy)}
   .bridge-line .g{color:var(--gold-dark)}
+  .global{margin-top:clamp(38px,5vw,56px)}
+  .global-intro{text-align:center;font-family:'Playfair Display',serif;font-size:clamp(1.1rem,2.2vw,1.45rem);color:var(--navy);max-width:64ch;margin:0 auto 26px;line-height:1.32}
+  .global-intro .g{color:var(--gold-dark)}
+  .global-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .gcard{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px 20px;text-align:center;border-top:3px solid var(--gold)}
+  .gtag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:9px}
+  .gcard p{color:var(--navy);font-size:1rem;font-weight:600;line-height:1.3}
 
   /* ECOSYSTEM */
-  .eco-helm{max-width:620px;margin:0 auto 26px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-  .helm-badge{position:relative;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(198,161,91,.22),rgba(198,161,91,.06));border:1px solid rgba(198,161,91,.5);border-radius:999px;padding:12px 22px;color:var(--gold);font-weight:700;font-size:1.02rem;animation:helmGlow 2.8s ease-in-out infinite}
-  @keyframes helmGlow{0%,100%{box-shadow:0 10px 26px -14px rgba(0,0,0,.6),0 0 0 0 rgba(198,161,91,0)}50%{box-shadow:0 10px 26px -14px rgba(0,0,0,.6),0 0 26px 3px rgba(198,161,91,.42)}}
-  .helm-badge svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.6}
-  .helm-sub{color:#AAB0C0;font-size:.92rem;max-width:46ch}
-  .eco-stem{position:relative;width:2px;height:34px;background:linear-gradient(var(--gold),rgba(198,161,91,.15));margin:0 auto 14px;overflow:visible}
-  .eco-stem:before,.eco-stem:after{content:"";position:absolute;left:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px 2px rgba(198,161,91,.85);animation:helmFlow 2.4s linear infinite}
-  .eco-stem:after{animation-delay:1.2s}
-  @keyframes helmFlow{0%{top:-9px;opacity:0}20%{opacity:1}70%{opacity:1}100%{top:24px;opacity:0}}
-  @media(prefers-reduced-motion:reduce){.helm-badge,.eco-stem:before,.eco-stem:after{animation:none}.eco-stem:before,.eco-stem:after{display:none}}
-  .eco-flow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-  .eco-node{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.05);border:1px solid rgba(198,161,91,.35);border-radius:999px;padding:10px 20px;font-weight:600;color:#fff}
-  .eco-node svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.7}
-  .eco-plus{color:var(--gold);font-size:1.3rem;font-weight:700}
-  .eco-graph{display:block;margin:0 auto;max-width:520px;text-align:center;background:linear-gradient(180deg,rgba(198,161,91,.14),rgba(198,161,91,.03));border:1px solid rgba(198,161,91,.4);border-radius:14px;padding:14px 20px;color:var(--gold);font-weight:600;letter-spacing:.02em}
+  .eco4{grid-template-columns:repeat(4,1fr)}
 
   /* AI TEACHER COUNCIL (light) */
   .council{max-width:920px;margin:0 auto;text-align:center}
@@ -192,9 +195,9 @@
   footer .brand{justify-content:center;margin-bottom:12px}
   footer a{color:var(--gold);font-weight:600}
 
-  @media(max-width:1000px){.flow{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:1000px){.flow{grid-template-columns:repeat(3,1fr)}.eco4{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:760px){
-    .grid-2,.grid-3,.mandate,.copilots,.flow{grid-template-columns:1fr}
+    .grid-2,.grid-3,.mandate,.copilots,.flow,.global-grid,.eco4{grid-template-columns:1fr}
     .split,.demo-card{grid-template-columns:1fr;gap:34px}
     .row2{grid-template-columns:1fr}
     .sec-head{text-align:center;margin-left:auto;margin-right:auto}
@@ -221,16 +224,16 @@
 <section class="hero">
   <div class="wrap">
     <span class="brandline">Petrilabs for Schools &amp; Educators</span>
-    <h1>The international-school advantage, <span class="accent">now a national mandate.</span></h1>
-    <p class="sub">Hands-on, competency-based learning — aligned to NCF 2023, and ready to run in a single classroom period.</p>
+    <h1>India's own <span class="accent">international-school learning experience</span>, in every classroom.</h1>
+    <p class="sub">Hands-on, competency-based learning for Class 3–8 students.</p>
     <div class="cta-row">
       <a href="#demo" class="btn">Book a Demo ›</a>
       <a href="#ecosystem" class="btn ghost">See how it works</a>
     </div>
     <div class="stats">
-      <div class="stat"><div class="n">NCF 2023</div><div class="l">Competency-aligned</div></div>
-      <div class="stat"><div class="n">Board-mapped kits</div><div class="l">CBSE · ICSE · State</div></div>
-      <div class="stat"><div class="n">No timetable disruption</div><div class="l">One 45-min period</div></div>
+      <div class="stat"><div class="n">NCF 2023</div><div class="l">Fully compliant</div></div>
+      <div class="stat"><div class="n">Ready Experiment Kits</div><div class="l">CBSE · ICSE · State Boards</div></div>
+      <div class="stat"><div class="n">No timetable disruption</div><div class="l">Fused in regular periods</div></div>
     </div>
   </div>
 </section>
@@ -240,64 +243,88 @@
   <div class="wrap">
     <div class="sec-head center">
       <span class="eyebrow">The gap</span>
-      <h2>The mandate is clear. The classroom isn't ready.</h2>
+      <h2>NCF's mandate is set. Classrooms aren't.</h2>
     </div>
     <div class="mandate">
       <div class="panel mand">
         <span class="pic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/></svg></span>
         <span class="tag">The NCF 2023 mandate</span>
         <h3>Experiential, competency-based learning</h3>
-        <p>Policy now expects every child to learn by doing — observing, hypothesising and applying — not by memorising definitions for a test.</p>
+        <ul>
+          <li><strong>Learning by doing</strong> — observe, build and apply.</li>
+          <li><strong>Group activities</strong> — collaborate, discuss, present.</li>
+          <li><strong>Defined learning outcomes</strong> — clear, measurable skills.</li>
+        </ul>
       </div>
       <div class="panel real">
         <span class="pic"><svg viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4"/><path d="M12 17.3v.3"/></svg></span>
         <span class="tag">The classroom reality</span>
-        <h3>No lab bandwidth. No prep time.</h3>
-        <p>Most schools can't run daily live experiments, and teachers are already stretched thin on preparation. The intent is there; the operating capacity isn't.</p>
+        <h3>Willing, but under-resourced.</h3>
+        <ul>
+          <li><strong>No lab infrastructure</strong> — daily experiments aren't feasible.</li>
+          <li><strong>No teacher bandwidth</strong> — prep time is already maxed out.</li>
+          <li><strong>Intent without capacity</strong> — the gap NCF can't close alone.</li>
+        </ul>
       </div>
     </div>
+
+    <div class="global">
+      <span class="eyebrow" style="display:block;text-align:center">The global shift</span>
+      <p class="global-intro">This isn't an Indian experiment — the world has already moved. <span class="g">NCF 2023 just makes it official.</span></p>
+      <div class="global-grid">
+        <div class="gcard"><span class="gtag">Inquiry-driven</span><p>IB schools are booming worldwide.</p></div>
+        <div class="gcard"><span class="gtag">Self-paced</span><p>~4,000 Montessori schools and growing.</p></div>
+        <div class="gcard"><span class="gtag">Zero homework</span><p>Finland: no standardised tests before 16.</p></div>
+      </div>
+    </div>
+
     <p class="bridge-line">Petrilabs bridges the gap — <span class="g">without breaking the timetable.</span></p>
   </div>
 </section>
 
-<!-- 3. ECOSYSTEM : teacher at the helm -->
+<!-- 3. ECOSYSTEM : four core offerings -->
 <section id="ecosystem" class="sec-dark">
   <div class="wrap">
     <div class="sec-head center">
-      <span class="eyebrow">The Petrilabs ecosystem</span>
-      <h2>One ecosystem. Your teacher at the helm.</h2>
-      <p class="lead">One shared record of each child's skill growth across home and school — with your teacher directing it all.</p>
+      <span class="eyebrow">What you get</span>
+      <h2>Core capabilities that compound the classroom.</h2>
     </div>
-    <div class="eco-helm">
-      <span class="helm-badge">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
-        Your teacher — at the helm
-      </span>
-    </div>
-    <div class="eco-stem"></div>
-    <div class="eco-flow">
-      <span class="eco-node"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h14V10M9 20v-6h6v6"/></svg>Home</span>
-      <span class="eco-plus">+</span>
-      <span class="eco-node"><svg viewBox="0 0 24 24"><path d="M2 10 12 4l10 6M4 10v10M20 10v10M8 10v10M16 10v10M12 10v10M3 21h18"/></svg>School</span>
-      <span class="eco-plus">+</span>
-      <span class="eco-node"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 3 L13.3 7.7 L18 9 L13.3 10.3 L12 15 L10.7 10.3 L6 9 L10.7 7.7 Z"/><path d="M18.3 13 L19 15.3 L21.3 16 L19 16.7 L18.3 19 L17.6 16.7 L15.3 16 L17.6 15.3 Z"/></svg>AI</span>
-    </div>
-    <div class="eco-graph">↓ One shared competency graph per child</div>
-    <div class="grid grid-3" style="margin-top:44px">
+    <div class="grid eco4">
       <div class="card glass">
         <div class="icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.2"/><path d="M4 20a6 6 0 0 1 12 0"/><path d="M19 3.4 L19.7 5.6 L21.9 6.3 L19.7 7 L19 9.2 L18.3 7 L16.1 6.3 L18.3 5.6 Z" stroke-linejoin="round"/></svg></div>
-        <h3>The AI Teacher Council</h3>
-        <p>Copilots that support — never replace — your educators, with the teacher always in charge.</p>
+        <h3>The 10x Teacher</h3>
+        <ul>
+          <li>No prep for classes</li>
+          <li>Focussed teaching assistance</li>
+          <li>Assisted assessment</li>
+        </ul>
       </div>
       <div class="card glass">
-        <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M3 8v8l9 4 9-4V8M12 12v8"/></svg></div>
-        <h3>Board-aligned kits</h3>
-        <p>A physical lab-in-a-box for every teacher, cross-referenced to your exact chapters.</p>
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 8.5A2 2 0 0 0 6.7 21h10.6a2 2 0 0 0 1.7-3.5L14 9V3"/><path d="M7.5 15h9"/></svg></div>
+        <h3>Live Experiments</h3>
+        <ul>
+          <li>Board-aligned</li>
+          <li>5× engaged classroom</li>
+          <li>100% safe</li>
+        </ul>
       </div>
       <div class="card glass">
         <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-6"/></svg></div>
-        <h3>One competency graph</h3>
-        <p>Skills tracked across every subject — assessment <em style="color:var(--gold);font-style:italic">for</em> learning, not just <em style="font-style:italic">of</em> it.</p>
+        <h3>Assessment <em>for</em> Learning</h3>
+        <ul>
+          <li>Track curricular goals</li>
+          <li>Future-skills ready</li>
+          <li>Competency assessment</li>
+        </ul>
+      </div>
+      <div class="card glass">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-4 3v-3H4z"/><path d="M8 9h8M8 12h4"/></svg></div>
+        <h3>Home–School Connect</h3>
+        <ul>
+          <li>Monthly progress report</li>
+          <li>Reinforced at home</li>
+          <li>Real-world application</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -435,6 +462,39 @@
         <div class="foot">Syllabus completion this month: 4 of 4 chapters · Sent to parents · No rank assigned</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 7. WHY IT WINS -->
+<section class="sec-dark">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow">Why it wins</span>
+      <h2>A classroom that grows your school.</h2>
+    </div>
+    <div class="grid eco4">
+      <div class="card glass">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 2 L4 14 h6 l-1 8 9-12 h-6 z"/></svg></div>
+        <h3>5× Engaged Classrooms</h3>
+        <p>Up to 5× more hands-on minutes per period — the energy parents notice on every tour.</p>
+      </div>
+      <div class="card glass">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 l2.5 6.2 6.7.5 -5.1 4.3 1.6 6.5 -5.7-3.5 -5.7 3.5 1.6-6.5 -5.1-4.3 6.7-.5z"/></svg></div>
+        <h3>A 10× Learning Experience</h3>
+        <p>The hands-on, IB-style depth of a top international school — in your classrooms.</p>
+      </div>
+      <div class="card glass">
+        <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>NCF-Ready &amp; Future-Proof</h3>
+        <p>Aligned to what boards and inspectors now expect — no scramble later.</p>
+      </div>
+      <div class="card glass">
+        <div class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6.5a3 3 0 0 1 0 6M18.5 20a6 6 0 0 0-3-5"/></svg></div>
+        <h3>Parents Who Advocate</h3>
+        <p>Parents who see monthly growth refer others and stay — your strongest admissions channel.</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:clamp(32px,4vw,46px);font-family:'Playfair Display',serif;font-size:clamp(1.15rem,2.3vw,1.5rem);color:#fff;line-height:1.35">Better learning, happier parents, a school that stands out — <span style="color:var(--gold)">the rest follows.</span></p>
   </div>
 </section>
 
