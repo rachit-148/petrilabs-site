@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petrilab Classroom — Home</title>
+<style>
+  :root{
+    --navy:#14213D; --navy2:#1E2E4F; --blue:#2680EB; --blue-dk:#1B5FBF;
+    --btint:#EAF1FD; --bg:#F5F7FA; --card:#FFFFFF; --line:#EDF0F5;
+    --body:#5B6675; --muted:#95A0B1; --green:#2E9E5B; --gtint:#E9F5EE;
+    --amber:#C9871F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#E7EBF1;min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:28px 16px;
+    -webkit-font-smoothing:antialiased;color:var(--navy);
+  }
+  .cap{font-size:12px;color:#8791A0;letter-spacing:.3px}
+  .cap b{color:#5B6675}
+
+  .phone{width:390px;border-radius:46px;background:#0C1424;
+    padding:13px;box-shadow:0 30px 70px rgba(20,33,61,.28), 0 4px 14px rgba(20,33,61,.16)}
+  .screen{position:relative;width:364px;height:790px;background:var(--bg);
+    border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
+
+  .status{height:44px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
+  .status .dots{display:flex;gap:5px;align-items:center}
+
+  .topbar{flex:0 0 auto;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  .brand{width:30px;height:30px;border-radius:9px;background:var(--navy);
+    display:flex;align-items:center;justify-content:center}
+  .tnav{display:flex;align-items:center;gap:10px}
+  .tnav .lbl{font-size:16px;font-weight:800;color:var(--navy)}
+  .chev{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#9AA5B4;background:var(--bg);border:1px solid var(--line);cursor:pointer}
+  .gear{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--body);
+    box-shadow:0 2px 6px rgba(20,33,61,.05)}
+
+  /* calendar strip */
+  .week{flex:0 0 auto;display:grid;grid-template-columns:repeat(7,1fr);padding:8px 8px 13px}
+  .day{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:3px 0;border-radius:12px}
+  .day:active{background:#EDF1F6}
+  .day .dl{font-size:11px;font-weight:700;color:var(--muted)}
+  .dnum{position:relative;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;color:var(--navy);border:1.5px solid var(--line);background:#fff}
+  .dstat{width:6px;height:6px;border-radius:50%;background:transparent}
+  .dstat.logged{background:var(--green)}
+  .dstat.alert{background:#E0862A}
+  .day.today .dl{color:var(--blue)}
+  .day.today .dnum{border-color:var(--blue);color:var(--blue);background:var(--btint)}
+  .day.alert .dnum{border-color:#E9C38C;background:#FDF4E6}
+  .day.alert .dnum::after{content:"!";position:absolute;top:-6px;right:-6px;width:15px;height:15px;
+    border-radius:50%;background:#E0862A;color:#fff;font-size:10px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bg)}
+  .day.future .dnum{color:#AEB7C4;border-color:#EDF0F5;background:transparent}
+  .day.holiday{opacity:.5}
+  .day.sel .dnum{box-shadow:0 0 0 3px rgba(38,128,235,.16)}
+
+  /* unlabelled filters */
+  .filters{flex:0 0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:8px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
+  .frow{display:flex;gap:7px;overflow-x:auto}
+  .frow::-webkit-scrollbar{display:none}
+  .fchip{flex:0 0 auto;padding:6px 13px;border-radius:16px;background:#fff;border:1px solid var(--line);
+    font-size:12.5px;font-weight:700;color:var(--body);white-space:nowrap;cursor:pointer}
+  .frow[data-dim="cls"] .fchip.act{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .frow[data-dim="sub"] .fchip.act{background:var(--btint);color:var(--blue-dk);border-color:#CFE0FA}
+
+  .feed{position:relative;flex:1;overflow-y:auto;padding:6px 18px 22px}
+  .feed::-webkit-scrollbar{display:none}
+  .earlier{display:flex;align-items:center;justify-content:center;gap:7px;
+    font-size:11px;color:var(--muted);font-weight:700;padding:10px 0 2px;letter-spacing:.3px}
+  .dhead{font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--muted);margin:18px 2px 11px}
+  .dhead.today{color:var(--blue)}
+
+  .lentry{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);
+    border-radius:15px;padding:12px 13px;margin-bottom:9px;box-shadow:0 2px 6px rgba(20,33,61,.05)}
+  .ltile{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .ltile.evs{background:var(--gtint);color:var(--green)}
+  .ltile.math{background:#E8F1FD;color:var(--blue)}
+  .lx{flex:1;min-width:0}
+  .ltt{font-size:14.5px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lsub{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+  .lchk{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--gtint);color:var(--green);
+    display:flex;align-items:center;justify-content:center}
+  .lentry.pend{background:#FFFBF3;border-color:#F1DFB8;box-shadow:none}
+  .lentry.pend .ltile{background:#FBEAC6;color:#B67A12}
+  .lentry.pend .lsub{color:#B4791C}
+  .logbtn2{flex:0 0 auto;background:#C9871F;color:#fff;border:none;border-radius:9px;
+    font-size:12px;font-weight:800;padding:9px 14px;cursor:pointer;box-shadow:0 3px 8px rgba(201,135,31,.24)}
+
+  /* Tue alert (no logs) */
+  .alertcard{display:flex;align-items:center;gap:12px;background:#FDF4E6;border:1px solid #EFDCB4;
+    border-radius:15px;padding:13px;margin-bottom:9px}
+  .acic{flex:0 0 auto;width:40px;height:40px;border-radius:11px;background:#FAE7C2;color:#B67A12;
+    display:flex;align-items:center;justify-content:center}
+  .acx{flex:1;min-width:0}
+  .act2{font-size:14px;font-weight:800;color:#7A5310}
+  .acs{font-size:11.5px;color:#9C7E42;margin-top:2px;line-height:1.3}
+
+  /* today action hub */
+  .hero{position:relative;border-radius:18px;padding:16px 16px 15px;color:#fff;overflow:hidden;
+    background:linear-gradient(150deg,#25406E,#16233F);box-shadow:0 12px 26px rgba(20,33,61,.22);margin-bottom:15px}
+  .hero::after{content:"";position:absolute;right:-40px;top:-46px;width:150px;height:150px;border-radius:50%;
+    background:radial-gradient(circle,rgba(56,131,235,.5),transparent 68%)}
+  .htag{position:relative;font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#9FC0F0;text-transform:uppercase}
+  .htt{position:relative;font-size:19px;font-weight:800;margin-top:6px}
+  .hbar{position:relative;height:6px;border-radius:5px;background:rgba(255,255,255,.16);margin-top:13px;overflow:hidden}
+  .hbar i{display:block;height:100%;width:40%;border-radius:5px;background:linear-gradient(90deg,#4C9AF5,#7DBBFF)}
+  .hmeta{position:relative;display:flex;justify-content:space-between;margin-top:9px;font-size:11.5px}
+  .hmeta .a{color:#C7D6EE;font-weight:600}
+  .hmeta .b{color:#fff;font-weight:700}
+  .hbtn{position:relative;margin-top:14px;width:100%;height:44px;border:none;border-radius:12px;background:#fff;
+    color:var(--navy);font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .hbtn svg{color:var(--blue)}
+  .reclabel{font-size:11px;font-weight:800;letter-spacing:.8px;color:var(--muted);margin:2px 2px 11px}
+  .rgo{flex:0 0 auto;color:#C2CBD8}
+  .logsmall{width:100%;margin-top:5px;background:#fff;border:1px solid var(--line);border-radius:12px;
+    color:var(--body);font-size:13px;font-weight:800;padding:11px;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
+
+  .nav{flex:0 0 auto;height:74px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;padding:0 8px 6px}
+  .nav a{display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:#AAB4C2;font-size:11px;font-weight:700;text-decoration:none;padding-top:8px}
+  .nav a.on{color:var(--blue)}
+</style>
+</head>
+<body>
+  <div class="cap"><b>Petrilab Classroom</b> &nbsp;·&nbsp; Home (Today) &nbsp;·&nbsp; v10 · tap a date to jump</div>
+
+  <div class="phone">
+   <div class="screen">
+
+    <div class="status">
+      <span>9:41</span>
+      <span class="dots">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z"/><path d="M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z"/><circle cx="8" cy="10" r="1.6"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="currentColor" stroke-opacity=".4"/><rect x="3" y="3" width="15" height="6" rx="1.5" fill="currentColor"/><rect x="23.5" y="4" width="1.8" height="4" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+      </span>
+    </div>
+
+    <div class="topbar">
+      <div class="brand">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13c0-3.3 2.6-5.5 6.5-5.5C18.5 10.8 15.9 13 12 13z"/><path d="M12 13c0-2.8-2.2-4.8-5.5-4.8C6.5 11 8.7 13 12 13z"/></svg>
+      </div>
+      <div class="tnav">
+        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></div>
+        <span class="lbl">Today</span>
+        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+      </div>
+      <div class="gear" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"/></svg>
+      </div>
+    </div>
+
+    <!-- calendar: all dates shown, clickable; Tu alert; weekend out of focus -->
+    <div class="week">
+      <div class="day" onclick="jumpTo('sec-mon',this)"><span class="dl">Mo</span><span class="dnum">4</span><span class="dstat logged"></span></div>
+      <div class="day alert" onclick="jumpTo('sec-tue',this)"><span class="dl">Tu</span><span class="dnum">5</span><span class="dstat alert"></span></div>
+      <div class="day" onclick="jumpTo('sec-wed',this)"><span class="dl">We</span><span class="dnum">6</span><span class="dstat logged"></span></div>
+      <div class="day today" onclick="jumpTo('sec-today',this)"><span class="dl">Th</span><span class="dnum">7</span><span class="dstat"></span></div>
+      <div class="day future" onclick="jumpTo('sec-today',this)"><span class="dl">Fr</span><span class="dnum">8</span><span class="dstat"></span></div>
+      <div class="day holiday future" onclick="jumpTo('sec-today',this)"><span class="dl">Sa</span><span class="dnum">9</span><span class="dstat"></span></div>
+      <div class="day holiday future" onclick="jumpTo('sec-today',this)"><span class="dl">Su</span><span class="dnum">10</span><span class="dstat"></span></div>
+    </div>
+
+    <div class="filters">
+      <div class="frow" data-dim="cls">
+        <button class="fchip act" onclick="setF('cls','all',this)">All classes</button>
+        <button class="fchip" onclick="setF('cls','5A',this)">5A</button>
+        <button class="fchip" onclick="setF('cls','5B',this)">5B</button>
+        <button class="fchip" onclick="setF('cls','5C',this)">5C</button>
+      </div>
+      <div class="frow" data-dim="sub">
+        <button class="fchip act" onclick="setF('sub','all',this)">All subjects</button>
+        <button class="fchip" onclick="setF('sub','EVS',this)">EVS</button>
+        <button class="fchip" onclick="setF('sub','Maths',this)">Maths</button>
+      </div>
+    </div>
+
+    <div class="feed" id="feed">
+
+      <div class="earlier">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+        Scroll up for earlier days
+      </div>
+
+      <div class="dsec" id="sec-mon">
+        <div class="dhead">MON · 4 AUG</div>
+        <div class="lentry" data-cls="5A" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">What is a Seed?</div><div class="lsub">5A · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5A" data-sub="Maths">
+          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Shapes Around Us</div><div class="lsub">5A · Maths · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5B" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">What is a Seed?</div><div class="lsub">5B · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-tue">
+        <div class="dhead">TUE · 5 AUG</div>
+        <div class="alertcard">
+          <div class="acic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 15H3z"/><path d="M12 10v4"/><path d="M12 17.4v.01"/></svg></div>
+          <div class="acx"><div class="act2">No lessons logged</div><div class="acs">Nothing was recorded for Tuesday. Log what you taught to keep progress in sync.</div></div>
+          <button class="logbtn2">Log</button>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-wed">
+        <div class="dhead">WED · 6 AUG</div>
+        <div class="lentry" data-cls="5A" data-sub="Maths">
+          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Patterns</div><div class="lsub">5A · Maths · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5B" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5B · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry pend" data-cls="5A" data-sub="EVS">
+          <div class="ltile"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5A · EVS · not logged</div></div>
+          <button class="logbtn2">Log</button>
+        </div>
+        <div class="lentry pend" data-cls="5C" data-sub="EVS">
+          <div class="ltile"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Types of Seeds</div><div class="lsub">5C · EVS · not logged</div></div>
+          <button class="logbtn2">Log</button>
+        </div>
+      </div>
+
+      <div class="dsec today" id="sec-today">
+        <div class="dhead today">TODAY · THU 7 AUG</div>
+
+        <div class="hero" data-cls="5A" data-sub="EVS">
+          <div class="htag">5A · EVS · in progress</div>
+          <div class="htt">Seeds &amp; Germination</div>
+          <div class="hbar"><i></i></div>
+          <div class="hmeta"><span class="a">2 of 5 steps</span><span class="b">Next: Abhyas · The practice</span></div>
+          <button class="hbtn">Continue lesson
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="reclabel">RECOMMENDED NEXT · PER YOUR LESSON PLAN</div>
+
+        <div class="lentry" data-cls="5C" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5C · EVS · not started</div></div>
+          <div class="rgo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5A" data-sub="Maths">
+          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Measurement</div><div class="lsub">5A · Maths · not started</div></div>
+          <div class="rgo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <button class="logsmall">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Log a lesson you taught
+        </button>
+      </div>
+
+    </div>
+
+    <div class="nav">
+      <a class="on">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.2 9.4V20h13.6V9.4"/></svg>
+        Today
+      </a>
+      <a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
+        Classes
+      </a>
+      <a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 20v-6"/><path d="M13 20v-9"/><path d="M18 20v-4"/></svg>
+        Reports
+      </a>
+      <a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4"/></svg>
+        Profile
+      </a>
+    </div>
+
+   </div>
+  </div>
+  <script>
+    var curCls='all', curSub='all';
+    function applyFilter(){
+      document.querySelectorAll('[data-cls]').forEach(function(e){
+        var okC = curCls==='all' || e.getAttribute('data-cls')===curCls;
+        var okS = curSub==='all' || e.getAttribute('data-sub')===curSub;
+        e.style.display = (okC&&okS) ? '' : 'none';
+      });
+      document.querySelectorAll('.dsec').forEach(function(sec){
+        if(sec.classList.contains('today')) return;
+        var entries = sec.querySelectorAll('[data-cls]');
+        if(entries.length===0) return;               // informational section (Tue alert) stays
+        var vis=false;
+        entries.forEach(function(e){ if(e.style.display!=='none') vis=true; });
+        sec.style.display = vis ? '' : 'none';
+      });
+    }
+    function setF(dim,val,el){
+      if(dim==='cls') curCls=val; else curSub=val;
+      el.parentElement.querySelectorAll('.fchip').forEach(function(c){ c.classList.remove('act'); });
+      el.classList.add('act');
+      applyFilter();
+    }
+    function jumpTo(id, el){
+      document.querySelectorAll('.day').forEach(function(d){ d.classList.remove('sel'); });
+      if(el) el.classList.add('sel');
+      var f=document.getElementById('feed'), sec=document.getElementById(id);
+      if(f&&sec) f.scrollTo({ top: Math.max(0, sec.offsetTop - 8), behavior:'smooth' });
+    }
+    var f=document.getElementById('feed');
+    applyFilter();
+    if(f) f.scrollTop=f.scrollHeight;   // land on today
+  </script>
+</body>
+</html>
