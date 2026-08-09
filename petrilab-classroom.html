@@ -30,19 +30,24 @@
     padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
   .status .dots{display:flex;gap:5px;align-items:center}
 
-  .topbar{flex:0 0 auto;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  /* app bar: icon + Petrilab (left), gear (right) */
+  .topbar{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  .brandrow{display:flex;align-items:center;gap:9px}
   .brand{width:30px;height:30px;border-radius:9px;background:var(--navy);
     display:flex;align-items:center;justify-content:center}
-  .tnav{display:flex;align-items:center;gap:10px}
-  .tnav .lbl{font-size:16px;font-weight:800;color:var(--navy)}
-  .chev{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    color:#9AA5B4;background:var(--bg);border:1px solid var(--line);cursor:pointer}
+  .bname{font-size:17px;font-weight:800;color:var(--navy);letter-spacing:-.2px}
   .gear{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;color:var(--body);
     box-shadow:0 2px 6px rgba(20,33,61,.05)}
 
-  /* calendar strip */
-  .week{flex:0 0 auto;display:grid;grid-template-columns:repeat(7,1fr);padding:8px 8px 13px}
+  /* calendar (swipeable) */
+  .calwrap{position:relative;flex:0 0 auto}
+  .calwrap::before,.calwrap::after{content:"";position:absolute;top:0;bottom:0;width:22px;z-index:3;pointer-events:none}
+  .calwrap::before{left:0;background:linear-gradient(to right,var(--bg),rgba(245,247,250,0))}
+  .calwrap::after{right:0;background:linear-gradient(to left,var(--bg),rgba(245,247,250,0))}
+  .weekscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 12px;scroll-behavior:smooth}
+  .weekscroll::-webkit-scrollbar{display:none}
+  .wk{flex:0 0 calc(100% - 46px);scroll-snap-align:center;display:grid;grid-template-columns:repeat(7,1fr)}
   .day{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:3px 0;border-radius:12px}
   .day:active{background:#EDF1F6}
   .day .dl{font-size:11px;font-weight:700;color:var(--muted)}
@@ -61,8 +66,8 @@
   .day.holiday{opacity:.5}
   .day.sel .dnum{box-shadow:0 0 0 3px rgba(38,128,235,.16)}
 
-  /* unlabelled filters */
-  .filters{flex:0 0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:8px;
+  /* filters: toggle chips, nested subject */
+  .filters{flex:0 0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:9px;
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
   .frow{display:flex;gap:7px;overflow-x:auto}
   .frow::-webkit-scrollbar{display:none}
@@ -70,8 +75,10 @@
     font-size:12.5px;font-weight:700;color:var(--body);white-space:nowrap;cursor:pointer}
   .frow[data-dim="cls"] .fchip.act{background:var(--navy);color:#fff;border-color:var(--navy)}
   .frow[data-dim="sub"] .fchip.act{background:var(--btint);color:var(--blue-dk);border-color:#CFE0FA}
+  .subwrap{display:none;align-items:center;gap:8px;padding-left:6px}
+  .elbow{color:#B4BECB;flex:0 0 auto;display:flex;align-items:center}
 
-  .feed{position:relative;flex:1;overflow-y:auto;padding:6px 18px 22px}
+  .feed{position:relative;flex:1;min-height:0;overflow-y:auto;padding:6px 18px 22px}
   .feed::-webkit-scrollbar{display:none}
   .earlier{display:flex;align-items:center;justify-content:center;gap:7px;
     font-size:11px;color:var(--muted);font-weight:700;padding:10px 0 2px;letter-spacing:.3px}
@@ -94,7 +101,6 @@
   .logbtn2{flex:0 0 auto;background:#C9871F;color:#fff;border:none;border-radius:9px;
     font-size:12px;font-weight:800;padding:9px 14px;cursor:pointer;box-shadow:0 3px 8px rgba(201,135,31,.24)}
 
-  /* Tue alert (no logs) */
   .alertcard{display:flex;align-items:center;gap:12px;background:#FDF4E6;border:1px solid #EFDCB4;
     border-radius:15px;padding:13px;margin-bottom:9px}
   .acic{flex:0 0 auto;width:40px;height:40px;border-radius:11px;background:#FAE7C2;color:#B67A12;
@@ -103,7 +109,6 @@
   .act2{font-size:14px;font-weight:800;color:#7A5310}
   .acs{font-size:11.5px;color:#9C7E42;margin-top:2px;line-height:1.3}
 
-  /* today action hub */
   .hero{position:relative;border-radius:18px;padding:16px 16px 15px;color:#fff;overflow:hidden;
     background:linear-gradient(150deg,#25406E,#16233F);box-shadow:0 12px 26px rgba(20,33,61,.22);margin-bottom:15px}
   .hero::after{content:"";position:absolute;right:-40px;top:-46px;width:150px;height:150px;border-radius:50%;
@@ -128,10 +133,20 @@
   .nav a{display:flex;flex-direction:column;align-items:center;gap:4px;
     color:#AAB4C2;font-size:11px;font-weight:700;text-decoration:none;padding-top:8px}
   .nav a.on{color:var(--blue)}
+
+  /* Fill the screen on a real phone — drop the mock device frame */
+  @media (max-width:480px){
+    body{display:block;padding:0;gap:0;background:var(--bg)}
+    .cap{display:none}
+    .phone{width:100%;padding:0;border-radius:0;background:none;box-shadow:none}
+    .screen{width:100%;height:100vh;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top)}
+    .status{display:none}
+    .nav{padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+  }
 </style>
 </head>
 <body>
-  <div class="cap"><b>Petrilab Classroom</b> &nbsp;·&nbsp; Home (Today) &nbsp;·&nbsp; v10 · tap a date to jump</div>
+  <div class="cap"><b>Petrilab Classroom</b> &nbsp;·&nbsp; Home &nbsp;·&nbsp; v14 · responsive · fills the screen on mobile</div>
 
   <div class="phone">
    <div class="screen">
@@ -146,49 +161,109 @@
     </div>
 
     <div class="topbar">
-      <div class="brand">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13c0-3.3 2.6-5.5 6.5-5.5C18.5 10.8 15.9 13 12 13z"/><path d="M12 13c0-2.8-2.2-4.8-5.5-4.8C6.5 11 8.7 13 12 13z"/></svg>
-      </div>
-      <div class="tnav">
-        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></div>
-        <span class="lbl">Today</span>
-        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
+      <div class="brandrow">
+        <div class="brand">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13c0-3.3 2.6-5.5 6.5-5.5C18.5 10.8 15.9 13 12 13z"/><path d="M12 13c0-2.8-2.2-4.8-5.5-4.8C6.5 11 8.7 13 12 13z"/></svg>
+        </div>
+        <span class="bname">Petrilab</span>
       </div>
       <div class="gear" title="Settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"/></svg>
       </div>
     </div>
 
-    <!-- calendar: all dates shown, clickable; Tu alert; weekend out of focus -->
-    <div class="week">
-      <div class="day" onclick="jumpTo('sec-mon',this)"><span class="dl">Mo</span><span class="dnum">4</span><span class="dstat logged"></span></div>
-      <div class="day alert" onclick="jumpTo('sec-tue',this)"><span class="dl">Tu</span><span class="dnum">5</span><span class="dstat alert"></span></div>
-      <div class="day" onclick="jumpTo('sec-wed',this)"><span class="dl">We</span><span class="dnum">6</span><span class="dstat logged"></span></div>
-      <div class="day today" onclick="jumpTo('sec-today',this)"><span class="dl">Th</span><span class="dnum">7</span><span class="dstat"></span></div>
-      <div class="day future" onclick="jumpTo('sec-today',this)"><span class="dl">Fr</span><span class="dnum">8</span><span class="dstat"></span></div>
-      <div class="day holiday future" onclick="jumpTo('sec-today',this)"><span class="dl">Sa</span><span class="dnum">9</span><span class="dstat"></span></div>
-      <div class="day holiday future" onclick="jumpTo('sec-today',this)"><span class="dl">Su</span><span class="dnum">10</span><span class="dstat"></span></div>
+    <div class="calwrap" id="calwrap">
+      <div class="weekscroll" id="weekscroll"></div>
     </div>
 
     <div class="filters">
-      <div class="frow" data-dim="cls">
-        <button class="fchip act" onclick="setF('cls','all',this)">All classes</button>
-        <button class="fchip" onclick="setF('cls','5A',this)">5A</button>
-        <button class="fchip" onclick="setF('cls','5B',this)">5B</button>
-        <button class="fchip" onclick="setF('cls','5C',this)">5C</button>
+      <div class="frow" id="clsrow" data-dim="cls">
+        <button class="fchip" onclick="clickCls('5A',this)">5A</button>
+        <button class="fchip" onclick="clickCls('5B',this)">5B</button>
+        <button class="fchip" onclick="clickCls('5C',this)">5C</button>
+        <button class="fchip" onclick="clickCls('6A',this)">6A</button>
+        <button class="fchip" onclick="clickCls('6B',this)">6B</button>
+        <button class="fchip" onclick="clickCls('7A',this)">7A</button>
+        <button class="fchip" onclick="clickCls('7B',this)">7B</button>
+        <button class="fchip" onclick="clickCls('7C',this)">7C</button>
+        <button class="fchip" onclick="clickCls('8A',this)">8A</button>
       </div>
-      <div class="frow" data-dim="sub">
-        <button class="fchip act" onclick="setF('sub','all',this)">All subjects</button>
-        <button class="fchip" onclick="setF('sub','EVS',this)">EVS</button>
-        <button class="fchip" onclick="setF('sub','Maths',this)">Maths</button>
+      <div class="subwrap" id="subwrap">
+        <span class="elbow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v8a3 3 0 0 0 3 3h8"/><path d="M15 12l4 4-4 4"/></svg></span>
+        <div class="frow" id="subrow" data-dim="sub"></div>
       </div>
     </div>
 
     <div class="feed" id="feed">
 
       <div class="earlier">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-        Scroll up for earlier days
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-4 5 4 5"/><path d="M16 7l4 5-4 5"/></svg>
+        Swipe the calendar for earlier weeks
+      </div>
+
+      <div class="dsec" id="sec-jul28">
+        <div class="dhead">MON · 28 JUL</div>
+        <div class="lentry" data-cls="5A" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5A · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5B" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5B · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-jul29">
+        <div class="dhead">TUE · 29 JUL</div>
+        <div class="lentry" data-cls="5A" data-sub="Maths">
+          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Numbers to 100</div><div class="lsub">5A · Maths · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5C" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5C · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-jul30">
+        <div class="dhead">WED · 30 JUL</div>
+        <div class="lentry" data-cls="5A" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5A · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5B" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5B · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-jul31">
+        <div class="dhead">THU · 31 JUL</div>
+        <div class="lentry" data-cls="5A" data-sub="Maths">
+          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Addition &amp; Subtraction</div><div class="lsub">5A · Maths · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dsec" id="sec-aug1">
+        <div class="dhead">FRI · 1 AUG</div>
+        <div class="lentry" data-cls="5A" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Parts of a Plant</div><div class="lsub">5A · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
+        <div class="lentry" data-cls="5C" data-sub="EVS">
+          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
+          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5C · EVS · all 5 steps</div></div>
+          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
+        </div>
       </div>
 
       <div class="dsec" id="sec-mon">
@@ -298,38 +373,98 @@
 
    </div>
   </div>
+
   <script>
-    var curCls='all', curSub='all';
+    // ---------- calendar (horizontal scroll, snaps per week) ----------
+    var DAYS=['Mo','Tu','We','Th','Fr','Sa','Su'];
+    var TODAY=new Date(2025,7,7);           // Thu 7 Aug
+    function wkStart(off){ var d=new Date(2025,7,4); d.setDate(d.getDate()+off*7); return d; }
+    function sameDay(a,b){ return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate(); }
+    function dayCell(d,i,off){
+      var isToday=sameDay(d,TODAY), isPast=(d<TODAY&&!isToday), isWeekend=(i>=5);
+      var isAlert=(d.getMonth()==7 && d.getDate()==5);
+      var cls='day', dot='<span class="dstat"></span>', sec='';
+      if(isWeekend) cls+=' holiday';
+      if(isToday){ cls+=' today'; }
+      else if(isAlert){ cls+=' alert'; dot='<span class="dstat alert"></span>'; }
+      else if(isPast && !isWeekend){ dot='<span class="dstat logged"></span>'; }
+      else if(!isPast){ cls+=' future'; }
+      if(off===0){ if(i===0)sec='sec-mon';else if(i===1)sec='sec-tue';else if(i===2)sec='sec-wed';else if(i===3)sec='sec-today'; }
+      else if(off===-1){ var pids=['sec-jul28','sec-jul29','sec-jul30','sec-jul31','sec-aug1']; if(i<5) sec=pids[i]; }
+      return '<div class="'+cls+'"'+(sec?' data-sec="'+sec+'"':'')+'><span class="dl">'+DAYS[i]+'</span><span class="dnum">'+d.getDate()+'</span>'+dot+'</div>';
+    }
+    function renderCalendar(){
+      var html='';
+      for(var off=-2;off<=2;off++){
+        var ws=wkStart(off); html+='<div class="wk"'+(off===0?' id="wk-cur"':'')+'>';
+        for(var i=0;i<7;i++){ var d=new Date(ws); d.setDate(ws.getDate()+i); html+=dayCell(d,i,off); }
+        html+='</div>';
+      }
+      var sc=document.getElementById('weekscroll'); sc.innerHTML=html;
+      requestAnimationFrame(function(){
+        var cur=document.getElementById('wk-cur');
+        if(cur) sc.scrollLeft = cur.offsetLeft - (sc.clientWidth - cur.clientWidth)/2;
+      });
+    }
+    (function(){
+      var sc=document.getElementById('weekscroll');
+      var dwn=false,sx=0,sl=0,moved=false;
+      sc.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse')return; dwn=true;moved=false;sx=e.clientX;sl=sc.scrollLeft; });
+      sc.addEventListener('pointermove',function(e){ if(!dwn)return; var dx=e.clientX-sx; if(Math.abs(dx)>6){moved=true;sc.scrollLeft=sl-dx;} });
+      window.addEventListener('pointerup',function(){ dwn=false; });
+      sc.addEventListener('click',function(ev){
+        if(moved){ moved=false; return; }
+        var day=ev.target.closest('.day'); if(!day) return;
+        document.querySelectorAll('.wk .day').forEach(function(d){ d.classList.remove('sel'); });
+        day.classList.add('sel');
+        var sec=day.getAttribute('data-sec');
+        if(sec){ var el=document.getElementById(sec), f=document.getElementById('feed'); if(el&&f) f.scrollTo({top:Math.max(0,el.offsetTop-8),behavior:'smooth'}); }
+      });
+    })();
+
+    // ---------- filters (toggle + nested subject) ----------
+    var SUBJ={ '5A':['EVS','Maths'],'5B':['EVS'],'5C':['EVS'],'6A':['Maths','EVS'],
+      '6B':['Maths'],'7A':['Maths','Science'],'7B':['Maths'],'7C':['Science'],'8A':['Maths','Science'] };
+    var curCls=null, curSub=null;
     function applyFilter(){
       document.querySelectorAll('[data-cls]').forEach(function(e){
-        var okC = curCls==='all' || e.getAttribute('data-cls')===curCls;
-        var okS = curSub==='all' || e.getAttribute('data-sub')===curSub;
-        e.style.display = (okC&&okS) ? '' : 'none';
+        var okC = curCls===null || e.getAttribute('data-cls')===curCls;
+        var okS = curSub===null || e.getAttribute('data-sub')===curSub;
+        e.style.display=(okC&&okS)?'':'none';
       });
       document.querySelectorAll('.dsec').forEach(function(sec){
         if(sec.classList.contains('today')) return;
-        var entries = sec.querySelectorAll('[data-cls]');
-        if(entries.length===0) return;               // informational section (Tue alert) stays
-        var vis=false;
-        entries.forEach(function(e){ if(e.style.display!=='none') vis=true; });
-        sec.style.display = vis ? '' : 'none';
+        var ents=sec.querySelectorAll('[data-cls]'); if(ents.length===0) return;
+        var vis=false; ents.forEach(function(e){ if(e.style.display!=='none') vis=true; });
+        sec.style.display=vis?'':'none';
       });
     }
-    function setF(dim,val,el){
-      if(dim==='cls') curCls=val; else curSub=val;
-      el.parentElement.querySelectorAll('.fchip').forEach(function(c){ c.classList.remove('act'); });
-      el.classList.add('act');
+    function clickCls(val,el){
+      if(curCls===val){ curCls=null; curSub=null; el.classList.remove('act'); hideSubs(); }
+      else {
+        curCls=val; curSub=null;
+        document.querySelectorAll('#clsrow .fchip').forEach(function(c){ c.classList.remove('act'); });
+        el.classList.add('act'); showSubs(val);
+      }
       applyFilter();
     }
-    function jumpTo(id, el){
-      document.querySelectorAll('.day').forEach(function(d){ d.classList.remove('sel'); });
-      if(el) el.classList.add('sel');
-      var f=document.getElementById('feed'), sec=document.getElementById(id);
-      if(f&&sec) f.scrollTo({ top: Math.max(0, sec.offsetTop - 8), behavior:'smooth' });
+    function showSubs(cls){
+      var subs=SUBJ[cls]||[], html='';
+      subs.forEach(function(s){ html+='<button class="fchip" onclick="clickSub(\''+s+'\',this)">'+s+'</button>'; });
+      document.getElementById('subrow').innerHTML=html;
+      document.getElementById('subwrap').style.display='flex';
     }
-    var f=document.getElementById('feed');
+    function hideSubs(){ document.getElementById('subwrap').style.display='none'; document.getElementById('subrow').innerHTML=''; }
+    function clickSub(val,el){
+      if(curSub===val){ curSub=null; el.classList.remove('act'); }
+      else { curSub=val; document.querySelectorAll('#subrow .fchip').forEach(function(c){ c.classList.remove('act'); }); el.classList.add('act'); }
+      applyFilter();
+    }
+
+    // ---------- init ----------
+    renderCalendar();
     applyFilter();
-    if(f) f.scrollTop=f.scrollHeight;   // land on today
+    var f=document.getElementById('feed'); if(f) f.scrollTop=f.scrollHeight;
   </script>
 </body>
 </html>
