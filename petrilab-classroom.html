@@ -2,9 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Petrilab Classroom — Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Petrilab Classroom — Prototype</title>
 <style>
+  html,body{margin:0;height:100%;background:#E7EBF1;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  #stage{position:fixed;inset:0}
+  .frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#E7EBF1}
+  .frame.on{display:block}
+  .qa{position:fixed;right:14px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:50;display:flex;align-items:center;gap:7px;height:40px;padding:0 14px;border:none;border-radius:22px;background:#14213D;color:#fff;font-size:12.5px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(12,20,36,.35)}
+  .qa svg{width:16px;height:16px}
+  .qamenu{position:fixed;inset:0;z-index:60;background:rgba(10,16,28,.5);display:none;align-items:flex-end;justify-content:center}
+  .qamenu.open{display:flex}
+  .qacard{width:100%;max-width:430px;background:#fff;border-radius:22px 22px 0 0;padding:12px 16px calc(20px + env(safe-area-inset-bottom))}
+  .qahandle{width:44px;height:5px;border-radius:3px;background:#DCE2EC;margin:2px auto 14px}
+  .qah{font-size:11px;font-weight:800;letter-spacing:1px;color:#95A0B1;margin:0 2px 12px}
+  .qab{display:flex;align-items:center;gap:12px;width:100%;background:#F5F7FA;border:1px solid #EDF0F5;border-radius:14px;padding:13px 14px;margin-bottom:9px;font-size:15px;font-weight:800;color:#14213D;cursor:pointer;text-align:left}
+  .qab .n{width:26px;height:26px;flex:0 0 auto;border-radius:8px;background:#EAF1FD;color:#1B5FBF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+  .qab.on{border-color:#2680EB;background:#EAF1FD}
+  .qab small{display:block;font-size:11.5px;font-weight:600;color:#95A0B1;margin-top:1px}
+  .qanote{font-size:11px;color:#95A0B1;font-weight:600;text-align:center;margin-top:6px;line-height:1.4}
+  .pnav{position:fixed;left:0;right:0;bottom:0;z-index:40;height:74px;background:#fff;border-top:1px solid #EDF0F5;display:none;align-items:center;justify-content:space-around;padding:0 8px calc(6px + env(safe-area-inset-bottom))}
+  .pnav a{display:flex;flex-direction:column;align-items:center;gap:4px;color:#AAB4C2;font-size:11px;font-weight:700;padding-top:8px;cursor:pointer}
+  .pnav a.on{color:#2680EB}
+  .pnav svg{width:24px;height:24px}
+  @media (max-width:480px){ .pnav.active{display:flex} }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <iframe class="frame on" id="f-home"     srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Petrilab Classroom — Home&lt;/title&gt;
+&lt;style&gt;
   :root{
     --navy:#14213D; --navy2:#1E2E4F; --blue:#2680EB; --blue-dk:#1B5FBF;
     --btint:#EAF1FD; --bg:#F5F7FA; --card:#FFFFFF; --line:#EDF0F5;
@@ -13,7 +45,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif;
     background:#E7EBF1;min-height:100vh;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:14px;padding:28px 16px;
     -webkit-font-smoothing:antialiased;color:var(--navy);
@@ -27,11 +59,11 @@
     border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
 
   .status{height:44px;display:flex;align-items:center;justify-content:space-between;
-    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
+    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto;background:#fff}
   .status .dots{display:flex;gap:5px;align-items:center}
 
   /* app bar: icon + Petrilab (left), gear (right) */
-  .topbar{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  .topbar{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#fff}
   .brandrow{display:flex;align-items:center;gap:9px}
   .brand{width:30px;height:30px;border-radius:9px;background:var(--navy);
     display:flex;align-items:center;justify-content:center}
@@ -41,10 +73,10 @@
     box-shadow:0 2px 6px rgba(20,33,61,.05)}
 
   /* calendar (swipeable) */
-  .calwrap{position:relative;flex:0 0 auto}
-  .calwrap::before,.calwrap::after{content:"";position:absolute;top:0;bottom:0;width:22px;z-index:3;pointer-events:none}
-  .calwrap::before{left:0;background:linear-gradient(to right,var(--bg),rgba(245,247,250,0))}
-  .calwrap::after{right:0;background:linear-gradient(to left,var(--bg),rgba(245,247,250,0))}
+  .calwrap{position:relative;flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 6px 12px rgba(20,33,61,.05)}
+  .calwrap::before,.calwrap::after{content:&quot;&quot;;position:absolute;top:0;bottom:1px;width:22px;z-index:3;pointer-events:none}
+  .calwrap::before{left:0;background:linear-gradient(to right,#fff,rgba(255,255,255,0))}
+  .calwrap::after{right:0;background:linear-gradient(to left,#fff,rgba(255,255,255,0))}
   .weekscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 0 12px;scroll-behavior:smooth}
   .weekscroll::-webkit-scrollbar{display:none}
   .wk{flex:0 0 calc(100% - 46px);scroll-snap-align:center;display:grid;grid-template-columns:repeat(7,1fr)}
@@ -59,23 +91,30 @@
   .day.today .dl{color:var(--blue)}
   .day.today .dnum{border-color:var(--blue);color:var(--blue);background:var(--btint)}
   .day.alert .dnum{border-color:#E9C38C;background:#FDF4E6}
-  .day.alert .dnum::after{content:"!";position:absolute;top:-6px;right:-6px;width:15px;height:15px;
+  .day.alert .dnum::after{content:&quot;!&quot;;position:absolute;top:-6px;right:-6px;width:15px;height:15px;
     border-radius:50%;background:#E0862A;color:#fff;font-size:10px;font-weight:800;
-    display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bg)}
+    display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
   .day.future .dnum{color:#AEB7C4;border-color:#EDF0F5;background:transparent}
   .day.holiday{opacity:.5}
   .day.sel .dnum{box-shadow:0 0 0 3px rgba(38,128,235,.16)}
 
   /* filters: toggle chips, nested subject */
   .filters{flex:0 0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:9px;
-    border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
+    border-top:1px solid var(--line);background:#fff}
   .frow{display:flex;gap:7px;overflow-x:auto}
   .frow::-webkit-scrollbar{display:none}
+  .clsline{display:flex;align-items:center;gap:9px}
+  #clsrow{flex:1;min-width:0}
+  .flabel{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:none;border:none;
+    font-size:12.5px;font-weight:800;color:var(--muted);padding:6px 2px;cursor:default;white-space:nowrap}
+  .flabel svg{width:15px;height:15px}
+  .flabel.clear{color:var(--blue);cursor:pointer}
   .fchip{flex:0 0 auto;padding:6px 13px;border-radius:16px;background:#fff;border:1px solid var(--line);
     font-size:12.5px;font-weight:700;color:var(--body);white-space:nowrap;cursor:pointer}
-  .frow[data-dim="cls"] .fchip.act{background:var(--navy);color:#fff;border-color:var(--navy)}
-  .frow[data-dim="sub"] .fchip.act{background:var(--btint);color:var(--blue-dk);border-color:#CFE0FA}
-  .subwrap{display:none;align-items:center;gap:8px;padding-left:6px}
+  .frow[data-dim=&quot;cls&quot;] .fchip.act{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .frow[data-dim=&quot;sub&quot;] .fchip.act{background:var(--btint);color:var(--blue-dk);border-color:#CFE0FA}
+  .subwrap{display:flex;align-items:center;gap:8px;padding-left:6px;min-height:33px}
+  .subprompt{font-size:12px;color:var(--muted);font-weight:600;font-style:italic}
   .elbow{color:#B4BECB;flex:0 0 auto;display:flex;align-items:center}
 
   .feed{position:relative;flex:1;min-height:0;overflow-y:auto;padding:6px 18px 22px}
@@ -111,7 +150,7 @@
 
   .hero{position:relative;border-radius:18px;padding:16px 16px 15px;color:#fff;overflow:hidden;
     background:linear-gradient(150deg,#25406E,#16233F);box-shadow:0 12px 26px rgba(20,33,61,.22);margin-bottom:15px}
-  .hero::after{content:"";position:absolute;right:-40px;top:-46px;width:150px;height:150px;border-radius:50%;
+  .hero::after{content:&quot;&quot;;position:absolute;right:-40px;top:-46px;width:150px;height:150px;border-radius:50%;
     background:radial-gradient(circle,rgba(56,131,235,.5),transparent 68%)}
   .htag{position:relative;font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#9FC0F0;text-transform:uppercase}
   .htt{position:relative;font-size:19px;font-weight:800;margin-top:6px}
@@ -125,6 +164,8 @@
   .hbtn svg{color:var(--blue)}
   .reclabel{font-size:11px;font-weight:800;letter-spacing:.8px;color:var(--muted);margin:2px 2px 11px}
   .rgo{flex:0 0 auto;color:#C2CBD8}
+  .lentry.rec{cursor:pointer}
+  .lentry.rec:active{background:#F4F8FF;border-color:#CFE0FA}
   .logsmall{width:100%;margin-top:5px;background:#fff;border:1px solid var(--line);border-radius:12px;
     color:var(--body);font-size:13px;font-weight:800;padding:11px;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
 
@@ -143,328 +184,1323 @@
     .status{display:none}
     .nav{padding-bottom:calc(6px + env(safe-area-inset-bottom))}
   }
-</style>
-</head>
-<body>
-  <div class="cap"><b>Petrilab Classroom</b> &nbsp;·&nbsp; Home &nbsp;·&nbsp; v14 · responsive · fills the screen on mobile</div>
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;cap&quot;&gt;&lt;b&gt;Petrilab Classroom&lt;/b&gt; &amp;nbsp;·&amp;nbsp; Home &amp;nbsp;·&amp;nbsp; v14 · responsive · fills the screen on mobile&lt;/div&gt;
 
-  <div class="phone">
-   <div class="screen">
+  &lt;div class=&quot;phone&quot;&gt;
+   &lt;div class=&quot;screen&quot;&gt;
 
-    <div class="status">
-      <span>9:41</span>
-      <span class="dots">
-        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z"/><path d="M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z"/><circle cx="8" cy="10" r="1.6"/></svg>
-        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="currentColor" stroke-opacity=".4"/><rect x="3" y="3" width="15" height="6" rx="1.5" fill="currentColor"/><rect x="23.5" y="4" width="1.8" height="4" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
-      </span>
-    </div>
+    &lt;div class=&quot;status&quot;&gt;
+      &lt;span&gt;9:41&lt;/span&gt;
+      &lt;span class=&quot;dots&quot;&gt;
+        &lt;svg width=&quot;17&quot; height=&quot;12&quot; viewBox=&quot;0 0 17 12&quot; fill=&quot;currentColor&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;7&quot; width=&quot;3&quot; height=&quot;5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;4.5&quot; y=&quot;4.5&quot; width=&quot;3&quot; height=&quot;7.5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;3&quot; height=&quot;10&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;0&quot; width=&quot;3&quot; height=&quot;12&quot; rx=&quot;1&quot; opacity=&quot;.35&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;16&quot; height=&quot;12&quot; viewBox=&quot;0 0 16 12&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z&quot;/&gt;&lt;path d=&quot;M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z&quot;/&gt;&lt;circle cx=&quot;8&quot; cy=&quot;10&quot; r=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;26&quot; height=&quot;12&quot; viewBox=&quot;0 0 26 12&quot; fill=&quot;none&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;1&quot; width=&quot;21&quot; height=&quot;10&quot; rx=&quot;3&quot; stroke=&quot;currentColor&quot; stroke-opacity=&quot;.4&quot;/&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;15&quot; height=&quot;6&quot; rx=&quot;1.5&quot; fill=&quot;currentColor&quot;/&gt;&lt;rect x=&quot;23.5&quot; y=&quot;4&quot; width=&quot;1.8&quot; height=&quot;4&quot; rx=&quot;1&quot; fill=&quot;currentColor&quot; fill-opacity=&quot;.4&quot;/&gt;&lt;/svg&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
 
-    <div class="topbar">
-      <div class="brandrow">
-        <div class="brand">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-7"/><path d="M12 13c0-3.3 2.6-5.5 6.5-5.5C18.5 10.8 15.9 13 12 13z"/><path d="M12 13c0-2.8-2.2-4.8-5.5-4.8C6.5 11 8.7 13 12 13z"/></svg>
-        </div>
-        <span class="bname">Petrilab</span>
-      </div>
-      <div class="gear" title="Settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z"/></svg>
-      </div>
-    </div>
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;div class=&quot;brandrow&quot;&gt;
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#fff&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 20v-7&quot;/&gt;&lt;path d=&quot;M12 13c0-3.3 2.6-5.5 6.5-5.5C18.5 10.8 15.9 13 12 13z&quot;/&gt;&lt;path d=&quot;M12 13c0-2.8-2.2-4.8-5.5-4.8C6.5 11 8.7 13 12 13z&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;span class=&quot;bname&quot;&gt;Petrilab&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;gear&quot; title=&quot;Settings&quot;&gt;
+        &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.6&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
 
-    <div class="calwrap" id="calwrap">
-      <div class="weekscroll" id="weekscroll"></div>
-    </div>
+    &lt;div class=&quot;filters&quot;&gt;
+      &lt;div class=&quot;clsline&quot;&gt;
+        &lt;button class=&quot;flabel&quot; id=&quot;clslabel&quot; onclick=&quot;onLabelClick()&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M3 5h18l-7 8v5l-4 2v-7z&quot;/&gt;&lt;/svg&gt;Classes&lt;/button&gt;
+      &lt;div class=&quot;frow&quot; id=&quot;clsrow&quot; data-dim=&quot;cls&quot;&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;5A&#x27;,this)&quot;&gt;5A&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;5B&#x27;,this)&quot;&gt;5B&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;5C&#x27;,this)&quot;&gt;5C&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;6A&#x27;,this)&quot;&gt;6A&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;6B&#x27;,this)&quot;&gt;6B&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;7A&#x27;,this)&quot;&gt;7A&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;7B&#x27;,this)&quot;&gt;7B&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;7C&#x27;,this)&quot;&gt;7C&lt;/button&gt;
+        &lt;button class=&quot;fchip&quot; onclick=&quot;clickCls(&#x27;8A&#x27;,this)&quot;&gt;8A&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;subwrap&quot; id=&quot;subwrap&quot;&gt;
+        &lt;span class=&quot;elbow&quot;&gt;&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M7 5v8a3 3 0 0 0 3 3h8&quot;/&gt;&lt;path d=&quot;M15 12l4 4-4 4&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+        &lt;div class=&quot;frow&quot; id=&quot;subrow&quot; data-dim=&quot;sub&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
 
-    <div class="filters">
-      <div class="frow" id="clsrow" data-dim="cls">
-        <button class="fchip" onclick="clickCls('5A',this)">5A</button>
-        <button class="fchip" onclick="clickCls('5B',this)">5B</button>
-        <button class="fchip" onclick="clickCls('5C',this)">5C</button>
-        <button class="fchip" onclick="clickCls('6A',this)">6A</button>
-        <button class="fchip" onclick="clickCls('6B',this)">6B</button>
-        <button class="fchip" onclick="clickCls('7A',this)">7A</button>
-        <button class="fchip" onclick="clickCls('7B',this)">7B</button>
-        <button class="fchip" onclick="clickCls('7C',this)">7C</button>
-        <button class="fchip" onclick="clickCls('8A',this)">8A</button>
-      </div>
-      <div class="subwrap" id="subwrap">
-        <span class="elbow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v8a3 3 0 0 0 3 3h8"/><path d="M15 12l4 4-4 4"/></svg></span>
-        <div class="frow" id="subrow" data-dim="sub"></div>
-      </div>
-    </div>
+    &lt;div class=&quot;calwrap&quot; id=&quot;calwrap&quot;&gt;
+      &lt;div class=&quot;weekscroll&quot; id=&quot;weekscroll&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-    <div class="feed" id="feed">
+    &lt;div class=&quot;feed&quot; id=&quot;feed&quot;&gt;
 
-      <div class="earlier">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-4 5 4 5"/><path d="M16 7l4 5-4 5"/></svg>
+      &lt;div class=&quot;earlier&quot;&gt;
+        &lt;svg width=&quot;15&quot; height=&quot;15&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M8 7l-4 5 4 5&quot;/&gt;&lt;path d=&quot;M16 7l4 5-4 5&quot;/&gt;&lt;/svg&gt;
         Swipe the calendar for earlier weeks
-      </div>
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-jul28">
-        <div class="dhead">MON · 28 JUL</div>
-        <div class="lentry" data-cls="5A" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5A · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5B" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5B · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-jul28&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;MON · 28 JUL&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Living &amp;amp; Non-living&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5B&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Living &amp;amp; Non-living&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5B · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-jul29">
-        <div class="dhead">TUE · 29 JUL</div>
-        <div class="lentry" data-cls="5A" data-sub="Maths">
-          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Numbers to 100</div><div class="lsub">5A · Maths · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5C" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Living &amp; Non-living</div><div class="lsub">5C · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-jul29&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;TUE · 29 JUL&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;Maths&quot;&gt;
+          &lt;div class=&quot;ltile math&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Numbers to 100&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · Maths · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5C&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Living &amp;amp; Non-living&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5C · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-jul30">
-        <div class="dhead">WED · 30 JUL</div>
-        <div class="lentry" data-cls="5A" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5A · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5B" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5B · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-jul30&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;WED · 30 JUL&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Plants Around Us&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5B&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Plants Around Us&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5B · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-jul31">
-        <div class="dhead">THU · 31 JUL</div>
-        <div class="lentry" data-cls="5A" data-sub="Maths">
-          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Addition &amp; Subtraction</div><div class="lsub">5A · Maths · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-jul31&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;THU · 31 JUL&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;Maths&quot;&gt;
+          &lt;div class=&quot;ltile math&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Addition &amp;amp; Subtraction&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · Maths · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-aug1">
-        <div class="dhead">FRI · 1 AUG</div>
-        <div class="lentry" data-cls="5A" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Parts of a Plant</div><div class="lsub">5A · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5C" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Plants Around Us</div><div class="lsub">5C · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-aug1&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;FRI · 1 AUG&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Parts of a Plant&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5C&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Plants Around Us&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5C · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-mon">
-        <div class="dhead">MON · 4 AUG</div>
-        <div class="lentry" data-cls="5A" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">What is a Seed?</div><div class="lsub">5A · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5A" data-sub="Maths">
-          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Shapes Around Us</div><div class="lsub">5A · Maths · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5B" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">What is a Seed?</div><div class="lsub">5B · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-mon&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;MON · 4 AUG&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;What is a Seed?&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;Maths&quot;&gt;
+          &lt;div class=&quot;ltile math&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Shapes Around Us&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · Maths · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5B&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;What is a Seed?&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5B · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-tue">
-        <div class="dhead">TUE · 5 AUG</div>
-        <div class="alertcard">
-          <div class="acic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 15H3z"/><path d="M12 10v4"/><path d="M12 17.4v.01"/></svg></div>
-          <div class="acx"><div class="act2">No lessons logged</div><div class="acs">Nothing was recorded for Tuesday. Log what you taught to keep progress in sync.</div></div>
-          <button class="logbtn2">Log</button>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-tue&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;TUE · 5 AUG&lt;/div&gt;
+        &lt;div class=&quot;alertcard&quot;&gt;
+          &lt;div class=&quot;acic&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 4l9 15H3z&quot;/&gt;&lt;path d=&quot;M12 10v4&quot;/&gt;&lt;path d=&quot;M12 17.4v.01&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;acx&quot;&gt;&lt;div class=&quot;act2&quot;&gt;No lessons logged&lt;/div&gt;&lt;div class=&quot;acs&quot;&gt;Nothing was recorded for Tuesday. Log what you taught to keep progress in sync.&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;logbtn2&quot;&gt;Log&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec" id="sec-wed">
-        <div class="dhead">WED · 6 AUG</div>
-        <div class="lentry" data-cls="5A" data-sub="Maths">
-          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Patterns</div><div class="lsub">5A · Maths · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5B" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5B · EVS · all 5 steps</div></div>
-          <div class="lchk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4 10-11"/></svg></div>
-        </div>
-        <div class="lentry pend" data-cls="5A" data-sub="EVS">
-          <div class="ltile"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5A · EVS · not logged</div></div>
-          <button class="logbtn2">Log</button>
-        </div>
-        <div class="lentry pend" data-cls="5C" data-sub="EVS">
-          <div class="ltile"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Types of Seeds</div><div class="lsub">5C · EVS · not logged</div></div>
-          <button class="logbtn2">Log</button>
-        </div>
-      </div>
+      &lt;div class=&quot;dsec&quot; id=&quot;sec-wed&quot;&gt;
+        &lt;div class=&quot;dhead&quot;&gt;WED · 6 AUG&lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5A&quot; data-sub=&quot;Maths&quot;&gt;
+          &lt;div class=&quot;ltile math&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Patterns&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · Maths · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry&quot; data-cls=&quot;5B&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Seeds &amp;amp; Germination&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5B · EVS · all 5 steps&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;lchk&quot;&gt;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry pend&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Seeds &amp;amp; Germination&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · EVS · not logged&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;logbtn2&quot;&gt;Log&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry pend&quot; data-cls=&quot;5C&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Types of Seeds&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5C · EVS · not logged&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;logbtn2&quot;&gt;Log&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
-      <div class="dsec today" id="sec-today">
-        <div class="dhead today">TODAY · THU 7 AUG</div>
+      &lt;div class=&quot;dsec today&quot; id=&quot;sec-today&quot;&gt;
+        &lt;div class=&quot;dhead today&quot;&gt;TODAY · THU 7 AUG&lt;/div&gt;
 
-        <div class="hero" data-cls="5A" data-sub="EVS">
-          <div class="htag">5A · EVS · in progress</div>
-          <div class="htt">Seeds &amp; Germination</div>
-          <div class="hbar"><i></i></div>
-          <div class="hmeta"><span class="a">2 of 5 steps</span><span class="b">Next: Abhyas · The practice</span></div>
-          <button class="hbtn">Continue lesson
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>
-          </button>
-        </div>
+        &lt;div class=&quot;hero&quot; data-cls=&quot;5A&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;htag&quot;&gt;5A · EVS · in progress&lt;/div&gt;
+          &lt;div class=&quot;htt&quot;&gt;Seeds &amp;amp; Germination&lt;/div&gt;
+          &lt;div class=&quot;hbar&quot;&gt;&lt;i&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class=&quot;hmeta&quot;&gt;&lt;span class=&quot;a&quot;&gt;2 of 5 steps&lt;/span&gt;&lt;span class=&quot;b&quot;&gt;Next: Abhyas · The practice&lt;/span&gt;&lt;/div&gt;
+          &lt;button class=&quot;hbtn&quot;&gt;Continue lesson
+            &lt;svg width=&quot;17&quot; height=&quot;17&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 12h13&quot;/&gt;&lt;path d=&quot;M13 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
 
-        <div class="reclabel">RECOMMENDED NEXT · PER YOUR LESSON PLAN</div>
+        &lt;div class=&quot;reclabel&quot;&gt;RECOMMENDED NEXT · PER YOUR LESSON PLAN&lt;/div&gt;
 
-        <div class="lentry" data-cls="5C" data-sub="EVS">
-          <div class="ltile evs"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Seeds &amp; Germination</div><div class="lsub">5C · EVS · not started</div></div>
-          <div class="rgo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-        </div>
-        <div class="lentry" data-cls="5A" data-sub="Maths">
-          <div class="ltile math"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13"/></svg></div>
-          <div class="lx"><div class="ltt">Measurement</div><div class="lsub">5A · Maths · not started</div></div>
-          <div class="rgo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
-        </div>
+        &lt;div class=&quot;lentry rec&quot; data-cls=&quot;5C&quot; data-sub=&quot;EVS&quot;&gt;
+          &lt;div class=&quot;ltile evs&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Seeds &amp;amp; Germination&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5C · EVS · not started&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;rgo&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;lentry rec&quot; data-cls=&quot;5A&quot; data-sub=&quot;Maths&quot;&gt;
+          &lt;div class=&quot;ltile math&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.7&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 6c-1.5-1-4-1.5-6-1.5S3 5 3 5v13s2-.5 4.5-.5S12 19 12 19m0-13c1.5-1 4-1.5 6-1.5S21 5 21 5v13s-2-.5-4.5-.5S12 19 12 19m0-13v13&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+          &lt;div class=&quot;lx&quot;&gt;&lt;div class=&quot;ltt&quot;&gt;Measurement&lt;/div&gt;&lt;div class=&quot;lsub&quot;&gt;5A · Maths · not started&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;rgo&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;/div&gt;
 
-        <button class="logsmall">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        &lt;button class=&quot;logsmall&quot;&gt;
+          &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 5v14M5 12h14&quot;/&gt;&lt;/svg&gt;
           Log a lesson you taught
-        </button>
-      </div>
+        &lt;/button&gt;
+      &lt;/div&gt;
 
-    </div>
+    &lt;/div&gt;
 
-    <div class="nav">
-      <a class="on">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.2 9.4V20h13.6V9.4"/></svg>
+    &lt;div class=&quot;nav&quot;&gt;
+      &lt;a class=&quot;on&quot;&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M3 10.5 12 4l9 6.5&quot;/&gt;&lt;path d=&quot;M5.2 9.4V20h13.6V9.4&quot;/&gt;&lt;/svg&gt;
         Today
-      </a>
-      <a>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;/svg&gt;
         Classes
-      </a>
-      <a>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 20v-6"/><path d="M13 20v-9"/><path d="M18 20v-4"/></svg>
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20V4&quot;/&gt;&lt;path d=&quot;M4 20h16&quot;/&gt;&lt;path d=&quot;M8 20v-6&quot;/&gt;&lt;path d=&quot;M13 20v-9&quot;/&gt;&lt;path d=&quot;M18 20v-4&quot;/&gt;&lt;/svg&gt;
         Reports
-      </a>
-      <a>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4"/></svg>
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8.5&quot; r=&quot;3.4&quot;/&gt;&lt;path d=&quot;M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4&quot;/&gt;&lt;/svg&gt;
         Profile
-      </a>
-    </div>
+      &lt;/a&gt;
+    &lt;/div&gt;
 
-   </div>
-  </div>
+   &lt;/div&gt;
+  &lt;/div&gt;
 
-  <script>
+  &lt;script&gt;
     // ---------- calendar (horizontal scroll, snaps per week) ----------
-    var DAYS=['Mo','Tu','We','Th','Fr','Sa','Su'];
+    var DAYS=[&#x27;Mo&#x27;,&#x27;Tu&#x27;,&#x27;We&#x27;,&#x27;Th&#x27;,&#x27;Fr&#x27;,&#x27;Sa&#x27;,&#x27;Su&#x27;];
     var TODAY=new Date(2025,7,7);           // Thu 7 Aug
     function wkStart(off){ var d=new Date(2025,7,4); d.setDate(d.getDate()+off*7); return d; }
-    function sameDay(a,b){ return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate(); }
+    function sameDay(a,b){ return a.getFullYear()==b.getFullYear()&amp;&amp;a.getMonth()==b.getMonth()&amp;&amp;a.getDate()==b.getDate(); }
     function dayCell(d,i,off){
-      var isToday=sameDay(d,TODAY), isPast=(d<TODAY&&!isToday), isWeekend=(i>=5);
-      var isAlert=(d.getMonth()==7 && d.getDate()==5);
-      var cls='day', dot='<span class="dstat"></span>', sec='';
-      if(isWeekend) cls+=' holiday';
-      if(isToday){ cls+=' today'; }
-      else if(isAlert){ cls+=' alert'; dot='<span class="dstat alert"></span>'; }
-      else if(isPast && !isWeekend){ dot='<span class="dstat logged"></span>'; }
-      else if(!isPast){ cls+=' future'; }
-      if(off===0){ if(i===0)sec='sec-mon';else if(i===1)sec='sec-tue';else if(i===2)sec='sec-wed';else if(i===3)sec='sec-today'; }
-      else if(off===-1){ var pids=['sec-jul28','sec-jul29','sec-jul30','sec-jul31','sec-aug1']; if(i<5) sec=pids[i]; }
-      return '<div class="'+cls+'"'+(sec?' data-sec="'+sec+'"':'')+'><span class="dl">'+DAYS[i]+'</span><span class="dnum">'+d.getDate()+'</span>'+dot+'</div>';
+      var isToday=sameDay(d,TODAY), isPast=(d&lt;TODAY&amp;&amp;!isToday), isWeekend=(i&gt;=5);
+      var isAlert=(d.getMonth()==7 &amp;&amp; d.getDate()==5);
+      var cls=&#x27;day&#x27;, dot=&#x27;&lt;span class=&quot;dstat&quot;&gt;&lt;/span&gt;&#x27;, sec=&#x27;&#x27;;
+      if(isWeekend) cls+=&#x27; holiday&#x27;;
+      if(isToday){ cls+=&#x27; today&#x27;; }
+      else if(isAlert){ cls+=&#x27; alert&#x27;; dot=&#x27;&lt;span class=&quot;dstat alert&quot;&gt;&lt;/span&gt;&#x27;; }
+      else if(isPast &amp;&amp; !isWeekend){ dot=&#x27;&lt;span class=&quot;dstat logged&quot;&gt;&lt;/span&gt;&#x27;; }
+      else if(!isPast){ cls+=&#x27; future&#x27;; }
+      if(off===0){ if(i===0)sec=&#x27;sec-mon&#x27;;else if(i===1)sec=&#x27;sec-tue&#x27;;else if(i===2)sec=&#x27;sec-wed&#x27;;else if(i===3)sec=&#x27;sec-today&#x27;; }
+      else if(off===-1){ var pids=[&#x27;sec-jul28&#x27;,&#x27;sec-jul29&#x27;,&#x27;sec-jul30&#x27;,&#x27;sec-jul31&#x27;,&#x27;sec-aug1&#x27;]; if(i&lt;5) sec=pids[i]; }
+      return &#x27;&lt;div class=&quot;&#x27;+cls+&#x27;&quot;&#x27;+(sec?&#x27; data-sec=&quot;&#x27;+sec+&#x27;&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&lt;span class=&quot;dl&quot;&gt;&#x27;+DAYS[i]+&#x27;&lt;/span&gt;&lt;span class=&quot;dnum&quot;&gt;&#x27;+d.getDate()+&#x27;&lt;/span&gt;&#x27;+dot+&#x27;&lt;/div&gt;&#x27;;
     }
     function renderCalendar(){
-      var html='';
-      for(var off=-2;off<=2;off++){
-        var ws=wkStart(off); html+='<div class="wk"'+(off===0?' id="wk-cur"':'')+'>';
-        for(var i=0;i<7;i++){ var d=new Date(ws); d.setDate(ws.getDate()+i); html+=dayCell(d,i,off); }
-        html+='</div>';
+      var html=&#x27;&#x27;;
+      for(var off=-2;off&lt;=2;off++){
+        var ws=wkStart(off); html+=&#x27;&lt;div class=&quot;wk&quot;&#x27;+(off===0?&#x27; id=&quot;wk-cur&quot;&#x27;:&#x27;&#x27;)+&#x27;&gt;&#x27;;
+        for(var i=0;i&lt;7;i++){ var d=new Date(ws); d.setDate(ws.getDate()+i); html+=dayCell(d,i,off); }
+        html+=&#x27;&lt;/div&gt;&#x27;;
       }
-      var sc=document.getElementById('weekscroll'); sc.innerHTML=html;
+      var sc=document.getElementById(&#x27;weekscroll&#x27;); sc.innerHTML=html;
       requestAnimationFrame(function(){
-        var cur=document.getElementById('wk-cur');
+        var cur=document.getElementById(&#x27;wk-cur&#x27;);
         if(cur) sc.scrollLeft = cur.offsetLeft - (sc.clientWidth - cur.clientWidth)/2;
       });
     }
     (function(){
-      var sc=document.getElementById('weekscroll');
+      var sc=document.getElementById(&#x27;weekscroll&#x27;);
       var dwn=false,sx=0,sl=0,moved=false;
-      sc.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse')return; dwn=true;moved=false;sx=e.clientX;sl=sc.scrollLeft; });
-      sc.addEventListener('pointermove',function(e){ if(!dwn)return; var dx=e.clientX-sx; if(Math.abs(dx)>6){moved=true;sc.scrollLeft=sl-dx;} });
-      window.addEventListener('pointerup',function(){ dwn=false; });
-      sc.addEventListener('click',function(ev){
+      sc.addEventListener(&#x27;pointerdown&#x27;,function(e){ if(e.pointerType!==&#x27;mouse&#x27;)return; dwn=true;moved=false;sx=e.clientX;sl=sc.scrollLeft; });
+      sc.addEventListener(&#x27;pointermove&#x27;,function(e){ if(!dwn)return; var dx=e.clientX-sx; if(Math.abs(dx)&gt;6){moved=true;sc.scrollLeft=sl-dx;} });
+      window.addEventListener(&#x27;pointerup&#x27;,function(){ dwn=false; });
+      sc.addEventListener(&#x27;click&#x27;,function(ev){
         if(moved){ moved=false; return; }
-        var day=ev.target.closest('.day'); if(!day) return;
-        document.querySelectorAll('.wk .day').forEach(function(d){ d.classList.remove('sel'); });
-        day.classList.add('sel');
-        var sec=day.getAttribute('data-sec');
-        if(sec){ var el=document.getElementById(sec), f=document.getElementById('feed'); if(el&&f) f.scrollTo({top:Math.max(0,el.offsetTop-8),behavior:'smooth'}); }
+        var day=ev.target.closest(&#x27;.day&#x27;); if(!day) return;
+        document.querySelectorAll(&#x27;.wk .day&#x27;).forEach(function(d){ d.classList.remove(&#x27;sel&#x27;); });
+        day.classList.add(&#x27;sel&#x27;);
+        var sec=day.getAttribute(&#x27;data-sec&#x27;);
+        if(sec){ var el=document.getElementById(sec), f=document.getElementById(&#x27;feed&#x27;); if(el&amp;&amp;f) f.scrollTo({top:Math.max(0,el.offsetTop-8),behavior:&#x27;smooth&#x27;}); }
       });
     })();
 
     // ---------- filters (toggle + nested subject) ----------
-    var SUBJ={ '5A':['EVS','Maths'],'5B':['EVS'],'5C':['EVS'],'6A':['Maths','EVS'],
-      '6B':['Maths'],'7A':['Maths','Science'],'7B':['Maths'],'7C':['Science'],'8A':['Maths','Science'] };
+    var SUBJ={ &#x27;5A&#x27;:[&#x27;EVS&#x27;,&#x27;Maths&#x27;],&#x27;5B&#x27;:[&#x27;EVS&#x27;],&#x27;5C&#x27;:[&#x27;EVS&#x27;],&#x27;6A&#x27;:[&#x27;Maths&#x27;,&#x27;EVS&#x27;],
+      &#x27;6B&#x27;:[&#x27;Maths&#x27;],&#x27;7A&#x27;:[&#x27;Maths&#x27;,&#x27;Science&#x27;],&#x27;7B&#x27;:[&#x27;Maths&#x27;],&#x27;7C&#x27;:[&#x27;Science&#x27;],&#x27;8A&#x27;:[&#x27;Maths&#x27;,&#x27;Science&#x27;] };
     var curCls=null, curSub=null;
     function applyFilter(){
-      document.querySelectorAll('[data-cls]').forEach(function(e){
-        var okC = curCls===null || e.getAttribute('data-cls')===curCls;
-        var okS = curSub===null || e.getAttribute('data-sub')===curSub;
-        e.style.display=(okC&&okS)?'':'none';
+      document.querySelectorAll(&#x27;[data-cls]&#x27;).forEach(function(e){
+        var okC = curCls===null || e.getAttribute(&#x27;data-cls&#x27;)===curCls;
+        var okS = curSub===null || e.getAttribute(&#x27;data-sub&#x27;)===curSub;
+        e.style.display=(okC&amp;&amp;okS)?&#x27;&#x27;:&#x27;none&#x27;;
       });
-      document.querySelectorAll('.dsec').forEach(function(sec){
-        if(sec.classList.contains('today')) return;
-        var ents=sec.querySelectorAll('[data-cls]'); if(ents.length===0) return;
-        var vis=false; ents.forEach(function(e){ if(e.style.display!=='none') vis=true; });
-        sec.style.display=vis?'':'none';
+      document.querySelectorAll(&#x27;.dsec&#x27;).forEach(function(sec){
+        if(sec.classList.contains(&#x27;today&#x27;)) return;
+        var ents=sec.querySelectorAll(&#x27;[data-cls]&#x27;); if(ents.length===0) return;
+        var vis=false; ents.forEach(function(e){ if(e.style.display!==&#x27;none&#x27;) vis=true; });
+        sec.style.display=vis?&#x27;&#x27;:&#x27;none&#x27;;
       });
+    }
+    var F_FILTER=&#x27;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M3 5h18l-7 8v5l-4 2v-7z&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var F_CLEAR=&#x27;&lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M6 6l12 12M18 6L6 18&quot;/&gt;&lt;/svg&gt;&#x27;;
+    function updateClsLabel(){
+      var el=document.getElementById(&#x27;clslabel&#x27;);
+      if(curCls){ el.classList.add(&#x27;clear&#x27;); el.innerHTML=F_CLEAR+&#x27;Clear&#x27;; }
+      else { el.classList.remove(&#x27;clear&#x27;); el.innerHTML=F_FILTER+&#x27;Classes&#x27;; }
+    }
+    function onLabelClick(){
+      if(!curCls) return;
+      curCls=null; curSub=null;
+      document.querySelectorAll(&#x27;#clsrow .fchip&#x27;).forEach(function(c){ c.classList.remove(&#x27;act&#x27;); });
+      hideSubs(); updateClsLabel(); applyFilter();
     }
     function clickCls(val,el){
-      if(curCls===val){ curCls=null; curSub=null; el.classList.remove('act'); hideSubs(); }
+      if(curCls===val){ curCls=null; curSub=null; el.classList.remove(&#x27;act&#x27;); hideSubs(); }
       else {
         curCls=val; curSub=null;
-        document.querySelectorAll('#clsrow .fchip').forEach(function(c){ c.classList.remove('act'); });
-        el.classList.add('act'); showSubs(val);
+        document.querySelectorAll(&#x27;#clsrow .fchip&#x27;).forEach(function(c){ c.classList.remove(&#x27;act&#x27;); });
+        el.classList.add(&#x27;act&#x27;); showSubs(val);
       }
+      updateClsLabel();
       applyFilter();
     }
+    window.onLabelClick=onLabelClick;
     function showSubs(cls){
-      var subs=SUBJ[cls]||[], html='';
-      subs.forEach(function(s){ html+='<button class="fchip" onclick="clickSub(\''+s+'\',this)">'+s+'</button>'; });
-      document.getElementById('subrow').innerHTML=html;
-      document.getElementById('subwrap').style.display='flex';
+      var subs=SUBJ[cls]||[], html=&#x27;&#x27;;
+      subs.forEach(function(s){ html+=&#x27;&lt;button class=&quot;fchip&quot; onclick=&quot;clickSub(\&#x27;&#x27;+s+&#x27;\&#x27;,this)&quot;&gt;&#x27;+s+&#x27;&lt;/button&gt;&#x27;; });
+      document.getElementById(&#x27;subrow&#x27;).innerHTML=html;
     }
-    function hideSubs(){ document.getElementById('subwrap').style.display='none'; document.getElementById('subrow').innerHTML=''; }
+    function hideSubs(){ document.getElementById(&#x27;subrow&#x27;).innerHTML=&#x27;&lt;span class=&quot;subprompt&quot;&gt;Select a class to filter by subject&lt;/span&gt;&#x27;; }
     function clickSub(val,el){
-      if(curSub===val){ curSub=null; el.classList.remove('act'); }
-      else { curSub=val; document.querySelectorAll('#subrow .fchip').forEach(function(c){ c.classList.remove('act'); }); el.classList.add('act'); }
+      if(curSub===val){ curSub=null; el.classList.remove(&#x27;act&#x27;); }
+      else { curSub=val; document.querySelectorAll(&#x27;#subrow .fchip&#x27;).forEach(function(c){ c.classList.remove(&#x27;act&#x27;); }); el.classList.add(&#x27;act&#x27;); }
       applyFilter();
     }
 
     // ---------- init ----------
     renderCalendar();
+    hideSubs();
     applyFilter();
-    var f=document.getElementById('feed'); if(f) f.scrollTop=f.scrollHeight;
+    var f=document.getElementById(&#x27;feed&#x27;); if(f) f.scrollTop=f.scrollHeight;
+  &lt;/script&gt;
+
+&lt;script&gt;
+(function(){
+  var NAME=&quot;home&quot;;
+  document.addEventListener(&quot;click&quot;, function(e){
+    var el=e.target; if(!el||!el.closest) return;
+    var a=el.closest(&quot;.nav a&quot;);
+    if(a){ e.preventDefault(); var t=(a.textContent||&quot;&quot;).toLowerCase();
+      if(t.indexOf(&quot;today&quot;)&gt;=0){ parent.postMessage({go:&quot;home&quot;},&quot;*&quot;); }
+      else if(t.indexOf(&quot;classes&quot;)&gt;=0){ parent.postMessage({go:&quot;classes&quot;},&quot;*&quot;); }
+      return; }
+    if(el.closest(&quot;.back&quot;)){ parent.postMessage({back:NAME},&quot;*&quot;); return; }
+    if(NAME===&quot;home&quot; &amp;&amp; (el.closest(&quot;.lentry.rec&quot;)||el.closest(&quot;.hbtn&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classes&quot; &amp;&amp; el.closest(&quot;.ccard&quot;)){ parent.postMessage({go:&quot;classhub&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classhub&quot; &amp;&amp; (el.closest(&quot;.unbtn&quot;)||el.closest(&quot;.trow&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+  }, false);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+    <iframe class="frame"    id="f-classes"  srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Petrilab Classroom — Classes&lt;/title&gt;
+&lt;style&gt;
+  :root{
+    --navy:#14213D; --navy2:#1E2E4F; --blue:#2680EB; --blue-dk:#1B5FBF;
+    --btint:#EAF1FD; --bg:#F5F7FA; --card:#FFFFFF; --line:#EDF0F5;
+    --body:#5B6675; --muted:#95A0B1; --green:#2E9E5B; --gtint:#E9F5EE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif;
+    background:#E7EBF1;min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:28px 16px;
+    -webkit-font-smoothing:antialiased;color:var(--navy);
+  }
+  .cap{font-size:12px;color:#8791A0;letter-spacing:.3px}
+  .cap b{color:#5B6675}
+
+  .phone{width:390px;border-radius:46px;background:#0C1424;
+    padding:13px;box-shadow:0 30px 70px rgba(20,33,61,.28), 0 4px 14px rgba(20,33,61,.16)}
+  .screen{position:relative;width:364px;height:790px;background:var(--bg);
+    border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
+
+  .status{height:44px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
+  .status .dots{display:flex;gap:5px;align-items:center}
+
+  .topbar{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  .ttitle{font-size:21px;font-weight:800;letter-spacing:-.3px}
+  .gear{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--body);box-shadow:0 2px 6px rgba(20,33,61,.05)}
+
+  .chead{flex:0 0 auto;padding:2px 18px 8px}
+  .chead .csub{font-size:12.5px;color:var(--muted);font-weight:600}
+
+  .clist{flex:1;min-height:0;overflow-y:auto;padding:6px 18px 22px}
+  .clist::-webkit-scrollbar{display:none}
+  .gsec{margin-top:14px}
+  .ghead{font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--muted);margin:0 2px 10px}
+
+  .ccard{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:12px 13px;margin-bottom:10px;box-shadow:0 2px 7px rgba(20,33,61,.05);cursor:pointer}
+  .cbadge{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800}
+  .cbadge.g5{background:var(--gtint);color:#1F7A43}
+  .cbadge.g6{background:#E8F1FD;color:var(--blue-dk)}
+  .cbadge.g7{background:#F0EAFB;color:#6A45C0}
+  .cbadge.g8{background:#FBEEDA;color:#B67A12}
+  .cbody{flex:1;min-width:0}
+  .crow1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .cpill{font-size:10px;font-weight:800;color:#fff;background:#E0862A;border-radius:9px;padding:2px 7px;white-space:nowrap}
+  .cmeta{font-size:12.5px;color:var(--body);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow{display:flex;align-items:center;gap:9px;margin-top:7px}
+  .stag{flex:0 0 auto;min-width:52px;text-align:center;font-size:10px;font-weight:800;border-radius:7px;padding:3px 7px}
+  .stag.EVS{background:var(--gtint);color:#1F7A43}
+  .stag.Maths{background:#E8F1FD;color:var(--blue-dk)}
+  .stag.Science{background:#F0EAFB;color:#6A45C0}
+  .cbar{flex:0 0 auto;width:56px;height:6px;border-radius:5px;background:#EBEFF4;overflow:hidden}
+  .cbar i{display:block;height:100%;border-radius:5px;background:var(--blue)}
+  .cbar i.EVS{background:var(--green)}
+  .cbar i.Maths{background:var(--blue)}
+  .cbar i.Science{background:#6A45C0}
+  .sfrac{flex:1;font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sfrac b{color:var(--navy);font-weight:800}
+  .cgo{flex:0 0 auto;color:#C2CBD8}
+
+  .nav{flex:0 0 auto;height:74px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;padding:0 8px 6px}
+  .nav a{display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:#AAB4C2;font-size:11px;font-weight:700;text-decoration:none;padding-top:8px}
+  .nav a.on{color:var(--blue)}
+
+  @media (max-width:480px){
+    body{display:block;padding:0;gap:0;background:var(--bg)}
+    .cap{display:none}
+    .phone{width:100%;padding:0;border-radius:0;background:none;box-shadow:none}
+    .screen{width:100%;height:100vh;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top)}
+    .status{display:none}
+    .nav{padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;cap&quot;&gt;&lt;b&gt;Petrilab Classroom&lt;/b&gt; &amp;nbsp;·&amp;nbsp; Classes tab &amp;nbsp;·&amp;nbsp; class-first management hub&lt;/div&gt;
+
+  &lt;div class=&quot;phone&quot;&gt;
+   &lt;div class=&quot;screen&quot;&gt;
+
+    &lt;div class=&quot;status&quot;&gt;
+      &lt;span&gt;9:41&lt;/span&gt;
+      &lt;span class=&quot;dots&quot;&gt;
+        &lt;svg width=&quot;17&quot; height=&quot;12&quot; viewBox=&quot;0 0 17 12&quot; fill=&quot;currentColor&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;7&quot; width=&quot;3&quot; height=&quot;5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;4.5&quot; y=&quot;4.5&quot; width=&quot;3&quot; height=&quot;7.5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;3&quot; height=&quot;10&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;0&quot; width=&quot;3&quot; height=&quot;12&quot; rx=&quot;1&quot; opacity=&quot;.35&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;16&quot; height=&quot;12&quot; viewBox=&quot;0 0 16 12&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z&quot;/&gt;&lt;path d=&quot;M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z&quot;/&gt;&lt;circle cx=&quot;8&quot; cy=&quot;10&quot; r=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;26&quot; height=&quot;12&quot; viewBox=&quot;0 0 26 12&quot; fill=&quot;none&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;1&quot; width=&quot;21&quot; height=&quot;10&quot; rx=&quot;3&quot; stroke=&quot;currentColor&quot; stroke-opacity=&quot;.4&quot;/&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;15&quot; height=&quot;6&quot; rx=&quot;1.5&quot; fill=&quot;currentColor&quot;/&gt;&lt;rect x=&quot;23.5&quot; y=&quot;4&quot; width=&quot;1.8&quot; height=&quot;4&quot; rx=&quot;1&quot; fill=&quot;currentColor&quot; fill-opacity=&quot;.4&quot;/&gt;&lt;/svg&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;div class=&quot;ttitle&quot;&gt;Classes&lt;/div&gt;
+      &lt;div class=&quot;gear&quot; title=&quot;Settings&quot;&gt;
+        &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.6&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;chead&quot;&gt;
+      &lt;div class=&quot;csub&quot;&gt;9 classes · Term 2, 2025–26&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;clist&quot; id=&quot;clist&quot;&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;nav&quot;&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M3 10.5 12 4l9 6.5&quot;/&gt;&lt;path d=&quot;M5.2 9.4V20h13.6V9.4&quot;/&gt;&lt;/svg&gt;
+        Today
+      &lt;/a&gt;
+      &lt;a class=&quot;on&quot;&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        Classes
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20V4&quot;/&gt;&lt;path d=&quot;M4 20h16&quot;/&gt;&lt;path d=&quot;M8 20v-6&quot;/&gt;&lt;path d=&quot;M13 20v-9&quot;/&gt;&lt;path d=&quot;M18 20v-4&quot;/&gt;&lt;/svg&gt;
+        Reports
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8.5&quot; r=&quot;3.4&quot;/&gt;&lt;path d=&quot;M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4&quot;/&gt;&lt;/svg&gt;
+        Profile
+      &lt;/a&gt;
+    &lt;/div&gt;
+
+   &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    var CHEV=&#x27;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var CLASSES=[
+      {code:&#x27;5A&#x27;,grade:5,students:32,pending:0,subs:[{n:&#x27;EVS&#x27;,ch:&#x27;Seeds &amp; Germination&#x27;,d:4,t:7},{n:&#x27;Maths&#x27;,ch:&#x27;Patterns&#x27;,d:3,t:6}]},
+      {code:&#x27;5B&#x27;,grade:5,students:30,pending:0,subs:[{n:&#x27;EVS&#x27;,ch:&#x27;Seeds &amp; Germination&#x27;,d:4,t:7}]},
+      {code:&#x27;5C&#x27;,grade:5,students:31,pending:1,subs:[{n:&#x27;EVS&#x27;,ch:&#x27;Types of Seeds&#x27;,d:3,t:7}]},
+      {code:&#x27;6A&#x27;,grade:6,students:34,pending:0,subs:[{n:&#x27;Maths&#x27;,ch:&#x27;Fractions&#x27;,d:5,t:8},{n:&#x27;EVS&#x27;,ch:&#x27;Our Environment&#x27;,d:3,t:7}]},
+      {code:&#x27;6B&#x27;,grade:6,students:33,pending:0,subs:[{n:&#x27;Maths&#x27;,ch:&#x27;Fractions&#x27;,d:5,t:8}]},
+      {code:&#x27;7A&#x27;,grade:7,students:36,pending:2,subs:[{n:&#x27;Maths&#x27;,ch:&#x27;Integers&#x27;,d:2,t:9},{n:&#x27;Science&#x27;,ch:&#x27;Acids &amp; Bases&#x27;,d:4,t:8}]},
+      {code:&#x27;7B&#x27;,grade:7,students:35,pending:0,subs:[{n:&#x27;Maths&#x27;,ch:&#x27;Integers&#x27;,d:3,t:9}]},
+      {code:&#x27;7C&#x27;,grade:7,students:34,pending:0,subs:[{n:&#x27;Science&#x27;,ch:&#x27;Acids &amp; Bases&#x27;,d:4,t:8}]},
+      {code:&#x27;8A&#x27;,grade:8,students:38,pending:0,subs:[{n:&#x27;Maths&#x27;,ch:&#x27;Linear Equations&#x27;,d:1,t:10},{n:&#x27;Science&#x27;,ch:&#x27;Force &amp; Pressure&#x27;,d:2,t:9}]}
+    ];
+    function render(){
+      var html=&#x27;&#x27;;
+      [5,6,7,8].forEach(function(g){
+        var cs=CLASSES.filter(function(c){return c.grade===g;});
+        if(!cs.length) return;
+        html+=&#x27;&lt;div class=&quot;gsec&quot;&gt;&lt;div class=&quot;ghead&quot;&gt;CLASS &#x27;+g+&#x27;&lt;/div&gt;&#x27;;
+        cs.forEach(function(c){
+          var srows=&#x27;&#x27;;
+          c.subs.forEach(function(s){
+            var p=Math.round(s.d/s.t*100);
+            srows+=&#x27;&lt;div class=&quot;srow&quot;&gt;&lt;span class=&quot;stag &#x27;+s.n+&#x27;&quot;&gt;&#x27;+s.n+&#x27;&lt;/span&gt;&#x27;+
+              &#x27;&lt;div class=&quot;cbar&quot;&gt;&lt;i class=&quot;&#x27;+s.n+&#x27;&quot; style=&quot;width:&#x27;+p+&#x27;%&quot;&gt;&lt;/i&gt;&lt;/div&gt;&#x27;+
+              &#x27;&lt;span class=&quot;sfrac&quot;&gt;&lt;b&gt;&#x27;+s.d+&#x27;/&#x27;+s.t+&#x27;&lt;/b&gt; · &#x27;+s.ch+&#x27;&lt;/span&gt;&lt;/div&gt;&#x27;;
+          });
+          html+=&#x27;&lt;div class=&quot;ccard&quot;&gt;&#x27;+
+            &#x27;&lt;div class=&quot;cbadge g&#x27;+g+&#x27;&quot;&gt;&#x27;+c.code+&#x27;&lt;/div&gt;&#x27;+
+            &#x27;&lt;div class=&quot;cbody&quot;&gt;&#x27;+
+              &#x27;&lt;div class=&quot;crow1&quot;&gt;&lt;span class=&quot;cmeta&quot;&gt;&#x27;+c.students+&#x27; students&lt;/span&gt;&#x27;+(c.pending?&#x27;&lt;span class=&quot;cpill&quot;&gt;&#x27;+c.pending+&#x27; to log&lt;/span&gt;&#x27;:&#x27;&#x27;)+&#x27;&lt;/div&gt;&#x27;+
+              srows+
+            &#x27;&lt;/div&gt;&#x27;+
+            &#x27;&lt;div class=&quot;cgo&quot;&gt;&#x27;+CHEV+&#x27;&lt;/div&gt;&#x27;+
+          &#x27;&lt;/div&gt;&#x27;;
+        });
+        html+=&#x27;&lt;/div&gt;&#x27;;
+      });
+      document.getElementById(&#x27;clist&#x27;).innerHTML=html;
+    }
+    render();
+  &lt;/script&gt;
+
+&lt;script&gt;
+(function(){
+  var NAME=&quot;classes&quot;;
+  document.addEventListener(&quot;click&quot;, function(e){
+    var el=e.target; if(!el||!el.closest) return;
+    var a=el.closest(&quot;.nav a&quot;);
+    if(a){ e.preventDefault(); var t=(a.textContent||&quot;&quot;).toLowerCase();
+      if(t.indexOf(&quot;today&quot;)&gt;=0){ parent.postMessage({go:&quot;home&quot;},&quot;*&quot;); }
+      else if(t.indexOf(&quot;classes&quot;)&gt;=0){ parent.postMessage({go:&quot;classes&quot;},&quot;*&quot;); }
+      return; }
+    if(el.closest(&quot;.back&quot;)){ parent.postMessage({back:NAME},&quot;*&quot;); return; }
+    if(NAME===&quot;home&quot; &amp;&amp; (el.closest(&quot;.lentry.rec&quot;)||el.closest(&quot;.hbtn&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classes&quot; &amp;&amp; el.closest(&quot;.ccard&quot;)){ parent.postMessage({go:&quot;classhub&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classhub&quot; &amp;&amp; (el.closest(&quot;.unbtn&quot;)||el.closest(&quot;.trow&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+  }, false);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+    <iframe class="frame"    id="f-classhub" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Petrilab Classroom — Class Hub&lt;/title&gt;
+&lt;style&gt;
+  :root{
+    --navy:#14213D; --navy2:#1E2E4F; --blue:#2680EB; --blue-dk:#1B5FBF;
+    --btint:#EAF1FD; --bg:#F5F7FA; --card:#FFFFFF; --line:#EDF0F5;
+    --body:#5B6675; --muted:#95A0B1; --green:#2E9E5B; --gtint:#E9F5EE; --purple:#6A45C0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif;
+    background:#E7EBF1;min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:28px 16px;
+    -webkit-font-smoothing:antialiased;color:var(--navy);
+  }
+  .cap{font-size:12px;color:#8791A0;letter-spacing:.3px}
+  .cap b{color:#5B6675}
+
+  .phone{width:390px;border-radius:46px;background:#0C1424;
+    padding:13px;box-shadow:0 30px 70px rgba(20,33,61,.28), 0 4px 14px rgba(20,33,61,.16)}
+  .screen{position:relative;width:364px;height:790px;background:var(--bg);
+    border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
+
+  .status{height:44px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
+  .status .dots{display:flex;gap:5px;align-items:center}
+
+  .topbar{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .tbleft{display:flex;align-items:center;gap:11px}
+  .back{width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--body);cursor:pointer;box-shadow:0 2px 6px rgba(20,33,61,.05)}
+  .ttitle{font-size:19px;font-weight:800;letter-spacing:-.2px}
+  .gear{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--body);box-shadow:0 2px 6px rgba(20,33,61,.05)}
+
+  .chead{flex:0 0 auto;padding:0 18px 4px}
+  .chead .csub{font-size:12.5px;color:var(--muted);font-weight:600}
+
+  .segwrap{flex:0 0 auto;padding:8px 18px 6px}
+  .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:13px;padding:4px;box-shadow:0 1px 3px rgba(20,33,61,.04)}
+  .seg button{border:none;background:transparent;font-size:13.5px;font-weight:700;color:var(--body);padding:8px 22px;border-radius:9px;cursor:pointer}
+  .seg button.on{background:var(--btint);color:var(--blue-dk)}
+
+  .chub{flex:1;min-height:0;overflow-y:auto;padding:6px 18px 22px}
+  .chub::-webkit-scrollbar{display:none}
+
+  .upnext{position:relative;border-radius:18px;padding:15px 16px;color:#fff;overflow:hidden;
+    background:linear-gradient(150deg,#25406E,#16233F);box-shadow:0 12px 26px rgba(20,33,61,.22)}
+  .upnext::after{content:&quot;&quot;;position:absolute;right:-40px;top:-46px;width:150px;height:150px;border-radius:50%;
+    background:radial-gradient(circle,rgba(56,131,235,.5),transparent 68%)}
+  .untag{position:relative;font-size:10.5px;font-weight:700;letter-spacing:.6px;color:#9FC0F0;text-transform:uppercase}
+  .unt{position:relative;font-size:19px;font-weight:800;margin-top:6px}
+  .unmeta{position:relative;font-size:12px;color:#C7D6EE;font-weight:600;margin-top:6px}
+  .unbtn{position:relative;margin-top:13px;width:100%;height:44px;border:none;border-radius:12px;background:#fff;
+    color:var(--navy);font-size:14.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .unbtn svg{color:var(--blue)}
+
+  .slabel{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 12px}
+  .slabel .t{font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+  .slabel .n{font-size:11.5px;font-weight:800;color:var(--navy)}
+
+  .sylprog{display:flex;align-items:center;gap:11px;margin:0 2px 13px}
+  .sbar{flex:1;height:7px;border-radius:5px;background:#EBEFF4;overflow:hidden}
+  .sbar i{display:block;height:100%;border-radius:5px;background:var(--blue)}
+
+  .tcard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 7px rgba(20,33,61,.05);overflow:hidden}
+  .trow{display:flex;align-items:center;gap:12px;padding:12px 13px;border-bottom:1px solid var(--line)}
+  .trow:last-child{border-bottom:none}
+  .tm{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .tm.done{background:var(--green);color:#fff}
+  .tm.prog{background:var(--blue);color:#fff;box-shadow:0 0 0 3px rgba(38,128,235,.16)}
+  .tm.next{border:2px solid var(--blue)}
+  .tm.up{border:2px solid #DCE2EC}
+  .tname{flex:1;font-size:14px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trow.dim .tname{color:var(--muted);font-weight:600}
+  .tstate{flex:0 0 auto;font-size:11px;font-weight:800}
+  .tstate.done{color:var(--green)}
+  .tstate.prog{color:var(--blue-dk)}
+  .tstate.next{color:var(--blue-dk);background:var(--btint);border-radius:8px;padding:3px 9px}
+
+  .qrow{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-radius:15px;
+    padding:13px;margin-bottom:10px;box-shadow:0 2px 6px rgba(20,33,61,.05);cursor:pointer}
+  .qic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .qic.stu{background:#EEF2F7;color:var(--navy)}
+  .qic.rep{background:#F0EAFB;color:var(--purple)}
+  .qx{flex:1;min-width:0}
+  .qt{font-size:14.5px;font-weight:800;color:var(--navy)}
+  .qs{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+  .qs .warn{color:#B4791C;font-weight:800}
+  .qgo{flex:0 0 auto;color:#C2CBD8}
+
+  .nav{flex:0 0 auto;height:74px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-around;padding:0 8px 6px}
+  .nav a{display:flex;flex-direction:column;align-items:center;gap:4px;color:#AAB4C2;font-size:11px;font-weight:700;text-decoration:none;padding-top:8px}
+  .nav a.on{color:var(--blue)}
+
+  @media (max-width:480px){
+    body{display:block;padding:0;gap:0;background:var(--bg)}
+    .cap{display:none}
+    .phone{width:100%;padding:0;border-radius:0;background:none;box-shadow:none}
+    .screen{width:100%;height:100vh;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top)}
+    .status{display:none}
+    .nav{padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;cap&quot;&gt;&lt;b&gt;Petrilab Classroom&lt;/b&gt; &amp;nbsp;·&amp;nbsp; Class Hub (5A) &amp;nbsp;·&amp;nbsp; tap EVS / Maths&lt;/div&gt;
+
+  &lt;div class=&quot;phone&quot;&gt;
+   &lt;div class=&quot;screen&quot;&gt;
+
+    &lt;div class=&quot;status&quot;&gt;
+      &lt;span&gt;9:41&lt;/span&gt;
+      &lt;span class=&quot;dots&quot;&gt;
+        &lt;svg width=&quot;17&quot; height=&quot;12&quot; viewBox=&quot;0 0 17 12&quot; fill=&quot;currentColor&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;7&quot; width=&quot;3&quot; height=&quot;5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;4.5&quot; y=&quot;4.5&quot; width=&quot;3&quot; height=&quot;7.5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;3&quot; height=&quot;10&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;0&quot; width=&quot;3&quot; height=&quot;12&quot; rx=&quot;1&quot; opacity=&quot;.35&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;16&quot; height=&quot;12&quot; viewBox=&quot;0 0 16 12&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z&quot;/&gt;&lt;path d=&quot;M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z&quot;/&gt;&lt;circle cx=&quot;8&quot; cy=&quot;10&quot; r=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;26&quot; height=&quot;12&quot; viewBox=&quot;0 0 26 12&quot; fill=&quot;none&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;1&quot; width=&quot;21&quot; height=&quot;10&quot; rx=&quot;3&quot; stroke=&quot;currentColor&quot; stroke-opacity=&quot;.4&quot;/&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;15&quot; height=&quot;6&quot; rx=&quot;1.5&quot; fill=&quot;currentColor&quot;/&gt;&lt;rect x=&quot;23.5&quot; y=&quot;4&quot; width=&quot;1.8&quot; height=&quot;4&quot; rx=&quot;1&quot; fill=&quot;currentColor&quot; fill-opacity=&quot;.4&quot;/&gt;&lt;/svg&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;div class=&quot;tbleft&quot;&gt;
+        &lt;div class=&quot;back&quot;&gt;&lt;svg width=&quot;17&quot; height=&quot;17&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 6l-6 6 6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class=&quot;ttitle&quot;&gt;Class 5A&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;gear&quot; title=&quot;Settings&quot;&gt;
+        &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.6&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;chead&quot;&gt;&lt;div class=&quot;csub&quot;&gt;Class 5 · 32 students · 2 subjects&lt;/div&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;segwrap&quot;&gt;
+      &lt;div class=&quot;seg&quot;&gt;
+        &lt;button class=&quot;on&quot; onclick=&quot;setSub(&#x27;EVS&#x27;,this)&quot;&gt;EVS&lt;/button&gt;
+        &lt;button onclick=&quot;setSub(&#x27;Maths&#x27;,this)&quot;&gt;Maths&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;chub&quot;&gt;
+      &lt;div class=&quot;upnext&quot; id=&quot;upnext&quot;&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;slabel&quot;&gt;&lt;span class=&quot;t&quot; id=&quot;sylhead&quot;&gt;SYLLABUS&lt;/span&gt;&lt;span class=&quot;n&quot; id=&quot;syln&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;sylprog&quot;&gt;&lt;div class=&quot;sbar&quot;&gt;&lt;i id=&quot;sbarfill&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;div class=&quot;tcard&quot; id=&quot;tlist&quot;&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;slabel&quot;&gt;&lt;span class=&quot;t&quot;&gt;CLASS&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;qrow&quot;&gt;
+        &lt;div class=&quot;qic stu&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;8&quot; r=&quot;3.2&quot;/&gt;&lt;path d=&quot;M2.5 20c1.1-3.2 3.4-4.8 6.5-4.8s5.4 1.6 6.5 4.8&quot;/&gt;&lt;path d=&quot;M16.5 5.2a3.2 3.2 0 0 1 0 6&quot;/&gt;&lt;path d=&quot;M17.5 15.4c2.3.5 3.9 1.9 4.7 4.6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class=&quot;qx&quot;&gt;&lt;div class=&quot;qt&quot;&gt;Students&lt;/div&gt;&lt;div class=&quot;qs&quot;&gt;32 in class · &lt;span class=&quot;warn&quot;&gt;3 need attention&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;qgo&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;qrow&quot;&gt;
+        &lt;div class=&quot;qic rep&quot;&gt;&lt;svg width=&quot;21&quot; height=&quot;21&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20V4&quot;/&gt;&lt;path d=&quot;M4 20h16&quot;/&gt;&lt;path d=&quot;M8 20v-6&quot;/&gt;&lt;path d=&quot;M13 20v-9&quot;/&gt;&lt;path d=&quot;M18 20v-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class=&quot;qx&quot;&gt;&lt;div class=&quot;qt&quot;&gt;Progress &amp;amp; reports&lt;/div&gt;&lt;div class=&quot;qs&quot;&gt;Skill mastery · share with parents&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;qgo&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;nav&quot;&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M3 10.5 12 4l9 6.5&quot;/&gt;&lt;path d=&quot;M5.2 9.4V20h13.6V9.4&quot;/&gt;&lt;/svg&gt;
+        Today
+      &lt;/a&gt;
+      &lt;a class=&quot;on&quot;&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;4&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;4&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;13.5&quot; width=&quot;6.5&quot; height=&quot;6.5&quot; rx=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        Classes
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20V4&quot;/&gt;&lt;path d=&quot;M4 20h16&quot;/&gt;&lt;path d=&quot;M8 20v-6&quot;/&gt;&lt;path d=&quot;M13 20v-9&quot;/&gt;&lt;path d=&quot;M18 20v-4&quot;/&gt;&lt;/svg&gt;
+        Reports
+      &lt;/a&gt;
+      &lt;a&gt;
+        &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8.5&quot; r=&quot;3.4&quot;/&gt;&lt;path d=&quot;M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4&quot;/&gt;&lt;/svg&gt;
+        Profile
+      &lt;/a&gt;
+    &lt;/div&gt;
+
+   &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    var CHK=&#x27;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var ARR=&#x27;&lt;svg width=&quot;17&quot; height=&quot;17&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 12h13&quot;/&gt;&lt;path d=&quot;M13 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var SUBJECTS={
+      EVS:{chapter:&#x27;Seeds &amp; Plants&#x27;, up:{topic:&#x27;Seeds &amp; Germination&#x27;, state:&#x27;progress&#x27;, meta:&#x27;2 of 5 steps · Abhyas next&#x27;},
+        topics:[
+          {name:&#x27;What is a Seed?&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Types of Seeds&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Parts of a Seed&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Living &amp; Non-living&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Seeds &amp; Germination&#x27;,st:&#x27;prog&#x27;},
+          {name:&#x27;How Plants Grow&#x27;,st:&#x27;next&#x27;},
+          {name:&#x27;Parts of a Plant&#x27;,st:&#x27;up&#x27;}
+        ]},
+      Maths:{chapter:&#x27;Patterns &amp; Shapes&#x27;, up:{topic:&#x27;Patterns&#x27;, state:&#x27;progress&#x27;, meta:&#x27;1 of 5 steps · Bodh next&#x27;},
+        topics:[
+          {name:&#x27;Shapes Around Us&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Lines &amp; Curves&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;The Number Line&#x27;,st:&#x27;done&#x27;},
+          {name:&#x27;Patterns&#x27;,st:&#x27;prog&#x27;},
+          {name:&#x27;Symmetry&#x27;,st:&#x27;next&#x27;},
+          {name:&#x27;Measurement&#x27;,st:&#x27;up&#x27;}
+        ]}
+    };
+    var cur=&#x27;EVS&#x27;;
+    var LABELS={done:&#x27;Done&#x27;,prog:&#x27;In progress&#x27;,next:&#x27;Next&#x27;,up:&#x27;&#x27;};
+    function renderSubject(){
+      var s=SUBJECTS[cur];
+      var done=s.topics.filter(function(t){return t.st===&#x27;done&#x27;;}).length, total=s.topics.length;
+      var pct=Math.round(done/total*100);
+      document.getElementById(&#x27;upnext&#x27;).innerHTML=
+        &#x27;&lt;div class=&quot;untag&quot;&gt;UP NEXT · &#x27;+cur+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;div class=&quot;unt&quot;&gt;&#x27;+s.up.topic+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;div class=&quot;unmeta&quot;&gt;&#x27;+s.up.meta+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;button class=&quot;unbtn&quot;&gt;&#x27;+(s.up.state===&#x27;progress&#x27;?&#x27;Continue lesson&#x27;:&#x27;Prepare lesson&#x27;)+&#x27; &#x27;+ARR+&#x27;&lt;/button&gt;&#x27;;
+      document.getElementById(&#x27;sylhead&#x27;).textContent=&#x27;SYLLABUS · &#x27;+s.chapter.toUpperCase();
+      document.getElementById(&#x27;syln&#x27;).textContent=done+&#x27; of &#x27;+total+&#x27; topics&#x27;;
+      document.getElementById(&#x27;sbarfill&#x27;).style.width=pct+&#x27;%&#x27;;
+      var rows=&#x27;&#x27;;
+      s.topics.forEach(function(t){
+        var m, lab=LABELS[t.st];
+        if(t.st===&#x27;done&#x27;) m=&#x27;&lt;span class=&quot;tm done&quot;&gt;&#x27;+CHK+&#x27;&lt;/span&gt;&#x27;;
+        else if(t.st===&#x27;prog&#x27;) m=&#x27;&lt;span class=&quot;tm prog&quot;&gt;&lt;/span&gt;&#x27;;
+        else if(t.st===&#x27;next&#x27;) m=&#x27;&lt;span class=&quot;tm next&quot;&gt;&lt;/span&gt;&#x27;;
+        else m=&#x27;&lt;span class=&quot;tm up&quot;&gt;&lt;/span&gt;&#x27;;
+        var label = lab? &#x27;&lt;span class=&quot;tstate &#x27;+t.st+&#x27;&quot;&gt;&#x27;+lab+&#x27;&lt;/span&gt;&#x27; : &#x27;&#x27;;
+        rows+=&#x27;&lt;div class=&quot;trow&#x27;+(t.st===&#x27;up&#x27;?&#x27; dim&#x27;:&#x27;&#x27;)+&#x27;&quot;&gt;&#x27;+m+&#x27;&lt;span class=&quot;tname&quot;&gt;&#x27;+t.name+&#x27;&lt;/span&gt;&#x27;+label+&#x27;&lt;/div&gt;&#x27;;
+      });
+      document.getElementById(&#x27;tlist&#x27;).innerHTML=rows;
+    }
+    function setSub(v,el){
+      cur=v;
+      el.parentElement.querySelectorAll(&#x27;button&#x27;).forEach(function(b){b.classList.remove(&#x27;on&#x27;);});
+      el.classList.add(&#x27;on&#x27;);
+      renderSubject();
+    }
+    renderSubject();
+  &lt;/script&gt;
+
+&lt;script&gt;
+(function(){
+  var NAME=&quot;classhub&quot;;
+  document.addEventListener(&quot;click&quot;, function(e){
+    var el=e.target; if(!el||!el.closest) return;
+    var a=el.closest(&quot;.nav a&quot;);
+    if(a){ e.preventDefault(); var t=(a.textContent||&quot;&quot;).toLowerCase();
+      if(t.indexOf(&quot;today&quot;)&gt;=0){ parent.postMessage({go:&quot;home&quot;},&quot;*&quot;); }
+      else if(t.indexOf(&quot;classes&quot;)&gt;=0){ parent.postMessage({go:&quot;classes&quot;},&quot;*&quot;); }
+      return; }
+    if(el.closest(&quot;.back&quot;)){ parent.postMessage({back:NAME},&quot;*&quot;); return; }
+    if(NAME===&quot;home&quot; &amp;&amp; (el.closest(&quot;.lentry.rec&quot;)||el.closest(&quot;.hbtn&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classes&quot; &amp;&amp; el.closest(&quot;.ccard&quot;)){ parent.postMessage({go:&quot;classhub&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classhub&quot; &amp;&amp; (el.closest(&quot;.unbtn&quot;)||el.closest(&quot;.trow&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+  }, false);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+    <iframe class="frame"    id="f-lesson"   srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Petrilab Classroom — Lesson (Prep)&lt;/title&gt;
+&lt;style&gt;
+  :root{
+    --navy:#14213D; --navy2:#1E2E4F; --blue:#2680EB; --blue-dk:#1B5FBF;
+    --btint:#EAF1FD; --bg:#F5F7FA; --card:#FFFFFF; --line:#EDF0F5;
+    --body:#5B6675; --muted:#95A0B1; --green:#2E9E5B; --gtint:#E9F5EE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,Helvetica,Arial,sans-serif;
+    background:#E7EBF1;min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:28px 16px;
+    -webkit-font-smoothing:antialiased;color:var(--navy);
+  }
+  .cap{font-size:12px;color:#8791A0;letter-spacing:.3px}
+  .cap b{color:#5B6675}
+
+  .phone{width:390px;border-radius:46px;background:#0C1424;
+    padding:13px;box-shadow:0 30px 70px rgba(20,33,61,.28), 0 4px 14px rgba(20,33,61,.16)}
+  .screen{position:relative;width:364px;height:790px;background:var(--bg);
+    border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
+
+  .status{height:44px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;font-size:13px;font-weight:700;color:var(--navy);flex:0 0 auto}
+  .status .dots{display:flex;gap:5px;align-items:center}
+
+  .topbar{flex:0 0 auto;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .tbleft{display:flex;align-items:center;gap:11px}
+  .back{width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--body);cursor:pointer;box-shadow:0 2px 6px rgba(20,33,61,.05)}
+  .mode{font-size:16px;font-weight:800}
+  .offpill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:#1F7A43;
+    background:var(--gtint);border-radius:20px;padding:6px 11px}
+
+  .body{flex:1;min-height:0;overflow-y:auto;padding:4px 18px 20px}
+  .body::-webkit-scrollbar{display:none}
+
+  .ltag{font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--blue);text-transform:uppercase}
+  .ltitle{font-size:23px;font-weight:800;margin-top:6px;letter-spacing:-.3px;line-height:1.1}
+  .lmeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+  .mchip{font-size:11px;font-weight:700;color:var(--body);background:#EEF2F7;border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:5px}
+  .outcome{display:flex;gap:11px;background:var(--gtint);border:1px solid #CDEAD9;border-radius:14px;padding:12px 13px;margin-top:12px}
+  .oic{flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:#fff;color:var(--green);display:flex;align-items:center;justify-content:center}
+  .ox{flex:1;min-width:0}
+  .olabel{font-size:10.5px;font-weight:800;letter-spacing:.6px;color:#1F7A43}
+  .otext{font-size:13.5px;color:var(--navy);font-weight:600;line-height:1.4;margin-top:3px}
+  .oskills{margin-top:12px}
+  .oslab{display:block;font-size:9.5px;font-weight:800;letter-spacing:.5px;color:#1F7A43;margin-bottom:7px}
+  .opills{display:flex;flex-wrap:wrap;gap:6px}
+  .outcome .skill{background:#fff;color:#1F7A43;border:1px solid #CDEAD9}
+  .psub{font-size:11.5px;font-weight:800;color:var(--navy);margin:15px 2px 8px}
+  .slabel + .psub{margin-top:2px}
+
+  .slabel{font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--muted);margin:22px 2px 11px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .skill{font-size:11.5px;font-weight:700;color:var(--blue-dk);background:var(--btint);border-radius:14px;padding:6px 11px}
+
+  .kit{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 7px rgba(20,33,61,.05);overflow:hidden}
+  .kitem{display:flex;align-items:center;gap:12px;padding:12px 13px;border-bottom:1px solid var(--line);cursor:pointer}
+  .kitem:last-child{border-bottom:none}
+  .kbox{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:2px solid #CFD6E1;display:flex;align-items:center;justify-content:center;color:#fff}
+  .kitem.on .kbox{background:var(--green);border-color:var(--green)}
+  .kbox svg{opacity:0}
+  .kitem.on .kbox svg{opacity:1}
+  .klabel{font-size:14px;font-weight:600;color:var(--navy)}
+  .kitem.on .klabel{color:var(--muted);text-decoration:line-through}
+
+  .prep{background:var(--btint);border:1px solid #D3E3FB;border-radius:16px;padding:13px 15px}
+  .prep .pt{font-size:11.5px;font-weight:800;color:var(--blue-dk);letter-spacing:.4px;margin-bottom:9px}
+  .prep li{list-style:none;font-size:13px;color:#33507A;font-weight:600;padding-left:17px;position:relative;margin-bottom:7px;line-height:1.35}
+  .prep li:last-child{margin-bottom:0}
+  .prep li::before{content:&quot;&quot;;position:absolute;left:1px;top:7px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+
+  .steps{position:relative;padding-left:0}
+  .steps::before{content:&quot;&quot;;position:absolute;left:15px;top:20px;bottom:26px;width:2px;background:var(--line)}
+  .step{position:relative;display:flex;gap:13px;margin-bottom:11px}
+  .snum{position:relative;z-index:1;flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--navy);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-top:2px}
+  .sbody{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 13px;box-shadow:0 2px 6px rgba(20,33,61,.04)}
+  .sname{display:flex;align-items:baseline;gap:7px}
+  .sn{font-size:14.5px;font-weight:800;color:var(--navy)}
+  .sm{font-size:11.5px;font-weight:700;color:var(--blue-dk)}
+  .st{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+  .sscript{font-size:12.8px;color:var(--body);line-height:1.42;margin-top:9px}
+  .vchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+  .vchip{font-size:11.5px;font-weight:700;color:var(--body);background:#F1F4F8;border:1px solid var(--line);
+    border-radius:14px;padding:5px 11px;cursor:pointer}
+  .vchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .vhint{display:flex;align-items:center;font-size:11.5px;font-weight:700;color:var(--blue-dk);margin-top:9px}
+  .vhint .vh{font-weight:800;font-size:9.5px;letter-spacing:.5px;color:#fff;background:var(--blue);
+    border-radius:5px;padding:2px 6px;margin-right:7px}
+  .stepnote{font-size:12px;color:var(--body);line-height:1.42;background:#fff;border:1px dashed #D9E0EA;
+    border-radius:12px;padding:11px 13px;margin-bottom:13px}
+  .stepnote b{color:var(--navy)}
+  .vmore{margin-top:10px;background:none;border:none;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;padding:0}
+
+  /* detail bottom sheet */
+  .scrim{position:absolute;inset:0;background:rgba(16,26,46,.42);opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s;z-index:60}
+  .scrim.open{opacity:1;visibility:visible}
+  .sheet{position:absolute;left:0;right:0;bottom:0;height:86%;display:flex;flex-direction:column;background:#fff;border-radius:24px 24px 0 0;
+    padding:10px 20px 16px;transform:translateY(101%);transition:transform .34s cubic-bezier(.22,.61,.36,1);box-shadow:0 -14px 40px rgba(16,26,46,.30)}
+  .dscroll{flex:1;min-height:0;overflow-y:auto}
+  .dscroll::-webkit-scrollbar{display:none}
+  .scrim.open .sheet{transform:translateY(0)}
+  .shandle{width:44px;height:5px;border-radius:3px;background:#DCE2EC;margin:0 auto 14px}
+  .dhd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .deye{font-size:10.5px;font-weight:800;letter-spacing:.7px;color:var(--blue)}
+  .dtt{font-size:19px;font-weight:800;margin-top:3px}
+  .dclose{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--line);color:var(--body);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .dmeta{display:flex;align-items:center;gap:12px;margin-top:11px;flex-wrap:wrap}
+  .duse{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;color:var(--blue-dk)}
+  .duse .vh{font-weight:800;font-size:9.5px;letter-spacing:.5px;color:#fff;background:var(--blue);border-radius:5px;padding:2px 6px;margin-right:7px}
+  .dtime{font-size:11.5px;font-weight:700;color:var(--muted)}
+  .dsec{margin-top:17px}
+  .dslabel{font-size:10.5px;font-weight:800;letter-spacing:.7px;color:var(--muted);margin-bottom:8px}
+  .dsay{font-size:14px;color:var(--navy);line-height:1.55}
+  .dask{list-style:none}
+  .dask li{position:relative;font-size:13.5px;color:var(--navy);font-weight:600;padding-left:19px;margin-bottom:8px;line-height:1.4}
+  .dask li:last-child{margin-bottom:0}
+  .dask li::before{content:&quot;?&quot;;position:absolute;left:2px;top:0;color:var(--blue);font-weight:800}
+  .dtip{font-size:13px;color:#33507A;line-height:1.45;background:var(--btint);border:1px solid #D3E3FB;border-radius:12px;padding:11px 13px;font-weight:600}
+  .dcar{margin-top:16px}
+  .slides{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
+  .slides::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100%;scroll-snap-align:center;min-height:212px;border-radius:14px;background:#fff;border:1px solid #E3E8EF;
+    box-shadow:0 6px 16px rgba(20,33,61,.10);padding:16px 16px 30px;position:relative;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center}
+  .sfoot{position:absolute;left:16px;right:16px;bottom:9px;display:flex;justify-content:space-between;
+    font-size:9.5px;font-weight:700;color:#AEB7C4;letter-spacing:.3px}
+  .s-h{font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:13px}
+  .s1eye{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--green)}
+  .s1t{font-size:26px;font-weight:800;color:var(--navy);margin-top:6px;line-height:1.05}
+  .s1s{font-size:12.5px;color:var(--body);font-weight:600;margin-top:8px;max-width:60%}
+  .s1art{position:absolute;right:8px;bottom:20px}
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .cell{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:9px 10px}
+  .cell span{font-size:13px;font-weight:800;color:var(--navy)}
+  .seq{display:flex;align-items:center;justify-content:space-between;gap:2px}
+  .seqi{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+  .seqi span{font-size:10.5px;font-weight:700;color:var(--body)}
+  .arr{color:#C2CBD8;font-weight:800;font-size:15px}
+  .sumrow{display:flex;justify-content:center;gap:16px;margin-bottom:8px}
+  .sumbig{display:flex;justify-content:center}
+
+  /* cast */
+  .carhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+  .castbtn{display:inline-flex;align-items:center;gap:6px;background:var(--btint);border:1px solid #CFE0FA;color:var(--blue-dk);
+    border-radius:20px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer}
+  .liveband{display:flex;align-items:center;gap:9px;background:#EAF7EF;border:1px solid #BFE6CE;border-radius:12px;
+    padding:9px 12px;margin-bottom:11px;font-size:12.5px;font-weight:700;color:#1F7A43}
+  .livedot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(46,158,91,.2)}
+  .stopcast{margin-left:auto;background:#fff;border:1px solid #BFE6CE;color:#1F7A43;border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:800;cursor:pointer}
+  .castdlg{position:absolute;inset:0;background:rgba(16,26,46,.44);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;
+    z-index:70;display:flex;align-items:center;justify-content:center;padding:26px}
+  .castdlg.open{opacity:1;visibility:visible}
+  .castcard{width:100%;background:#fff;border-radius:18px;padding:16px;box-shadow:0 24px 54px rgba(16,26,46,.38);
+    transform:translateY(10px) scale(.98);transition:transform .25s}
+  .castdlg.open .castcard{transform:none}
+  .cchd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+  .cctt{font-size:16px;font-weight:800}
+  .ccsub{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px;display:flex;align-items:center;gap:6px}
+  .cdev{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px;cursor:pointer}
+  .cdev:active{background:var(--bg)}
+  .cdic{width:40px;height:40px;border-radius:11px;background:#EEF2F7;color:var(--navy);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .cdname{font-size:14.5px;font-weight:800;color:var(--navy)}
+  .cdmeta{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:1px}
+  .cdgo{margin-left:auto;color:#C2CBD8;flex:0 0 auto}
+  .ccnote{font-size:11px;color:var(--muted);font-weight:600;line-height:1.4;margin-top:10px;border-top:1px solid var(--line);padding-top:11px}
+  .ccnote a{color:var(--blue);font-weight:700}
+  .sdots{display:flex;justify-content:center;gap:6px;margin-top:11px}
+  .sdot{width:7px;height:7px;border-radius:50%;background:#D3DAE4;transition:width .2s,background .2s}
+  .sdot.on{background:var(--green);width:20px;border-radius:4px}
+  .dbtn{width:100%;height:46px;margin-top:18px;border:none;border-radius:13px;background:var(--navy);color:#fff;font-size:14.5px;font-weight:800;cursor:pointer}
+
+  .footer{flex:0 0 auto;padding:11px 18px;border-top:1px solid var(--line);background:#fff}
+  .fhint{font-size:11px;color:var(--muted);font-weight:600;text-align:center;margin-bottom:9px}
+  .startbtn{width:100%;height:50px;border:none;border-radius:14px;background:var(--navy);color:#fff;font-size:15.5px;
+    font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;box-shadow:0 8px 18px rgba(20,33,61,.24)}
+  .startbtn svg{color:#7DBBFF}
+
+  @media (max-width:480px){
+    body{display:block;padding:0;gap:0;background:var(--bg)}
+    .cap{display:none}
+    .phone{width:100%;padding:0;border-radius:0;background:none;box-shadow:none}
+    .screen{width:100%;height:100vh;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top)}
+    .status{display:none}
+    .footer{padding-bottom:calc(11px + env(safe-area-inset-bottom))}
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;cap&quot;&gt;&lt;b&gt;Petrilab Classroom&lt;/b&gt; &amp;nbsp;·&amp;nbsp; Lesson · Prep mode &amp;nbsp;·&amp;nbsp; tick the kit, then Start teaching&lt;/div&gt;
+
+  &lt;div class=&quot;phone&quot;&gt;
+   &lt;div class=&quot;screen&quot;&gt;
+
+    &lt;div class=&quot;status&quot;&gt;
+      &lt;span&gt;9:41&lt;/span&gt;
+      &lt;span class=&quot;dots&quot;&gt;
+        &lt;svg width=&quot;17&quot; height=&quot;12&quot; viewBox=&quot;0 0 17 12&quot; fill=&quot;currentColor&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;7&quot; width=&quot;3&quot; height=&quot;5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;4.5&quot; y=&quot;4.5&quot; width=&quot;3&quot; height=&quot;7.5&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;3&quot; height=&quot;10&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;13.5&quot; y=&quot;0&quot; width=&quot;3&quot; height=&quot;12&quot; rx=&quot;1&quot; opacity=&quot;.35&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;16&quot; height=&quot;12&quot; viewBox=&quot;0 0 16 12&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 2.6c2 0 3.8.8 5.1 2l1.3-1.4C13.8 1.5 11.1.3 8 .3S2.2 1.5.6 3.2L1.9 4.6C3.2 3.4 6 2.6 8 2.6z&quot;/&gt;&lt;path d=&quot;M8 6c1 0 2 .4 2.7 1.1l1.4-1.4C11 4.6 9.6 4 8 4s-3 .6-4.1 1.7L5.3 7.1C6 6.4 7 6 8 6z&quot;/&gt;&lt;circle cx=&quot;8&quot; cy=&quot;10&quot; r=&quot;1.6&quot;/&gt;&lt;/svg&gt;
+        &lt;svg width=&quot;26&quot; height=&quot;12&quot; viewBox=&quot;0 0 26 12&quot; fill=&quot;none&quot;&gt;&lt;rect x=&quot;1&quot; y=&quot;1&quot; width=&quot;21&quot; height=&quot;10&quot; rx=&quot;3&quot; stroke=&quot;currentColor&quot; stroke-opacity=&quot;.4&quot;/&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;15&quot; height=&quot;6&quot; rx=&quot;1.5&quot; fill=&quot;currentColor&quot;/&gt;&lt;rect x=&quot;23.5&quot; y=&quot;4&quot; width=&quot;1.8&quot; height=&quot;4&quot; rx=&quot;1&quot; fill=&quot;currentColor&quot; fill-opacity=&quot;.4&quot;/&gt;&lt;/svg&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;topbar&quot;&gt;
+      &lt;div class=&quot;tbleft&quot;&gt;
+        &lt;div class=&quot;back&quot;&gt;&lt;svg width=&quot;17&quot; height=&quot;17&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 6l-6 6 6 6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class=&quot;mode&quot;&gt;Prepare&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;offpill&quot;&gt;
+        &lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.5 1.5A3.5 3.5 0 0 1 17 18&quot;/&gt;&lt;path d=&quot;M9.5 13.5l2 2 3.5-4&quot;/&gt;&lt;/svg&gt;
+        Offline ready
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;body&quot;&gt;
+      &lt;div class=&quot;ltag&quot;&gt;5A · EVS · Chapter: Seeds &amp;amp; Plants&lt;/div&gt;
+      &lt;div class=&quot;ltitle&quot;&gt;How Plants Grow&lt;/div&gt;
+      &lt;div class=&quot;outcome&quot;&gt;
+        &lt;div class=&quot;oic&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.9&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;8&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;4&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;0.6&quot; fill=&quot;currentColor&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+        &lt;div class=&quot;ox&quot;&gt;
+          &lt;div class=&quot;olabel&quot;&gt;LEARNING OUTCOME&lt;/div&gt;
+          &lt;div class=&quot;otext&quot;&gt;By the end, students can describe what a plant needs to grow — and can plant a seed and begin tracking its height.&lt;/div&gt;
+          &lt;div class=&quot;oskills&quot;&gt;&lt;div class=&quot;oslab&quot;&gt;SKILLS&lt;/div&gt;&lt;div class=&quot;opills&quot;&gt;&lt;span class=&quot;skill&quot;&gt;Observation&lt;/span&gt;&lt;span class=&quot;skill&quot;&gt;Prediction&lt;/span&gt;&lt;span class=&quot;skill&quot;&gt;Recording&lt;/span&gt;&lt;span class=&quot;skill&quot;&gt;Curiosity&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;slabel&quot;&gt;5-MINUTE PREP · BEFORE THE CLASS&lt;/div&gt;
+      &lt;div class=&quot;psub&quot;&gt;Get Ready&lt;/div&gt;
+      &lt;div class=&quot;kit&quot; id=&quot;kit&quot;&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;slabel&quot;&gt;THE LESSON · 5 STEPS · YOUR CALL&lt;/div&gt;
+      &lt;div class=&quot;stepnote&quot;&gt;&lt;b&gt;You&#x27;re in control.&lt;/b&gt; We&#x27;ve pre-picked a version of each step so you can just go. Tap the chips to swap any for your class today — your equipment, class size, or who&#x27;s present.&lt;/div&gt;
+      &lt;div class=&quot;steps&quot; id=&quot;steps&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;footer&quot;&gt;
+      &lt;div class=&quot;fhint&quot;&gt;You&#x27;re previewing — nothing is logged until you finish teaching.&lt;/div&gt;
+      &lt;button class=&quot;startbtn&quot;&gt;
+        &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;M8 5v14l11-7z&quot;/&gt;&lt;/svg&gt;
+        Start teaching
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- variant detail bottom sheet --&gt;
+    &lt;div class=&quot;scrim&quot; id=&quot;dsheet&quot; onclick=&quot;closeDetail()&quot;&gt;
+      &lt;div class=&quot;sheet&quot; onclick=&quot;event.stopPropagation()&quot;&gt;
+        &lt;div class=&quot;shandle&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;dhd&quot;&gt;
+          &lt;div&gt;&lt;div class=&quot;deye&quot; id=&quot;d_eye&quot;&gt;&lt;/div&gt;&lt;div class=&quot;dtt&quot; id=&quot;d_title&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;dclose&quot; onclick=&quot;closeDetail()&quot;&gt;&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;path d=&quot;M6 6l12 12M18 6L6 18&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;dscroll&quot;&gt;
+        &lt;div class=&quot;dmeta&quot;&gt;&lt;span class=&quot;duse&quot;&gt;&lt;span class=&quot;vh&quot;&gt;USE WHEN&lt;/span&gt;&lt;span id=&quot;d_use&quot;&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;dtime&quot; id=&quot;d_time&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;dcar&quot; id=&quot;d_carousel&quot; style=&quot;display:none&quot;&gt;
+          &lt;div class=&quot;carhd&quot;&gt;
+            &lt;span class=&quot;dslabel&quot; style=&quot;margin:0&quot;&gt;SHOW THE CLASS&lt;/span&gt;
+            &lt;button class=&quot;castbtn&quot; onclick=&quot;openCast()&quot;&gt;&lt;svg width=&quot;15&quot; height=&quot;15&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7&quot;/&gt;&lt;path d=&quot;M2 12a6 6 0 0 1 6 6&quot;/&gt;&lt;path d=&quot;M2 16a2 2 0 0 1 2 2&quot;/&gt;&lt;path d=&quot;M2 20h.01&quot;/&gt;&lt;/svg&gt;Cast&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;liveband&quot; id=&quot;liveband&quot; style=&quot;display:none&quot;&gt;&lt;span class=&quot;livedot&quot;&gt;&lt;/span&gt; Live on &lt;b id=&quot;livedev&quot;&gt;&amp;nbsp;&lt;/b&gt;&lt;button class=&quot;stopcast&quot; onclick=&quot;stopCast()&quot;&gt;Stop&lt;/button&gt;&lt;/div&gt;
+          &lt;div class=&quot;slides&quot; id=&quot;d_slidetrack&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;sdots&quot; id=&quot;d_dots&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;dsec&quot;&gt;&lt;div class=&quot;dslabel&quot;&gt;SAY / DO&lt;/div&gt;&lt;div class=&quot;dsay&quot; id=&quot;d_say&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dsec&quot;&gt;&lt;div class=&quot;dslabel&quot;&gt;ASK&lt;/div&gt;&lt;ul class=&quot;dask&quot; id=&quot;d_ask&quot;&gt;&lt;/ul&gt;&lt;/div&gt;
+        &lt;div class=&quot;dsec&quot;&gt;&lt;div class=&quot;dslabel&quot;&gt;TEACHER TIP&lt;/div&gt;&lt;div class=&quot;dtip&quot; id=&quot;d_tip&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;dbtn&quot; onclick=&quot;closeDetail()&quot;&gt;Got it&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- cast to a screen --&gt;
+    &lt;div class=&quot;castdlg&quot; id=&quot;castdlg&quot; onclick=&quot;closeCast()&quot;&gt;
+      &lt;div class=&quot;castcard&quot; onclick=&quot;event.stopPropagation()&quot;&gt;
+        &lt;div class=&quot;cchd&quot;&gt;
+          &lt;div&gt;&lt;div class=&quot;cctt&quot;&gt;Cast to a screen&lt;/div&gt;&lt;div class=&quot;ccsub&quot;&gt;&lt;svg width=&quot;12&quot; height=&quot;12&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;path d=&quot;M5 12.5a10 10 0 0 1 14 0&quot;/&gt;&lt;path d=&quot;M8.5 16a5 5 0 0 1 7 0&quot;/&gt;&lt;path d=&quot;M12 19h.01&quot;/&gt;&lt;/svg&gt;Screens on this Wi-Fi&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;dclose&quot; onclick=&quot;closeCast()&quot;&gt;&lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;path d=&quot;M6 6l12 12M18 6L6 18&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;cdev&quot; onclick=&quot;selectDevice(&#x27;Classroom TV&#x27;)&quot;&gt;
+          &lt;span class=&quot;cdic&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;2.5&quot; y=&quot;5&quot; width=&quot;19&quot; height=&quot;12.5&quot; rx=&quot;2&quot;/&gt;&lt;path d=&quot;M8 20.5h8M12 17.5v3&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+          &lt;div&gt;&lt;div class=&quot;cdname&quot;&gt;Classroom TV&lt;/div&gt;&lt;div class=&quot;cdmeta&quot;&gt;Ready · same Wi-Fi&lt;/div&gt;&lt;/div&gt;
+          &lt;span class=&quot;cdgo&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;cdev&quot; onclick=&quot;selectDevice(&#x27;Smart Board · Room 5A&#x27;)&quot;&gt;
+          &lt;span class=&quot;cdic&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;3.5&quot; width=&quot;18&quot; height=&quot;13&quot; rx=&quot;2&quot;/&gt;&lt;path d=&quot;M7 12l3-3 2 2 4-4&quot;/&gt;&lt;path d=&quot;M12 16.5v4M8.5 20.5h7&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+          &lt;div&gt;&lt;div class=&quot;cdname&quot;&gt;Smart Board · Room 5A&lt;/div&gt;&lt;div class=&quot;cdmeta&quot;&gt;Ready&lt;/div&gt;&lt;/div&gt;
+          &lt;span class=&quot;cdgo&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;cdev&quot; onclick=&quot;selectDevice(&#x27;Staffroom Projector&#x27;)&quot;&gt;
+          &lt;span class=&quot;cdic&quot;&gt;&lt;svg width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;8&quot; width=&quot;14&quot; height=&quot;8&quot; rx=&quot;2&quot;/&gt;&lt;circle cx=&quot;10&quot; cy=&quot;12&quot; r=&quot;2&quot;/&gt;&lt;path d=&quot;M17 10.5l4-1.5M17 13.5l4 1.5&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+          &lt;div&gt;&lt;div class=&quot;cdname&quot;&gt;Staffroom Projector&lt;/div&gt;&lt;div class=&quot;cdmeta&quot;&gt;Ready&lt;/div&gt;&lt;/div&gt;
+          &lt;span class=&quot;cdgo&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 6l6 6-6 6&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;ccnote&quot;&gt;Your TV or projector must be on the same Wi-Fi network. &lt;a&gt;Can’t find your screen?&lt;/a&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+   &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    var CHK=&#x27;&lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;3.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M5 13l4 4 10-11&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var KIT=[&#x27;Sprouted seeds (from last week)&#x27;,&#x27;Small pots or cups (6)&#x27;,&#x27;A bag of garden soil&#x27;,&#x27;Water bottle or can&#x27;,&#x27;A ruler, to measure height&#x27;,&#x27;Chart paper for the growth chart&#x27;];
+    var STEPS=[
+      {n:&#x27;Jigyasa&#x27;,m:&#x27;The hook&#x27;,t:&#x27;5 min&#x27;,sel:0,v:[
+        {l:&#x27;Question&#x27;,c:&#x27;No materials · any class&#x27;,s:&#x27;Show a sprouted seed next to a dry one — ask what changed and what woke it up.&#x27;,
+          d:{say:&#x27;Hold a sprouted seed in one hand and a dry seed in the other. Give the class ten seconds to look closely, then take three quick answers before you reveal anything.&#x27;,ask:[&#x27;What is different between these two seeds?&#x27;,&#x27;What do you think woke the seed up?&#x27;,&#x27;Have you seen a seed sprout at home?&#x27;],tip:&#x27;Accept every answer without correcting — right now you are collecting curiosity, not facts.&#x27;}},
+        {l:&#x27;Story&#x27;,c:&#x27;No materials · quieter class&#x27;,s:&#x27;Tell a one-minute story of a seed’s journey underground.&#x27;,
+          d:{say:&#x27;Tell it slowly: “Deep under the dark soil, a tiny seed lay fast asleep. One day it felt something cool and wet trickle down — water! It drank, stretched out a little root, then pushed a green shoot up toward the warm light.” Pause before the ending and let the class finish it.&#x27;,ask:[&#x27;What did the seed feel that woke it up?&#x27;,&#x27;What did it need to keep growing?&#x27;],tip:&#x27;Drop your voice for the sleeping part and lift it for the growing part — the drama holds attention.&#x27;}},
+        {l:&#x27;Pass-around&#x27;,c:&#x27;Needs a sprouted seed&#x27;,s:&#x27;Pass a sprouted seed around; let children feel the tiny root and shoot.&#x27;,
+          d:{say:&#x27;Place one sprouted seed in a small bowl and pass it down each row. Ask each child to gently touch the root and shoot with one finger and whisper one word for what they feel.&#x27;,ask:[&#x27;What does the root feel like?&#x27;,&#x27;Which part will become the plant?&#x27;],tip:&#x27;Set the rule “look and gentle-touch only” before you start, so the seedling survives the round.&#x27;}}
+      ]},
+      {n:&#x27;Bodh&#x27;,m:&#x27;The understanding&#x27;,t:&#x27;7 min&#x27;,sel:0,v:[
+        {l:&#x27;Board explain&#x27;,c:&#x27;No materials&#x27;,s:&#x27;Build up water, air, warmth and light on the board; link to the textbook.&#x27;,
+          d:{say:&#x27;Write four words as you say them — WATER, AIR, WARMTH, LIGHT — with a tiny picture beside each. Then point to the germination page in the textbook and match each word to the picture there.&#x27;,ask:[&#x27;Which of these does a seed get from the soil?&#x27;,&#x27;What happens if one of them is missing?&#x27;],tip:&#x27;Leave the four words on the board all lesson — you will point back to them in every step.&#x27;}},
+        {l:&#x27;Chart + book&#x27;,c:&#x27;Needs the chart&#x27;,s:&#x27;Use the growth chart and the textbook page together.&#x27;,
+          d:{say:&#x27;Open the growth chart beside the textbook page. Trace the journey from seed to seedling to plant on the chart, then find the same stages in the book so children link the two.&#x27;,ask:[&#x27;Which stage are our class seeds at now?&#x27;,&#x27;What comes next on the chart?&#x27;],tip:&#x27;Let a child come up and point to today’s stage on the chart.&#x27;}},
+        {l:&#x27;Pair discuss&#x27;,c:&#x27;For a confident class&#x27;,s:&#x27;Pairs list what a plant needs, then compare as a class.&#x27;,
+          d:{say:&#x27;Ask each pair to whisper a list of everything a plant needs to grow. Give one minute, then take one idea from each pair and build a class list on the board.&#x27;,ask:[&#x27;Did any pair think of something the others missed?&#x27;,&#x27;Which need is easiest to forget?&#x27;],tip:&#x27;Praise unusual answers — it keeps a confident class thinking rather than repeating.&#x27;}}
+      ]},
+      {n:&#x27;Abhyas&#x27;,m:&#x27;The practice&#x27;,t:&#x27;8 min&#x27;,sel:0,v:[
+        {l:&#x27;On the board&#x27;,c:&#x27;Whole class together&#x27;,s:&#x27;Label root, shoot and first leaves together on the board.&#x27;,
+          d:{say:&#x27;Draw a simple seedling on the board. Invite children up one at a time to label root, shoot and first leaves, helping the class agree before you write each word.&#x27;,ask:[&#x27;Where does the plant drink from?&#x27;,&#x27;Which part reaches for the light?&#x27;],tip:&#x27;Draw big and low so the back row can see and a small child can reach.&#x27;}},
+        {l:&#x27;Worksheet&#x27;,c:&#x27;Needs printouts&#x27;,s:&#x27;Children label a seedling on a worksheet, then check with a partner.&#x27;,
+          d:{say:&#x27;Hand out the labelling worksheet. Ask children to fill in root, shoot and leaves on their own, then check with the partner beside them before you go over it together.&#x27;,ask:[&#x27;Which label were you unsure about?&#x27;,&#x27;Did you and your partner agree?&#x27;],tip:&#x27;Walk down the rows once so quieter children get a quick nod of help.&#x27;}},
+        {l:&#x27;Quick oral&#x27;,c:&#x27;Low attendance · short on time&#x27;,s:&#x27;Go round the class with quick oral questions on the parts of a plant.&#x27;,
+          d:{say:&#x27;Point to a part on your board sketch and ask one child to name it, then move to the next child for the next part. Keep the pace brisk and light.&#x27;,ask:[&#x27;Name this part of the plant.&#x27;,&#x27;What does it do for the plant?&#x27;],tip:&#x27;If a child is stuck, let them phone a friend — no one sits in silence.&#x27;}}
+      ]},
+      {n:&#x27;Prayog&#x27;,m:&#x27;The experiment&#x27;,t:&#x27;12 min&#x27;,sel:0,v:[
+        {l:&#x27;Group planting&#x27;,c:&#x27;Needs kit · full class&#x27;,s:&#x27;Groups plant a seed, water it, and record today’s height.&#x27;,
+          d:{say:&#x27;In groups of four, give each group a pot, soil, a sprouted seed and a little water. Walk them through: fill soil, make a small hole, place the seed, cover gently, water lightly, then measure and write today’s height.&#x27;,ask:[&#x27;How tall is your plant today?&#x27;,&#x27;Where will you keep it so it gets light?&#x27;],tip:&#x27;Give each group one clear job card so all four pairs of hands stay busy.&#x27;}},
+        {l:&#x27;Class demo&#x27;,c:&#x27;Little kit · large class&#x27;,s:&#x27;Do one planting as a demo; children observe and record the starting height.&#x27;,
+          d:{say:&#x27;Do one planting at the front while children gather close. Narrate each step, invite two children to help pour soil and water, and have everyone copy the starting height into their notebook.&#x27;,ask:[&#x27;What did we do first?&#x27;,&#x27;Why did we water only a little?&#x27;],tip:&#x27;Raise the pot high and turn slowly so every child sees the seed go in.&#x27;}},
+        {l:&#x27;No-materials&#x27;,c:&#x27;No kit today&#x27;,s:&#x27;Draw and predict the plant’s growth this week; observe the class plant.&#x27;,
+          d:{say:&#x27;With no kit today, draw a pot on the board and plant an imaginary seed together. Ask children to predict, day by day, what the plant will look like this week, and note it beside the class plant on the windowsill.&#x27;,ask:[&#x27;What will change by Friday?&#x27;,&#x27;What might slow it down?&#x27;],tip:&#x27;Turn the predictions into a simple week-chart you can check against the real class plant later.&#x27;}}
+      ]},
+      {n:&#x27;Prasar&#x27;,m:&#x27;The connection&#x27;,t:&#x27;8 min&#x27;,sel:0,v:[
+        {l:&#x27;Discussion&#x27;,c:&#x27;Any class&#x27;,s:&#x27;Where do we see this at home and on farms? Connect to the food we eat.&#x27;,
+          d:{say:&#x27;Ask where they have seen plants growing — at home, on the way to school, on a farm. Draw out that the same water, air, light and warmth story is happening everywhere, including in the food they eat.&#x27;,ask:[&#x27;Which vegetable at home grew from a seed like this?&#x27;,&#x27;What would happen to farms with no rain?&#x27;],tip:&#x27;Name a local crop the children know — it makes the science feel like their own world.&#x27;}},
+        {l:&#x27;Draw &amp; share&#x27;,c:&#x27;Needs paper&#x27;,s:&#x27;Children draw a growing plant they know from home and share.&#x27;,
+          d:{say:&#x27;Give two minutes for each child to draw one growing plant they know from home. Then let three or four hold up their picture and say one sentence about it.&#x27;,ask:[&#x27;Why did you choose that plant?&#x27;,&#x27;What does it need that we talked about today?&#x27;],tip:&#x27;Display the drawings on a wall garden to revisit next lesson.&#x27;}},
+        {l:&#x27;Home task&#x27;,c:&#x27;Send home&#x27;,s:&#x27;Ask each child to find one growing plant at home and report tomorrow.&#x27;,
+          d:{say:&#x27;Set a simple task: find one plant growing at home or nearby, notice what is helping it grow, and be ready to tell the class tomorrow. No writing needed if they prefer to just remember.&#x27;,ask:[&#x27;What will you look for on your plant?&#x27;,&#x27;Who can you ask at home about it?&#x27;],tip:&#x27;Keep it no-cost and no-writing so every child can take part.&#x27;}}
+      ]}
+    ];
+    var IW=&#x27;&lt;svg width=&quot;30&quot; height=&quot;30&quot; viewBox=&quot;0 0 24 24&quot;&gt;&lt;path fill=&quot;#2680EB&quot; d=&quot;M12 3s6.5 6.4 6.5 11a6.5 6.5 0 0 1-13 0C5.5 9.4 12 3 12 3z&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var IA=&#x27;&lt;svg width=&quot;30&quot; height=&quot;30&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#12A6A6&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;path d=&quot;M3 8h10a2.5 2.5 0 1 0-2.5-2.5&quot;/&gt;&lt;path d=&quot;M3 12h16a2.5 2.5 0 1 1-2.5 2.5&quot;/&gt;&lt;path d=&quot;M3 16h7&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var IS=&#x27;&lt;svg width=&quot;30&quot; height=&quot;30&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#E0862A&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;4.5&quot; fill=&quot;#F7CE86&quot;/&gt;&lt;path d=&quot;M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var IL=&#x27;&lt;svg width=&quot;30&quot; height=&quot;30&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#C99A1E&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 18h6M10 21h4&quot;/&gt;&lt;path d=&quot;M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3z&quot; fill=&quot;#FBEBB6&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var ISEED=&#x27;&lt;svg width=&quot;26&quot; height=&quot;32&quot; viewBox=&quot;0 0 24 28&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;15&quot; rx=&quot;5.5&quot; ry=&quot;8&quot; fill=&quot;#B07A3C&quot;/&gt;&lt;path d=&quot;M12 8c1 3 1 9 0 14&quot; stroke=&quot;#8A5E2A&quot; stroke-width=&quot;1.4&quot; fill=&quot;none&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var ISPROUT=&#x27;&lt;svg width=&quot;26&quot; height=&quot;34&quot; viewBox=&quot;0 0 24 30&quot; fill=&quot;none&quot; stroke=&quot;#2E9E5B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 29v-8&quot;/&gt;&lt;path d=&quot;M12 21c0-2.6 1.9-4.2 4.7-4.2C16.7 19.4 14.8 21 12 21z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M12 22c0-2.2-1.7-3.6-4.2-3.6C7.8 20.6 9.5 22 12 22z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var ISEEDLING=&#x27;&lt;svg width=&quot;30&quot; height=&quot;38&quot; viewBox=&quot;0 0 26 34&quot; fill=&quot;none&quot; stroke=&quot;#2E9E5B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M13 33V16&quot;/&gt;&lt;path d=&quot;M13 20c0-3.4 2.4-5.4 6-5.4C19 18 16.6 20 13 20z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M13 23c0-3-2.2-4.8-5.6-4.8C7.4 21.2 9.6 23 13 23z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M13 16c0-2.6 1.8-4.2 4.6-4.2C17.6 14.4 15.8 16 13 16z&quot; fill=&quot;#BFE6CE&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var IPLANT=&#x27;&lt;svg width=&quot;34&quot; height=&quot;42&quot; viewBox=&quot;0 0 30 40&quot; fill=&quot;none&quot; stroke=&quot;#2E9E5B&quot; stroke-width=&quot;2.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 39V14&quot;/&gt;&lt;path d=&quot;M15 20c0-4 3-6.5 7.5-6.5C22.5 18 19.5 20 15 20z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M15 24c0-3.6-2.8-5.8-7-5.8C8 22 11 24 15 24z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M15 14c0-3 2.2-5 5.4-5C20.4 12 18.2 14 15 14z&quot; fill=&quot;#BFE6CE&quot;/&gt;&lt;/svg&gt;&#x27;;
+    var IPBIG=&#x27;&lt;svg width=&quot;82&quot; height=&quot;94&quot; viewBox=&quot;0 0 60 70&quot; fill=&quot;none&quot; stroke=&quot;#2E9E5B&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M30 52V20&quot;/&gt;&lt;path d=&quot;M30 30c0-8 5.5-13 13.5-13C43.5 25 38 30 30 30z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M30 36c0-7-5-11.5-12.5-11.5C17.5 31 22.5 36 30 36z&quot; fill=&quot;#CDEBD8&quot;/&gt;&lt;path d=&quot;M30 22c0-6 4-10 9.5-10C39.5 18 35.5 22 30 22z&quot; fill=&quot;#BFE6CE&quot;/&gt;&lt;path d=&quot;M17 51h26l-3.2 13H20.2z&quot; fill=&quot;#EBCB93&quot; stroke=&quot;#C99A5A&quot;/&gt;&lt;/svg&gt;&#x27;;
+    STEPS[1].slides=[
+      {html:&#x27;&lt;div class=&quot;s1eye&quot;&gt;EVS · CLASS 5&lt;/div&gt;&lt;div class=&quot;s1t&quot;&gt;How Plants Grow&lt;/div&gt;&lt;div class=&quot;s1s&quot;&gt;What a seed needs to become a plant&lt;/div&gt;&lt;div class=&quot;s1art&quot;&gt;&#x27;+IPBIG+&#x27;&lt;/div&gt;&#x27;},
+      {html:&#x27;&lt;div class=&quot;s-h&quot;&gt;A plant needs 4 things&lt;/div&gt;&lt;div class=&quot;grid4&quot;&gt;&lt;div class=&quot;cell&quot;&gt;&#x27;+IW+&#x27;&lt;span&gt;Water&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cell&quot;&gt;&#x27;+IA+&#x27;&lt;span&gt;Air&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cell&quot;&gt;&#x27;+IS+&#x27;&lt;span&gt;Warmth&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cell&quot;&gt;&#x27;+IL+&#x27;&lt;span&gt;Light&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&#x27;},
+      {html:&#x27;&lt;div class=&quot;s-h&quot;&gt;From seed to plant&lt;/div&gt;&lt;div class=&quot;seq&quot;&gt;&lt;div class=&quot;seqi&quot;&gt;&#x27;+ISEED+&#x27;&lt;span&gt;Seed&lt;/span&gt;&lt;/div&gt;&lt;span class=&quot;arr&quot;&gt;→&lt;/span&gt;&lt;div class=&quot;seqi&quot;&gt;&#x27;+ISPROUT+&#x27;&lt;span&gt;Sprout&lt;/span&gt;&lt;/div&gt;&lt;span class=&quot;arr&quot;&gt;→&lt;/span&gt;&lt;div class=&quot;seqi&quot;&gt;&#x27;+ISEEDLING+&#x27;&lt;span&gt;Seedling&lt;/span&gt;&lt;/div&gt;&lt;span class=&quot;arr&quot;&gt;→&lt;/span&gt;&lt;div class=&quot;seqi&quot;&gt;&#x27;+IPLANT+&#x27;&lt;span&gt;Plant&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&#x27;},
+      {html:&#x27;&lt;div class=&quot;s-h&quot;&gt;Give all four — and it grows!&lt;/div&gt;&lt;div class=&quot;sumrow&quot;&gt;&#x27;+IW+IA+IS+IL+&#x27;&lt;/div&gt;&lt;div class=&quot;sumbig&quot;&gt;&#x27;+IPBIG+&#x27;&lt;/div&gt;&#x27;}
+    ];
+    var kh=&#x27;&#x27;;
+    KIT.forEach(function(k){ kh+=&#x27;&lt;div class=&quot;kitem&quot; onclick=&quot;this.classList.toggle(\&#x27;on\&#x27;)&quot;&gt;&lt;span class=&quot;kbox&quot;&gt;&#x27;+CHK+&#x27;&lt;/span&gt;&lt;span class=&quot;klabel&quot;&gt;&#x27;+k+&#x27;&lt;/span&gt;&lt;/div&gt;&#x27;; });
+    document.getElementById(&#x27;kit&#x27;).innerHTML=kh;
+    var sh=&#x27;&#x27;;
+    STEPS.forEach(function(st,i){
+      var chips=st.v.map(function(v,j){return &#x27;&lt;button class=&quot;vchip&#x27;+(j===st.sel?&#x27; on&#x27;:&#x27;&#x27;)+&#x27;&quot; onclick=&quot;setVar(&#x27;+i+&#x27;,&#x27;+j+&#x27;)&quot;&gt;&#x27;+v.l+&#x27;&lt;/button&gt;&#x27;;}).join(&#x27;&#x27;);
+      var cur=st.v[st.sel];
+      sh+=&#x27;&lt;div class=&quot;step&quot;&gt;&lt;div class=&quot;snum&quot;&gt;&#x27;+(i+1)+&#x27;&lt;/div&gt;&lt;div class=&quot;sbody&quot;&gt;&#x27;+
+        &#x27;&lt;div class=&quot;sname&quot;&gt;&lt;span class=&quot;sn&quot;&gt;&#x27;+st.n+&#x27;&lt;/span&gt;&lt;span class=&quot;sm&quot;&gt;· &#x27;+st.m+&#x27;&lt;/span&gt;&lt;span class=&quot;st&quot;&gt;&#x27;+st.t+&#x27;&lt;/span&gt;&lt;/div&gt;&#x27;+
+        &#x27;&lt;div class=&quot;vchips&quot;&gt;&#x27;+chips+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;div class=&quot;sscript&quot; id=&quot;scr&#x27;+i+&#x27;&quot;&gt;&#x27;+cur.s+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;div class=&quot;vhint&quot; id=&quot;hint&#x27;+i+&#x27;&quot;&gt;&lt;span class=&quot;vh&quot;&gt;USE WHEN&lt;/span&gt;&#x27;+cur.c+&#x27;&lt;/div&gt;&#x27;+
+        &#x27;&lt;button class=&quot;vmore&quot; onclick=&quot;openDetail(&#x27;+i+&#x27;)&quot;&gt;View full step &lt;svg width=&quot;13&quot; height=&quot;13&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M6 9l6 6 6-6&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;&#x27;+
+      &#x27;&lt;/div&gt;&lt;/div&gt;&#x27;;
+    });
+    document.getElementById(&#x27;steps&#x27;).innerHTML=sh;
+    function setVar(i,j){
+      STEPS[i].sel=j;
+      var step=document.querySelectorAll(&#x27;#steps .step&#x27;)[i];
+      step.querySelectorAll(&#x27;.vchip&#x27;).forEach(function(c,k){ c.classList.toggle(&#x27;on&#x27;,k===j); });
+      document.getElementById(&#x27;scr&#x27;+i).textContent=STEPS[i].v[j].s;
+      document.getElementById(&#x27;hint&#x27;+i).innerHTML=&#x27;&lt;span class=&quot;vh&quot;&gt;USE WHEN&lt;/span&gt;&#x27;+STEPS[i].v[j].c;
+    }
+    function openDetail(i){
+      var st=STEPS[i], v=st.v[st.sel], d=v.d;
+      document.getElementById(&#x27;d_eye&#x27;).textContent=st.m.toUpperCase();
+      document.getElementById(&#x27;d_title&#x27;).textContent=st.n+&#x27; · &#x27;+v.l;
+      document.getElementById(&#x27;d_use&#x27;).textContent=v.c;
+      document.getElementById(&#x27;d_time&#x27;).textContent=st.t;
+      document.getElementById(&#x27;d_say&#x27;).textContent=d.say;
+      document.getElementById(&#x27;d_ask&#x27;).innerHTML=d.ask.map(function(q){return &#x27;&lt;li&gt;&#x27;+q+&#x27;&lt;/li&gt;&#x27;;}).join(&#x27;&#x27;);
+      document.getElementById(&#x27;d_tip&#x27;).textContent=d.tip;
+      var track=document.getElementById(&#x27;d_slidetrack&#x27;);
+      if(st.slides){
+        track.innerHTML=st.slides.map(function(sl,k){return &#x27;&lt;div class=&quot;slide&quot;&gt;&#x27;+sl.html+&#x27;&lt;div class=&quot;sfoot&quot;&gt;&lt;span&gt;How Plants Grow&lt;/span&gt;&lt;span&gt;&#x27;+(k+1)+&#x27; / &#x27;+st.slides.length+&#x27;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&#x27;;}).join(&#x27;&#x27;);
+        document.getElementById(&#x27;d_dots&#x27;).innerHTML=st.slides.map(function(_,k){return &#x27;&lt;span class=&quot;sdot&#x27;+(k===0?&#x27; on&#x27;:&#x27;&#x27;)+&#x27;&quot;&gt;&lt;/span&gt;&#x27;;}).join(&#x27;&#x27;);
+        document.getElementById(&#x27;d_carousel&#x27;).style.display=&#x27;&#x27;;
+        track.scrollLeft=0;
+      } else {
+        document.getElementById(&#x27;d_carousel&#x27;).style.display=&#x27;none&#x27;;
+      }
+      document.getElementById(&#x27;dsheet&#x27;).classList.add(&#x27;open&#x27;);
+    }
+    function closeDetail(){ document.getElementById(&#x27;dsheet&#x27;).classList.remove(&#x27;open&#x27;); }
+    function updateDots(){
+      var tr=document.getElementById(&#x27;d_slidetrack&#x27;);
+      if(!tr.clientWidth) return;
+      var idx=Math.round(tr.scrollLeft/tr.clientWidth);
+      document.querySelectorAll(&#x27;#d_dots .sdot&#x27;).forEach(function(d,k){ d.classList.toggle(&#x27;on&#x27;,k===idx); });
+    }
+    document.getElementById(&#x27;d_slidetrack&#x27;).addEventListener(&#x27;scroll&#x27;, updateDots);
+    function openCast(){ document.getElementById(&#x27;castdlg&#x27;).classList.add(&#x27;open&#x27;); }
+    function closeCast(){ document.getElementById(&#x27;castdlg&#x27;).classList.remove(&#x27;open&#x27;); }
+    function selectDevice(name){ closeCast(); document.getElementById(&#x27;livedev&#x27;).textContent=name; document.getElementById(&#x27;liveband&#x27;).style.display=&#x27;flex&#x27;; }
+    function stopCast(){ document.getElementById(&#x27;liveband&#x27;).style.display=&#x27;none&#x27;; }
+    window.setVar=setVar; window.openDetail=openDetail; window.closeDetail=closeDetail;
+    window.openCast=openCast; window.closeCast=closeCast; window.selectDevice=selectDevice; window.stopCast=stopCast;
+  &lt;/script&gt;
+
+&lt;script&gt;
+(function(){
+  var NAME=&quot;lesson&quot;;
+  document.addEventListener(&quot;click&quot;, function(e){
+    var el=e.target; if(!el||!el.closest) return;
+    var a=el.closest(&quot;.nav a&quot;);
+    if(a){ e.preventDefault(); var t=(a.textContent||&quot;&quot;).toLowerCase();
+      if(t.indexOf(&quot;today&quot;)&gt;=0){ parent.postMessage({go:&quot;home&quot;},&quot;*&quot;); }
+      else if(t.indexOf(&quot;classes&quot;)&gt;=0){ parent.postMessage({go:&quot;classes&quot;},&quot;*&quot;); }
+      return; }
+    if(el.closest(&quot;.back&quot;)){ parent.postMessage({back:NAME},&quot;*&quot;); return; }
+    if(NAME===&quot;home&quot; &amp;&amp; (el.closest(&quot;.lentry.rec&quot;)||el.closest(&quot;.hbtn&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classes&quot; &amp;&amp; el.closest(&quot;.ccard&quot;)){ parent.postMessage({go:&quot;classhub&quot;},&quot;*&quot;); return; }
+    if(NAME===&quot;classhub&quot; &amp;&amp; (el.closest(&quot;.unbtn&quot;)||el.closest(&quot;.trow&quot;))){ parent.postMessage({go:&quot;lesson&quot;},&quot;*&quot;); return; }
+  }, false);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+  </div>
+
+  <div class="pnav" id="pnav">
+    <a data-t="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 4l9 6.5"/><path d="M5.2 9.4V20h13.6V9.4"/></svg>Today</a>
+    <a data-t="classes" onclick="go('classes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>Classes</a>
+    <a data-t="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 20v-6"/><path d="M13 20v-9"/><path d="M18 20v-4"/></svg>Reports</a>
+    <a data-t="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c1.4-3.7 4-5.4 7-5.4s5.6 1.7 7 5.4"/></svg>Profile</a>
+  </div>
+
+  <button class="qa" onclick="toggleMenu()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
+    Screens
+  </button>
+
+  <div class="qamenu" id="qamenu" onclick="toggleMenu()">
+    <div class="qacard" onclick="event.stopPropagation()">
+      <div class="qahandle"></div>
+      <div class="qah">GO TO SCREEN</div>
+      <button class="qab on" onclick="go('home')"><span class="n">1</span><span>Home &middot; Today<small>Calendar, filters, log &amp; action hub</small></span></button>
+      <button class="qab" onclick="go('classes')"><span class="n">2</span><span>Classes<small>All your classes, by grade</small></span></button>
+      <button class="qab" onclick="go('classhub')"><span class="n">3</span><span>Class Hub &middot; 5A<small>Subjects, syllabus, roster</small></span></button>
+      <button class="qab" onclick="go('lesson')"><span class="n">4</span><span>Lesson &middot; Prep<small>Steps, variants, slides, cast</small></span></button>
+      <div class="qanote">Tabs, cards and back arrows navigate too.</div>
+    </div>
+  </div>
+
+  <script>
+    var ORDER=['home','classes','classhub','lesson'];
+    var SCREENS={home:'f-home',classes:'f-classes',classhub:'f-classhub',lesson:'f-lesson'};
+    function go(name){
+      ORDER.forEach(function(k){ document.getElementById(SCREENS[k]).classList.toggle('on', k===name); });
+      document.querySelectorAll('.qab').forEach(function(b,i){ b.classList.toggle('on', ORDER[i]===name); });
+      var pnav=document.getElementById('pnav');
+      pnav.classList.toggle('active', name!=='lesson');
+      var tab = name==='home' ? 'home' : ((name==='classes'||name==='classhub') ? 'classes' : '');
+      pnav.querySelectorAll('a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('data-t')===tab); });
+      closeMenu();
+    }
+    function toggleMenu(){ document.getElementById('qamenu').classList.toggle('open'); }
+    function closeMenu(){ document.getElementById('qamenu').classList.remove('open'); }
+    window.addEventListener('message', function(e){
+      var m=e.data||{}; if(typeof m!=='object') return;
+      if(m.go){ go(m.go); }
+      else if(m.back){ var n=m.back; go(n==='lesson'?'classhub':(n==='classhub'?'classes':'home')); }
+    });
+    go('home');
   </script>
 </body>
 </html>
