@@ -524,6 +524,23 @@
     hideSubs();
     applyFilter();
     var f=document.getElementById(&#x27;feed&#x27;); if(f) f.scrollTop=f.scrollHeight;
+
+    // Two-way sync: scrolling the feed highlights the matching date in the calendar
+    var _selWk=null;
+    function syncCalToFeed(){
+      if(!f) return;
+      var st=f.scrollTop+60, id=null;
+      f.querySelectorAll(&#x27;.dsec&#x27;).forEach(function(s){ if(s.offsetTop&lt;=st) id=s.id; });
+      if(!id) return;
+      var day=document.querySelector(&#x27;.day[data-sec=&quot;&#x27;+id+&#x27;&quot;]&#x27;);
+      document.querySelectorAll(&#x27;.day&#x27;).forEach(function(d){ d.classList.remove(&#x27;sel&#x27;); });
+      if(day){
+        day.classList.add(&#x27;sel&#x27;);
+        var wk=day.closest(&#x27;.wk&#x27;), sc=document.getElementById(&#x27;weekscroll&#x27;);
+        if(wk &amp;&amp; sc &amp;&amp; wk!==_selWk){ _selWk=wk; sc.scrollLeft = wk.offsetLeft - (sc.clientWidth - wk.clientWidth)/2; }
+      }
+    }
+    if(f){ var _raf=null; f.addEventListener(&#x27;scroll&#x27;,function(){ if(_raf) return; _raf=requestAnimationFrame(function(){ _raf=null; syncCalToFeed(); }); }); syncCalToFeed(); }
   &lt;/script&gt;
 
 &lt;script&gt;
