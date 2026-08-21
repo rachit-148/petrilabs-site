@@ -1,0 +1,533 @@
+<title>Petrilab Learning Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --paper:#F4F7F7; --surface:#FFFFFF; --sunk:#EAF0F0;
+  --ink:#10212A; --ink-2:#3D555E; --muted:#6C858E; --line:#D9E3E4; --line-2:#C3D2D4;
+  --perf:#15537F; --perf-soft:#E7EFF6; --perf-line:#B8CFE2;
+  --know:#1C6B5A; --know-soft:#E4F0EC; --know-line:#AFD3C8;
+  --pend:#97671F; --pend-soft:#F6EEDF; --pend-line:#E0C79A;
+  --warn:#9C4221; --warn-soft:#FBEDE6;
+  --shadow:0 1px 2px rgba(16,33,42,.05), 0 10px 28px rgba(16,33,42,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --surface:#131F22; --sunk:#18272B;
+    --ink:#E7EEEF; --ink-2:#AFC3C7; --muted:#8199A0; --line:#243639; --line-2:#31474B;
+    --perf:#78B0E0; --perf-soft:#132A3C; --perf-line:#2C4E69;
+    --know:#68C4A9; --know-soft:#0F2A24; --know-line:#255043;
+    --pend:#D7A75B; --pend-soft:#2B2312; --pend-line:#54421F;
+    --warn:#E29A78; --warn-soft:#2E1D15;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.34);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --surface:#131F22; --sunk:#18272B;
+  --ink:#E7EEEF; --ink-2:#AFC3C7; --muted:#8199A0; --line:#243639; --line-2:#31474B;
+  --perf:#78B0E0; --perf-soft:#132A3C; --perf-line:#2C4E69;
+  --know:#68C4A9; --know-soft:#0F2A24; --know-line:#255043;
+  --pend:#D7A75B; --pend-soft:#2B2312; --pend-line:#54421F;
+  --warn:#E29A78; --warn-soft:#2E1D15;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.34);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1080px;margin:0 auto;padding:0 28px 96px}
+.col{max-width:68ch}
+p{margin:0 0 1.05em}
+strong{font-weight:600}
+a{color:var(--perf)}
+
+/* ---------- masthead ---------- */
+.mast{padding:64px 0 30px;border-bottom:2px solid var(--ink)}
+.kicker{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+}
+.kicker .sep{color:var(--line-2)}
+h1{
+  font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
+  font-size:clamp(34px,5.4vw,53px);line-height:1.04;letter-spacing:-.022em;
+  margin:0 0 18px;text-wrap:balance;max-width:17ch;
+}
+.standfirst{font-size:18.5px;line-height:1.55;color:var(--ink-2);max-width:62ch;margin:0}
+.standfirst b{color:var(--ink);font-weight:600}
+
+.meta{display:flex;flex-wrap:wrap;gap:0;margin-top:34px;border-top:1px solid var(--line)}
+.meta div{flex:1 1 150px;padding:14px 20px 14px 0;border-right:1px solid var(--line)}
+.meta div:last-child{border-right:none}
+.meta dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.meta dd{margin:0;font-size:14.5px;font-weight:500;color:var(--ink)}
+
+/* ---------- sections ---------- */
+section{padding-top:62px}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.snum{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;color:var(--muted);
+      letter-spacing:.1em;padding-top:6px;white-space:nowrap}
+h2{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:28px;letter-spacing:-.015em;
+   margin:0;line-height:1.2;text-wrap:balance}
+.rule{height:1px;background:var(--line);margin:16px 0 26px}
+h3{font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:16.5px;margin:34px 0 10px;
+   letter-spacing:-.005em}
+
+/* ---------- figures ---------- */
+figure{margin:34px 0 30px;background:var(--surface);border:1px solid var(--line);
+       border-radius:3px;padding:26px 26px 18px;box-shadow:var(--shadow);overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
+figcaption{margin-top:16px;padding-top:13px;border-top:1px solid var(--line);
+  font-size:13px;line-height:1.55;color:var(--muted);max-width:74ch}
+figcaption b{color:var(--ink-2);font-weight:600}
+
+/* svg theming */
+.d-str{stroke:var(--line-2);fill:none}
+.d-txt{fill:var(--ink);font-family:"IBM Plex Sans",sans-serif;font-size:13px}
+.d-sm{fill:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em}
+.d-arrow{stroke:var(--muted);fill:none;stroke-width:1.4}
+.d-lab{fill:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.04em}
+.bx-perf{fill:var(--perf-soft);stroke:var(--perf-line)}
+.bx-know{fill:var(--know-soft);stroke:var(--know-line)}
+.bx-pend{fill:var(--pend-soft);stroke:var(--pend-line);stroke-dasharray:4 3}
+.bx-neut{fill:var(--sunk);stroke:var(--line-2)}
+.t-perf{fill:var(--perf);font-family:"IBM Plex Sans",sans-serif;font-weight:600}
+.t-know{fill:var(--know);font-family:"IBM Plex Sans",sans-serif;font-weight:600}
+.t-pend{fill:var(--pend);font-family:"IBM Plex Sans",sans-serif;font-weight:600}
+
+/* ---------- ladder (worked example) ---------- */
+.ladder{margin:30px 0 8px;border-left:2px solid var(--line);padding-left:0}
+.rung{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:22px;
+      padding:14px 0 14px 22px;border-bottom:1px solid var(--line);position:relative}
+.rung:last-child{border-bottom:none}
+.rung::before{content:"";position:absolute;left:-5px;top:22px;width:8px;height:8px;
+  border-radius:50%;background:var(--line-2)}
+.rung.p::before{background:var(--perf)} .rung.k::before{background:var(--know)}
+.rname{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);padding-top:3px}
+.rung.p .rname{color:var(--perf)} .rung.k .rname{color:var(--know)}
+.rval{font-size:14.5px;line-height:1.5}
+.rval .id{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);
+  display:block;margin-top:5px}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:26px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:500;border-bottom:1px solid var(--line-2)}
+tbody th{font-weight:500;color:var(--ink-2);font-size:13.5px;width:24%}
+td.c-perf{color:var(--perf)} td.c-know{color:var(--know)}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
+td b,th b{font-weight:600}
+
+/* ---------- callouts ---------- */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:18px;margin:26px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:20px 22px;
+      border-top:3px solid var(--line-2)}
+.card.p{border-top-color:var(--perf)} .card.k{border-top-color:var(--know)}
+.card h4{margin:0 0 4px;font-size:15.5px;font-weight:600}
+.card.p h4{color:var(--perf)} .card.k h4{color:var(--know)}
+.card .q{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.card p{font-size:14px;margin:0 0 .8em;color:var(--ink-2)}
+.card p:last-child{margin-bottom:0}
+.card .ex{background:var(--sunk);border-radius:2px;padding:10px 12px;font-size:13.5px;
+  color:var(--ink);margin-top:12px;line-height:1.45}
+
+.note{border-left:3px solid var(--pend);background:var(--pend-soft);padding:15px 18px;
+  margin:26px 0;font-size:14px;line-height:1.55;border-radius:0 3px 3px 0}
+.note b{color:var(--pend)}
+.gap{border-left:3px solid var(--warn);background:var(--warn-soft);padding:15px 18px;
+  margin:26px 0;font-size:14px;border-radius:0 3px 3px 0}
+.gap b{color:var(--warn)}
+.gap ul{margin:8px 0 0;padding-left:18px} .gap li{margin:5px 0}
+
+/* ---------- counts ---------- */
+.counts{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:28px 0;border-radius:3px;overflow:hidden}
+.ct{background:var(--surface);padding:17px 18px}
+.ct .n{font-family:"IBM Plex Serif",Georgia,serif;font-size:31px;font-weight:600;line-height:1;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ct .l{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;line-height:1.4}
+.ct.p .n{color:var(--perf)} .ct.k .n{color:var(--know)}
+
+ul.clean{padding-left:19px;margin:12px 0}
+ul.clean li{margin:7px 0}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--sunk);
+  padding:1.5px 5px;border-radius:2px;color:var(--ink-2)}
+
+footer{margin-top:70px;padding-top:22px;border-top:2px solid var(--ink);
+  font-size:12.5px;color:var(--muted);line-height:1.6;max-width:74ch}
+
+@media (max-width:640px){
+  .rung{grid-template-columns:1fr;gap:5px}
+  .meta div{border-right:none;border-bottom:1px solid var(--line);flex-basis:100%}
+  figure{padding:18px 14px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="page">
+
+<header class="mast">
+  <div class="kicker">
+    <span>Petrilab</span><span class="sep">/</span>
+    <span>Learning Platform</span><span class="sep">/</span>
+    <span>Structural Reference</span><span class="sep">/</span>
+    <span>NCF-SE 2023</span>
+  </div>
+  <h1>The architecture of the learning spine</h1>
+  <p class="standfirst">How the platform models what a child should learn: <b>four stages</b> of school education, a <b>three-layer</b> separation of the stable from the disposable, and a flow-down that forks into what a learner <b>does</b> and what a learner <b>knows</b>.</p>
+  <dl class="meta">
+    <div><dt>Framework</dt><dd>NCF-SE 2023</dd></div>
+    <div><dt>Built so far</dt><dd>Layer 1 — The Spine</dd></div>
+    <div><dt>Worked area</dt><dd>Maths, Preparatory</dd></div>
+    <div><dt>Knowledge layer</dt><dd>CG-1 complete</dd></div>
+  </dl>
+</header>
+
+<!-- ============ 1 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 1</span><h2>The four stages of school education</h2></div>
+  <div class="rule"></div>
+  <div class="col">
+    <p>NCF-SE 2023 organises schooling into four stages rather than twelve grades. This matters structurally: <strong>a Competency is attained by the end of a stage, not by the end of a grade.</strong> Everything in the spine hangs off the stage, which is what lets the model stay independent of any particular school's grade-by-grade sequencing.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 168" role="img" aria-label="The four NCF stages drawn proportionally along an age axis from 3 to 18, with Preparatory highlighted as the stage currently modelled.">
+      <text x="0" y="14" class="d-sm">AGE</text>
+      <line x1="0" y1="26" x2="900" y2="26" class="d-str" stroke-width="1"/>
+      <g class="d-sm">
+        <text x="34" y="18" text-anchor="middle">3</text>
+        <text x="274" y="18" text-anchor="middle">8</text>
+        <text x="418" y="18" text-anchor="middle">11</text>
+        <text x="562" y="18" text-anchor="middle">14</text>
+        <text x="850" y="18" text-anchor="middle">18</text>
+      </g>
+      <g class="d-str" stroke-width="1">
+        <line x1="34" y1="22" x2="34" y2="30"/><line x1="274" y1="22" x2="274" y2="30"/>
+        <line x1="418" y1="22" x2="418" y2="30"/><line x1="562" y1="22" x2="562" y2="30"/>
+        <line x1="850" y1="22" x2="850" y2="30"/>
+      </g>
+
+      <rect x="34" y="44" width="240" height="62" rx="2" class="bx-neut" stroke-width="1"/>
+      <rect x="274" y="44" width="144" height="62" rx="2" class="bx-perf" stroke-width="1.6"/>
+      <rect x="418" y="44" width="144" height="62" rx="2" class="bx-neut" stroke-width="1"/>
+      <rect x="562" y="44" width="288" height="62" rx="2" class="bx-neut" stroke-width="1"/>
+
+      <text x="46" y="68" class="d-txt" font-weight="600">Foundational</text>
+      <text x="46" y="86" class="d-sm">TO GRADE 2</text>
+      <text x="286" y="68" class="t-perf" font-size="13">Preparatory</text>
+      <text x="286" y="86" class="d-sm">GRADES 3–5</text>
+      <text x="430" y="68" class="d-txt" font-weight="600">Middle</text>
+      <text x="430" y="86" class="d-sm">GRADES 6–8</text>
+      <text x="574" y="68" class="d-txt" font-weight="600">Secondary</text>
+      <text x="574" y="86" class="d-sm">GRADES 9–12</text>
+
+      <line x1="274" y1="118" x2="418" y2="118" class="d-arrow" stroke-width="1.6" stroke="var(--perf)"/>
+      <line x1="274" y1="113" x2="274" y2="123" stroke="var(--perf)" stroke-width="1.6"/>
+      <line x1="418" y1="113" x2="418" y2="123" stroke="var(--perf)" stroke-width="1.6"/>
+      <text x="346" y="140" text-anchor="middle" class="d-lab" fill="var(--perf)">MODELLED SO FAR</text>
+      <text x="346" y="156" text-anchor="middle" class="d-lab">3 YEARS · ONE COMPETENCY SET</text>
+    </svg>
+    <figcaption>Stages are drawn to their true span on the age axis. <b>Foundational covers five years</b> (including pre-school) while Preparatory and Middle cover three each — so a competency in Foundational has almost twice the runway of one in Preparatory. The spine currently models Preparatory Mathematics end to end.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 2</span><h2>Three layers: separating the stable from the disposable</h2></div>
+  <div class="rule"></div>
+  <div class="col">
+    <p>The central design bet is that the messy part of curriculum work — <em>this textbook teaches fractions in Grade 4, that one waits until Grade 5</em> — should never contaminate the model of learning itself. Splitting the system into three layers turns that mess from a content problem into a lookup.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="Three-layer architecture: Layer 1 the stable spine, Layer 2 an alignment lookup that maps books and grades onto spine IDs, and Layer 3 a generation layer that reads a spine node plus an alignment row to produce disposable teaching material.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+
+      <!-- Layer 1 -->
+      <rect x="24" y="24" width="560" height="104" rx="3" class="bx-perf" stroke-width="1.6"/>
+      <text x="44" y="52" class="d-lab" fill="var(--perf)">LAYER 1 · BUILT</text>
+      <text x="44" y="76" class="t-perf" font-size="17">The Spine</text>
+      <text x="44" y="99" class="d-txt" font-size="12.5" fill="var(--ink-2)">Competency · Learning Trajectory · Performance Outcome · Knowledge Outcome</text>
+      <text x="44" y="117" class="d-sm">STABLE · BOOK-AGNOSTIC · GRADE-AGNOSTIC</text>
+      <rect x="600" y="24" width="276" height="104" rx="3" class="bx-neut" stroke-width="1"/>
+      <text x="618" y="52" class="d-sm">CHANGES WHEN</text>
+      <text x="618" y="76" class="d-txt" font-size="12.5">the national framework</text>
+      <text x="618" y="94" class="d-txt" font-size="12.5">itself is revised.</text>
+      <text x="618" y="117" class="d-sm">RARELY · YEARS</text>
+
+      <!-- Layer 2 -->
+      <rect x="24" y="158" width="560" height="104" rx="3" class="bx-pend" stroke-width="1.6"/>
+      <text x="44" y="186" class="d-lab" fill="var(--pend)">LAYER 2 · DEFERRED</text>
+      <text x="44" y="210" class="t-pend" font-size="17">The Alignment</text>
+      <text x="44" y="233" class="d-txt" font-size="12.5" fill="var(--ink-2)">book · edition · grade · chapter → spine node ID</text>
+      <text x="44" y="251" class="d-sm">A LOOKUP TABLE, NOT CONTENT</text>
+      <rect x="600" y="158" width="276" height="104" rx="3" class="bx-neut" stroke-width="1"/>
+      <text x="618" y="186" class="d-sm">CHANGES WHEN</text>
+      <text x="618" y="210" class="d-txt" font-size="12.5">a school adopts a new</text>
+      <text x="618" y="228" class="d-txt" font-size="12.5">book or edition.</text>
+      <text x="618" y="251" class="d-sm">OCCASIONALLY · TERMS</text>
+
+      <!-- Layer 3 -->
+      <rect x="24" y="292" width="560" height="104" rx="3" class="bx-pend" stroke-width="1.6"/>
+      <text x="44" y="320" class="d-lab" fill="var(--pend)">LAYER 3 · DEFERRED</text>
+      <text x="44" y="344" class="t-pend" font-size="17">The Generation</text>
+      <text x="44" y="367" class="d-txt" font-size="12.5" fill="var(--ink-2)">explanations · worked examples · items · distractors</text>
+      <text x="44" y="385" class="d-sm">DISPOSABLE · AI-NATIVE · REGENERABLE</text>
+      <rect x="600" y="292" width="276" height="104" rx="3" class="bx-neut" stroke-width="1"/>
+      <text x="618" y="320" class="d-sm">CHANGES WHEN</text>
+      <text x="618" y="344" class="d-txt" font-size="12.5">any learner asks for it.</text>
+      <text x="618" y="367" class="d-sm">CONSTANTLY · SECONDS</text>
+
+      <!-- arrows between layers -->
+      <line x1="150" y1="158" x2="150" y2="132" class="d-arrow" marker-end="url(#ar)"/>
+      <text x="162" y="149" class="d-lab">REFERENCES SPINE IDs</text>
+      <line x1="150" y1="292" x2="150" y2="266" class="d-arrow" marker-end="url(#ar)"/>
+      <text x="162" y="283" class="d-lab">READS ALIGNMENT ROW</text>
+      <path d="M 400 128 C 448 128 448 292 400 292" class="d-arrow" marker-end="url(#ar)" stroke-dasharray="4 3"/>
+      <text x="522" y="204" text-anchor="middle" class="d-lab">ALSO READS THE</text>
+      <text x="522" y="220" text-anchor="middle" class="d-lab">SPINE NODE DIRECTLY</text>
+    </svg>
+    <figcaption>Each layer is defined by <b>how often it changes</b> — that is the whole reason for the split. The spine moves when the national framework is revised; alignment moves when a school changes books; generation moves every time a learner asks a question. Layer 3 reads the spine node <em>and</em> the alignment row, so the same competency produces different material for two schools on different textbooks without either the spine or the generator being rewritten.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 3</span><h2>The flow-down, and where it forks</h2></div>
+  <div class="rule"></div>
+  <div class="col">
+    <p>NCF describes a "flow-down" from Aims to Learning Outcomes, in which each level is derived from the one above it while covering it fully. The spine implements that chain — and then splits it in two at the Competency, because a Competency has both a <span style="color:var(--perf);font-weight:600">performance</span> face and a <span style="color:var(--know);font-weight:600">knowledge</span> face.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 308" role="img" aria-label="The flow-down chain from Curricular Area to Competency, forking into a performance branch ending in Performance Outcome and a knowledge branch ending in Knowledge Outcome, rejoined by a many-to-many map.">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+
+      <!-- trunk -->
+      <rect x="24" y="20" width="176" height="48" rx="2" class="bx-neut" stroke-width="1"/>
+      <text x="112" y="41" text-anchor="middle" class="d-txt" font-size="12.5" font-weight="600">Curricular Area</text>
+      <text x="112" y="58" text-anchor="middle" class="d-sm">8 IN NCF</text>
+
+      <rect x="24" y="88" width="176" height="48" rx="2" class="bx-neut" stroke-width="1"/>
+      <text x="112" y="109" text-anchor="middle" class="d-txt" font-size="12.5" font-weight="600">Curricular Goal</text>
+      <text x="112" y="126" text-anchor="middle" class="d-sm">PER STAGE</text>
+
+      <rect x="24" y="156" width="176" height="52" rx="2" class="bx-neut" stroke-width="1.8" stroke="var(--ink)"/>
+      <text x="112" y="179" text-anchor="middle" class="d-txt" font-size="13.5" font-weight="700">Competency</text>
+      <text x="112" y="196" text-anchor="middle" class="d-sm">ATTAINED BY END OF STAGE</text>
+
+      <line x1="112" y1="70" x2="112" y2="84" class="d-arrow" marker-end="url(#ar2)"/>
+      <line x1="112" y1="138" x2="112" y2="152" class="d-arrow" marker-end="url(#ar2)"/>
+
+      <!-- fork -->
+      <path d="M 200 172 L 236 172 L 236 69 L 256 69" class="d-arrow" marker-end="url(#ar2)"/>
+      <path d="M 200 192 L 236 192 L 236 269 L 256 269" class="d-arrow" marker-end="url(#ar2)"/>
+
+      <!-- performance branch -->
+      <rect x="262" y="46" width="168" height="46" rx="2" class="bx-perf" stroke-width="1.4"/>
+      <text x="346" y="66" text-anchor="middle" class="t-perf" font-size="12.5">Learning Trajectory</text>
+      <text x="346" y="82" text-anchor="middle" class="d-sm">ONE PER COMPETENCY</text>
+
+      <rect x="456" y="46" width="160" height="46" rx="2" class="bx-perf" stroke-width="1.4"/>
+      <text x="536" y="66" text-anchor="middle" class="t-perf" font-size="12.5">Performance Thread</text>
+      <text x="536" y="82" text-anchor="middle" class="d-sm">A ROW · 1–3</text>
+
+      <rect x="642" y="46" width="176" height="46" rx="2" class="bx-perf" stroke-width="2"/>
+      <text x="730" y="66" text-anchor="middle" class="t-perf" font-size="12.5">Performance Outcome</text>
+      <text x="730" y="82" text-anchor="middle" class="d-sm">A CELL · LEVELS A→F</text>
+
+      <line x1="434" y1="69" x2="452" y2="69" class="d-arrow" marker-end="url(#ar2)"/>
+      <line x1="620" y1="69" x2="638" y2="69" class="d-arrow" marker-end="url(#ar2)"/>
+      <text x="756" y="30" text-anchor="middle" class="d-lab" fill="var(--perf)">WHAT THE LEARNER DOES</text>
+
+      <!-- knowledge branch -->
+      <rect x="262" y="246" width="168" height="46" rx="2" class="bx-know" stroke-width="1.4"/>
+      <text x="346" y="266" text-anchor="middle" class="t-know" font-size="12.5">Knowledge Thread</text>
+      <text x="346" y="282" text-anchor="middle" class="d-sm">A CONCEPT STRAND</text>
+
+      <rect x="642" y="246" width="176" height="46" rx="2" class="bx-know" stroke-width="2"/>
+      <text x="730" y="266" text-anchor="middle" class="t-know" font-size="12.5">Knowledge Outcome</text>
+      <text x="730" y="282" text-anchor="middle" class="d-sm">A CONCEPT</text>
+
+      <line x1="434" y1="269" x2="638" y2="269" class="d-arrow" marker-end="url(#ar2)"/>
+      <text x="756" y="230" text-anchor="middle" class="d-lab" fill="var(--know)">WHAT THE LEARNER KNOWS</text>
+
+      <!-- join -->
+      <path d="M 730 92 L 730 128" class="d-arrow"/>
+      <path d="M 730 246 L 730 210" class="d-arrow"/>
+      <rect x="620" y="130" width="220" height="78" rx="2" class="bx-neut" stroke-width="1.6"/>
+      <text x="730" y="154" text-anchor="middle" class="d-txt" font-size="12.5" font-weight="600">PO_KO_Map</text>
+      <text x="730" y="172" text-anchor="middle" class="d-sm">MANY-TO-MANY</text>
+      <text x="730" y="194" text-anchor="middle" class="d-txt" font-size="11.5" fill="var(--ink-2)">one concept serves many outcomes</text>
+
+      <text x="112" y="248" text-anchor="middle" class="d-lab">THE FORK</text>
+      <text x="112" y="266" text-anchor="middle" class="d-txt" font-size="11.5" fill="var(--ink-2)">One competency,</text>
+      <text x="112" y="283" text-anchor="middle" class="d-txt" font-size="11.5" fill="var(--ink-2)">two faces.</text>
+    </svg>
+    <figcaption>The chain runs top-left to Competency, then forks. The two branches <b>rejoin at the map, not at the competency</b> — a concept attaches to the specific outcome that needs it, and competency membership is derived from that. This is what lets one concept ("place value orders numbers") serve outcomes in three different competencies without being written three times.</figcaption>
+  </figure>
+
+  <h3>The chain, with real content</h3>
+  <div class="col"><p>One continuous path through Preparatory Mathematics, from the curricular area down to a misconception a teacher will actually meet:</p></div>
+
+  <div class="ladder">
+    <div class="rung"><div class="rname">Curricular Area</div><div class="rval">Mathematics and Computational Thinking<span class="id">CA-02</span></div></div>
+    <div class="rung"><div class="rname">Curricular Goal</div><div class="rval">Understands numbers, represents whole numbers using the Indian place value system, carries out the four operations, and recognises patterns in number sequences<span class="id">MATH-PREP-CG-1</span></div></div>
+    <div class="rung"><div class="rname">Competency</div><div class="rval">Represents numbers using the place value structure of the Indian number system, compares whole numbers, and knows and can read the names of very large numbers<span class="id">MATH-PREP-C-1.1 · verbatim from NCF</span></div></div>
+    <div class="rung p"><div class="rname">Learning Trajectory</div><div class="rval">Building, reading and comparing numbers on the Indian place value system<span class="id">LT-MATH-PREP-C-1.1</span></div></div>
+    <div class="rung p"><div class="rname">Performance Thread</div><div class="rval">Comparing and ordering numbers<span class="id">PT-MATH-PREP-C-1.1-T2</span></div></div>
+    <div class="rung p"><div class="rname">Performance Outcome</div><div class="rval">Compares 5- and 6-digit numbers and justifies the comparison using place value<span class="id">PO-MATH-PREP-C-1.1-T2-D · level D</span></div></div>
+    <div class="rung k"><div class="rname">Knowledge Thread</div><div class="rval">Magnitude, comparison and order<span class="id">KT-MATH-PREP-C-1.1-K4</span></div></div>
+    <div class="rung k"><div class="rname">Knowledge Outcome</div><div class="rval">A digit's place matters more than the digit itself: 2 hundreds is more than 9 tens<span class="id">KO-MATH-PREP-C-1.1-K4-03 · type: Property</span></div></div>
+    <div class="rung"><div class="rname">Misconception</div><div class="rval" style="color:var(--warn)">Judging 9,990 greater than 49,014 because 9 is bigger than 4<span class="id" style="color:var(--warn)">READY-MADE DISTRACTOR FOR LAYER 3</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 4</span><h2>Performance Outcome vs Knowledge Outcome</h2></div>
+  <div class="rule"></div>
+  <div class="col">
+    <p>This is the distinction the whole model turns on, and the one easiest to blur. The cleanest separator is grammatical: a Performance Outcome is <strong>verb-led with the learner as its subject</strong>; a Knowledge Outcome is <strong>a proposition with the idea as its subject</strong>.</p>
+  </div>
+
+  <div class="two">
+    <div class="card p">
+      <div class="q">What the learner does</div>
+      <h4>Performance Outcome</h4>
+      <p>An observable, assessable act. It sits on a developmental sequence and belongs to exactly one thread.</p>
+      <div class="ex">"Compares 5- and 6-digit numbers and justifies the comparison using place value."</div>
+    </div>
+    <div class="card k">
+      <div class="q">What the learner knows</div>
+      <h4>Knowledge Outcome</h4>
+      <p>A concept that must be held for the performance to be possible. Reusable across many outcomes.</p>
+      <div class="ex">"Because each place is worth ten times the next, a difference in a higher place outranks any difference below it."</div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>Performance Outcome</th><th>Knowledge Outcome</th></tr></thead>
+      <tbody>
+        <tr><th>Grammar</th><td class="c-perf">Verb-led; learner is the subject</td><td class="c-know">Proposition; the idea is the subject</td></tr>
+        <tr><th>Observability</th><td>Seen directly in a task</td><td>Never seen — only inferred</td></tr>
+        <tr><th>How it fails</th><td>"Cannot do it yet"</td><td>A misconception, or a gap</td></tr>
+        <tr><th>Grain</th><td>A milestone over weeks</td><td>One idea — a single teaching moment</td></tr>
+        <tr><th>Sequenced by</th><td>Development (levels A→F)</td><td>Conceptual dependence</td></tr>
+        <tr><th>Reuse</th><td>Belongs to one thread only</td><td>Serves many outcomes</td></tr>
+        <tr><th>Layer 3 generates</th><td>The <b>task</b> to set</td><td>The <b>explanation</b> and the <b>distractor</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Two tests that hold up at primary level</h3>
+  <div class="col">
+    <p>"Can you grade it by watching?" is too blunt for ages 8–11, where nearly everything is watchable. These two discriminate better:</p>
+    <ul class="clean">
+      <li><strong>Can you be wrong about it?</strong> A Knowledge Outcome can be sincerely, falsely believed — a child can hold <em>"the longer number is the bigger number"</em> as a genuine conviction. A Performance Outcome has no false version; it is done or it is not.</li>
+      <li><strong>Does it survive without the child?</strong> <em>"Each place is worth ten times the one to its right"</em> is true about the number system whether or not anyone is learning it. <em>"Compares two 3-digit numbers"</em> is a statement about a learner.</li>
+    </ul>
+    <p>One working rule follows from this: <strong>every Procedure-type concept must carry its <em>because</em>.</strong> Without a rationale it is a method, and methods belong on the performance side.</p>
+  </div>
+
+  <div class="note">
+    <b>A developmental caveat.</b> At the Preparatory stage most mathematical knowledge is <em>enactive</em> — a child knows what a half is by making one. The gap between doing and knowing is genuinely narrower here than it will be at Secondary, where freestanding propositions dominate. Expect the two sides to separate more visibly as the spine extends upward.
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 5</span><h2>The data model</h2></div>
+  <div class="rule"></div>
+  <div class="col">
+    <p>Every tab in the workbook is a normalised table designed to import directly into the database behind the application. Text is never duplicated across tables — relationships are carried by stable IDs.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Table</th><th>Holds</th><th>Key relationship</th></tr></thead>
+      <tbody>
+        <tr><th>Stages</th><td>The 4 NCF stages</td><td>—</td></tr>
+        <tr><th>Curricular_Areas</th><td>The 8 NCF areas</td><td>—</td></tr>
+        <tr><th>Curricular_Goals</th><td>Goals per area + stage</td><td>→ Areas, Stages</td></tr>
+        <tr><th>Competencies</th><td>Verbatim NCF competencies</td><td>→ Curricular_Goals</td></tr>
+        <tr><th>Learning_Trajectories</th><td>One per competency</td><td>→ Competencies <b>(1:1)</b></td></tr>
+        <tr><th>Performance_Threads</th><td>Rows of each grid</td><td>→ Learning_Trajectories</td></tr>
+        <tr><th>Performance_Outcomes</th><td>Cells of each grid</td><td>→ Performance_Threads</td></tr>
+        <tr><th>Knowledge_Threads</th><td>Concept strands</td><td>→ Competencies</td></tr>
+        <tr><th>Knowledge_Outcomes</th><td>The concept catalogue</td><td>→ Knowledge_Threads</td></tr>
+        <tr><th>PO_KO_Map</th><td>The join</td><td>→ Outcomes <b>×</b> Concepts</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>ID convention</h3>
+  <div class="col">
+    <p>IDs are readable on sight, so a row can be traced without a join: <code>LT-&lt;competency&gt;</code>, <code>PT-&lt;competency&gt;-T&lt;n&gt;</code>, <code>PO-&lt;competency&gt;-T&lt;n&gt;-&lt;level&gt;</code>, <code>KT-&lt;competency&gt;-K&lt;n&gt;</code>, <code>KO-&lt;competency&gt;-K&lt;n&gt;-&lt;seq&gt;</code>.</p>
+    <p>Each concept also carries a <strong>type</strong> — Concept, Representation, Notation, Procedure, Property or Application — which tells the generation layer what kind of material to produce from it, and an optional <strong>common misconception</strong>, which becomes a distractor.</p>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <div class="shead"><span class="snum">§ 6</span><h2>Where the build stands</h2></div>
+  <div class="rule"></div>
+
+  <div class="counts">
+    <div class="ct"><div class="n">5</div><div class="l">Curricular<br>Goals</div></div>
+    <div class="ct"><div class="n">19</div><div class="l">Competencies<br>verbatim</div></div>
+    <div class="ct p"><div class="n">36</div><div class="l">Performance<br>Threads</div></div>
+    <div class="ct p"><div class="n">162</div><div class="l">Performance<br>Outcomes</div></div>
+    <div class="ct k"><div class="n">109</div><div class="l">Knowledge<br>Outcomes</div></div>
+    <div class="ct k"><div class="n">21</div><div class="l">Misconceptions<br>captured</div></div>
+  </div>
+
+  <div class="col">
+    <p>The performance side is complete for all 19 Preparatory Mathematics competencies. The knowledge side is complete for <strong>CG-1 Numbers &amp; Operations only</strong> — 22 knowledge threads and 109 concepts across its 52 performance outcomes, all sourced against the NCERT Maths Mela textbooks for Classes 3, 4 and 5.</p>
+  </div>
+
+  <div class="gap">
+    <b>Spine-vs-book gaps found while reading the textbooks.</b> These are logged rather than patched — they are exactly what Layer 2 exists to surface:
+    <ul>
+      <li>NCF expects number names for "very large numbers"; NCERT Classes 3–5 stop at five digits, with no lakh or crore.</li>
+      <li>NCF names fraction-as-division explicitly; no book in Classes 3–5 teaches it directly.</li>
+      <li>NCF names square, cube, triangular, powers-of-2 and Virahanka–Fibonacci numbers; none appear in Classes 3–5 — though the books do cover factors, multiples, primes and divisibility, which NCF does not name.</li>
+    </ul>
+  </div>
+
+  <h3>Open decisions</h3>
+  <ul class="clean">
+    <li><strong>Grain.</strong> CG-1 runs 11–14 outcomes per competency against NCF's own illustration of 10. Target is roughly 8 outcomes and 12 concepts per competency.</li>
+    <li><strong>Scope as a parameter.</strong> Number range (3-digit → 6-digit) is currently escalated across levels, which inflates the grid. It should be an attribute — and it is precisely what Layer 2 will consume.</li>
+    <li><strong>Catalogue ownership.</strong> Move concepts from competency-scoped to a stage-wide shared catalogue, mapped at outcome level with competency derived.</li>
+    <li><strong>Rationale rule.</strong> 14 of 18 Procedure concepts currently state a method with no <em>because</em>. Rewriting them as reusable ideas merges most away rather than deleting them.</li>
+  </ul>
+</section>
+
+<footer>
+  Curricular Goals and Competencies are reproduced verbatim from the <strong>National Curriculum Framework for School Education (NCF-SE) 2023</strong>, Part C, Chapter 3, §3.4.1.1; Curricular Areas from Part A, Chapter 1; the learning-outcome grid format from Part A, Chapter 3, Table 3.1i. Learning Trajectories, Performance Threads, Performance Outcomes and Knowledge Outcomes are authored, illustrative and editable. Concept provenance was checked against NCERT <em>Maths Mela</em> Grades 3, 4 and 5 (2025) — that provenance is an authoring note, not the Layer 2 alignment, which remains deliberately unbuilt.
+</footer>
+
+</div>
