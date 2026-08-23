@@ -1,0 +1,608 @@
+<title>The Assessment Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap">
+
+<style>
+:root{
+  --paper:#F4F7F7; --surface:#FFFFFF; --sunk:#EAF0F0;
+  --ink:#10212A; --ink-2:#3D555E; --muted:#6C858E; --line:#D9E3E4; --line-2:#C3D2D4;
+  --perf:#15537F; --perf-soft:#E7EFF6; --perf-line:#B8CFE2;
+  --know:#1C6B5A; --know-soft:#E4F0EC; --know-line:#AFD3C8;
+  --evid:#7A3B62; --evid-soft:#F7E9F0; --evid-line:#DFBFD0;
+  --pend:#97671F; --pend-soft:#F6EEDF; --pend-line:#E0C79A;
+  --warn:#9C4221; --warn-soft:#FBEDE6; --warn-line:#E7BFAB;
+  --shadow:0 1px 2px rgba(16,33,42,.05), 0 10px 28px rgba(16,33,42,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1618; --surface:#131F22; --sunk:#18272B;
+    --ink:#E7EEEF; --ink-2:#AFC3C7; --muted:#8199A0; --line:#243639; --line-2:#31474B;
+    --perf:#78B0E0; --perf-soft:#132A3C; --perf-line:#2C4E69;
+    --know:#68C4A9; --know-soft:#0F2A24; --know-line:#255043;
+    --evid:#D79BC0; --evid-soft:#2B1520; --evid-line:#4E2A3D;
+    --pend:#D7A75B; --pend-soft:#2B2312; --pend-line:#54421F;
+    --warn:#E29A78; --warn-soft:#2E1D15; --warn-line:#54301F;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.34);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1618; --surface:#131F22; --sunk:#18272B;
+  --ink:#E7EEEF; --ink-2:#AFC3C7; --muted:#8199A0; --line:#243639; --line-2:#31474B;
+  --perf:#78B0E0; --perf-soft:#132A3C; --perf-line:#2C4E69;
+  --know:#68C4A9; --know-soft:#0F2A24; --know-line:#255043;
+  --evid:#D79BC0; --evid-soft:#2B1520; --evid-line:#4E2A3D;
+  --pend:#D7A75B; --pend-soft:#2B2312; --pend-line:#54421F;
+  --warn:#E29A78; --warn-soft:#2E1D15; --warn-line:#54301F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.34);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1080px;margin:0 auto;padding:0 28px 110px}
+.col{max-width:68ch}
+p{margin:0 0 1.05em}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--perf)}
+
+/* masthead */
+.mast{padding:64px 0 30px;border-bottom:2px solid var(--ink)}
+.kicker{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+}
+.kicker .sep{color:var(--line-2)}
+h1{
+  font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
+  font-size:clamp(34px,5.4vw,53px);line-height:1.04;letter-spacing:-.022em;
+  margin:0 0 18px;text-wrap:balance;max-width:19ch;
+}
+.standfirst{font-size:18.5px;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+.standfirst b{color:var(--ink);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:0;margin-top:34px;border-top:1px solid var(--line)}
+.meta div{flex:1 1 160px;padding:14px 20px 14px 0;border-right:1px solid var(--line)}
+.meta div:last-child{border-right:none}
+.meta dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.meta dd{margin:0;font-size:14.5px;font-weight:500;color:var(--ink)}
+
+/* sections */
+section{padding-top:62px}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.snum{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;color:var(--muted);
+      letter-spacing:.1em;padding-top:6px;white-space:nowrap}
+h2{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:28px;letter-spacing:-.015em;
+   margin:0;line-height:1.2;text-wrap:balance}
+.rule{height:1px;background:var(--line);margin:16px 0 26px}
+h3{font-family:"IBM Plex Sans",sans-serif;font-weight:600;font-size:16.5px;margin:34px 0 10px;letter-spacing:-.005em}
+h4{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+
+/* thesis block */
+.thesis{
+  border-top:2px solid var(--ink);border-bottom:1px solid var(--line);
+  padding:22px 0 24px;margin:34px 0 0;
+}
+.thesis p{font-family:"IBM Plex Serif",Georgia,serif;font-size:21px;line-height:1.44;margin:0;max-width:56ch}
+.thesis p + p{margin-top:14px}
+
+/* cards */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;margin:24px 0 6px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:22px 0 6px}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:22px 22px 20px;box-shadow:var(--shadow);
+}
+.voice{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.voice .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.v-psy{color:var(--evid)} .v-psy .dot{background:var(--evid)}
+.v-edu{color:var(--perf)} .v-edu .dot{background:var(--perf)}
+.v-par{color:var(--know)} .v-par .dot{background:var(--know)}
+.v-coo{color:var(--pend)} .v-coo .dot{background:var(--pend)}
+.claim{font-family:"IBM Plex Serif",Georgia,serif;font-size:17.5px;line-height:1.4;
+  margin:0 0 14px;color:var(--ink);letter-spacing:-.008em}
+.card p{font-size:14.6px;line-height:1.6;color:var(--ink-2);margin:0 0 .85em}
+.card p:last-child{margin-bottom:0}
+.conseq{list-style:none;padding:0;margin:14px 0 0;border-top:1px solid var(--line);padding-top:13px}
+.conseq li{font-size:14.2px;line-height:1.52;color:var(--ink-2);padding-left:17px;position:relative;margin-bottom:8px}
+.conseq li:last-child{margin-bottom:0}
+.conseq li::before{content:"→";position:absolute;left:0;color:var(--line-2);font-size:13px}
+.conseq b{color:var(--ink);font-weight:600}
+
+/* tables */
+.tw{overflow-x:auto;margin:22px 0 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:14.3px;min-width:560px}
+th{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-align:left;
+  padding:13px 16px;border-bottom:1px solid var(--line-2);white-space:nowrap;vertical-align:bottom;
+}
+td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2);line-height:1.5}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink);font-weight:600}
+.tnum{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* code / ids */
+code,.id{font-family:"IBM Plex Mono",monospace;font-size:12.4px;letter-spacing:-.01em}
+.id{background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:1.5px 6px;color:var(--ink);white-space:nowrap}
+.id.perf{background:var(--perf-soft);border-color:var(--perf-line);color:var(--perf)}
+.id.know{background:var(--know-soft);border-color:var(--know-line);color:var(--know)}
+
+/* loop */
+.loop{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin:26px 0 10px;
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.step{padding:20px 20px 22px;border-right:1px solid var(--line)}
+.step:last-child{border-right:none}
+.step .n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.step h5{margin:8px 0 4px;font-size:19px;font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;letter-spacing:-.01em}
+.step .who{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.step .budget{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;color:var(--evid);
+  font-variant-numeric:tabular-nums;line-height:1;margin-bottom:3px}
+.step .blabel{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.step p{font-size:13.8px;line-height:1.55;color:var(--ink-2);margin:14px 0 0}
+
+/* org-chart fan */
+.fan{margin:26px 0 10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:26px 22px 28px;box-shadow:var(--shadow);overflow-x:auto}
+.fan-inner{min-width:600px}
+.node{border:1px solid var(--know-line);background:var(--know-soft);border-radius:9px;padding:14px 16px;
+  max-width:600px;margin:0 auto}
+.node .lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--know);margin-bottom:6px}
+.node .txt{font-size:14.4px;line-height:1.5;color:var(--ink)}
+.stem{width:1px;height:22px;background:var(--line-2);margin:0 auto}
+.bar{height:1px;background:var(--line-2);margin:0 12.5%}
+.legs{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.leg{display:flex;flex-direction:column;align-items:center}
+.leg .stem{height:20px}
+.chip{border:1px solid var(--perf-line);background:var(--perf-soft);border-radius:8px;padding:11px 13px;
+  margin:0 8px;width:calc(100% - 16px);text-align:left}
+.chip .cid{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--perf);letter-spacing:-.01em;display:block;margin-bottom:5px}
+.chip .ctx{font-size:13.2px;line-height:1.45;color:var(--ink-2)}
+
+/* occasions strip */
+.occ{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:22px 0 4px}
+.occ .card{padding:18px 18px 16px}
+.occ .when{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.occ .said{font-size:14.4px;color:var(--ink);line-height:1.5;margin-bottom:10px}
+.occ .outcome{font-size:13.2px;color:var(--ink-2);line-height:1.5;border-top:1px solid var(--line);padding-top:10px}
+
+/* callout */
+.callout{border-left:2px solid var(--evid);background:var(--evid-soft);padding:16px 20px;border-radius:0 8px 8px 0;margin:24px 0}
+.callout p{margin:0;font-size:15.4px;line-height:1.55;color:var(--ink)}
+.callout .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--evid);display:block;margin-bottom:7px;font-weight:600}
+
+/* stats */
+.stats{display:flex;flex-wrap:wrap;gap:0;margin:24px 0 6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats div{flex:1 1 120px;padding:16px 18px 15px 0;border-right:1px solid var(--line)}
+.stats div:last-child{border-right:none}
+.stats .fig{font-family:"IBM Plex Mono",monospace;font-size:25px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;line-height:1}
+.stats .cap{font-size:12.4px;color:var(--muted);margin-top:6px;line-height:1.35}
+
+/* phases */
+.phase{display:grid;grid-template-columns:74px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line)}
+.phase:last-of-type{border-bottom:none}
+.phase .pn{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.phase h5{margin:0 0 6px;font-size:16.5px;font-weight:600}
+.phase p{font-size:14.4px;color:var(--ink-2);margin:0 0 8px;line-height:1.55}
+.gate{font-size:13.4px;color:var(--ink);background:var(--sunk);border:1px solid var(--line);border-radius:7px;padding:9px 12px;display:inline-block}
+.gate b{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px;font-weight:600}
+
+/* decisions */
+.dec{border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow);margin:22px 0 0;overflow:hidden}
+.dec div{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;gap:18px;flex-wrap:wrap;align-items:baseline}
+.dec div:last-child{border-bottom:none}
+.dec .q{flex:1 1 340px;font-size:15px;color:var(--ink)}
+.dec .a{flex:0 1 260px;font-size:13.8px;color:var(--evid);font-weight:500}
+.dec .a span{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;font-weight:600;margin-bottom:2px}
+
+ul.plain{list-style:none;padding:0;margin:16px 0}
+ul.plain li{padding-left:18px;position:relative;margin-bottom:10px;color:var(--ink-2);font-size:15px;line-height:1.55}
+ul.plain li::before{content:"—";position:absolute;left:0;color:var(--line-2)}
+ul.plain b{color:var(--ink);font-weight:600}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.8px;color:var(--muted);line-height:1.6;max-width:76ch}
+footer a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+@media (max-width:640px){
+  .page{padding:0 18px 80px}
+  .mast{padding-top:44px}
+  .step{border-right:none;border-bottom:1px solid var(--line)}
+  .phase{grid-template-columns:1fr;gap:6px}
+}
+</style>
+
+<div class="page">
+
+<div class="mast">
+  <div class="kicker">
+    <span>Petrilab</span><span class="sep">/</span>
+    <span>Assessment Layer</span><span class="sep">/</span>
+    <span>Committee Position</span><span class="sep">/</span>
+    <span>23 Aug 2026</span>
+  </div>
+  <h1>Don't build a testing product. Build the ledger that testing products write into.</h1>
+  <p class="standfirst">You have made teaching cost <b>30 seconds</b>. If assessment costs thirty minutes, teachers will not do it, no evidence will exist, and everything downstream — the reports, the parent promise, the consistency claim — becomes a hypothesis nobody can falsify. This is the committee's position on what the assessment layer must be, and on what it takes to make other applications want to connect to it.</p>
+  <dl class="meta">
+    <div><dt>Committee</dt><dd>Child psychologist · Educator (20 yrs) · Parent · Academic coordinator</dd></div>
+    <div><dt>Worked anchor</dt><dd>Preparatory Maths · C-1.1 Place value</dd></div>
+    <div><dt>Depends on</dt><dd>Layer 1 Spine (built) · Layer 2 Alignment (deferred)</dd></div>
+    <div><dt>Verdict</dt><dd>Ledger, not gradebook</dd></div>
+  </dl>
+</div>
+
+<div class="thesis">
+  <p>In 2026 anyone can generate a question. Almost nobody has <em>an address to write the answer to.</em></p>
+  <p style="font-size:16.5px;font-family:'IBM Plex Sans',sans-serif;color:var(--ink-2);max-width:64ch;line-height:1.6">Your asset is not an item bank — item banks are commodities. It is <span class="id perf">PO-MATH-PREP-C-1.1-T2-D</span>: a stable, framework-anchored, book-agnostic address that an observation can be written to and accumulated against for years. Own the address space and the record written on it, and every other application becomes a peripheral.</p>
+</div>
+
+<section id="committee">
+  <div class="shead"><span class="snum">§ 1</span><h2>The committee sits</h2></div>
+  <div class="rule"></div>
+  <p class="col">Each member was asked the same question: <em>what breaks first when a teacher who spends 30 seconds launching a lesson is asked to assess it?</em> They disagree about the product. They agree about the failure.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="voice v-psy"><span class="dot"></span>Child psychologist · ages 8–11</div>
+      <p class="claim">At this age a single item measures the occasion, not the child.</p>
+      <p>Attention, hunger, seating, misreading the question — the noise floor at Preparatory is high enough that one item tells you almost nothing. Reliability comes from repetition <em>across occasions</em>, not from longer papers. And a test-shaped event contaminates its own measurement: anxiety depresses performance, so a nervous child's score measures composure.</p>
+      <p>The second claim is the useful one. <b>A right answer is weak evidence</b> — it is equally consistent with understanding, guessing, mimicry and copying. A <em>patterned</em> wrong answer is a window. "9,990 is bigger than 49,014 because 9 is bigger than 4" is a stable, nameable, teachable belief.</p>
+      <ul class="conseq">
+        <li>No single observation may change a verdict — the <b>two-occasion rule</b>.</li>
+        <li>No test day. Evidence is a <b>byproduct of practice</b>, never an event.</li>
+        <li>The child never sees a level or a rank. Only the next move.</li>
+        <li>At this stage knowledge is <em>enactive</em> — you can never ask what a child knows, only infer it from what they did and how they were wrong.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="voice v-edu"><span class="dot"></span>Educator · 20 years, mid-tier private</div>
+      <p class="claim">Every assessment product dies in week three, and never because the insight was bad.</p>
+      <p>It dies because it added an obligation. The ones that survive replace work the teacher was already doing. She already runs a class test, checks notebooks, corrects homework and asks "hands up who got it." Four assessment instruments, already in the timetable, producing no data.</p>
+      <p>And do not automate her judgement away. It is the highest-quality sensor in the room and the only reason she will believe the output. <b>Ration it, don't replace it</b> — spend it only where the machine is unsure.</p>
+      <ul class="conseq">
+        <li><b>Intercept, don't add.</b> Instrument what already happens.</li>
+        <li>The wedge is <b>marking</b>, not analytics. "You stop marking 40 notebooks" sells. "You get a dashboard" does not.</li>
+        <li>Her override is sovereign, visible, and learned from — that is where trust is built.</li>
+        <li>Close the loop at what she must produce anyway: report-card comments and the parent meeting.</li>
+        <li><b>Warning:</b> the day this data touches teacher appraisal, honest data stops arriving.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="voice v-par"><span class="dot"></span>Parent · the one paying</div>
+      <p class="claim">No parent has ever wanted a score. They want to know whether their child is okay, and what to do tonight.</p>
+      <p>A percentage answers neither. What buys belief is <b>specificity</b>: "she still reads 4,072 as four hundred seventy-two" lands in a way no dashboard does, because it could only have come from watching my child.</p>
+      <p>The comparison instinct is not defeatable. Refuse a benchmark and parents substitute a worse one — the neighbour's child. Your stage model hands you the better frame for free: progress against a <b>national competency</b>, not a rank against classmates.</p>
+      <ul class="conseq">
+        <li>One named specific plus one <b>ten-minute action</b>. Nothing else.</li>
+        <li>Show the child's own work as the proof.</li>
+        <li>Frame progress stage-relative — "on track for Preparatory" — never rank-relative.</li>
+        <li><b>Sequence matters:</b> teacher trust first, parent surface second. A parent view that exposes teacher behaviour kills the teacher's honesty, and her honesty is the entire data supply.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="voice v-coo"><span class="dot"></span>Academic coordinator · the buyer</div>
+      <p class="claim">Schools don't buy brilliance. They buy consistency.</p>
+      <p>The nightmare is specific: 5A and 5C finished the term in different places, taught by different teachers, and nobody knew until the board exam. Comparability across sections is the product being purchased.</p>
+      <p>But a coordinator who mandates scoring gets compliance data, which is worth nothing. Give her <b>coverage and confidence</b>, which cannot be faked by ticking boxes.</p>
+      <ul class="conseq">
+        <li>Speak the school's currency — term marks, syllabus coverage, report cards — or be a second system that gets abandoned.</li>
+        <li>She will ask "what happens when we change books" and "who owns this data." <b>Layer 2 and DPDP are the sales answers</b>, and both must exist before this is sellable.</li>
+        <li>Never per-teacher rankings. Section-level coverage only.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Where four people who agree on nothing agree</span>
+    <p>All four reject the same object: <b>the high-stakes, teacher-authored, end-of-unit paper test.</b> What they each want instead is assessment that is continuous, nearly free, diagnostic rather than evaluative, and — the one everybody forgets — <em>returned</em>.</p>
+  </div>
+</section>
+
+<section id="reframe">
+  <div class="shead"><span class="snum">§ 2</span><h2>Two reframes before anything gets built</h2></div>
+  <div class="rule"></div>
+
+  <h3>Assessment is not a sixth step. It is a layer over steps 3 and 4.</h3>
+  <p class="col">The gold method already contains <b>Abhyas</b> (practice) and <b>Prayog</b> (experiment). A child doing Abhyas is already producing evidence — it is simply thrown away. Adding "Step 6 · Assess" would break the 30-second promise, manufacture exactly the test-shaped event the psychologist warned about, and create the new obligation the educator says kills products. Don't add a step. Instrument the two you have.</p>
+
+  <h3>The unit of the system is not a test, a score, or a report. It is an Observation.</h3>
+  <p class="col">This is the decision that makes an OS possible rather than a gradebook with an API bolted on. Everything upstream of the ledger — your app, a worksheet, a partner's practice game, a competitor's quiz engine — is merely an <b>emitter</b>. Everything downstream — the reteach card, the parent note, the coverage map, the report card — is a <b>reader</b>. The ledger is the only thing in the middle.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Field</th><th>Example</th><th>Why it exists</th></tr></thead>
+      <tbody>
+        <tr><td><b>learner</b></td><td><code>APAAR / internal id</code></td><td>Portable identity — the record must survive a change of school.</td></tr>
+        <tr><td><b>node</b></td><td><span class="id perf">PO-MATH-PREP-C-1.1-T2-D</span></td><td>The address. The entire thesis of the company sits in this field.</td></tr>
+        <tr><td><b>occasion</b></td><td><code>2026-08-21 · in-class</code></td><td>Independence between observations — two on one day are not two.</td></tr>
+        <tr><td><b>stimulus</b></td><td><code>item_id · format: written</code></td><td>Format independence. Getting it right twice on MCQs proves less.</td></tr>
+        <tr><td><b>response</b></td><td>the child's actual work</td><td>The artifact a parent will believe and a teacher can overrule.</td></tr>
+        <tr><td><b>verdict</b></td><td><code>correct / partial / incorrect / skipped</code></td><td>Deliberately coarse. Precision here is false precision.</td></tr>
+        <tr><td><b>diagnosis</b></td><td><span class="id know">KO-MATH-PREP-C-1.1-K3-01</span></td><td>The misconception matched. This is the payload that has value.</td></tr>
+        <tr><td><b>source</b></td><td><code>teacher / ai / partner / self</code></td><td>Reliability weight. Teacher judgement outranks everything.</td></tr>
+        <tr><td><b>confidence</b></td><td class="tnum">0.62</td><td>How much this observation is allowed to move belief.</td></tr>
+        <tr><td><b>consent scope</b></td><td><code>school · parent · purpose</code></td><td>DPDP is not a policy document. It is a column.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="loop">
+  <div class="shead"><span class="snum">§ 3</span><h2>The loop, and its time budget</h2></div>
+  <div class="rule"></div>
+  <p class="col">Your teaching promise is a number, which is why it is credible. The assessment promise needs one too. The committee proposes <b>the three-minute loop</b> — per lesson, for a class of forty. Everything below is designed backwards from that budget, and the budget is the metric you should be most afraid of missing.</p>
+
+  <div class="loop">
+    <div class="step">
+      <div class="n">Step 1</div>
+      <h5>Generate</h5>
+      <div class="who">Teacher — but she does not author</div>
+      <div class="budget">≤15s</div><div class="blabel">accept or swap one item</div>
+      <p>The lesson already carries its spine nodes from prep, so the check is <em>pre-drafted the moment prep finishes</em>. The Performance Outcome gives the task, the Knowledge Outcome gives the explanation, the misconception field gives the distractor. Layer 3 already promised this; assessment is the first thing that cashes it. Five or six items, blueprinted — every item's address known before any child answers.</p>
+    </div>
+    <div class="step">
+      <div class="n">Step 2</div>
+      <h5>Complete</h5>
+      <div class="who">Student — inside Abhyas</div>
+      <div class="budget">0s</div><div class="blabel">time already spent</div>
+      <p>Paper, board or device — the school's tier picks the <em>render target</em>, not the instrument. The same item object prints as a worksheet, casts to the TV as an oral check, or renders as taps. The evidence written to the ledger is identical either way. This is what keeps you medium-agnostic without building three products.</p>
+    </div>
+    <div class="step">
+      <div class="n">Step 3</div>
+      <h5>Judge</h5>
+      <div class="who">AI proposes, teacher disposes</div>
+      <div class="budget">≤120s</div><div class="blabel">for 40 children</div>
+      <p>The machine auto-scores everything unambiguous and queues only what it is unsure about — one child, one call, one thumb-tap, with a default already selected. Her judgement enters the ledger as its own observation at the highest source weight. Override is sovereign, logged, and fed back into scoring.</p>
+    </div>
+    <div class="step">
+      <div class="n">Step 4</div>
+      <h5>Return</h5>
+      <div class="who">Automatic — three audiences</div>
+      <div class="budget">0s</div><div class="blabel">nobody presses a button</div>
+      <p><b>Teacher:</b> "six children still hold the leading-digit belief — here is a five-minute reteach," pushed into tomorrow's prep card. <b>Parent:</b> one named specific, one ten-minute action. <b>Coordinator:</b> coverage and confidence by section. If Return is ever manual, the loop is bookkeeping and it dies by week three.</p>
+    </div>
+  </div>
+  <p class="col" style="margin-top:20px">Note what is <em>not</em> in the loop: authoring, marking, data entry, and report writing. Those are the four things you are removing. That is the pitch to a teacher — not analytics.</p>
+</section>
+
+<section id="model">
+  <div class="shead"><span class="snum">§ 4</span><h2>The measurement model</h2></div>
+  <div class="rule"></div>
+  <ul class="plain col">
+    <li><b>States, not scores.</b> Per learner × Performance Outcome: <em>Not yet · Emerging · Secure</em>, with an orthogonal flag for <em>misconception held</em>. A child can be Emerging and holding a misconception; those are different facts and different responses.</li>
+    <li><b>Confidence, not certainty.</b> A function of observation count, independence (different occasions <em>and</em> different formats), recency, and source weight. Show it in the UI. A system that says "not sure yet" earns trust; one that is confidently wrong once never gets it back.</li>
+    <li><b>The two-occasion rule.</b> A single observation can lower confidence and queue a re-check. It can never demote a child. This is a psychometric necessity at this age, and it also happens to make the product feel humane.</li>
+    <li><b>Decay.</b> Confidence falls with time — March evidence is weak by August. This is honest measurement, and it manufactures precisely the right pedagogy: spaced retrieval checks. The measurement need and the learning science point the same way here, which is rare and worth exploiting.</li>
+    <li><b>Knowledge is inferred, never observed.</b> A Knowledge Outcome has no item of its own. Its state is computed through <code>PO_KO_Map</code>: <em>suspected</em> when several dependent outcomes fail, <em>diagnosed</em> when its named misconception is matched twice. Which is why the misconception column is not decoration — it is the engine.</li>
+  </ul>
+  <div class="callout">
+    <span class="tag">The line to put in front of a CPO</span>
+    <p>Diagnostic power lives in the distractor, not the answer. Scoring tells you a child was wrong; a matched misconception tells you <em>what they believe instead</em> — and belief is the only thing a teacher can actually act on tomorrow morning.</p>
+  </div>
+</section>
+
+<section id="worked">
+  <div class="shead"><span class="snum">§ 5</span><h2>Worked: one exit ticket, three predictions</h2></div>
+  <div class="rule"></div>
+  <p class="col">Real identifiers from the workbook. The lesson is Class 5 comparing large numbers, addressed to <span class="id perf">PO-MATH-PREP-C-1.1-T2-D</span> — <em>"Compares 5- and 6-digit numbers and justifies the comparison using place value."</em> Six items are generated, one of them carrying a distractor built from the misconception attached to a single concept.</p>
+
+  <div class="occ">
+    <div class="card">
+      <div class="when">Occasion 1 — Tuesday, written</div>
+      <div class="said">Aarav circles <b>9,990</b> as greater than <b>49,014</b>.</div>
+      <div class="outcome">Nothing is concluded. One occasion, one format. Confidence on the node drops and a re-check is queued in a <em>different</em> format.</div>
+    </div>
+    <div class="card">
+      <div class="when">Occasion 2 — Thursday, oral warm-up</div>
+      <div class="said">"Which is more — 9,990 or 49,014? How do you know?" He says <b>9,990. Because 9 is bigger than 4.</b></div>
+      <div class="outcome">Two occasions, two formats, same pattern. The state changes: the misconception is now <b>diagnosed</b>, not suspected.</div>
+    </div>
+    <div class="card" style="border-color:var(--evid-line);background:var(--evid-soft)">
+      <div class="when" style="color:var(--evid)">What the teacher spent</div>
+      <div class="said">Roughly <b>four seconds</b> across two days — one tap Tuesday, one tap Thursday.</div>
+      <div class="outcome" style="border-color:var(--evid-line)">She authored nothing, marked nothing, and recorded nothing. The evidence was a byproduct of practice she was running anyway.</div>
+    </div>
+  </div>
+
+  <p class="col" style="margin-top:26px">And now the graph pays. The diagnosed concept is a dependency of <b>three</b> performance outcomes across two threads — so the exit ticket did not score one lesson. It lowered belief across a competency and predicted two failures that have not happened yet.</p>
+
+  <div class="fan">
+    <div class="fan-inner">
+      <div class="node">
+        <div class="lbl">Diagnosed · KO-MATH-PREP-C-1.1-K3-01 · Property</div>
+        <div class="txt">Place value orders numbers — because each place outranks every place below it, a difference in a higher place decides the comparison whatever the digits below it do.</div>
+      </div>
+      <div class="stem"></div>
+      <div class="bar"></div>
+      <div class="legs">
+        <div class="leg"><div class="stem"></div>
+          <div class="chip"><span class="cid">PO-…-C-1.1-T2-A</span><span class="ctx">Compares two 3-digit numbers using &gt;, &lt; or = by reasoning about place value.</span></div>
+        </div>
+        <div class="leg"><div class="stem"></div>
+          <div class="chip"><span class="cid">PO-…-C-1.1-T2-B</span><span class="ctx">Arranges a set of 4-digit numbers in ascending and descending order.</span></div>
+        </div>
+        <div class="leg"><div class="stem"></div>
+          <div class="chip" style="border-color:var(--evid-line);background:var(--evid-soft)"><span class="cid" style="color:var(--evid)">PO-…-C-1.1-T2-D</span><span class="ctx">Compares 5- and 6-digit numbers and justifies the comparison using place value. <b>← where it surfaced</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="col">One diagnosis, three affected outcomes. The teacher gets <em>one</em> reteach targeting <em>one</em> idea instead of three separate remediation topics appearing over three weeks. The parent gets one sentence. And if eleven of thirty-eight children hold the same belief, the coordinator is looking at a <b>curriculum signal, not a child signal</b> — comparison was taught before magnitude was secure.</p>
+
+  <div class="callout">
+    <span class="tag">This is the demo</span>
+    <p>A question bank cannot do this at any price. The fan-out is a property of the map you have already built — and it produces <em>falsifiable predictions</em>, which is how a measurement system earns the right to be believed.</p>
+  </div>
+
+  <h3>The honest inventory check</h3>
+  <p class="col">The spine can currently address far more than it can diagnose. Diagnostic coverage — the share of concepts carrying a named misconception — should become an explicit build target, because a node without one can be scored but not diagnosed, and scoring is the commodity half.</p>
+  <div class="stats">
+    <div><div class="fig">162</div><div class="cap">Performance Outcomes<br>addressable</div></div>
+    <div><div class="fig">165</div><div class="cap">Knowledge Outcomes<br>in the catalogue</div></div>
+    <div><div class="fig">349</div><div class="cap">PO ↔ KO links<br>the fan-out engine</div></div>
+    <div><div class="fig">48</div><div class="cap">Named misconceptions<br><b style="color:var(--warn)">29% diagnostic coverage</b></div></div>
+  </div>
+</section>
+
+<section id="os">
+  <div class="shead"><span class="snum">§ 6</span><h2>The OS: why anyone would connect</h2></div>
+  <div class="rule"></div>
+  <p class="col">Start with the uncomfortable part. <b>Standards with no traffic are dead.</b> Nobody adopts an address space because it is elegant; they adopt it because the records already live there. So the sequence is not negotiable: <em>win the classroom loop → publish the address space → open the write API → open the read API.</em> Do not lead with the API, and do not say "OS" to a school. Say "the record."</p>
+
+  <h3>Inbound — who emits, and what they cannot get anywhere else</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Emitter</th><th>What they write</th><th>What they get that they cannot build</th></tr></thead>
+      <tbody>
+        <tr><td><b>Practice &amp; content apps</b></td><td>Scored attempts against nodes</td><td><b>Placement.</b> Cold-start is the hardest problem in adaptive learning. The ledger tells them where this child actually is on day one.</td></tr>
+        <tr><td><b>School ERP / LMS</b></td><td>Term marks, attendance context</td><td>Outcome-level report-card content they have no way of generating.</td></tr>
+        <tr><td><b>Publishers</b></td><td>Chapter → node alignment (this <em>is</em> Layer 2)</td><td>Which of their chapters manufacture misconceptions, at scale, with evidence.</td></tr>
+        <tr><td><b>Tuition centres</b></td><td>Homework and drill evidence</td><td>The school's picture of the same child — and the school gets theirs.</td></tr>
+        <tr><td><b>Home / parent tools</b></td><td>Home practice</td><td>A teacher-validated view instead of a self-reported one.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The economics, said plainly</h3>
+  <p class="col">Every application sees only its own sessions. The ledger sees school and home and tuition and paper, across years, addressed to a national framework. <b>A complete longitudinal picture of a child's learning can only exist in one place</b> — and whoever holds it becomes the thing everyone else has to call. Each emitter makes the ledger more valuable to every reader, and each reader gives emitters a reason to write. The spine is the shared address space that makes the two sides commensurable at all.</p>
+  <div class="callout" style="border-left-color:var(--warn);background:var(--warn-soft)">
+    <span class="tag" style="color:var(--warn)">Say the analogy, then disarm it</span>
+    <p>The economics here are a credit bureau's. <b>The ethics must not be.</b> The record is diagnostic and never ranking; it belongs to the child rather than the school; it is portable and erasable on request; it never scores a teacher; and it is never sold. Put that in the product, not the privacy policy — with children's data, the first breach of it ends the company.</p>
+  </div>
+
+  <h3>Adopt standards, don't author one</h3>
+  <p class="col">You do not have the standing to publish a standard, and you don't need it. Every piece of plumbing already exists; your value goes in the payload, not the envelope.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Borrow</th><th>For</th><th>What it buys you</th></tr></thead>
+      <tbody>
+        <tr><td><b>1EdTech CASE</b></td><td>Publishing the spine</td><td>Exactly the spec for exposing a competency framework as machine-referenceable, stably-identified nodes. Publish the spine as CASE-conformant and <span class="id perf">PO-MATH-PREP-C-1.1-T2-D</span> becomes addressable by any tool that already speaks it — and Layer 2 becomes a first-class cross-framework alignment rather than a private lookup table.</td></tr>
+        <tr><td><b>xAPI / Caliper</b></td><td>The observation envelope</td><td>Your Observation is very nearly an actor-verb-object statement with a spine node as the object. Use their envelope; keep your value in the object.</td></tr>
+        <tr><td><b>QTI · LTI</b></td><td>Item interchange, launch</td><td>Partner integration becomes a week of work rather than a quarter.</td></tr>
+        <tr><td><b>APAAR</b></td><td>Learner identity</td><td>Being mandated across school students and tied to DigiLocker/ABC. A ledger keyed to a national learner ID is portable across schools by construction — which is the entire longitudinal claim.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The regulatory clock is a moat, if you start now</h3>
+  <p class="col">India's DPDP Rules were notified in November 2025 with enforcement from <b>13 May 2027</b> — roughly nine months out. Everyone under 18 is a child; verifiable parental consent is required; behavioural tracking and targeted advertising at children are banned outright; and the boundary between a school and an edtech platform is still unclear enough that the safe reading is the strict one. An assessment OS is, by definition, a children's-data business. Build consent scope, purpose limitation and erasure as <em>ledger primitives</em> — per-observation columns, not a policy page — and the deadline stops being a cost you absorb and becomes a wall competitors have to climb. Coordinators will start asking in 2027. Being able to answer in one sentence will win deals.</p>
+</section>
+
+<section id="risks">
+  <div class="shead"><span class="snum">§ 7</span><h2>What kills this</h2></div>
+  <div class="rule"></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th style="width:24%">Failure</th><th>Mechanism</th><th style="width:34%">Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td><b>The teacher stops judging</b></td><td>The ledger rots quietly and everything downstream becomes fiction that still renders beautifully.</td><td>Judgement budget ≤120s per lesson, <em>measured as a product metric</em>. Return must hand her something she wanted anyway.</td></tr>
+        <tr><td><b>Evidence becomes appraisal</b></td><td>A principal uses it to rank teachers; teachers game it within a fortnight; data quality dies at the source.</td><td>Product firewall plus a contractual commitment. Coordinators see coverage and confidence — never per-teacher output.</td></tr>
+        <tr><td><b>AI mis-scoring at scale</b></td><td>One wrong message to a parent costs more trust than a hundred right ones earn.</td><td>Confidence-gated automation. Nothing reaches a parent that a teacher has not seen. Override is sovereign.</td></tr>
+        <tr><td><b>Labelling and anxiety</b></td><td>Children learn their level, decide they are "bad at maths", and parents revolt — correctly.</td><td>No levels or ranks shown to children. Language is always "next", never "behind". No leaderboards, ever.</td></tr>
+        <tr><td><b>Layer 2 is still deferred</b></td><td>A partner addresses content by <em>their</em> chapter, not your node. Until alignment exists, every integration is a bespoke mapping project.</td><td><b>This is the critical path.</b> Layer 2 is not a later nicety — it is the API's translation layer. Promote it now.</td></tr>
+        <tr><td><b>Thin misconception catalogue</b></td><td>The diagnostic claim outruns the data, and the first demo to a sharp CPO exposes it.</td><td>Set coverage targets per competency before the diagnostic claim is made publicly.</td></tr>
+        <tr><td><b>Cold-start credibility</b></td><td>Early states are low-confidence and sometimes wrong; a teacher writes the system off in week two.</td><td>Surface confidence honestly. "Not enough evidence yet" is a feature, not an embarrassment.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="build">
+  <div class="shead"><span class="snum">§ 8</span><h2>Build order, with gates</h2></div>
+  <div class="rule"></div>
+  <p class="col">Each phase is gated on evidence that the previous one worked. The gates matter more than the phases — they are what stop you shipping an API to nobody.</p>
+
+  <div class="phase">
+    <div class="pn">Phase 0</div>
+    <div>
+      <h5>Instrument Abhyas — one subject, one competency</h5>
+      <p>Generate → Judge → Return inside the existing lesson screen, for Preparatory Maths place value where the spine is complete. Ship the Observation schema on day one even though only one emitter writes to it. Everything after this depends on the schema being right, and nothing after this can fix it cheaply.</p>
+      <div class="gate"><b>Gate</b>Median judge-time under 120s, and ≥60% of taught nodes carrying at least one observation, after four weeks with real teachers.</div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="pn">Phase 1</div>
+    <div>
+      <h5>The measurement engine</h5>
+      <p>States, confidence, decay, the two-occasion rule, and KO inference through <code>PO_KO_Map</code>. This is where the fan-out in §5 becomes real rather than illustrative.</p>
+      <div class="gate"><b>Gate</b>Graph predictions beat the teacher's own expectation on held-out items. If they don't, the spine's grain is wrong — and that is worth knowing before selling anything.</div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="pn">Phase 2</div>
+    <div>
+      <h5>Return surfaces</h5>
+      <p>Parent note, coordinator coverage map, report-card comment generator. Teacher surface first; parent surface only once teachers trust the data.</p>
+      <div class="gate"><b>Gate</b>Teachers actually use the generated report-card comments at term end. That is the moment the data becomes load-bearing for them.</div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="pn">Phase 3</div>
+    <div>
+      <h5>Publish the address space</h5>
+      <p>Spine as a CASE-conformant framework, plus Layer 2 alignment for the two or three textbooks that actually matter in your schools. Not all books. The ones your schools use.</p>
+      <div class="gate"><b>Gate</b>One external partner maps their content to your nodes without your help. If they can't, the framework isn't published — it's just documented.</div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="pn">Phase 4</div>
+    <div>
+      <h5>Open the ledger</h5>
+      <p>Write API for emitters, then read API for readers, consent-scoped and DPDP-native from the first call. Placement is the hook that gets the first content partner to write.</p>
+      <div class="gate"><b>Gate</b>Share of observations originating outside Petrilab. Below 10%, you are a classroom app with an API. Above 30%, you are the ledger.</div>
+    </div>
+  </div>
+</section>
+
+<section id="metrics">
+  <div class="shead"><span class="snum">§ 9</span><h2>Instrument these, in this order</h2></div>
+  <div class="rule"></div>
+  <ul class="plain col">
+    <li><b>Judgement cost</b> — median teacher seconds to close the loop per lesson. <em>The survival metric.</em> If it drifts past three minutes you have two weeks before logging stops.</li>
+    <li><b>Evidence density</b> — observations per learner per week. Below roughly two, no state can reach confidence and the model has nothing to say.</li>
+    <li><b>Loop closure</b> — share of flagged reteaches actually taught within seven days. <em>The "does any of this change anything" metric</em>, and the one investors will not think to ask about.</li>
+    <li><b>Node coverage and confidence</b> — share of taught nodes observed, and share above threshold. This is the coordinator's product.</li>
+    <li><b>Diagnostic yield</b> — misconceptions named per hundred observations. Tracks whether the catalogue is keeping up with the item generator.</li>
+    <li><b>Later, and only later</b> — emitters connected, third-party share of observations, read-API calls.</li>
+  </ul>
+</section>
+
+<section id="decisions">
+  <div class="shead"><span class="snum">§ 10</span><h2>Four decisions the committee cannot make for you</h2></div>
+  <div class="rule"></div>
+  <div class="dec">
+    <div>
+      <div class="q">Does the parent surface ship in v1, or wait until teachers trust the data?</div>
+      <div class="a"><span>Committee leans</span>Wait. Teacher honesty is the data supply; a parent view that arrives too early ends it.</div>
+    </div>
+    <div>
+      <div class="q">Does a coordinator ever see per-teacher data?</div>
+      <div class="a"><span>Committee leans</span>Never in v1 — and say so in writing, because the school will ask for it.</div>
+    </div>
+    <div>
+      <div class="q">Does Layer 2 move from "deferred" to critical path now?</div>
+      <div class="a"><span>Committee leans</span>Yes. Without it there is no API, only bespoke integrations.</div>
+    </div>
+    <div>
+      <div class="q">One subject to undeniable depth, or breadth across subjects for the deck?</div>
+      <div class="a"><span>Committee leans</span>Depth. Preparatory Maths, until the diagnosis is impossible to argue with.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Spine identifiers, outcome statements, concept statements and misconception text are quoted verbatim from <em>Learning Platform.xlsx</em> (Layer 1, Preparatory Mathematics) as of 23 Aug 2026; counts are computed from that workbook. Curricular Goals and Competencies in the spine are themselves reproduced from the National Curriculum Framework for School Education 2023. The interoperability specifications named in §6 — CASE, Caliper, xAPI, QTI, LTI — are 1EdTech standards. DPDP dates refer to the Digital Personal Data Protection Rules notified 13 Nov 2025 with enforcement from 13 May 2027; the school/edtech exemption boundary remains unsettled and the strict reading is assumed throughout. The four committee voices are a deliberate device — the disagreements between them are the argument, not a consensus to be averaged.
+</footer>
+
+</div>
