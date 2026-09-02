@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<meta name="description" content="Petrilab Home — the evening companion for a school-going child. Interactive prototype.">
+<title>Petrilab Home — Prototype</title>
+<style>
+:root{ --atint:#FDF4E6;
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE; --gline:#CBE7D6; --gdeep:#1F7A43;
+  --amber:#B07A1E; --violet:#5B4EA8; --vtint:#F3F1FB;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --band1:#F4F5F7; --band2:#EFF1F3; --bline:#E4E7EB;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --doodle:#1A2333; --doodle-o:.075; --doodle-t:.05;
+  --sheet:#FFFFFF; --pad:#F4F6F9; --shadow:0 1px 2px rgba(20,33,61,.04);
+  --avbg:#E2E7EF; --avline:#C6CFDC; --avink:#2C3A52;
+}
+[data-theme="dark"]{ --atint:#2A2416;
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F; --gline:#265B3B; --gdeep:#79D6A2;
+  --amber:#D9A44E; --violet:#A99BE8; --vtint:#241F3A;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --band1:#131926; --band2:#111725; --bline:#232A3A;
+  --chip:#1A2130; --icbg:#212938; --doodle:#8FA3C8; --doodle-o:.14; --doodle-t:.10;
+  --sheet:#171D2B; --pad:#212938; --shadow:0 1px 2px rgba(0,0,0,.35);
+  --avbg:#2B3448; --avline:#3C4964; --avink:#DCE4F0;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html, body{margin:0;padding:0}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+     color:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh;-webkit-font-smoothing:antialiased}
+.stage{display:flex;flex-direction:column;align-items:center;gap:18px}
+.frame{width:390px;height:min(820px,calc(100dvh - 104px));background:var(--bg);border-radius:38px;
+       box-shadow:0 20px 56px rgba(20,33,61,.16),0 0 0 9px var(--bezel,#E4E8EE);
+       overflow:hidden;display:flex;flex-direction:column;position:relative}
+[data-theme="dark"] .frame{--bezel:#05080F}
+@media (max-width:480px){body{display:block;background:var(--bg)}
+.stage{display:block}
+.frame{width:100%;height:100dvh;border-radius:0;box-shadow:none;
+         padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}}
+svg{display:block}
+#pgT .ic{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#pgT .appbar{display:flex;align-items:center;gap:9px;padding:16px 20px 8px}
+#pgT .appbar img{width:26px;height:26px}
+#pgT .appbar .brand{font-weight:700;font-size:15.5px}
+#pgT .spacer{flex:1}
+.streakpill{display:flex;align-items:center;gap:5px;font-weight:600;font-size:12.5px;color:var(--body)}
+#pgT .streakpill .n{font-weight:700;color:var(--ink)}
+#pgT .avatar{width:33px;height:33px;border-radius:50%;background:var(--avbg);border:1.5px solid var(--avline);
+        color:var(--avink);font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;
+        margin-left:13px;cursor:pointer;position:relative;flex:none}
+.schoolbar{display:flex;align-items:center;gap:7px;padding:0 20px;margin-bottom:2px;font-size:11px;
+           font-weight:600;color:var(--muted)}
+.schoolbar .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+#pgT .scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 0;scroll-behavior:smooth;display:flex;flex-direction:column}
+#pgT .scroll > *{flex:none}
+.hello{margin:14px 2px 13px}
+.hello h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.2px}
+.hello p{margin:3px 0 0;color:var(--muted);font-size:13px;font-weight:500}
+.hello .schl{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.hello .schl .dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+/* anchors */
+.anchors{display:block;position:sticky;top:0;z-index:6;background:var(--bg);
+         margin:0 -20px 12px;padding:8px 20px 10px;transition:box-shadow .2s,border-color .2s;
+         border-bottom:1px solid transparent}
+/* */ #pgT .anchors.stuck{border-bottom-color:var(--bline);box-shadow:0 6px 14px -12px rgba(20,33,61,.4)}
+.anc{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--body);
+     background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+.anc .cnt{background:var(--blue);color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;
+          min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.anc .cnt.done{background:var(--green)}
+.anc:active{background:var(--icbg)}
+.anctop{display:flex;align-items:center;gap:8px}
+.spx{flex:1}
+.filt{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--body);
+      background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;flex:none}
+#pgT .filt.on{background:var(--btint);border-color:var(--blue);color:var(--blue-dk)}
+#pgT .subs{display:flex;gap:7px;margin:6px -20px 0;padding:0 20px 2px;overflow-x:auto;scrollbar-width:none}
+#pgT .subs::-webkit-scrollbar{display:none}
+#pgT .subs.open{display:flex}
+#pgT .sb{flex:none;font-size:12.5px;font-weight:600;color:var(--body);background:var(--chip);
+    border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+#pgT .sb.on{background:var(--btint);border-color:var(--blue);color:var(--blue-dk)}
+.empty{text-align:center;padding:22px 18px;border:1px dashed var(--line);border-radius:16px;background:var(--card)}
+.empty .et2{font-size:13.5px;font-weight:700}
+.empty .es2{font-size:12px;color:var(--muted);margin-top:4px}
+.anc.here{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.anc.here .cnt{background:var(--bg);color:var(--ink)}
+.anc.here .cnt.done{background:var(--green);color:#fff}
+/* zones */
+#pgT .zhead{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 12px}
+#pgT .zhead .zt{font-size:11.5px;font-weight:700;letter-spacing:1.3px;color:var(--muted);text-align:center;text-transform:uppercase;white-space:nowrap}
+#pgT .zhead .zt b{color:var(--ink);font-weight:800}
+#pgT .zhead .zline{flex:1;max-width:40px;height:1px;background:var(--line)}
+#pgT .zone{scroll-margin-top:8px;margin:0 -20px;padding:14px 20px 20px}
+#band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 0 auto;
+      display:flex;flex-direction:column;overflow:hidden}
+#band > *{position:relative;z-index:1}
+#zTodo{background:transparent}
+#zExp{background:transparent;padding:30px 20px 40px;flex:1 0 auto}
+#doodles{position:absolute;inset:0;z-index:0;width:100%;height:100%;
+         color:var(--doodle);opacity:var(--doodle-o);pointer-events:none}
+.bandsep{height:1px;background:var(--line);margin:0 -20px;opacity:.7}
+#pgT .zone.hl .zhead .zt{color:var(--blue-dk)}
+#pgT .zone.hl .zhead .zline{background:var(--blue)}
+#pgT #zTodo .zhead .zt{color:var(--muted)}
+#pgT #zExp .zhead .zt{color:var(--muted)}
+/* segmented section control */
+.seg{display:flex;background:var(--icbg);border-radius:14px;padding:4px}
+.sgi{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:10px;
+     font-size:13px;font-weight:700;color:var(--body);line-height:1.15;cursor:pointer}
+.sgi.here{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+.sgi .top{display:flex;align-items:center;gap:6px}
+.sgi small{font-size:10px;font-weight:600;color:var(--muted)}
+.sgi.here small{color:var(--blue-dk)}
+.sgi.here svg{color:var(--blue)}
+#pgT .filtic{flex:none;width:30px;height:34px;margin-right:2px;background:transparent;border:none;
+        color:var(--body);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pgT .subs{align-items:center}
+/* horizontal card deck */
+.deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 4px;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.deck::-webkit-scrollbar{display:none}
+.dc{flex:0 0 79%;scroll-snap-align:center;height:228px;border-radius:20px;padding:17px 18px;
+    background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;
+    transition:background .25s,border-color .25s,color .25s;cursor:pointer}
+.dc .src2{display:flex;align-items:center;gap:8px}
+.dc .sic{width:32px;height:32px;border-radius:10px;background:var(--icbg);color:var(--body);flex:none;
+         display:flex;align-items:center;justify-content:center;transition:.25s}
+.dc .slbl{font-size:9.5px;font-weight:800;letter-spacing:1px;color:var(--muted)}
+.dc h3{margin:13px 0 0;font-size:18px;font-weight:700;line-height:1.22;letter-spacing:-.2px}
+.dc .sub2{font-size:12.5px;color:var(--body);margin-top:5px;line-height:1.4}
+.dc .cncpt{margin-top:auto;font-size:11px;font-weight:600;color:var(--muted);
+           display:flex;align-items:center;gap:6px}
+.dc .foot{display:flex;align-items:center;margin-top:11px}
+.dc .tm{font-size:12px;font-weight:700;color:var(--muted)}
+.dc .arw{margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--icbg);color:var(--ink);
+         display:flex;align-items:center;justify-content:center;transition:.25s}
+.dc.act{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.dc.act .sic{background:rgba(255,255,255,.12);color:var(--card)}
+.dc.act .slbl{color:#9FB0CE}
+.dc.act .sub2{color:#C4CEE0}
+.dc.act .cncpt{color:#8FA3C8}
+.dc.act .tm{color:#9FB0CE}
+.dc.act .arw{background:var(--card);color:var(--ink)}
+.deckfoot{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--line)}
+#pgT .pd.on{background:var(--ink);width:18px;border-radius:3px}
+/* to-do list */
+.asg{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.ai{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.ai + .ai{border-top:1px solid var(--line)}
+.ai .aic{width:32px;height:32px;border-radius:9px;background:var(--icbg);color:var(--body);flex:none;
+         display:flex;align-items:center;justify-content:center}
+.ai.school .aic{background:transparent;border:1px dashed var(--muted)}
+.ai.voice .aic{background:var(--btint);color:var(--blue-dk)}
+.ai .am{flex:1;min-width:0}
+.ai .at{font-size:13.5px;font-weight:700}
+.ai .as{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ai .as .chg2{color:var(--blue-dk);font-weight:600;border-bottom:1px dotted #B6C9E4;cursor:pointer}
+.ai .aa{flex:none;font-size:11.5px;font-weight:700;color:var(--muted)}
+.ai .go{flex:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:7px 15px}
+.zfoot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:9px;font-weight:500}
+/* done card */
+.done{background:var(--gtint);border:1px solid var(--gline);border-radius:16px;padding:18px}
+.done .dh{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:700;color:var(--gdeep)}
+.done .dl{font-size:9.5px;font-weight:700;letter-spacing:1.1px;color:var(--gdeep);margin-top:13px}
+.done .dp{font-size:14px;font-weight:600;color:var(--ink);margin-top:5px;line-height:1.45}
+.done .dgo{display:inline-flex;align-items:center;gap:6px;margin-top:13px;font-size:12.5px;font-weight:700;
+           color:var(--gdeep);cursor:pointer}
+/* explore */
+.ex{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.ei{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;cursor:pointer}
+.ei + .ei{border-top:1px solid var(--line)}
+.ei .eic{width:32px;height:32px;border-radius:9px;background:var(--icbg);color:var(--body);flex:none;
+         display:flex;align-items:center;justify-content:center}
+.ei .em{flex:1;min-width:0}
+.ei .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.8px;border-radius:999px;
+           padding:2.5px 8px;margin-bottom:4px}
+.ei .badge.kit{background:var(--gtint);color:var(--gdeep)}
+.ei .badge.chal{background:var(--vtint);color:var(--violet)}
+.ei .badge.rev{background:var(--btint);color:var(--blue-dk)}
+.ei .badge.peek{background:var(--icbg);color:var(--amber)}
+.ei .et{font-size:13.5px;font-weight:700}
+.ei .es{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.ei .tags2{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.ei .tg{font-size:10px;font-weight:600;color:var(--violet);background:var(--vtint);border-radius:999px;padding:3px 8px}
+/* journey + week */
+.jy{display:flex;align-items:center;gap:13px;cursor:pointer;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:15px 16px;margin-top:12px;cursor:pointer}
+.jy .jic{width:34px;height:34px;border-radius:10px;background:var(--icbg);color:var(--body);flex:none;
+         display:flex;align-items:center;justify-content:center}
+.jy .jt{font-weight:700;font-size:13.5px}
+.jy .js{font-size:11.5px;color:var(--muted);margin-top:1px}
+.jy .chev{margin-left:auto;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.rowhead{display:flex;align-items:baseline;gap:8px}
+.rowhead .t{font-weight:700;font-size:14px}
+.rowhead .s{font-size:11.5px;color:var(--muted);font-weight:500}
+.days{display:flex;gap:6px;margin-top:12px}
+.day{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+#pgT .day .b{width:100%;height:26px;border-radius:8px;background:var(--icbg);display:flex;align-items:center;justify-content:center}
+#pgT .day.done2 .b{background:var(--btint)}
+#pgT .day.done2 .b svg{color:var(--blue)}
+#pgT .day.today .b{border:1px dashed var(--muted);background:transparent}
+.day .l{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.5px}
+/* sheets (settings + chapter) */
+#pgT .veil{position:absolute;inset:0;background:rgba(16,24,43,.4);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+#pgT .veil.open{opacity:1;pointer-events:auto}
+#pgT .sheet, #pgT .chsheet{position:absolute;left:0;right:0;bottom:-100%;background:var(--sheet);border-radius:24px 24px 0 0;
+       transition:.32s cubic-bezier(.3,.9,.3,1);max-height:88%;display:flex;flex-direction:column}
+#pgT .sheet{z-index:41}
+.chsheet{z-index:43;max-height:82%}
+#pgT .sheet.open, #pgT .chsheet.open{bottom:0}
+#pgT .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:12px auto 4px;flex:none}
+#pgT .sbody{overflow-y:auto;padding:8px 20px calc(24px + env(safe-area-inset-bottom))}
+.sme{display:flex;align-items:center;gap:13px;padding:10px 2px 16px}
+.sme .sav{width:46px;height:46px;border-radius:50%;background:var(--avbg);border:1.5px solid var(--avline);color:var(--avink);
+          font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;flex:none}
+.sme .sn{font-weight:700;font-size:16.5px}
+.sme .sc{font-size:12.5px;color:var(--muted);margin-top:2px}
+.slab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);margin:14px 2px 7px}
+.sgrp{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.srow{display:flex;align-items:center;gap:12px;padding:13px 15px;cursor:pointer}
+.srow + .srow{border-top:1px solid var(--line)}
+.srow .sri{width:26px;color:var(--muted);flex:none;display:flex;align-items:center;justify-content:center}
+.srow .srm{flex:1;min-width:0}
+.srow .srt{font-size:13.5px;font-weight:600}
+.srow .srs{font-size:11.5px;color:var(--muted);margin-top:1px}
+.srow .srv{font-size:12.5px;color:var(--muted);font-weight:500;flex:none}
+.srow .chev{color:var(--muted);flex:none}
+.srow.lock{background:var(--icbg)}
+.srow.lock .sri{color:var(--ink)}
+.toggle{width:38px;height:22px;border-radius:11px;background:var(--blue);position:relative;flex:none}
+.toggle.off{background:var(--muted)}
+.toggle i{position:absolute;top:2px;left:18px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+.toggle.off i{left:2px}
+.sfoot{text-align:center;font-size:10.5px;color:var(--muted);margin-top:18px;font-weight:500}
+.pin{padding:6px 2px 0;text-align:center}
+.pin h3{margin:6px 0 4px;font-size:17px;font-weight:700}
+.pin p{margin:0 0 18px;font-size:12.5px;color:var(--muted)}
+.dots{display:flex;gap:12px;justify-content:center;margin-bottom:22px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--muted);display:block}
+.dots i.f{background:var(--blue);border-color:var(--blue)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:250px;margin:0 auto}
+.pad b{font-weight:600;font-size:19px;padding:13px 0;border-radius:12px;background:var(--pad);color:var(--ink);cursor:pointer;
+       display:block;text-align:center}
+.pad b.blank{background:transparent;cursor:default}
+.pin .hint{margin-top:16px;font-size:11px;color:var(--muted)}
+.chhead{padding:4px 20px 12px;flex:none}
+.chhead h3{margin:6px 0 3px;font-size:17.5px;font-weight:700}
+.chhead p{margin:0;font-size:12.5px;color:var(--muted)}
+.chlist{overflow-y:auto;padding:0 20px calc(22px + env(safe-area-inset-bottom))}
+.chi{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--line);border-radius:13px;
+     margin-bottom:8px;cursor:pointer;background:var(--card)}
+#pgT .chi.on{border-color:var(--blue);background:var(--btint)}
+.chi .rad{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--muted);flex:none;position:relative}
+#pgT .chi.on .rad{border-color:var(--blue)}
+#pgT .chi.on .rad::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--blue)}
+#pgT .chi .cm{flex:1;min-width:0}
+#pgT .chi .ct{font-size:13.5px;font-weight:600}
+.chi .cs{font-size:11.5px;color:var(--muted);margin-top:1px}
+.chi .flag{font-size:9.5px;font-weight:700;letter-spacing:.7px;color:var(--blue-dk);background:var(--card);
+           border:1px solid var(--blue);border-radius:999px;padding:3px 8px;flex:none}
+.chnote{font-size:11.5px;color:var(--muted);text-align:center;margin:4px 0 2px;line-height:1.5}
+.demo{display:flex;align-items:center;gap:8px;background:#10182B;border-radius:999px;padding:7px 10px 7px 16px}
+.demo .dl{font-size:9px;font-weight:700;letter-spacing:1.1px;color:#6B7B9E}
+.demo .db{font-size:11px;font-weight:600;color:#9FB0CE;border:1px solid #2C3958;border-radius:999px;
+          padding:5px 12px;cursor:pointer;background:transparent}
+.demo .db.on{background:#fff;color:#10182B;border-color:#fff}
+.demo .sep{width:1px;height:16px;background:#2C3958}
+@media (max-width:480px){.demo{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:60;display:none;
+        box-shadow:0 8px 24px rgba(16,24,43,.4)}
+.demo.show{display:flex}}
+
+/* ---------- page router ---------- */
+.page{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg)}
+.page.on{display:flex}
+
+#pgJ .ic{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* app bar */
+#pgJ .appbar{display:flex;align-items:center;gap:11px;padding:16px 20px 8px}
+#pgJ .back{width:32px;height:32px;border-radius:50%;background:var(--chip);border:1px solid var(--line);
+      color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+#pgJ .appbar .ttl{font-weight:700;font-size:15.5px}
+#pgJ .spacer{flex:1}
+#pgJ .avatar{width:33px;height:33px;border-radius:50%;background:var(--avbg);border:1.5px solid var(--avline);
+        color:var(--avink);font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;flex:none}
+#pgJ .scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 0;scroll-behavior:smooth;
+        display:flex;flex-direction:column}
+#pgJ .scroll > *{flex:none}
+/* hero counters */
+#pgJ .hero{margin:12px 2px 4px}
+#pgJ .hero h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.2px}
+#pgJ .hero p{margin:3px 0 0;color:var(--muted);font-size:13px;font-weight:500}
+#pgJ .tally{display:flex;gap:10px;margin:14px 0 2px}
+#pgJ .tl{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 15px;box-shadow:var(--shadow)}
+#pgJ .tl .n{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1}
+#pgJ .tl .k{font-size:11px;font-weight:700;letter-spacing:.6px;color:var(--muted);margin-top:5px}
+#pgJ .tl.a .n{color:var(--blue-dk)}
+#pgJ .tl.b .n{color:var(--violet)}
+/* sticky subject filter */
+#pgJ .filterbar{position:sticky;top:0;z-index:6;background:var(--bg);margin:12px -20px 0;padding:8px 20px 10px;
+           border-bottom:1px solid transparent;transition:border-color .2s,box-shadow .2s}
+#pgJ .filterbar.stuck{border-bottom-color:var(--bline);box-shadow:0 6px 14px -12px rgba(20,33,61,.4)}
+#pgJ .subs{display:flex;align-items:center;gap:7px;margin:0 -20px;padding:0 20px 2px;overflow-x:auto;scrollbar-width:none}
+#pgJ .subs::-webkit-scrollbar{display:none}
+#pgJ .filtic{flex:none;width:30px;height:34px;margin-right:2px;color:var(--body);
+        display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pgJ .sb{flex:none;font-size:12.5px;font-weight:600;color:var(--body);background:var(--chip);
+    border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+#pgJ .sb.on{background:var(--btint);border-color:var(--blue);color:var(--blue-dk)}
+/* zones */
+#pgJ .zone{margin:0 -20px;padding:16px 20px 20px;scroll-margin-top:8px}
+#pgJ #zCanJ{background:var(--card);border-top:1px solid var(--bline);border-bottom:1px solid var(--bline)}
+#pgJ #zIdeaJ{background:var(--band2);border-bottom:1px solid var(--bline);position:relative;overflow:hidden}
+#pgJ #zIdeaJ > *{position:relative;z-index:1}
+#pgJ #zNextJ{background:var(--card);border-bottom:1px solid var(--bline)}
+#pgJ #zWorkJ{background:var(--band2);flex:1 0 auto;padding-bottom:44px;position:relative;overflow:hidden}
+#pgJ #zWorkJ > *{position:relative;z-index:1}
+#pgJ #doodlesJ, #pgJ #doodles2J{position:absolute;inset:0;z-index:0;width:100%;height:100%;
+         color:var(--doodle);opacity:var(--doodle-o);pointer-events:none}
+#pgJ .zhead{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 13px}
+#pgJ .zhead .zt{font-size:11.5px;font-weight:700;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+#pgJ .zhead .zt b{color:var(--ink);font-weight:800}
+#pgJ .zhead .zline{flex:1;max-width:40px;height:1px;background:var(--line)}
+/* can-do list */
+#pgJ .cans{display:flex;flex-direction:column;gap:9px}
+#pgJ .can{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+     border-radius:15px;padding:13px 15px;box-shadow:var(--shadow)}
+#pgJ .can .tick{width:26px;height:26px;border-radius:50%;background:var(--gtint);color:var(--gdeep);flex:none;
+           display:flex;align-items:center;justify-content:center;margin-top:1px}
+#pgJ .can .ct{font-size:13.5px;font-weight:600;line-height:1.38}
+#pgJ .can .cm{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600;letter-spacing:.2px}
+/* idea tiles */
+#pgJ .ideas{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#pgJ .idea{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 13px;cursor:pointer;
+      box-shadow:var(--shadow);min-height:104px;display:flex;flex-direction:column}
+#pgJ .idea .ik{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--violet);background:var(--vtint);
+          border-radius:999px;padding:3px 7px;align-self:flex-start}
+#pgJ .idea .it{font-size:12px;font-weight:600;line-height:1.35;margin-top:8px}
+#pgJ .idea .im{margin-top:auto;font-size:10px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px}
+#pgJ .idea.multi{border-color:#D9D1F0;background:linear-gradient(180deg,var(--vtint),var(--card) 60%)}
+/* nearly there */
+#pgJ .nx{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+    border-radius:15px;padding:13px 15px;box-shadow:var(--shadow)}
+#pgJ .nx + .nx{margin-top:9px}
+#pgJ .nx .nic{width:26px;height:26px;border-radius:50%;background:var(--atint);color:var(--amber);flex:none;
+         display:flex;align-items:center;justify-content:center;margin-top:1px}
+#pgJ .nx.warm .nic{background:var(--btint);color:var(--blue-dk)}
+#pgJ .nx .nt{font-size:13.5px;font-weight:600;line-height:1.38}
+#pgJ .nx .nm{font-size:11.5px;color:var(--muted);margin-top:3px}
+#pgJ .bar{height:5px;border-radius:3px;background:var(--icbg);margin-top:9px;overflow:hidden}
+#pgJ .bar i{display:block;height:100%;border-radius:3px;background:var(--blue)}
+/* work strip */
+#pgJ .works{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px;scrollbar-width:none}
+#pgJ .works::-webkit-scrollbar{display:none}
+#pgJ .wk{flex:0 0 132px;background:var(--card);border:1px solid var(--line);border-radius:15px;overflow:hidden;
+    box-shadow:var(--shadow);cursor:pointer}
+#pgJ .wk .th{height:82px;background:var(--icbg);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+#pgJ .wk .wt{font-size:11.5px;font-weight:700;padding:9px 11px 2px;line-height:1.3}
+#pgJ .wk .wm{font-size:10px;color:var(--muted);padding:0 11px 11px;font-weight:600}
+/* sheet */
+#pgJ .veil{position:absolute;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+#pgJ .veil.open{opacity:1;pointer-events:auto}
+#pgJ .sheet{position:absolute;left:0;right:0;bottom:-100%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       transition:.32s cubic-bezier(.3,.9,.3,1);max-height:86%;display:flex;flex-direction:column}
+#pgJ .sheet.open{bottom:0}
+#pgJ .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:12px auto 4px;flex:none}
+#pgJ .sbody{overflow-y:auto;padding:10px 22px calc(26px + env(safe-area-inset-bottom))}
+#pgJ .sk{font-size:9.5px;font-weight:800;letter-spacing:1px;color:var(--violet);background:var(--vtint);
+    border-radius:999px;padding:4px 9px;display:inline-block}
+#pgJ .sbody h2{margin:11px 0 0;font-size:19px;font-weight:700;line-height:1.28;letter-spacing:-.2px}
+#pgJ .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#pgJ .mt{font-size:11px;font-weight:600;color:var(--body);background:var(--icbg);border-radius:999px;padding:5px 10px}
+#pgJ .plab{font-size:9.5px;font-weight:800;letter-spacing:1.1px;color:var(--muted);margin:20px 0 8px}
+#pgJ .proof{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px 15px}
+#pgJ .play{display:flex;align-items:center;gap:12px}
+#pgJ .pbtn{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;flex:none;
+      display:flex;align-items:center;justify-content:center}
+#pgJ .wave{flex:1;display:flex;align-items:center;gap:3px;height:26px}
+#pgJ .wave i{flex:1;background:var(--blue);opacity:.35;border-radius:2px}
+#pgJ .quote{font-size:13.5px;line-height:1.5;color:var(--ink);margin-top:12px;font-style:italic}
+#pgJ .quote b{font-style:normal;background:var(--gtint);color:var(--gdeep);border-radius:4px;padding:1px 4px}
+#pgJ .also{font-size:12px;color:var(--body);line-height:1.5;margin-top:14px}
+#pgJ .also b{color:var(--ink)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="dFlask" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 2h12M12 2v9L4 26a3 3 0 0 0 2.6 4.5h16.8A3 3 0 0 0 26 26l-8-15V2"/><path d="M8.5 21h13"/>
+    <circle cx="13" cy="25" r="1.4"/><circle cx="18" cy="27" r="1"/></g>
+  <g id="dTube" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 2v20a4 4 0 0 0 8 0V2"/><path d="M6 2h12"/><path d="M8 14h8"/></g>
+  <g id="dAtom" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="14" cy="14" r="3"/><ellipse cx="14" cy="14" rx="13" ry="5.5"/>
+    <ellipse cx="14" cy="14" rx="13" ry="5.5" transform="rotate(60 14 14)"/>
+    <ellipse cx="14" cy="14" rx="13" ry="5.5" transform="rotate(120 14 14)"/></g>
+  <g id="dBulb" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 3a8 8 0 0 1 5 14v3H9v-3A8 8 0 0 1 14 3z"/><path d="M11 24h6M12 27h4"/></g>
+  <g id="dLens" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"/><path d="M17 17l7 7"/></g>
+  <g id="dSprout" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 16h16l-2 12H9z"/><path d="M15 16V8"/><path d="M15 11c-5 0-6-4-6-6 4 0 6 2.5 6 6z"/>
+    <path d="M15 13c4.5 0 6-3.5 6-5.5-3.5 0-6 2-6 5.5z"/></g>
+  <g id="dDrop" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 2s9 10 9 15a9 9 0 1 1-18 0c0-5 9-15 9-15z"/><path d="M8 17a5 5 0 0 0 3 4"/></g>
+  <g id="dRecycle" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 4l5 8h-4l-5-8z"/><path d="M25 20l-4 7-4-7h8z"/><path d="M5 20l4 7h8"/>
+    <path d="M9 12l-4 8"/><path d="M19 12h5l2 5"/></g>
+  <g id="dGlobe" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="14" cy="14" r="12"/><path d="M2 14h24"/><path d="M14 2a19 19 0 0 1 0 24a19 19 0 0 1 0-24z"/></g>
+  <g id="dPeople" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="8" r="4"/><path d="M3 22a7 7 0 0 1 14 0"/><circle cx="23" cy="10" r="3.2"/>
+    <path d="M18 22a5.5 5.5 0 0 1 11 0"/></g>
+  <g id="dMagnet" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 22V11a9 9 0 0 1 18 0v11"/><path d="M4 22h6V11a3 3 0 0 1 6 0v11h6"/></g>
+  <g id="dHeart" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 23S3 16.5 3 9.5A5.5 5.5 0 0 1 13 6a5.5 5.5 0 0 1 10 3.5C23 16.5 13 23 13 23z"/></g>
+  <pattern id="dooPat" width="186" height="168" patternUnits="userSpaceOnUse">
+    <use href="#dFlask"   transform="translate(6,6)     rotate(-8)  scale(.76)"/>
+    <use href="#dSprout"  transform="translate(70,2)    rotate(7)   scale(.74)"/>
+    <use href="#dAtom"    transform="translate(134,8)               scale(.72)"/>
+    <use href="#dDrop"    transform="translate(34,50)   rotate(4)   scale(.72)"/>
+    <use href="#dRecycle" transform="translate(98,52)   rotate(11)  scale(.72)"/>
+    <use href="#dLens"    transform="translate(160,46)  rotate(-14) scale(.76)"/>
+    <use href="#dTube"    transform="translate(2,92)    rotate(13)  scale(.76)"/>
+    <use href="#dPeople"  transform="translate(66,96)   rotate(-4)  scale(.72)"/>
+    <use href="#dBulb"    transform="translate(130,90)  rotate(9)   scale(.72)"/>
+    <use href="#dGlobe"   transform="translate(28,132)              scale(.72)"/>
+    <use href="#dMagnet"  transform="translate(92,136)  rotate(-12) scale(.72)"/>
+    <use href="#dHeart"   transform="translate(156,128) rotate(-7)  scale(.72)"/>
+  </pattern>
+</defs></svg>
+<div class="stage">
+<div class="frame">
+<div class="page on" id="pgT">
+
+
+  <div class="appbar">
+    <img src="data:image/png;base64,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" alt="">
+    <div class="brand">Petrilab</div>
+    <div class="spacer"></div>
+    <div class="streakpill">
+      <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="color:var(--amber)"><path d="M12 3c1 3-3 4.5-3 8a3 3 0 0 0 6 0c0-1 -.5-2-.5-2s2.5 1.5 2.5 4.5A5 5 0 0 1 7 13.5C7 8.5 11 7 12 3z"/></svg>
+      <span class="n">4</span>
+    </div>
+    <div class="avatar" id="avatarBtn">A</div>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <div class="hello">
+      <h1>Good evening, Aarav</h1>
+      <p id="helloSub">Friday · Class 5A</p>
+    </div>
+
+    <div class="anchors">
+      <div class="subs open" id="subs"></div>
+    </div>
+
+    <!-- one doodled surface for To do + Explore -->
+    <div id="band">
+    <svg id="doodles" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="url(#dooPat)"/></svg>
+
+    <div class="zone" id="zTodo">
+      <div class="zhead"><div class="zline"></div><div class="zt" id="ztTodo">To do</div><div class="zline"></div></div>
+      <div id="todoWrap"></div>
+      <div class="zfoot" id="todoFoot"></div>
+    </div>
+
+      <div class="bandsep"></div>
+
+    <!-- EXPLORE zone -->
+    <div class="zone" id="zExp">
+    
+      <div class="zhead"><div class="zline"></div><div class="zt" id="ztExp">Explore</div><div class="zline"></div></div>
+      <div class="ex" id="exList"></div>
+
+      <div class="jy" id="jyCard">
+        <div class="jic"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg></div>
+        <div><div class="jt">Your journey</div><div class="js">12 ideas collected this term</div></div>
+        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="rowhead"><div class="t">This week</div><div class="s">4 evenings in a row</div></div>
+        <div class="days">
+          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">M</div></div>
+          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">T</div></div>
+          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">W</div></div>
+          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">T</div></div>
+          <div class="day today"><div class="b"></div><div class="l">F</div></div>
+          <div class="day"><div class="b"></div><div class="l">S</div></div>
+          <div class="day"><div class="b"></div><div class="l">S</div></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- settings sheet -->
+  <div class="veil" id="veil"></div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <div class="sbody">
+      <div id="paneMe">
+        <div class="sme"><div class="sav">A</div>
+          <div><div class="sn">Aarav Sharma</div><div class="sc">Class 5A · St. Xavier's</div></div></div>
+        <div class="sgrp">
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M16 21v-2a4 4 0 0 0-8 0v2M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg></div>
+            <div class="srm"><div class="srt">Switch child</div><div class="srs">Meera · Class 3B</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="slab">MY APP</div>
+        <div class="sgrp">
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M11 5L6 9H3v6h3l5 4V5zM16 9a4 4 0 0 1 0 6"/></svg></div>
+            <div class="srm"><div class="srt">Sounds</div></div><div class="toggle"><i></i></div>
+          </div>
+          <div class="srow" id="darkRow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M20 14A8.5 8.5 0 1 1 10 4a7 7 0 0 0 10 10z"/></svg></div>
+            <div class="srm"><div class="srt">Dark mode</div><div class="srs">Easier on the eyes at night</div></div>
+            <div class="toggle off" id="darkT" data-nogen><i></i></div>
+          </div>
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg></div>
+            <div class="srm"><div class="srt">App language</div></div><div class="srv">English</div>
+          </div>
+        </div>
+        <div class="slab">FOR PARENTS</div>
+        <div class="sgrp">
+          <div class="srow lock" id="openPin">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+            <div class="srm"><div class="srt">Parent zone</div><div class="srs">Weekly report, plan, privacy</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="sfoot">Petrilab Home · v0.1 prototype</div>
+      </div>
+
+      <div id="panePin" style="display:none">
+        <div class="pin">
+          <h3>Parent zone</h3><p>Enter your 4-digit PIN</p>
+          <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+          <div class="pad" id="pad"><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b><b class="blank"></b><b>0</b><b data-del="1">⌫</b></div>
+          <div class="hint">Prototype — any four digits will do</div>
+        </div>
+      </div>
+
+      <div id="paneParent" style="display:none">
+        <div class="sme">
+          <div class="sav"><svg width="20" height="20" viewBox="0 0 24 24" class="ic"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+          <div><div class="sn">Parent zone</div><div class="sc">Aarav · Class 5A</div></div></div>
+        <div class="sgrp">
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div>
+            <div class="srm"><div class="srt">This week's report</div><div class="srs">One thing to work on tonight</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 7h16v13H4zM4 7l2-3h12l2 3M9 12h6"/></svg></div>
+            <div class="srm"><div class="srt">Plan &amp; kit</div><div class="srs">Annual · renews 12 Apr</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="slab">SCHOOL</div>
+        <div class="sgrp">
+          <div class="srow" id="schoolRow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 10l9-5 9 5-9 5-9-5zM7 12v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5"/></svg></div>
+            <div class="srm"><div class="srt" id="pSchool">St. Xavier's · Class 5A</div><div class="srs" id="pSchoolS">Linked — your teacher's lessons come through</div></div>
+            <div class="srv" id="pSchoolV">Linked</div>
+          </div>
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg></div>
+            <div class="srm"><div class="srt">Book &amp; board</div><div class="srs">CBSE · NCERT Class 5</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="slab">PRIVACY</div>
+        <div class="sgrp">
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
+            <div class="srm"><div class="srt">What we share, and with whom</div><div class="srs">Teacher sees learning, never screen time</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-4-1L3 20l1.1-4.9a8.4 8.4 0 1 1 16.9-3.6z"/></svg></div>
+            <div class="srm"><div class="srt">WhatsApp updates</div><div class="srs">Weekly, Sunday evening</div></div>
+            <div class="toggle"><i></i></div>
+          </div>
+          <div class="srow">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2M4 7h16"/></svg></div>
+            <div class="srm"><div class="srt">Download or delete my child's data</div></div>
+            <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="sfoot">Aarav can't open this. Only you have the PIN.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- chapter sheet -->
+  <div class="chsheet" id="chsheet">
+    <div class="grab"></div>
+    <div class="chhead"><h3>What are you studying today?</h3><p id="chP">Maths · Maths Mela 5</p></div>
+    <div class="chlist" id="chList"></div>
+    <div class="chlist" style="padding-top:0"><div class="chnote" id="chNote"></div></div>
+  </div>
+</div>
+<div class="page" id="pgJ">
+
+
+  <div class="appbar">
+    <div class="back" id="backBtnJ"><svg width="16" height="16" viewBox="0 0 24 24" class="ic" style="stroke-width:2"><path d="M15 6l-6 6 6 6"/></svg></div>
+    <div class="ttl">Your journey</div>
+    <div class="spacer"></div>
+    <div class="avatar">A</div>
+  </div>
+
+  <div class="scroll" id="scrollJ">
+    <div class="hero">
+      <h1 id="heroHJ">Look what you've collected</h1>
+      <p id="heroPJ">Class 5 · this term</p>
+    </div>
+
+    <div class="tally">
+      <div class="tl a"><div class="n" id="nCanJ">8</div><div class="k">THINGS YOU CAN DO</div></div>
+      <div class="tl b"><div class="n" id="nIdeaJ">12</div><div class="k">IDEAS COLLECTED</div></div>
+    </div>
+
+    <div class="filterbar" id="filterbarJ"><div class="subs" id="subsJ"></div></div>
+
+    <div class="zone" id="zCanJ">
+      <div class="zhead"><div class="zline"></div><div class="zt" id="ztCanJ">What you can do now</div><div class="zline"></div></div>
+      <div class="cans" id="canListJ"></div>
+    </div>
+
+    <div class="zone" id="zIdeaJ">
+      <svg id="doodlesJ" aria-hidden="true"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>
+      <div class="zhead"><div class="zline"></div><div class="zt" id="ztIdeaJ">Ideas you've collected</div><div class="zline"></div></div>
+      <div class="ideas" id="ideaGridJ"></div>
+    </div>
+
+    <div class="zone" id="zNextJ">
+      <div class="zhead"><div class="zline"></div><div class="zt">Nearly there</div><div class="zline"></div></div>
+      <div id="nextListJ"></div>
+    </div>
+
+    <div class="zone" id="zWorkJ">
+      <svg id="doodles2J" aria-hidden="true"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>
+      <div class="zhead"><div class="zline"></div><div class="zt">Your work</div><div class="zline"></div></div>
+      <div class="works" id="workStripJ"></div>
+    </div>
+  </div>
+
+  <div class="veil" id="veilJ"></div>
+  <div class="sheet" id="sheetJ">
+    <div class="grab"></div>
+    <div class="sbody" id="sbodyJ"></div>
+  </div>
+</div>
+</div>
+<div class="demo" id="demo">
+  <span class="dl">PROTOTYPE</span>
+  <span class="db on" id="dConn">Linked</span>
+  <span class="db" id="dSolo">Standalone</span>
+  <span class="sep"></span>
+  <span class="db on" id="dPend">Evening</span>
+  <span class="db" id="dDone">All done</span>
+</div>
+</div>
+
+<script>
+
+/* ---------- router ---------- */
+var GO=(function(){
+  function show(p){
+    var t=document.getElementById('pgT'), j=document.getElementById('pgJ');
+    var on=(p==='journey');
+    t.classList.toggle('on',!on); j.classList.toggle('on',on);
+    document.getElementById('demo').style.visibility=on?'hidden':'';
+    if(location.hash!=='#'+p) history.pushState({p:p},'','#'+p);
+  }
+  window.addEventListener('popstate',function(e){
+    var p=(location.hash||'#today').slice(1);
+    var on=(p==='journey');
+    document.getElementById('pgT').classList.toggle('on',!on);
+    document.getElementById('pgJ').classList.toggle('on',on);
+    document.getElementById('demo').style.visibility=on?'hidden':'';
+  });
+  if((location.hash||'')==='#journey'){
+    document.getElementById('pgT').classList.remove('on');
+    document.getElementById('pgJ').classList.add('on');
+    document.getElementById('demo').style.visibility='hidden';
+  }
+  return show;
+})();
+
+/* ================= TODAY ================= */
+(function(){
+
+const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
+const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
+const EXPLORE=[
+ {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",
+  s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
+ {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",
+  s:"Halve a recipe for two people, then write the steps so a friend could follow them.",
+  tags:["Fractions","Measurement","Describing words"],subj:["maths","english"]},
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",
+  s:"A 10-minute run through the sums you found hard last month.",subj:["maths"]},
+ {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",
+  s:"Can you make 8 × 6 out of 8 × 5? A 2-minute puzzle before Sharma Ma'am begins the chapter.",subj:["maths"]},
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",
+  s:"Read one page out loud and record it. Iyer Sir's class, last week.",subj:["english"]}
+];
+const EIC={
+ kit:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></svg>',
+ star:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M12 3l2.2 4.9 5.3.6-4 3.6 1.1 5.2L12 14.7 7.4 17.3l1.1-5.2-4-3.6 5.3-.6z"/></svg>',
+ rev:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M3 12a9 9 0 1 0 3-6.7M3 5v4h4"/></svg>',
+ eye:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/></svg>'
+};
+let subj="all";
+const MATHS={n:"Maths",title:"Comparing Large Numbers",book:"Maths Mela 5",
+  po:"compare 5- and 6-digit numbers and say why one is bigger",
+  alts:["Numbers up to 5 digits","Comparing Large Numbers","Addition & Subtraction","Multiplication","Fractions","Patterns"],pick:1};
+const AIC={
+  school:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
+  set:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM13.5 7.5l3 3"/></svg>',
+  voice:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'
+};
+let mode="conn", state="pend";
+
+function todoItems(){
+  const conceptLine='On <b>'+MATHS.alts[MATHS.pick]+'</b> · <span class="chg2" id="chg">change</span>';
+  const only = subj!=='all';
+  const setLine = only ? conceptLine : conceptLine+" · 2 from earlier weeks";
+  if(mode==='conn'){
+    return [
+      {sj:"maths",k:"school",src:"MATHS · "+TEACHER.maths.toUpperCase(),t:"Ex 4.2 · Questions 1–10",
+       s:"In your notebook. Phone down until you're done.",cn:"Comparing Large Numbers",a:"due tomorrow"},
+      {sj:"maths",k:"set",src:"PETRILAB · PRACTICE",t:"6 questions",
+       s:"Four on today's chapter, two from earlier weeks.",cn:"Comparing Large Numbers",a:"10 min"},
+      {sj:"maths",k:"voice",src:"PETRILAB · SPOKEN",t:"Say it back",
+       s:"Explain out loud how you worked out Q3.",cn:"Comparing Large Numbers",a:"4 min"},
+      {sj:"english",k:"school",src:"ENGLISH · "+TEACHER.english.toUpperCase(),t:"Read pages 22–24",
+       s:"In your book, before Monday's class.",cn:"The Talkative Barber",a:"due Monday"},
+      {sj:"hindi",k:"set",src:"HINDI · "+TEACHER.hindi.toUpperCase(),t:"अभ्यास · 4 प्रश्न",
+       s:"वाक्यों में संज्ञा पहचानो।",cn:"संज्ञा और सर्वनाम",a:"6 min"}
+    ];
+  }
+  return [
+    {sj:"maths",k:"school",src:"SCHOOL WORK",t:"Your homework first",
+     s:"In your notebook. Phone down until you're done.",cn:"Comparing Large Numbers",a:"school"},
+    {sj:"maths",k:"set",src:"PETRILAB · PRACTICE",t:"6 questions",
+     s:"Four on today's chapter, two from earlier weeks.",cn:"Comparing Large Numbers",a:"10 min"},
+    {sj:"maths",k:"voice",src:"PETRILAB · SPOKEN",t:"Say it back",
+     s:"Explain out loud how you worked it out.",cn:"Comparing Large Numbers",a:"4 min"}
+  ];
+}
+function render(){
+  const conn=mode==='conn';
+  document.getElementById('helloSub').innerHTML=conn?'Friday · Class 5A&nbsp; <span class="schl"><span class="dot"></span>St. Xavier\'s</span>':'Friday · Class 5';
+
+  const wrap=document.getElementById('todoWrap');
+  if(state==='pend'){
+    const items=todoItems().filter(a=>subj==='all'||a.sj===subj);
+    if(items.length){
+      wrap.innerHTML='<div class="deck" id="deck">'+items.map((a,i)=>
+        '<div class="dc'+(i===0?' act':'')+'" data-i="'+i+'">'+
+          '<div class="src2"><div class="sic">'+AIC[a.k]+'</div><div class="slbl">'+a.src+'</div></div>'+
+          '<h3>'+a.t+'</h3>'+
+          '<div class="sub2">'+a.s+'</div>'+
+          '<div class="cncpt">'+
+            '<svg width="12" height="12" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2"/></svg>'+
+            a.cn+'</div>'+
+          '<div class="foot"><div class="tm">'+a.a+'</div>'+
+            '<div class="arw"><svg width="17" height="17" viewBox="0 0 24 24" class="ic" style="stroke-width:2"><path d="M9 6l6 6-6 6"/></svg></div>'+
+          '</div>'+
+        '</div>').join('')+'</div>'+
+        '<div class="deckfoot" id="pdots">'+items.map((a,i)=>'<span class="pd'+(i===0?' on':'')+'"></span>').join('')+'</div>';
+      wireDeck();
+    } else {
+      wrap.innerHTML='<div class="empty"><div class="et2">Nothing due in '+subjName()+' today</div>'+
+        '<div class="es2">Take a look at Explore below \u2193</div></div>';
+    }
+    document.getElementById('ztTodo').innerHTML = items.length
+      ? 'To do · <b>'+items.length+' left</b> · about 15 min' : 'To do';
+    document.getElementById('todoFoot').textContent = items.length>1 ? 'Swipe for the next one' : '';
+  }else{
+
+    wrap.innerHTML='<div class="done">'+
+      '<div class="dh"><svg width="19" height="19" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M4 12l6 6L20 6"/></svg>Done for today!</div>'+
+      '<div class="dl">YOU CAN NOW</div>'+
+      '<div class="dp">'+MATHS.po.charAt(0).toUpperCase()+MATHS.po.slice(1)+'.</div>'+
+      '<div class="dgo" id="dgo">Something fun in Explore <svg width="14" height="14" viewBox="0 0 24 24" class="ic"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div></div>';
+    document.getElementById('ztTodo').innerHTML='To do · <b>all clear</b>';
+    document.getElementById('todoFoot').textContent='';
+    document.getElementById('dgo').onclick=()=>jump('zExp');
+  }
+  const c=document.getElementById('chg'); if(c)c.onclick=openCh;
+  const jy=document.getElementById('jyCard');
+  if(jy)jy.onclick=()=>{GO('journey');};
+
+  document.getElementById('pSchool').textContent=conn?"St. Xavier's · Class 5A":'No school linked';
+  document.getElementById('pSchoolS').textContent=conn?"Linked — your teacher's lessons come through":'Have a school code? Tap to link';
+  document.getElementById('pSchoolV').textContent=conn?'Linked':'Link';
+  document.getElementById('dConn').classList.toggle('on',conn);
+  document.getElementById('dSolo').classList.toggle('on',!conn);
+  document.getElementById('dPend').classList.toggle('on',state==='pend');
+  document.getElementById('dDone').classList.toggle('on',state==='done');
+  renderExplore(); renderSubs2();
+  const exn=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0).length;
+  document.getElementById('ztExp').innerHTML = exn ? 'Explore · <b>'+exn+(exn===1?' thing':' things')+'</b>' : 'Explore';
+  if(window.__spy) requestAnimationFrame(window.__spy);
+}
+function wireDeck(){
+  const d=document.getElementById('deck'); if(!d)return;
+  const cards=[...d.querySelectorAll('.dc')], dots=[...document.querySelectorAll('#pdots .pd')];
+  let t=false;
+  function upd(){
+    t=false;
+    const mid=d.scrollLeft+d.clientWidth/2;
+    let best=0,bd=1e9;
+    cards.forEach((c,i)=>{const cm=c.offsetLeft+c.offsetWidth/2;const dd=Math.abs(cm-mid);if(dd<bd){bd=dd;best=i;}});
+    cards.forEach((c,i)=>c.classList.toggle('act',i===best));
+    dots.forEach((p,i)=>p.classList.toggle('on',i===best));
+  }
+  d.addEventListener('scroll',()=>{if(!t){t=true;requestAnimationFrame(upd);}},{passive:true});
+  cards.forEach(c=>c.onclick=()=>c.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}));
+  upd();
+}
+function subjName(){ const f=SUBJ.find(x=>x[0]===subj); return f?f[1]:'All'; }
+function renderExplore(){
+  const list=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+  const el=document.getElementById('exList');
+  if(!list.length){
+    el.outerHTML='<div class="ex" id="exList"><div class="empty" style="border:none;background:transparent">'+
+      '<div class="et2">Nothing extra in '+subjName()+' yet</div>'+
+      '<div class="es2">New things appear here every week.</div></div></div>';
+    return;
+  }
+  el.outerHTML='<div class="ex" id="exList">'+list.map(e=>
+    '<div class="ei"><div class="eic">'+EIC[e.ic]+'</div><div class="em">'+
+    '<span class="badge '+e.bc+'">'+e.b+'</span>'+
+    '<div class="et">'+e.t+'</div><div class="es">'+e.s+'</div>'+
+    (e.tags?'<div class="tags2">'+e.tags.map(t=>'<span class="tg">'+t+'</span>').join('')+'</div>':'')+
+    '</div></div>').join('')+'</div>';
+}
+function renderSubs2(){
+  const el=document.getElementById('subs');
+  el.innerHTML='<div class="filtic" id="filtIc">'+
+    '<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg></div>'+
+    SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
+  document.getElementById('filtIc').onclick=()=>{ subj='all'; render(); };
+  el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{
+    subj=c.dataset.k; render();
+  });
+}
+
+/* anchors: jump, not filter */
+function jump(id){
+  const z=document.getElementById(id), sc=document.getElementById('scroll');
+  const row=document.querySelector('.anchors');
+  const delta=z.getBoundingClientRect().top-sc.getBoundingClientRect().top;
+  const top=Math.max(0, sc.scrollTop+delta-(row?row.offsetHeight:0));
+  sc.scrollTo({top:top,behavior:'smooth'});   /* only the inner list moves */
+  z.classList.add('hl'); setTimeout(()=>z.classList.remove('hl'),1200);
+}
+
+/* sticky bar picks up a hairline once it pins */
+(function(){
+  const scroll=document.getElementById('scroll'), row=document.querySelector('.anchors');
+  const zT=document.getElementById('zTodo');
+  let ticking=false;
+  function sync(){
+    ticking=false;
+    const base=scroll.getBoundingClientRect().top+row.offsetHeight+12;
+    row.classList.toggle('stuck', zT.getBoundingClientRect().top<=base);
+  }
+  scroll.addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(sync);} },{passive:true});
+  window.__spy=sync; sync();
+})();
+
+/* chapter sheet */
+const veil=document.getElementById('veil');
+function openCh(){
+  const sh=document.getElementById('chsheet'), cur=MATHS.alts[MATHS.pick];
+  document.getElementById('chP').textContent='Maths · '+MATHS.book;
+  document.getElementById('chList').innerHTML=MATHS.alts.map(c=>{
+    const taught=(mode==='conn'&&c===MATHS.title);
+    return '<div class="chi'+(c===cur?' on':'')+'" data-c="'+c+'">'+
+      '<div class="rad"></div><div class="cm"><div class="ct">'+c+'</div>'+
+      '<div class="cs">'+MATHS.book+'</div></div>'+
+      (taught?'<div class="flag">TAUGHT TODAY</div>':'')+'</div>';
+  }).join('');
+  document.getElementById('chNote').innerHTML=(mode==='conn')
+    ? TEACHER.maths+" logged <b>"+MATHS.title+"</b> today.<br>Pick anything else if that's not what you're on."
+    : "We guessed <b>"+MATHS.title+"</b>.<br>Tell us if you're on something else.";
+  document.getElementById('chList').querySelectorAll('.chi').forEach(el=>{
+    el.onclick=()=>{MATHS.pick=MATHS.alts.indexOf(el.dataset.c);closeSheets();render();};
+  });
+  veil.classList.add('open'); sh.classList.add('open');
+}
+function closeSheets(){
+  veil.classList.remove('open');
+  document.getElementById('chsheet').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+veil.addEventListener('click',closeSheets);
+
+/* settings */
+(function(){
+  const sheet=document.getElementById('sheet');
+  const pMe=document.getElementById('paneMe'),pPin=document.getElementById('panePin'),pPar=document.getElementById('paneParent');
+  function show(p){[pMe,pPin,pPar].forEach(x=>x.style.display='none');p.style.display='block';}
+  document.getElementById('avatarBtn').onclick=()=>{veil.classList.add('open');sheet.classList.add('open');show(pMe);pinVal='';paint();};
+  document.getElementById('openPin').onclick=()=>{show(pPin);pinVal='';paint();};
+  let pinVal='';
+  function paint(){document.querySelectorAll('#dots i').forEach((d,i)=>d.classList.toggle('f',i<pinVal.length));}
+  document.getElementById('pad').onclick=e=>{
+    const b=e.target.closest('b'); if(!b||b.classList.contains('blank'))return;
+    if(b.dataset.del){pinVal=pinVal.slice(0,-1);paint();return;}
+    if(pinVal.length<4){pinVal+=b.textContent;paint();}
+    if(pinVal.length===4)setTimeout(()=>show(pPar),220);
+  };
+  document.querySelectorAll('.toggle:not([data-nogen])').forEach(t=>{t.parentElement.onclick=()=>t.classList.toggle('off');});
+  document.getElementById('darkRow').onclick=()=>{
+    const t=document.getElementById('darkT'), dark=t.classList.contains('off');
+    t.classList.toggle('off',!dark);
+    document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  };
+  document.getElementById('schoolRow').onclick=()=>{mode=(mode==='conn')?'solo':'conn';render();closeSheets();};
+})();
+
+/* prototype chrome */
+(function(){
+  const logo=document.querySelector('.appbar img'),demo=document.getElementById('demo');
+  let t=null;
+  const start=()=>{t=setTimeout(()=>demo.classList.add('show'),650);},stop=()=>clearTimeout(t);
+  ['mousedown','touchstart'].forEach(e=>logo.addEventListener(e,start,{passive:true}));
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(e=>logo.addEventListener(e,stop,{passive:true}));
+})();
+document.getElementById('dConn').onclick=()=>{mode='conn';render();};
+document.getElementById('dSolo').onclick=()=>{mode='solo';render();};
+document.getElementById('dPend').onclick=()=>{state='pend';render();};
+document.getElementById('dDone').onclick=()=>{state='done';render();};
+render();
+
+})();
+/* ================= JOURNEY ================= */
+(function(){
+
+const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
+const SNAME={maths:"Maths",evs:"EVS",english:"English",hindi:"Hindi"};
+
+const CANS=[
+ {sj:"maths",t:"Compare 5- and 6-digit numbers and say why one is bigger",w:"Yesterday"},
+ {sj:"maths",t:"Arrange a set of 4-digit numbers in order, smallest to largest",w:"Last week"},
+ {sj:"evs",t:"Set up a seed to sprout and describe what changes each day",w:"Last week"},
+ {sj:"english",t:"Retell a story in my own words and say why someone acted that way",w:"2 weeks ago"},
+ {sj:"maths",t:"Read and write numbers up to five digits",w:"3 weeks ago"},
+ {sj:"hindi",t:"वाक्य में संज्ञा पहचानना और सर्वनाम से बदलना",w:"3 weeks ago"}
+];
+
+const IDEAS=[
+ {sj:"maths",t:"A digit's place matters more than the digit itself — 2 hundreds beats 9 tens",w:"Yesterday",
+  from:"Comparing Large Numbers · Sharma Ma'am",
+  proof:"voice",quote:"Nine thousand nine hundred ninety is smaller, because <b>forty-nine thousand has a ten-thousands digit</b> and mine doesn't.",
+  also:[]},
+ {sj:"maths",t:"Every place is worth ten times the one to its right",w:"Yesterday",
+  from:"Comparing Large Numbers · Sharma Ma'am",proof:"voice",
+  quote:"Each time you go left it gets <b>ten times bigger</b>, so hundreds is ten hundreds… I mean ten tens.",also:[]},
+ {sj:"evs",t:"A seed already holds a tiny plant — water and warmth wake it up",w:"Last week",
+  from:"Seeds &amp; Germination · Nair Ma'am",proof:"photo",
+  quote:"The root came out first, then the little leaf. It was already inside.",also:[]},
+ {sj:"maths",t:"Halving a recipe means halving every single amount",w:"Last week",multi:true,
+  from:"Cook it, measure it, write it · challenge",proof:"photo",
+  quote:"Half of three-quarters cup is three-eighths. I checked with the measuring cups.",
+  also:["Fractions · Maths","Measurement · Maths","Describing words · English"]},
+ {sj:"english",t:"People in stories act for reasons — what someone wants explains what they do",w:"2 weeks ago",
+  from:"The Talkative Barber · Iyer Sir",proof:"voice",
+  quote:"He told the secret because he <b>couldn't hold it in</b>, not because he was mean.",also:[]},
+ {sj:"maths",t:"Zero holds a place — 405 is not the same as 45",w:"2 weeks ago",
+  from:"Numbers up to 5 digits · Sharma Ma'am",proof:"work",
+  quote:"If you take the zero out the four moves and it becomes a different number.",also:[]},
+ {sj:"hindi",t:"सर्वनाम संज्ञा की जगह लेता है — नाम बार-बार दोहराना नहीं पड़ता",w:"3 weeks ago",
+  from:"संज्ञा और सर्वनाम · Gupta Sir",proof:"voice",
+  quote:"मोहन आया, <b>वह</b> बैठ गया — दोबारा मोहन नहीं बोलना पड़ा।",also:[]},
+ {sj:"evs",t:"Plants need light, not just water — the one in the cupboard went pale",w:"3 weeks ago",
+  from:"Seeds &amp; Germination · Nair Ma'am",proof:"photo",
+  quote:"Mine went yellow because I kept it inside the almirah.",also:[]}
+];
+
+const NEXT=[
+ {sj:"maths",t:"Ordering six-digit numbers",m:"You're close — one more go tonight.",p:75,warm:false},
+ {sj:"maths",t:"Fractions on a number line",m:"Worth warming up again — you had this in July.",p:40,warm:true},
+ {sj:"english",t:"Using describing words in your own writing",m:"Two more tries and it's yours.",p:60,warm:false}
+];
+
+const WORKS=[
+ {sj:"maths",k:"voice",t:"Explaining Q3",m:"Yesterday · 41 sec"},
+ {sj:"evs",k:"photo",t:"Day 4 of the sprout",m:"Saturday"},
+ {sj:"maths",k:"photo",t:"Halved the recipe",m:"Last week"},
+ {sj:"english",k:"voice",t:"Retelling the barber",m:"2 weeks ago"},
+ {sj:"maths",k:"work",t:"Place-value sums",m:"3 weeks ago"}
+];
+
+const WIC={
+ voice:'<svg width="26" height="26" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+ photo:'<svg width="26" height="26" viewBox="0 0 24 24" class="ic"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.5-2h5L16 6"/></svg>',
+ work:'<svg width="26" height="26" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h6"/></svg>'
+};
+
+let subj="all";
+const F=k=>x=>subj==='all'||x.sj===subj;
+
+function renderSubs(){
+  const el=document.getElementById('subsJ');
+  el.innerHTML='<div class="filtic" id="filtIc">'+
+    '<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg></div>'+
+    SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
+  document.getElementById('filtIc').onclick=()=>{subj='all';render();};
+  el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{subj=c.dataset.k;render();});
+}
+
+function render(){
+  const cans=CANS.filter(F()), ideas=IDEAS.filter(F()), next=NEXT.filter(F()), works=WORKS.filter(F());
+  const label = subj==='all' ? '' : ' in '+SNAME[subj];
+
+  document.getElementById('heroPJ').textContent = subj==='all' ? 'Class 5 · this term' : SNAME[subj]+' · this term';
+  document.getElementById('nCanJ').textContent=cans.length;
+  document.getElementById('nIdeaJ').textContent=ideas.length;
+
+  document.getElementById('ztCanJ').innerHTML='What you can do now'+(cans.length?' · <b>'+cans.length+'</b>':'');
+  document.getElementById('canListJ').innerHTML = cans.length ? cans.map(c=>
+    '<div class="can"><div class="tick"><svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.6"><path d="M4 12l6 6L20 6"/></svg></div>'+
+    '<div><div class="ct">'+c.t+'</div><div class="cm">'+SNAME[c.sj].toUpperCase()+' · '+c.w.toUpperCase()+'</div></div></div>').join('')
+    : '<div class="can"><div class="ct" style="color:var(--muted)">Nothing here yet'+label+' — it fills up as you finish things.</div></div>';
+
+  document.getElementById('ztIdeaJ').innerHTML="Ideas you've collected"+(ideas.length?' · <b>'+ideas.length+'</b>':'');
+  document.getElementById('ideaGridJ').innerHTML = ideas.map((d,i)=>
+    '<div class="idea'+(d.multi?' multi':'')+'" data-i="'+IDEAS.indexOf(d)+'">'+
+    '<span class="ik">'+(d.multi?'3 SUBJECTS':SNAME[d.sj].toUpperCase())+'</span>'+
+    '<div class="it">'+d.t+'</div>'+
+    '<div class="im"><svg width="11" height="11" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2"/></svg>'+d.w+'</div></div>').join('');
+  document.getElementById('ideaGridJ').querySelectorAll('.idea').forEach(el=>el.onclick=()=>openIdea(+el.dataset.i));
+
+  document.getElementById('nextListJ').innerHTML = next.length ? next.map(n=>
+    '<div class="nx'+(n.warm?' warm':'')+'"><div class="nic">'+
+      (n.warm?'<svg width="13" height="13" viewBox="0 0 24 24" class="ic"><path d="M3 12a9 9 0 1 0 3-6.7M3 5v4h4"/></svg>'
+             :'<svg width="13" height="13" viewBox="0 0 24 24" class="ic"><path d="M12 3l2.2 4.9 5.3.6-4 3.6 1.1 5.2L12 14.7 7.4 17.3l1.1-5.2-4-3.6 5.3-.6z"/></svg>')+
+    '</div><div style="flex:1"><div class="nt">'+n.t+'</div><div class="nm">'+n.m+'</div>'+
+    '<div class="bar"><i style="width:'+n.p+'%"></i></div></div></div>').join('')
+    : '<div class="nx"><div style="flex:1"><div class="nm">Nothing waiting'+label+' right now.</div></div></div>';
+
+  document.getElementById('workStripJ').innerHTML = works.map(w=>
+    '<div class="wk"><div class="th">'+WIC[w.k]+'</div><div class="wt">'+w.t+'</div><div class="wm">'+w.m+'</div></div>').join('');
+
+  renderSubs();
+  requestAnimationFrame(spy);
+}
+
+function openIdea(i){
+  const d=IDEAS[i];
+  document.getElementById('sbodyJ').innerHTML=
+    '<span class="sk">'+(d.multi?'ONE ACTIVITY · THREE SUBJECTS':SNAME[d.sj].toUpperCase()+' · IDEA')+'</span>'+
+    '<h2>'+d.t+'</h2>'+
+    '<div class="meta"><span class="mt">'+d.w+'</span><span class="mt">'+d.from+'</span></div>'+
+    '<div class="plab">HOW YOU SHOWED IT</div>'+
+    '<div class="proof">'+
+      (d.proof==='voice'
+        ? '<div class="play"><div class="pbtn"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M8 5v14l11-7z"/></svg></div>'+
+          '<div class="wave">'+Array.from({length:26},(_,k)=>'<i style="height:'+(22+18*Math.abs(Math.sin(k*1.7)))+'%"></i>').join('')+'</div></div>'
+        : '<div class="play"><div class="pbtn" style="background:var(--icbg);color:var(--body)">'+WIC[d.proof]+'</div>'+
+          '<div style="font-size:12px;color:var(--muted);font-weight:600">'+(d.proof==='photo'?'Your photo from that day':'Your notebook page')+'</div></div>')+
+      '<div class="quote">"'+d.quote+'"</div>'+
+    '</div>'+
+    (d.also.length ? '<div class="plab">THIS ONE COUNTED FOR</div>'+
+      '<div class="meta">'+d.also.map(a=>'<span class="mt">'+a+'</span>').join('')+'</div>'+
+      '<div class="also">One activity, <b>three ideas</b> — that’s why the weekend challenges are worth doing.</div>' : '');
+  document.getElementById('veilJ').classList.add('open');
+  document.getElementById('sheetJ').classList.add('open');
+}
+function closeSheet(){document.getElementById('veilJ').classList.remove('open');document.getElementById('sheetJ').classList.remove('open');}
+document.getElementById('veilJ').onclick=closeSheet;
+
+/* ---------- back to Today ---------- */
+document.getElementById('backBtnJ').onclick=function(){
+  if(document.getElementById('sheetJ').classList.contains('open')){closeSheet();return;}
+  
+  GO('today');
+};
+
+const scroll=document.getElementById('scrollJ'), fbar=document.getElementById('filterbarJ');
+let t=false;
+function spy(){t=false;fbar.classList.toggle('stuck',fbar.getBoundingClientRect().top<=scroll.getBoundingClientRect().top+1);}
+scroll.addEventListener('scroll',()=>{if(!t){t=true;requestAnimationFrame(spy);}},{passive:true});
+
+render();
+
+})();
+</script>
+</body>
+</html>
