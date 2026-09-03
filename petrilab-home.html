@@ -59,8 +59,19 @@ svg{display:block}
 .hello{margin:14px 2px 13px}
 .hello h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.2px}
 .hello p{margin:3px 0 0;color:var(--muted);font-size:13px;font-weight:500}
-.hello .schl{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.hello .schl .dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+.hrow{display:flex;align-items:flex-start;gap:14px}
+.hl{flex:1;min-width:0}
+.cal{flex:none;width:52px;border:1px solid var(--line);border-radius:13px;background:var(--card);
+     box-shadow:var(--shadow);overflow:hidden;text-align:center;margin-top:2px}
+.cal .cm{font-size:8.5px;font-weight:800;letter-spacing:1.1px;color:var(--blue-dk);
+         background:var(--btint);padding:4px 0 3px}
+.cal .cd{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-top:5px;line-height:1}
+.cal .cw{font-size:8.5px;font-weight:800;letter-spacing:1px;color:var(--muted);margin:3px 0 6px}
+.schl{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;font-weight:500;color:var(--body)}
+.schl .dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex:none;
+           box-shadow:0 0 0 3px var(--gtint)}
+.schl.off{color:var(--muted)}
+.schl.off .dot{background:var(--muted);box-shadow:0 0 0 3px var(--icbg)}
 /* anchors */
 .anchors{display:block;position:sticky;top:0;z-index:6;background:var(--bg);
          margin:0 -20px 12px;padding:8px 20px 10px;transition:box-shadow .2s,border-color .2s;
@@ -77,7 +88,11 @@ svg{display:block}
 .filt{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--body);
       background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;flex:none}
 #pgT .filt.on{background:var(--btint);border-color:var(--blue);color:var(--blue-dk)}
-#pgT .subs{display:flex;gap:7px;margin:6px -20px 0;padding:0 20px 2px;overflow-x:auto;scrollbar-width:none}
+#pgT .filtrow{display:flex;align-items:center;margin:6px -20px 0;padding-left:20px}
+#pgT .subswrap{flex:1;min-width:0;overflow:hidden;
+        -webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 62px),transparent calc(100% - 18px));
+                mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 62px),transparent calc(100% - 18px))}
+#pgT .subs{display:flex;gap:7px;margin:0;padding:0 26px 2px 8px;overflow-x:auto;scrollbar-width:none}
 #pgT .subs::-webkit-scrollbar{display:none}
 #pgT .subs.open{display:flex}
 #pgT .sb{flex:none;font-size:12.5px;font-weight:600;color:var(--body);background:var(--chip);
@@ -90,13 +105,27 @@ svg{display:block}
 .anc.here .cnt{background:var(--bg);color:var(--ink)}
 .anc.here .cnt.done{background:var(--green);color:#fff}
 /* zones */
-#pgT .zhead{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 12px}
-#pgT .zhead .zt{font-size:11.5px;font-weight:700;letter-spacing:1.3px;color:var(--muted);text-align:center;text-transform:uppercase;white-space:nowrap}
-#pgT .zhead .zt b{color:var(--ink);font-weight:800}
-#pgT .zhead .zline{flex:1;max-width:40px;height:1px;background:var(--line)}
+#pgT .zhead{display:flex;align-items:center;gap:9px;margin:2px 0 13px}
+#pgT .zhead .zt{font-size:16.5px;font-weight:700;letter-spacing:-.2px;color:var(--ink);text-transform:none;
+        white-space:nowrap;display:inline-flex;align-items:center;gap:9px}
+#pgT .zhead .zsp{flex:1}
+#pgT .zhead .zlink{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;
+        color:var(--blue-dk);cursor:pointer;white-space:nowrap}
+#pgT .zhead .zlink:active{opacity:.6}
+#pgT .pulse{position:relative;width:9px;height:9px;border-radius:50%;background:var(--blue);flex:none}
+#pgT .pulse::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--blue);
+        animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.5}70%,100%{transform:scale(2.7);opacity:0}}
+@media (prefers-reduced-motion:reduce){#pgT .pulse::after{animation:none}}
+#pgT .zbadge{background:var(--blue);color:#fff;font-size:11px;font-weight:800;letter-spacing:0;
+        min-width:20px;height:20px;border-radius:999px;padding:0 6px;
+        display:inline-flex;align-items:center;justify-content:center}
+#pgT .zbadge.done{background:var(--green)}
+#pgT .zhead .zt b{color:var(--blue-dk);font-weight:800}
+
 #pgT .zone{scroll-margin-top:8px;margin:0 -20px;padding:14px 20px 20px}
 #band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 0 auto;
-      display:flex;flex-direction:column;overflow:hidden}
+      margin:0 -20px;padding:0 20px;display:flex;flex-direction:column;overflow:hidden}
 #band > *{position:relative;z-index:1}
 #zTodo{background:transparent}
 #zExp{background:transparent;padding:30px 20px 40px;flex:1 0 auto}
@@ -104,9 +133,7 @@ svg{display:block}
          color:var(--doodle);opacity:var(--doodle-o);pointer-events:none}
 .bandsep{height:1px;background:var(--line);margin:0 -20px;opacity:.7}
 #pgT .zone.hl .zhead .zt{color:var(--blue-dk)}
-#pgT .zone.hl .zhead .zline{background:var(--blue)}
-#pgT #zTodo .zhead .zt{color:var(--muted)}
-#pgT #zExp .zhead .zt{color:var(--muted)}
+
 /* segmented section control */
 .seg{display:flex;background:var(--icbg);border-radius:14px;padding:4px}
 .sgi{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:10px;
@@ -116,35 +143,37 @@ svg{display:block}
 .sgi small{font-size:10px;font-weight:600;color:var(--muted)}
 .sgi.here small{color:var(--blue-dk)}
 .sgi.here svg{color:var(--blue)}
-#pgT .filtic{flex:none;width:30px;height:34px;margin-right:2px;background:transparent;border:none;
+#pgT .filtic{flex:none;width:28px;height:34px;background:transparent;border:none;
         color:var(--body);display:flex;align-items:center;justify-content:center;cursor:pointer}
 #pgT .subs{align-items:center}
 /* horizontal card deck */
 .deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 4px;
       scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .deck::-webkit-scrollbar{display:none}
-.dc{flex:0 0 79%;scroll-snap-align:center;height:228px;border-radius:20px;padding:17px 18px;
+.dc{flex:0 0 79%;scroll-snap-align:center;height:152px;border-radius:18px;padding:13px 15px;
     background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;
-    transition:background .25s,border-color .25s,color .25s;cursor:pointer}
-.dc .src2{display:flex;align-items:center;gap:8px}
-.dc .sic{width:32px;height:32px;border-radius:10px;background:var(--icbg);color:var(--body);flex:none;
+    box-shadow:var(--shadow);transition:background .25s,border-color .25s,color .25s;cursor:pointer}
+.dc .src2{display:flex;align-items:center;gap:9px}
+.dc .sic{width:27px;height:27px;border-radius:8px;background:var(--icbg);color:var(--body);flex:none;
          display:flex;align-items:center;justify-content:center;transition:.25s}
-.dc .slbl{font-size:9.5px;font-weight:800;letter-spacing:1px;color:var(--muted)}
-.dc h3{margin:13px 0 0;font-size:18px;font-weight:700;line-height:1.22;letter-spacing:-.2px}
-.dc .sub2{font-size:12.5px;color:var(--body);margin-top:5px;line-height:1.4}
-.dc .cncpt{margin-top:auto;font-size:11px;font-weight:600;color:var(--muted);
-           display:flex;align-items:center;gap:6px}
-.dc .foot{display:flex;align-items:center;margin-top:11px}
-.dc .tm{font-size:12px;font-weight:700;color:var(--muted)}
-.dc .arw{margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--icbg);color:var(--ink);
-         display:flex;align-items:center;justify-content:center;transition:.25s}
+.dc .slbl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--body);
+          overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dc h3{margin:9px 0 0;font-size:15.5px;font-weight:700;line-height:1.25;letter-spacing:-.2px}
+.dc .sub2{font-size:12px;color:var(--body);margin-top:4px;line-height:1.38;
+          display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dc .foot{display:flex;align-items:center;margin-top:auto;padding-top:9px}
+.dc .tm{font-size:11.5px;font-weight:700;color:var(--body)}
+.dc .arw{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;
+         border-radius:999px;padding:7px 12px;background:var(--btint);color:var(--blue-dk);transition:.25s}
 .dc.act{background:var(--ink);border-color:var(--ink);color:var(--card)}
-.dc.act .sic{background:rgba(255,255,255,.12);color:var(--card)}
-.dc.act .slbl{color:#9FB0CE}
-.dc.act .sub2{color:#C4CEE0}
-.dc.act .cncpt{color:#8FA3C8}
-.dc.act .tm{color:#9FB0CE}
+.dc.act .sic{background:rgba(255,255,255,.14);color:var(--card)}
+.dc.act .slbl{color:#A9B8D2}
+.dc.act .sub2{color:#C8D2E4}
+.dc.act .tm{color:#A9B8D2}
 .dc.act .arw{background:var(--card);color:var(--ink)}
+[data-theme="dark"] .dc.act .slbl,[data-theme="dark"] .dc.act .tm{color:#55607A}
+[data-theme="dark"] .dc.act .sub2{color:#3B465C}
+[data-theme="dark"] .dc.act .sic{background:rgba(20,33,61,.09);color:#2C3A52}
 .deckfoot{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px}
 .pd{width:6px;height:6px;border-radius:50%;background:var(--line)}
 #pgT .pd.on{background:var(--ink);width:18px;border-radius:3px}
@@ -160,6 +189,7 @@ svg{display:block}
 .ai .at{font-size:13.5px;font-weight:700}
 .ai .as{font-size:11.5px;color:var(--muted);margin-top:2px}
 .ai .as .chg2{color:var(--blue-dk);font-weight:600;border-bottom:1px dotted #B6C9E4;cursor:pointer}
+.zfoot .chg2{color:var(--blue-dk);font-weight:700;border-bottom:1px dotted #B6C9E4;cursor:pointer}
 .ai .aa{flex:none;font-size:11.5px;font-weight:700;color:var(--muted)}
 .ai .go{flex:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:7px 15px}
 .zfoot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:9px;font-weight:500}
@@ -262,9 +292,68 @@ svg{display:block}
 #pgT .chi .cm{flex:1;min-width:0}
 #pgT .chi .ct{font-size:13.5px;font-weight:600}
 .chi .cs{font-size:11.5px;color:var(--muted);margin-top:1px}
+#pgT .chi.ro{cursor:default}
+#pgT .chi.now{border-color:var(--blue);background:var(--btint)}
+#pgT .chi.done .rad{border-color:var(--green);background:var(--gtint);color:var(--gdeep);
+        display:flex;align-items:center;justify-content:center}
+#pgT .chi.now .rad{border-color:var(--blue);background:var(--blue);box-shadow:inset 0 0 0 3px var(--card)}
+#pgT .chi.soon{opacity:.62}
+#pgT .chi .flag.soon{color:var(--muted);border-color:var(--line)}
 .chi .flag{font-size:9.5px;font-weight:700;letter-spacing:.7px;color:var(--blue-dk);background:var(--card);
            border:1px solid var(--blue);border-radius:999px;padding:3px 8px;flex:none}
 .chnote{font-size:11.5px;color:var(--muted);text-align:center;margin:4px 0 2px;line-height:1.5}
+/* lesson plan */
+#pgT .lpdays{display:flex;gap:7px;padding:2px 20px 14px;overflow-x:auto;scrollbar-width:none;flex:none}
+#pgT .lpdays::-webkit-scrollbar{display:none}
+#pgT .lpd{flex:none;min-width:52px;text-align:center;border:1px solid var(--line);border-radius:13px;
+        background:var(--chip);padding:7px 6px 8px;cursor:pointer}
+#pgT .lpd .w{font-size:9px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+#pgT .lpd .n{font-size:15px;font-weight:800;margin-top:2px;line-height:1}
+#pgT .lpd.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+#pgT .lpd.on .w{color:#A9B8D2}
+#pgT .lpd.today:not(.on){border-color:var(--blue)}
+#pgT .lpd.today .n::after{content:"";display:block;width:4px;height:4px;border-radius:50%;
+        background:var(--blue);margin:3px auto 0}
+#pgT .lpd.on.today .n::after{background:var(--card)}
+#pgT .lpr{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+        border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+#pgT .lpr + .lpr{margin-top:8px}
+#pgT .lpr .lpi{width:30px;height:30px;border-radius:9px;background:var(--icbg);color:var(--body);flex:none;
+        display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;letter-spacing:.3px}
+#pgT .lpr .lpm{flex:1;min-width:0}
+#pgT .lpr .lps{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+#pgT .lpr .lpt{font-size:13.5px;font-weight:600;margin-top:3px;line-height:1.35}
+#pgT .lpr .lpg{font-size:9px;font-weight:800;letter-spacing:.8px;border-radius:999px;padding:4px 8px;flex:none;
+        margin-top:2px;color:var(--blue-dk);background:var(--btint)}
+#pgT .lpr .lpg.test{color:var(--amber);background:var(--atint)}
+#pgT .lpr .lpg.bring{color:var(--gdeep);background:var(--gtint)}
+#pgT .lpr.past{opacity:.6}
+#pgT .lpcap{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--body);margin:0 2px 10px}
+#pgT .lpcap .tdy{font-size:9px;font-weight:800;letter-spacing:.9px;color:var(--blue-dk);
+        background:var(--btint);border-radius:999px;padding:3px 7px}
+#pgT .lpempty{text-align:center;padding:26px 10px;color:var(--muted);font-size:13px}
+/* daily window */
+#pgT .lpday{display:flex;align-items:center;gap:10px;padding:0 20px 14px;flex:none}
+#pgT .lpday .dt{flex:1;font-size:15px;font-weight:700}
+#pgT .lpday .tdy{font-size:9px;font-weight:800;letter-spacing:.9px;color:var(--blue-dk);
+        background:var(--btint);border-radius:999px;padding:4px 8px}
+#pgT .lpnavb{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--chip);
+        display:flex;align-items:center;justify-content:center;color:var(--body);cursor:pointer;flex:none}
+#pgT .lpnavb.off{opacity:.35;pointer-events:none}
+/* monthly window */
+#pgT .lpmonth{padding:0 20px 12px;flex:none}
+#pgT .lpmh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#pgT .lpmh .mt{flex:1;font-size:14px;font-weight:700}
+#pgT .lpgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+#pgT .lpwh{font-size:8.5px;font-weight:800;letter-spacing:.5px;color:var(--muted);text-align:center;padding-bottom:2px}
+#pgT .lpc{aspect-ratio:1;border-radius:10px;border:1px solid transparent;position:relative;cursor:pointer;
+        display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--body)}
+#pgT .lpc.off{color:var(--muted);opacity:.35;cursor:default}
+#pgT .lpc.has{background:var(--chip);border-color:var(--line);color:var(--ink)}
+#pgT .lpc.today:not(.on){border-color:var(--blue);color:var(--blue-dk)}
+#pgT .lpc.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+#pgT .lpc i{position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--amber)}
+#pgT .lpc.on i{background:var(--card)}
 .demo{display:flex;align-items:center;gap:8px;background:#10182B;border-radius:999px;padding:7px 10px 7px 16px}
 .demo .dl{font-size:9px;font-weight:700;letter-spacing:1.1px;color:#6B7B9E}
 .demo .db{font-size:11px;font-weight:600;color:#9FB0CE;border:1px solid #2C3958;border-radius:999px;
@@ -453,12 +542,27 @@ svg{display:block}
 
   <div class="scroll" id="scroll">
     <div class="hello">
-      <h1>Good evening, Aarav</h1>
-      <p id="helloSub">Friday · Class 5A</p>
+      <div class="hrow">
+        <div class="hl">
+          <h1 id="helloH">Good evening, Aarav</h1>
+          <p id="helloSub">Grade 5A</p>
+          <div id="helloTag"></div>
+        </div>
+        <div class="cal" aria-hidden="true">
+          <div class="cm" id="calM">SEP</div>
+          <div class="cd" id="calD">4</div>
+          <div class="cw" id="calW">FRI</div>
+        </div>
+      </div>
     </div>
 
     <div class="anchors">
-      <div class="subs open" id="subs"></div>
+      <div class="filtrow">
+        <div class="filtic" id="filtIc" title="Show all subjects">
+          <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
+        </div>
+        <div class="subswrap"><div class="subs open" id="subs"></div></div>
+      </div>
     </div>
 
     <!-- one doodled surface for To do + Explore -->
@@ -466,7 +570,12 @@ svg{display:block}
     <svg id="doodles" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="url(#dooPat)"/></svg>
 
     <div class="zone" id="zTodo">
-      <div class="zhead"><div class="zline"></div><div class="zt" id="ztTodo">To do</div><div class="zline"></div></div>
+      <div class="zhead">
+        <div class="zt" id="ztTodo">From School</div>
+        <div class="zsp"></div>
+        <div class="zlink" id="lessonLink">Lesson plan
+          <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+      </div>
       <div id="todoWrap"></div>
       <div class="zfoot" id="todoFoot"></div>
     </div>
@@ -476,7 +585,10 @@ svg{display:block}
     <!-- EXPLORE zone -->
     <div class="zone" id="zExp">
     
-      <div class="zhead"><div class="zline"></div><div class="zt" id="ztExp">Explore</div><div class="zline"></div></div>
+      <div class="zhead">
+        <div class="zt" id="ztExp">Explore</div>
+        <span class="pulse" id="expPulse" title="Something new"></span>
+      </div>
       <div class="ex" id="exList"></div>
 
       <div class="jy" id="jyCard">
@@ -508,11 +620,11 @@ svg{display:block}
     <div class="sbody">
       <div id="paneMe">
         <div class="sme"><div class="sav">A</div>
-          <div><div class="sn">Aarav Sharma</div><div class="sc">Class 5A · St. Xavier's</div></div></div>
+          <div><div class="sn">Aarav Sharma</div><div class="sc">Grade 5A · St. Xavier's</div></div></div>
         <div class="sgrp">
           <div class="srow">
             <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M16 21v-2a4 4 0 0 0-8 0v2M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg></div>
-            <div class="srm"><div class="srt">Switch child</div><div class="srs">Meera · Class 3B</div></div>
+            <div class="srm"><div class="srt">Switch child</div><div class="srs">Meera · Grade 3B</div></div>
             <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
           </div>
         </div>
@@ -555,7 +667,7 @@ svg{display:block}
       <div id="paneParent" style="display:none">
         <div class="sme">
           <div class="sav"><svg width="20" height="20" viewBox="0 0 24 24" class="ic"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-          <div><div class="sn">Parent zone</div><div class="sc">Aarav · Class 5A</div></div></div>
+          <div><div class="sn">Parent zone</div><div class="sc">Aarav · Grade 5A</div></div></div>
         <div class="sgrp">
           <div class="srow">
             <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div>
@@ -572,12 +684,12 @@ svg{display:block}
         <div class="sgrp">
           <div class="srow" id="schoolRow">
             <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 10l9-5 9 5-9 5-9-5zM7 12v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5"/></svg></div>
-            <div class="srm"><div class="srt" id="pSchool">St. Xavier's · Class 5A</div><div class="srs" id="pSchoolS">Linked — your teacher's lessons come through</div></div>
+            <div class="srm"><div class="srt" id="pSchool">St. Xavier's · Grade 5A</div><div class="srs" id="pSchoolS">Linked — your teacher's lessons come through</div></div>
             <div class="srv" id="pSchoolV">Linked</div>
           </div>
           <div class="srow">
             <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg></div>
-            <div class="srm"><div class="srt">Book &amp; board</div><div class="srs">CBSE · NCERT Class 5</div></div>
+            <div class="srm"><div class="srt">Book &amp; board</div><div class="srs">CBSE · NCERT Grade 5</div></div>
             <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
           </div>
         </div>
@@ -605,6 +717,20 @@ svg{display:block}
   </div>
 
   <!-- chapter sheet -->
+  <!-- lesson plan the school shares -->
+  <div class="chsheet lpsheet" id="lpsheet">
+    <div class="grab"></div>
+    <div class="chhead">
+      <h3>Lesson plan</h3>
+      <p id="lpSub">St. Xavier's School · Grade 5A</p>
+    </div>
+    <div class="lpday" id="lpDayNav"></div>
+    <div class="lpdays" id="lpDays"></div>
+    <div class="lpmonth" id="lpMonth"></div>
+    <div class="chlist" id="lpList"></div>
+    <div class="chlist" style="padding-top:0"><div class="chnote" id="lpNote"></div></div>
+  </div>
+
   <div class="chsheet" id="chsheet">
     <div class="grab"></div>
     <div class="chhead"><h3>What are you studying today?</h3><p id="chP">Maths · Maths Mela 5</p></div>
@@ -625,7 +751,7 @@ svg{display:block}
   <div class="scroll" id="scrollJ">
     <div class="hero">
       <h1 id="heroHJ">Look what you've collected</h1>
-      <p id="heroPJ">Class 5 · this term</p>
+      <p id="heroPJ">Grade 5 · this term</p>
     </div>
 
     <div class="tally">
@@ -672,6 +798,11 @@ svg{display:block}
   <span class="sep"></span>
   <span class="db on" id="dPend">Evening</span>
   <span class="db" id="dDone">All done</span>
+  <span class="sep"></span>
+  <span class="dl">PLAN</span>
+  <span class="db" id="dDay">Daily</span>
+  <span class="db on" id="dWeek">Weekly</span>
+  <span class="db" id="dMon">Monthly</span>
 </div>
 </div>
 
@@ -729,6 +860,12 @@ let subj="all";
 const MATHS={n:"Maths",title:"Comparing Large Numbers",book:"Maths Mela 5",
   po:"compare 5- and 6-digit numbers and say why one is bigger",
   alts:["Numbers up to 5 digits","Comparing Large Numbers","Addition & Subtraction","Multiplication","Fractions","Patterns"],pick:1};
+const TYIC={
+  text:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
+  mcq:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M3.5 7.5l1.6 1.6L8.4 5.8M3.5 17l1.6 1.6L8.4 15.3M12 7.5h8.5M12 17h8.5"/></svg>',
+  speak:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'
+};
+const TYNAME={text:"Written",mcq:"Questions",speak:"Spoken"};
 const AIC={
   school:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
   set:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM13.5 7.5l3 3"/></svg>',
@@ -737,35 +874,53 @@ const AIC={
 let mode="conn", state="pend";
 
 function todoItems(){
-  const conceptLine='On <b>'+MATHS.alts[MATHS.pick]+'</b> · <span class="chg2" id="chg">change</span>';
-  const only = subj!=='all';
-  const setLine = only ? conceptLine : conceptLine+" · 2 from earlier weeks";
-  if(mode==='conn'){
+  const conn=mode==='conn', T=TEACHER;
+  const who=k=>conn?" \u00b7 "+T[k].toUpperCase():"";
+  const CH=MATHS.alts[MATHS.pick];
+  if(conn){
     return [
-      {sj:"maths",k:"school",src:"MATHS · "+TEACHER.maths.toUpperCase(),t:"Ex 4.2 · Questions 1–10",
-       s:"In your notebook. Phone down until you're done.",cn:"Comparing Large Numbers",a:"due tomorrow"},
-      {sj:"maths",k:"set",src:"PETRILAB · PRACTICE",t:"6 questions",
-       s:"Four on today's chapter, two from earlier weeks.",cn:"Comparing Large Numbers",a:"10 min"},
-      {sj:"maths",k:"voice",src:"PETRILAB · SPOKEN",t:"Say it back",
-       s:"Explain out loud how you worked out Q3.",cn:"Comparing Large Numbers",a:"4 min"},
-      {sj:"english",k:"school",src:"ENGLISH · "+TEACHER.english.toUpperCase(),t:"Read pages 22–24",
-       s:"In your book, before Monday's class.",cn:"The Talkative Barber",a:"due Monday"},
-      {sj:"hindi",k:"set",src:"HINDI · "+TEACHER.hindi.toUpperCase(),t:"अभ्यास · 4 प्रश्न",
-       s:"वाक्यों में संज्ञा पहचानो।",cn:"संज्ञा और सर्वनाम",a:"6 min"}
+      {sj:"maths",ty:"text",src:"MATHS"+who('maths'),t:MATHS.title,
+       s:"Ex 4.2 \u00b7 Questions 1\u201310, in your notebook.",a:"due tomorrow"},
+      {sj:"maths",ty:"mcq",src:"MATHS"+who('maths'),t:MATHS.title,
+       s:"Six questions \u2014 four on today\u2019s chapter, two from earlier weeks.",a:""},
+      {sj:"maths",ty:"speak",src:"MATHS"+who('maths'),t:MATHS.title,
+       s:"Explain out loud how you worked out Q3.",a:""},
+      {sj:"english",ty:"text",src:"ENGLISH"+who('english'),t:"The Talkative Barber",
+       s:"Read pages 22\u201324 in your book.",a:"due Monday"},
+      {sj:"hindi",ty:"mcq",src:"HINDI"+who('hindi'),t:"\u0938\u0902\u091c\u094d\u091e\u093e \u0914\u0930 \u0938\u0930\u094d\u0935\u0928\u093e\u092e",
+       s:"\u0905\u092d\u094d\u092f\u093e\u0938 \u00b7 4 \u092a\u094d\u0930\u0936\u094d\u0928 \u2014 \u0935\u093e\u0915\u094d\u092f\u094b\u0902 \u092e\u0947\u0902 \u0938\u0902\u091c\u094d\u091e\u093e \u092a\u0939\u091a\u093e\u0928\u094b\u0964",a:""}
     ];
   }
   return [
-    {sj:"maths",k:"school",src:"SCHOOL WORK",t:"Your homework first",
-     s:"In your notebook. Phone down until you're done.",cn:"Comparing Large Numbers",a:"school"},
-    {sj:"maths",k:"set",src:"PETRILAB · PRACTICE",t:"6 questions",
-     s:"Four on today's chapter, two from earlier weeks.",cn:"Comparing Large Numbers",a:"10 min"},
-    {sj:"maths",k:"voice",src:"PETRILAB · SPOKEN",t:"Say it back",
-     s:"Explain out loud how you worked it out.",cn:"Comparing Large Numbers",a:"4 min"}
+    {sj:"maths",ty:"text",src:"MATHS",t:CH,s:"Your homework first \u2014 in your notebook.",a:""},
+    {sj:"maths",ty:"mcq",src:"MATHS",t:CH,s:"Six questions \u2014 four on this chapter, two from earlier weeks.",a:""},
+    {sj:"maths",ty:"speak",src:"MATHS",t:CH,s:"Explain out loud how you worked it out.",a:""}
   ];
 }
+const MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const WDAY=["SUN","MON","TUE","WED","THU","FRI","SAT"];
+function greeting(h){
+  if(h>=5  && h<12) return 'Good morning';
+  if(h>=12 && h<17) return 'Good afternoon';
+  if(h>=17 && h<22) return 'Good evening';
+  return 'Good night';
+}
+function clockTick(){
+  const d=new Date();
+  document.getElementById('helloH').textContent=greeting(d.getHours())+', Aarav';
+  document.getElementById('calM').textContent=MON[d.getMonth()];
+  document.getElementById('calD').textContent=d.getDate();
+  document.getElementById('calW').textContent=WDAY[d.getDay()];
+}
+setInterval(clockTick,60000);
+
 function render(){
   const conn=mode==='conn';
-  document.getElementById('helloSub').innerHTML=conn?'Friday · Class 5A&nbsp; <span class="schl"><span class="dot"></span>St. Xavier\'s</span>':'Friday · Class 5';
+  clockTick();
+  document.getElementById('helloSub').textContent=conn?'Grade 5A':'Grade 5';
+  document.getElementById('helloTag').innerHTML=conn
+    ? '<div class="schl"><span class="dot"></span>St. Xavier\'s School</div>'
+    : '<div class="schl off"><span class="dot"></span>No school linked</div>';
 
   const wrap=document.getElementById('todoWrap');
   if(state==='pend'){
@@ -773,14 +928,12 @@ function render(){
     if(items.length){
       wrap.innerHTML='<div class="deck" id="deck">'+items.map((a,i)=>
         '<div class="dc'+(i===0?' act':'')+'" data-i="'+i+'">'+
-          '<div class="src2"><div class="sic">'+AIC[a.k]+'</div><div class="slbl">'+a.src+'</div></div>'+
+          '<div class="src2"><div class="sic" title="'+TYNAME[a.ty]+'">'+TYIC[a.ty]+'</div>'+
+            '<div class="slbl">'+a.src+'</div></div>'+
           '<h3>'+a.t+'</h3>'+
           '<div class="sub2">'+a.s+'</div>'+
-          '<div class="cncpt">'+
-            '<svg width="12" height="12" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2"/></svg>'+
-            a.cn+'</div>'+
-          '<div class="foot"><div class="tm">'+a.a+'</div>'+
-            '<div class="arw"><svg width="17" height="17" viewBox="0 0 24 24" class="ic" style="stroke-width:2"><path d="M9 6l6 6-6 6"/></svg></div>'+
+          '<div class="foot"><div class="tm">'+TYNAME[a.ty]+(a.a?' \u00b7 '+a.a:'')+'</div>'+
+            '<div class="arw">Open<svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg></div>'+
           '</div>'+
         '</div>').join('')+'</div>'+
         '<div class="deckfoot" id="pdots">'+items.map((a,i)=>'<span class="pd'+(i===0?' on':'')+'"></span>').join('')+'</div>';
@@ -789,9 +942,11 @@ function render(){
       wrap.innerHTML='<div class="empty"><div class="et2">Nothing due in '+subjName()+' today</div>'+
         '<div class="es2">Take a look at Explore below \u2193</div></div>';
     }
+    const zn = conn ? 'From School' : "Today's Work";
     document.getElementById('ztTodo').innerHTML = items.length
-      ? 'To do · <b>'+items.length+' left</b> · about 15 min' : 'To do';
-    document.getElementById('todoFoot').textContent = items.length>1 ? 'Swipe for the next one' : '';
+      ? zn+'<span class="zbadge">'+items.length+'</span>' : zn;
+    document.getElementById('todoFoot').innerHTML = (!conn && items.length && (subj==='all'||subj==='maths'))
+      ? 'Studying something else? <span class="chg2" id="chg">Change chapter</span>' : '';
   }else{
 
     wrap.innerHTML='<div class="done">'+
@@ -799,24 +954,31 @@ function render(){
       '<div class="dl">YOU CAN NOW</div>'+
       '<div class="dp">'+MATHS.po.charAt(0).toUpperCase()+MATHS.po.slice(1)+'.</div>'+
       '<div class="dgo" id="dgo">Something fun in Explore <svg width="14" height="14" viewBox="0 0 24 24" class="ic"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div></div>';
-    document.getElementById('ztTodo').innerHTML='To do · <b>all clear</b>';
+    document.getElementById('ztTodo').innerHTML=(conn?'From School':"Today's Work")+
+      '<span class="zbadge done"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:3.2"><path d="M4 12l6 6L20 6"/></svg></span>';
     document.getElementById('todoFoot').textContent='';
     document.getElementById('dgo').onclick=()=>jump('zExp');
   }
   const c=document.getElementById('chg'); if(c)c.onclick=openCh;
+  const lp=document.getElementById('lessonLink');
+  lp.style.display=conn?'':'none'; lp.onclick=openLP;
   const jy=document.getElementById('jyCard');
   if(jy)jy.onclick=()=>{GO('journey');};
 
-  document.getElementById('pSchool').textContent=conn?"St. Xavier's · Class 5A":'No school linked';
+  document.getElementById('pSchool').textContent=conn?"St. Xavier's · Grade 5A":'No school linked';
   document.getElementById('pSchoolS').textContent=conn?"Linked — your teacher's lessons come through":'Have a school code? Tap to link';
   document.getElementById('pSchoolV').textContent=conn?'Linked':'Link';
   document.getElementById('dConn').classList.toggle('on',conn);
   document.getElementById('dSolo').classList.toggle('on',!conn);
+  document.getElementById('dDay').classList.toggle('on',SCHOOL.planWindow==='daily');
+  document.getElementById('dWeek').classList.toggle('on',SCHOOL.planWindow==='weekly');
+  document.getElementById('dMon').classList.toggle('on',SCHOOL.planWindow==='monthly');
   document.getElementById('dPend').classList.toggle('on',state==='pend');
   document.getElementById('dDone').classList.toggle('on',state==='done');
   renderExplore(); renderSubs2();
   const exn=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0).length;
-  document.getElementById('ztExp').innerHTML = exn ? 'Explore · <b>'+exn+(exn===1?' thing':' things')+'</b>' : 'Explore';
+  document.getElementById('ztExp').textContent='Explore';
+  document.getElementById('expPulse').style.display = exn ? '' : 'none';
   if(window.__spy) requestAnimationFrame(window.__spy);
 }
 function wireDeck(){
@@ -854,12 +1016,14 @@ function renderExplore(){
 }
 function renderSubs2(){
   const el=document.getElementById('subs');
-  el.innerHTML='<div class="filtic" id="filtIc">'+
-    '<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg></div>'+
-    SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
-  document.getElementById('filtIc').onclick=()=>{ subj='all'; render(); };
+  el.innerHTML=SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
+  document.getElementById('filtIc').onclick=()=>{ subj='all'; render(); el.scrollTo({left:0,behavior:'smooth'}); };
   el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{
     subj=c.dataset.k; render();
+    const on=el.querySelector('.sb.on');
+    if(on){ const l=on.offsetLeft-24, r=on.offsetLeft+on.offsetWidth+62-el.clientWidth;
+      if(el.scrollLeft>l) el.scrollTo({left:Math.max(0,l),behavior:'smooth'});
+      else if(el.scrollLeft<r) el.scrollTo({left:r,behavior:'smooth'}); }
   });
 }
 
@@ -887,21 +1051,156 @@ function jump(id){
   window.__spy=sync; sync();
 })();
 
+/* ---------- the plan the school shares each week ---------- */
+const PLAN=[
+  [ {sj:"MATHS",  who:"Sharma Ma'am", t:"Numbers up to 5 digits"},
+    {sj:"ENGLISH",who:"Iyer Sir",     t:"The Talkative Barber \u2014 first reading"},
+    {sj:"EVS",    who:"Nair Ma'am",   t:"What a seed holds inside"} ],
+  [ {sj:"MATHS",  who:"Sharma Ma'am", t:"Comparing large numbers \u2014 place value"},
+    {sj:"HINDI",  who:"Gupta Sir",    t:"\u0938\u0902\u091c\u094d\u091e\u093e \u0914\u0930 \u0938\u0930\u094d\u0935\u0928\u093e\u092e"},
+    {sj:"EVS",    who:"Nair Ma'am",   t:"Why plants need light"} ],
+  [ {sj:"MATHS",  who:"Sharma Ma'am", t:"Comparing large numbers \u2014 ordering"},
+    {sj:"ENGLISH",who:"Iyer Sir",     t:"The Talkative Barber \u2014 comprehension"} ],
+  [ {sj:"MATHS",  who:"Sharma Ma'am", t:"Comparing large numbers \u2014 Ex 4.2"},
+    {sj:"EVS",    who:"Nair Ma'am",   t:"Sprouting experiment", g:"BRING A GLASS JAR", gc:"bring"},
+    {sj:"HINDI",  who:"Gupta Sir",    t:"\u0905\u092d\u094d\u092f\u093e\u0938 \u00b7 \u0935\u093e\u0915\u094d\u092f \u092c\u0928\u093e\u0913"} ],
+  [ {sj:"MATHS",  who:"Sharma Ma'am", t:"Fractions \u2014 revision", g:"CLASS TEST", gc:"test"},
+    {sj:"ENGLISH",who:"Iyer Sir",     t:"Read-aloud practice"} ]
+];
+/* how often this school publishes its plan: 'daily' | 'weekly' | 'monthly' */
+const SCHOOL={name:"St. Xavier's School", grade:"Grade 5A", planWindow:"weekly"};
+const PUBNOTE={
+  daily:  "Your school posts the plan one day at a time.",
+  weekly: "Shared by the school every Monday.",
+  monthly:"Shared by the school at the start of the month."
+};
+const DAYMS=864e5;
+let lpSel=new Date();
+
+function midnight(d){const x=new Date(d);x.setHours(0,0,0,0);return x;}
+function weekMonday(d){const x=midnight(d||new Date());x.setDate(x.getDate()-((x.getDay()+6)%7));return x;}
+function sameDay(a,b){return a.toDateString()===b.toDateString();}
+function fmtLong(d){
+  const wd=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][d.getDay()];
+  const mn=["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()];
+  return wd+", "+d.getDate()+" "+mn;
+}
+function fmtShort(d){
+  const w=WDAY[d.getDay()], m=MON[d.getMonth()];
+  return w.charAt(0)+w.slice(1).toLowerCase()+", "+d.getDate()+" "+m.charAt(0)+m.slice(1).toLowerCase();
+}
+/* a school publishes ahead only as far as its window allows */
+function publishedThrough(){
+  const t=midnight(new Date());
+  if(SCHOOL.planWindow==='daily'){ const x=new Date(t); x.setDate(t.getDate()+1); return x; }
+  if(SCHOOL.planWindow==='weekly'){ const m=weekMonday(t); m.setDate(m.getDate()+6); return m; }
+  const m=new Date(t.getFullYear(),t.getMonth()+1,0); return m;
+}
+function planFor(dt){
+  const wd=dt.getDay(); if(wd<1||wd>5) return null;
+  if(midnight(dt)>publishedThrough()) return null;
+  const rows=PLAN[wd-1].map(r=>Object.assign({},r));
+  const wk=Math.round((weekMonday(dt)-weekMonday())/(7*DAYMS));
+  if(wk!==0){
+    const i=Math.max(0,Math.min(MATHS.alts.length-1,MATHS.alts.indexOf(MATHS.title)+wk));
+    rows.forEach(r=>{ if(r.sj==='MATHS') r.t=MATHS.alts[i]; r.g=null; r.gc=null; });
+  }
+  return rows;
+}
+function hasTag(dt){ const r=planFor(dt); return !!(r&&r.some(x=>x.g)); }
+
+function openLP(){
+  lpSel=new Date();
+  if(lpSel.getDay()===0||lpSel.getDay()===6) lpSel=weekMonday(lpSel);
+  drawLP(); veil.classList.add('open');
+  document.getElementById('lpsheet').classList.add('open');
+}
+function drawLP(){
+  const w=SCHOOL.planWindow, today=midnight(new Date()), cap=publishedThrough();
+  const nav=document.getElementById('lpDayNav'), strip=document.getElementById('lpDays'), mth=document.getElementById('lpMonth');
+  nav.style.display = w==='daily' ? 'flex':'none';
+  strip.style.display = w==='weekly' ? 'flex':'none';
+  mth.style.display = w==='monthly' ? 'block':'none';
+
+  const CHL='<svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M15 6l-6 6 6 6"/></svg>';
+  const CHR='<svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg>';
+
+  if(w==='daily'){
+    const next=new Date(lpSel); next.setDate(lpSel.getDate()+1);
+    const canNext = midnight(next)<=cap;
+    nav.innerHTML='<div class="lpnavb" data-s="-1">'+CHL+'</div>'+
+      '<div class="dt">'+fmtLong(lpSel)+'</div>'+
+      (sameDay(midnight(lpSel),today)?'<div class="tdy">TODAY</div>':'')+
+      '<div class="lpnavb'+(canNext?'':' off')+'" data-s="1">'+CHR+'</div>';
+    nav.querySelectorAll('.lpnavb').forEach(el=>el.onclick=()=>{
+      lpSel=new Date(lpSel.getTime()+(+el.dataset.s)*DAYMS); drawLP();
+    });
+  }
+
+  if(w==='weekly'){
+    const mon=weekMonday(lpSel);
+    strip.innerHTML=[0,1,2,3,4].map(i=>{
+      const d=new Date(mon); d.setDate(mon.getDate()+i);
+      return '<div class="lpd'+(sameDay(d,lpSel)?' on':'')+(sameDay(midnight(d),today)?' today':'')+'" data-i="'+i+'">'+
+        '<div class="w">'+WDAY[d.getDay()]+'</div><div class="n">'+d.getDate()+'</div></div>';
+    }).join('');
+    strip.querySelectorAll('.lpd').forEach(el=>el.onclick=()=>{
+      const d=new Date(mon); d.setDate(mon.getDate()+ +el.dataset.i); lpSel=d; drawLP();
+    });
+  }
+
+  if(w==='monthly'){
+    const y=lpSel.getFullYear(), m=lpSel.getMonth();
+    const first=new Date(y,m,1), lead=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+    const MNAME=["January","February","March","April","May","June","July","August","September","October","November","December"];
+    let cells='';
+    for(let i=0;i<lead;i++) cells+='<div class="lpc off"></div>';
+    for(let d=1;d<=days;d++){
+      const dt=new Date(y,m,d), has=!!planFor(dt);
+      cells+='<div class="lpc'+(has?' has':' off')+(sameDay(dt,lpSel)?' on':'')+
+        (sameDay(midnight(dt),today)?' today':'')+'" data-d="'+d+'">'+d+
+        (hasTag(dt)?'<i></i>':'')+'</div>';
+    }
+    mth.innerHTML='<div class="lpmh"><div class="mt">'+MNAME[m]+' '+y+'</div>'+
+      '<div class="lpnavb" data-s="-1">'+CHL+'</div><div class="lpnavb" data-s="1">'+CHR+'</div></div>'+
+      '<div class="lpgrid">'+["M","T","W","T","F","S","S"].map(x=>'<div class="lpwh">'+x+'</div>').join('')+cells+'</div>';
+    mth.querySelectorAll('.lpc.has').forEach(el=>el.onclick=()=>{ lpSel=new Date(y,m,+el.dataset.d); drawLP(); });
+    mth.querySelectorAll('.lpnavb').forEach(el=>el.onclick=()=>{
+      const nm=new Date(y,m+(+el.dataset.s),1);
+      lpSel = (nm.getFullYear()===today.getFullYear()&&nm.getMonth()===today.getMonth()) ? new Date() : nm;
+      drawLP();
+    });
+  }
+
+  const rows=planFor(lpSel);
+  const cap2 = (w==='monthly') ? '<div class="lpcap">'+fmtLong(lpSel)+
+      (sameDay(midnight(lpSel),today)?' <span class="tdy">TODAY</span>':'')+'</div>' : '';
+  document.getElementById('lpList').innerHTML = cap2 + (rows && rows.length
+    ? rows.map(r=>'<div class="lpr'+(midnight(lpSel)<today?' past':'')+'">'+
+        '<div class="lpi">'+r.sj.slice(0,2)+'</div>'+
+        '<div class="lpm"><div class="lps">'+r.sj+' · '+r.who.toUpperCase()+'</div>'+
+        '<div class="lpt">'+r.t+'</div></div>'+
+        (r.g?'<div class="lpg '+(r.gc||'')+'">'+r.g+'</div>':'')+'</div>').join('')
+    : '<div class="lpempty">'+(midnight(lpSel)>cap
+        ? 'Not shared yet — the school posts this '+(w==='daily'?'a day':w==='weekly'?'a week':'a month')+' at a time.'
+        : 'No classes on this day.')+'</div>');
+
+  document.getElementById('lpSub').textContent=SCHOOL.name+' · '+SCHOOL.grade+
+    (w==='monthly'?'':' · '+fmtShort(lpSel));
+  document.getElementById('lpNote').innerHTML=PUBNOTE[w]+
+    '<br>Your work follows this plan — nothing to set up.';
+}
+
 /* chapter sheet */
 const veil=document.getElementById('veil');
 function openCh(){
   const sh=document.getElementById('chsheet'), cur=MATHS.alts[MATHS.pick];
   document.getElementById('chP').textContent='Maths · '+MATHS.book;
-  document.getElementById('chList').innerHTML=MATHS.alts.map(c=>{
-    const taught=(mode==='conn'&&c===MATHS.title);
-    return '<div class="chi'+(c===cur?' on':'')+'" data-c="'+c+'">'+
+  document.getElementById('chList').innerHTML=MATHS.alts.map(c=>
+    '<div class="chi'+(c===cur?' on':'')+'" data-c="'+c+'">'+
       '<div class="rad"></div><div class="cm"><div class="ct">'+c+'</div>'+
-      '<div class="cs">'+MATHS.book+'</div></div>'+
-      (taught?'<div class="flag">TAUGHT TODAY</div>':'')+'</div>';
-  }).join('');
-  document.getElementById('chNote').innerHTML=(mode==='conn')
-    ? TEACHER.maths+" logged <b>"+MATHS.title+"</b> today.<br>Pick anything else if that's not what you're on."
-    : "We guessed <b>"+MATHS.title+"</b>.<br>Tell us if you're on something else.";
+      '<div class="cs">'+MATHS.book+'</div></div></div>').join('');
+  document.getElementById('chNote').innerHTML="We guessed <b>"+MATHS.title+"</b>.<br>Tell us if you're on something else.";
   document.getElementById('chList').querySelectorAll('.chi').forEach(el=>{
     el.onclick=()=>{MATHS.pick=MATHS.alts.indexOf(el.dataset.c);closeSheets();render();};
   });
@@ -909,6 +1208,7 @@ function openCh(){
 }
 function closeSheets(){
   veil.classList.remove('open');
+  document.getElementById('lpsheet').classList.remove('open');
   document.getElementById('chsheet').classList.remove('open');
   document.getElementById('sheet').classList.remove('open');
 }
@@ -950,6 +1250,12 @@ document.getElementById('dConn').onclick=()=>{mode='conn';render();};
 document.getElementById('dSolo').onclick=()=>{mode='solo';render();};
 document.getElementById('dPend').onclick=()=>{state='pend';render();};
 document.getElementById('dDone').onclick=()=>{state='done';render();};
+[['dDay','daily'],['dWeek','weekly'],['dMon','monthly']].forEach(([id,w])=>{
+  document.getElementById(id).onclick=()=>{
+    SCHOOL.planWindow=w; render();
+    if(document.getElementById('lpsheet').classList.contains('open')) openLP();
+  };
+});
 render();
 
 })();
@@ -1033,7 +1339,7 @@ function render(){
   const cans=CANS.filter(F()), ideas=IDEAS.filter(F()), next=NEXT.filter(F()), works=WORKS.filter(F());
   const label = subj==='all' ? '' : ' in '+SNAME[subj];
 
-  document.getElementById('heroPJ').textContent = subj==='all' ? 'Class 5 · this term' : SNAME[subj]+' · this term';
+  document.getElementById('heroPJ').textContent = subj==='all' ? 'Grade 5 · this term' : SNAME[subj]+' · this term';
   document.getElementById('nCanJ').textContent=cans.length;
   document.getElementById('nIdeaJ').textContent=ideas.length;
 
