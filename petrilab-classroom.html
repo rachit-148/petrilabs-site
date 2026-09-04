@@ -154,7 +154,6 @@
   .prepx{flex:1;min-width:0}
   .prept{font-size:15px;font-weight:800;color:#fff}
   .preps{font-size:11.5px;color:#AEBBD4;font-weight:600;margin-top:2px}
-  .preparr{flex:0 0 auto;color:#fff;opacity:.9}
   /* ---------- HERO 2 : filtered class ---------- */
   .h2head{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 14px}
   .h2title{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
@@ -428,7 +427,7 @@
         <div class="prep" onclick="navPrepare()">
           <div class="prepic"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
           <div class="prepx"><div class="prept">Prepare a Topic</div><div class="preps" id="prepsub">— topics not yet prepared</div></div>
-          <div class="preparr"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div>
+          
         </div>
       </div>
 
@@ -446,7 +445,7 @@
           <div class="prep" id="h2prep" onclick="navPrepare()">
             <div class="prepic"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
             <div class="prepx"><div class="prept">Prepare a Topic</div><div class="preps" id="prepsub2">— topics not yet prepared</div></div>
-            <div class="preparr"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div>
+            
           </div>
         </div>
       </div>
@@ -1252,7 +1251,8 @@ preselect();
   .htx{flex:1;min-width:0}
   .htitle{font-size:17px;font-weight:800;color:var(--navy);letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hsub{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:1px}
-  .offline{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;background:var(--gtint);color:#1F7A43;border-radius:9px;padding:6px 10px;font-size:11px;font-weight:800}
+  .lobtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--body);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font-size:11px;font-weight:800;cursor:pointer}
+  .lobtn svg{color:var(--green)}
   .body{flex:1;min-height:0;overflow-y:auto;padding:14px 16px 18px}
   .body::-webkit-scrollbar{display:none}
   .outcome{display:flex;gap:11px;background:var(--gtint);border:1px solid #CDE7D8;border-radius:14px;padding:13px;margin-bottom:16px}
@@ -1293,11 +1293,31 @@ preselect();
   .foots{font-size:11px;font-weight:700;color:var(--muted);margin-top:1px}
   .prevbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--navy);border:1.5px solid var(--line);border-radius:12px;font-size:13px;font-weight:800;padding:11px 14px;cursor:pointer}
   .buildbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:800;padding:12px 15px;cursor:pointer}
-  .agentbar{display:flex;gap:11px;align-items:flex-start;background:linear-gradient(135deg,#EAF1FD 0%,#F2ECFB 100%);border:1px solid #DBE6FA;border-radius:14px;padding:12px 13px;margin-bottom:16px}
-  .agentbar .aic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:#fff;color:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(46,158,91,.18);font-size:15px;line-height:1}
-  .agentbar .atx{flex:1;min-width:0}
-  .agentbar .att{font-size:12.5px;font-weight:800;color:var(--navy)}
-  .agentbar .asub{font-size:11.5px;font-weight:600;color:var(--body);line-height:1.42;margin-top:3px}
+  /* style picker: plain chips, edge-to-edge scroll row; the recommended chip carries the same star as the step chips */
+  .presets{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 12px;padding:2px 16px 2px}
+  .presets::-webkit-scrollbar{display:none}
+  .preset{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:12.5px;font-weight:800;color:var(--body);cursor:pointer;white-space:nowrap}
+  .preset.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .preset .pdot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.7}
+  .preset.custom{border-style:dashed}
+  .preset.custom.on{border-style:solid}
+  .reco{padding:2px 2px 0;margin-bottom:6px}
+  .reco.alt{}
+  .reco .rtt{font-size:13px;font-weight:800;color:var(--navy)}
+  .reco .rmeta{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-top:2px}
+  .reco .rsb{font-size:12px;font-weight:600;color:var(--body);line-height:1.45;margin-top:5px}
+  .reco .rswap{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11.5px;font-weight:800;color:#2E7D4F;cursor:pointer}
+  .reco .rswap .recstar{margin-right:0}
+  /* learning outcomes sheet */
+  .lolist{flex:1;min-height:0;overflow-y:auto}
+  .lo{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .lo:first-child{border-top:none;padding-top:2px}
+  .lon{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--gtint);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800}
+  .lotx{flex:1;min-width:0}
+  .lot{font-size:13.5px;font-weight:700;color:var(--navy);line-height:1.4}
+  .loby{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:10.5px;font-weight:800;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:3px 8px}
+  .losub{font-size:12px;font-weight:600;color:var(--body);margin:-6px 0 12px}
+  .divlabel .hint{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap}
   .pbadge{position:absolute;right:14px;top:14px;background:rgba(199,125,26,.14);border:1px solid rgba(199,125,26,.45);color:#C77D1A;border-radius:8px;padding:4px 8px;font-size:9px;font-weight:800;letter-spacing:.6px;z-index:4;text-transform:uppercase}
   .pzrow{flex:0 0 auto;margin-top:13px}
   .pzlab{font-size:10px;font-weight:800;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
@@ -1396,12 +1416,70 @@ preselect();
   .cpill.live{background:#FEF3E2;color:#B9761E}
   .changeplan{text-align:center;margin:18px 0 2px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
   .changeplan span{border-bottom:1px solid var(--line)}
+  /* Topic Details · Section A — presentation + materials, fixed height */
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 8px rgba(20,33,61,.04);overflow:hidden}
+  .dhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 15px 12px}
+  .dhead .dacts{display:flex;align-items:center;gap:8px}
+  .dedit{flex:0 0 auto;width:32px;height:32px;border-radius:9px;background:#fff;border:1px solid var(--line);color:var(--body);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .dsec.first{margin-top:2px}
+  .ml .badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:6px;background:var(--bg);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--body);margin-left:2px}
+  .dcard.cta{background:none;border:none;box-shadow:none;overflow:visible}
+  .prep{display:flex;align-items:center;gap:13px;background:var(--navy);border-radius:16px;padding:15px 16px;cursor:pointer;box-shadow:0 8px 20px rgba(20,33,61,.18)}
+  .prepic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center}
+  .prepx{flex:1;min-width:0}
+  .prept{font-size:15px;font-weight:800;color:#fff}
+  .preps{font-size:11.5px;color:#AEBBD4;font-weight:600;margin-top:2px}
+  .dhead .dt{font-size:13.5px;font-weight:800;color:var(--navy)}
+  .dhead .dm{font-size:11px;font-weight:700;color:var(--muted);margin-top:1px}
+  .dlink{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--blue-dk);background:var(--btint);border-radius:9px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+  .strip{display:flex;gap:10px;overflow-x:auto;padding:0 15px 18px;height:122px;align-items:flex-start}
+  .sgrp{flex:0 0 auto}
+  .sglab{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--navy);margin-bottom:6px;white-space:nowrap}
+  .sglab b{font-size:9px;background:var(--bg);border:1px solid var(--line);border-radius:4px;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;color:var(--body)}
+  .sgthumbs{display:flex;gap:9px}
+  .sdiv{flex:0 0 auto;width:1px;align-self:stretch;background:var(--line);margin:4px 1px 0}
+  .strip::-webkit-scrollbar{display:none}
+  .sthumb{flex:0 0 auto;width:128px;cursor:pointer;border-radius:10px;overflow:hidden;border:1.5px solid var(--line);position:relative;background:#EDF2F9}
+  .sthumb .scaler{border-radius:8px;box-shadow:none}
+  .sthumb .fn{position:absolute;left:5px;top:5px;z-index:5;background:rgba(11,20,45,.6);color:#fff;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px}
+  .matrow{display:flex;flex-direction:column;justify-content:center;gap:9px;height:84px;padding:0 15px;border-top:1px solid var(--line)}
+  .dcard .ml{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--body);white-space:nowrap}
+  .dcard .ml svg{color:var(--blue-dk)}
+  .dcard .ml .mn{color:var(--muted);font-weight:700;letter-spacing:0}
+  .matchips{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;align-items:center;margin:0 -15px;padding:0 15px}
+  .matchips::-webkit-scrollbar{display:none}
+  .mchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;white-space:nowrap}
+  .mchip .mq{color:var(--muted);font-weight:700}
+  .mchip .md{display:none}
+  .mchip.none{color:var(--muted);border-style:dashed}
+  .clsband .clsrow{flex-wrap:nowrap;overflow-x:auto;margin:0 -15px;padding:0 15px}
+  .clsband .clsrow::-webkit-scrollbar{display:none}
+  .clsband .cchip{flex:0 0 auto;padding:6px 10px;font-size:11.5px}
+  .matnone{font-size:11.5px;font-weight:700;color:var(--muted)}
+  /* Section B — assignment */
+  .asg{display:flex;align-items:center;gap:12px;padding:14px 15px}
+  .asg .aic{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:var(--btint);color:var(--blue-dk);display:flex;align-items:center;justify-content:center}
+  .asg .ax{flex:1;min-width:0}
+  .asg .at{font-size:13.5px;font-weight:800;color:var(--navy)}
+  .asg .as{font-size:11.5px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.35}
+  .asg .abtn{flex:0 0 auto;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:800;padding:9px 12px;cursor:pointer;white-space:nowrap}
+  .asg.made .aic{background:var(--gtint);color:var(--green)}
+  .asgmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .asgmeta span{font-size:10.5px;font-weight:800;color:var(--body);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+  .asg.working .aic .spark{display:inline-block;animation:spin 1.1s linear infinite}
+  /* Section C — class status chips */
+  .clsrow{display:flex;gap:7px;flex-wrap:wrap}
+  .cchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;border-radius:10px;padding:8px 11px;border:1px solid var(--line);background:#fff;color:var(--navy)}
+  .cchip .cd{font-size:10.5px;font-weight:700;color:var(--muted)}
+  .cchip.done{background:var(--gtint);border-color:#CDE7D8}
+  .cchip.done .cd{color:#1F7A43}
+  .cchip.live{background:#FEF3E2;border-color:#F3DDB8}
+  .cchip.live .cd{color:#B9761E;font-variant-numeric:tabular-nums}
+  .cchip svg{flex:0 0 auto}
   .runbtn{flex:1;justify-content:center;font-size:14.5px;padding:14px 15px}
   .prevbtn.subtle{border:none;background:transparent;color:var(--muted);font-weight:700;padding:11px 6px}
   .foott{font-variant-numeric:tabular-nums}
   .ptimerbig{font-size:16px;font-weight:800;color:#B9761E;font-variant-numeric:tabular-nums;margin-right:auto}
-  .arec{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#2E7D4F;margin-top:9px;padding-top:9px;border-top:1px solid rgba(46,158,91,.22)}
-  .arec .recstar{margin-right:0;font-size:12px}
   .preset .pstar{margin-right:0;font-size:12px;line-height:1;color:#37C776}
 
   /* ===== unified slide deck (one LIGHT theme for all slides) ===== */
@@ -1479,6 +1557,19 @@ preselect();
   .sheetfoot .note{flex:1;min-width:0;font-size:12px;font-weight:700;color:var(--muted)}
   .sbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:none;border-radius:12px;font-size:13.5px;font-weight:800;padding:12px 16px;cursor:pointer;background:var(--blue);color:#fff}
   .sbtn.ghost{background:var(--bg);color:var(--navy);border:1.5px solid var(--line)}
+  .sbtn.warn{background:var(--navy)}
+  .cprow{display:flex;gap:9px;margin-top:4px}.cprow .sbtn{flex:1;justify-content:center}
+  .sbtn.navy{background:var(--navy)}.sbtn:disabled{opacity:.45;cursor:default}
+  .cfgbody{flex:1;min-height:0;overflow-y:auto;margin-bottom:14px}
+  .cfgl{font-size:11px;font-weight:800;letter-spacing:.7px;color:var(--muted);text-transform:uppercase;margin:14px 2px 8px}
+  .cfgl:first-child{margin-top:0}
+  .cfgl span{font-weight:700;letter-spacing:0;text-transform:none}
+  .cfgrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px}.cfgrow::-webkit-scrollbar{display:none}
+  .cfgrow.wrap{flex-wrap:wrap;overflow:visible}
+  .cchp{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:9px 13px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:12.5px;font-weight:800;color:var(--body);cursor:pointer;white-space:nowrap}
+  .cchp.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .cchp .recstar{margin-right:0}
+  .cfgs{font-size:11.5px;font-weight:600;color:var(--body);margin:8px 2px 0}
   /* pre-flight class picker */
   .pfsheet{max-height:none}
   .pfsub{font-size:12px;font-weight:600;color:var(--body);line-height:1.4;margin-bottom:14px}
@@ -1561,27 +1652,17 @@ preselect();
     <div class="header">
       <div class="topbar">
         <button class="back" onclick="topicBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="htx"><div class="htitle">Seeds &amp; Germination</div><div class="hsub">Grade 5 · EVS · Seeds and Seeds</div></div>
-        <span class="offline"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Offline</span>
+        <div class="htx"><div class="htitle">Seeds &amp; Germination</div><div class="hsub">Grade 5 · EVS · Seeds &amp; Plants</div></div>
+        <button class="lobtn" onclick="openLO()" title="Learning outcomes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg>Outcomes</button>
       </div>
     </div>
 
     <div class="body" id="viewDesign">
-      <div class="outcome">
-        <div class="oic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></div>
-        <div><div class="olab">Learning outcome</div><div class="otx">Students can name what a seed needs to sprout — and prove it with the three-bowl test.</div></div>
-      </div>
-      <div class="agentbar">
-        <div class="aic">&#9733;</div>
-        <div class="atx">
-          <div class="att">Grade 5 · 35 min · no lab</div>
-          <div class="asub">Abstract for 9-year-olds — <b>Storyteller</b> works best here: a sleeping-seed hook, then the three-bowl test with kitchen chana. Prep once, reuse across 5A/5B/5C.</div>
-          <div class="arec">Switch any step freely</div>
-        </div>
-      </div>
-      <div class="plabel">Pick a style</div>
+      <!-- 1 · Primary job: pick a teaching style. Chips + the recommendation live in one block. -->
+      <div class="plabel">Pick a teaching style</div>
       <div class="presets" id="presets"></div>
-      <div class="divlabel"><span class="l">Your lesson plan</span><span class="r"></span></div>
+      <div class="reco" id="reco"></div>
+      <div class="divlabel"><span class="l">Your lesson plan</span><span class="r"></span><span class="hint">Tap a step to change its style</span></div>
       <div id="steps"></div>
     </div>
 
@@ -1617,8 +1698,35 @@ preselect();
         <div class="shd"><div><div class="sheye" style="color:var(--blue-dk)">Start teaching</div><div class="shtt">Which class are you teaching?</div></div><button class="sclose" onclick="closePreflight()">&times;</button></div>
         <div class="pfsub">Prepared once for Grade 5 — pick the section you’re walking into.</div>
         <div class="pfclasses" id="pfclasses"></div>
-        <div class="pfmeta"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 9 slides · ~35 min · works offline</div>
+        <div class="pfmeta"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> 9 slides · ~35 min</div>
         <button class="sbtn full" onclick="startTeach()">Start class</button>
+      </div>
+    </div>
+
+    <div class="scrim" id="loscrim" onclick="closeLO()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="shandle"></div>
+        <div class="shd"><div><div class="sheye" style="color:var(--green)">Grade 5 · EVS · Seeds &amp; Plants</div><div class="shtt">Learning outcomes</div></div><button class="sclose" onclick="closeLO()">&times;</button></div>
+        <div class="losub">By the end of this lesson, students can…</div>
+        <div class="lolist" id="lolist"></div>
+      </div>
+    </div>
+
+    <div class="scrim" id="asgscrim" onclick="closeAsgConfig()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="shandle"></div>
+        <div class="shd"><div><div class="sheye" style="color:var(--blue-dk)">Seeds &amp; Germination · Grade 5</div><div class="shtt">Set up the assignment</div></div><button class="sclose" onclick="closeAsgConfig()">&times;</button></div>
+        <div class="cfgbody" id="asgcfg"></div>
+        <button class="sbtn full navy" id="asggen" onclick="makeAssign()">Generate assignment</button>
+      </div>
+    </div>
+
+    <div class="scrim" id="cpscrim" onclick="closeChangePlan()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <div class="shandle"></div>
+        <div class="shd"><div><div class="sheye" style="color:#B9761E">Change the plan</div><div class="shtt">Edit this presentation?</div></div><button class="sclose" onclick="closeChangePlan()">&times;</button></div>
+        <div class="pfsub">You’ll go back to the teaching-style and step choices. The current slides stay until you tap <b>Generate</b> again — then they’re replaced. Classes already taught keep their record.</div>
+        <div class="cprow"><button class="sbtn ghost" onclick="closeChangePlan()">Keep as is</button><button class="sbtn warn" onclick="confirmChangePlan()">Change the plan</button></div>
       </div>
     </div>
 
@@ -1747,6 +1855,12 @@ var PRESETS={
 };
 var MINS={intro:5,concept:10,exp:15,expand:5};
 var RECO_KEY='Storyteller';
+/* one-line pitch per teaching style, shown under the chips. [why it fits, what it needs] */
+var PRESET_INFO={
+ 'Storyteller':{tag:'Recommended',fit:'Abstract for 9-year-olds — a sleeping-seed hook, then the three-bowl test up front with kitchen chana.',need:'no lab · chana + 3 bowls'},
+ 'Experimenter':{tag:'Hands-on',fit:'Every group runs the three-bowl test themselves. Most hands-on, most setup and noise.',need:'3 bowls + chana per group'},
+ 'Discussion-led':{tag:'No materials',fit:'Board and talk only — children act out a waking seed. Best when you have no materials or a short period.',need:'no materials'}
+};
 var ACCENT='#2680EB', ATINT='#EAF1FD';
 /* teacher-facing approach descriptions (the plan, shown before the deck is built) */
 var BLURB={
@@ -1792,6 +1906,7 @@ var MATS={
  }
 };
 function matsAll(){ var out=[]; STEPS.forEach(function(s){ var m=(MATS[s.key]||{})[state[s.key]]; if(m) m.forEach(function(x){ out.push({n:x[0],q:x[1],src:x[2],step:s.name}); }); }); return out; }
+function iFlask(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 14h9"/></svg>'; }
 function iconBox(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>'; }
 function iconHand(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 11a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6"/></svg>'; }
 function fmt(s){ var m=Math.floor(s/60), r=s%60; return (m<10?'0':'')+m+':'+(r<10?'0':'')+r; }
@@ -1897,10 +2012,50 @@ function renderPresets(){
     b.innerHTML=dot+name; b.onclick=function(){applyPreset(name);};
     el.appendChild(b);
   });
+  /* a hand-mixed plan is a real state — show it as a chip instead of leaving nothing selected */
+  if(curPreset===null){
+    var c=document.createElement('button'); c.className='preset custom on'; c.innerHTML='<span class="pdot"></span>Your mix';
+    el.appendChild(c); c.scrollIntoView({block:'nearest',inline:'nearest'});
+  }
+  renderReco();
 }
+/* the recommendation sits directly under the chips and reacts to what is selected */
+function renderReco(){
+  var el=document.getElementById('reco'); if(!el)return;
+  var mins=totalMins(), star='<span class="recstar">&#9733;</span>';
+  if(curPreset===RECO_KEY){
+    var i=PRESET_INFO[RECO_KEY];
+    el.className='reco';
+    el.innerHTML='<div class="rtt">Storyteller — recommended for Grade 5</div><span class="rmeta">'+mins+' min · '+i.need+'</span><div class="rsb">'+i.fit+' Prep once, reuse across 5A/5B/5C.</div>';
+  } else if(curPreset){
+    var p=PRESET_INFO[curPreset]||{fit:'',need:''};
+    el.className='reco alt';
+    el.innerHTML='<div class="rtt">'+curPreset+'</div><span class="rmeta">'+mins+' min · '+p.need+'</span><div class="rsb">'+p.fit+'</div>'
+      +'<div class="rswap" onclick="applyPreset(RECO_KEY)">'+star+'Storyteller is recommended for this topic — switch back</div>';
+  } else {
+    el.className='reco alt';
+    el.innerHTML='<div class="rtt">Your mix</div><span class="rmeta">'+mins+' min · steps changed by hand</span><div class="rsb">The plan below is exactly what will be built.</div>'
+      +'<div class="rswap" onclick="applyPreset(RECO_KEY)">'+star+'Reset to Storyteller</div>';
+  }
+}
+/* learning outcomes — [text, steps that deliver it] */
+var LOS=[
+ ['Name the three things a seed needs to sprout — water, air and warmth.',[2,3]],
+ ['Predict, then test, which of the three bowls will sprout — and say why.',[3]],
+ ['Explain why soaked chana sprouts overnight but dry chana in the jar never does.',[1,4]]
+];
+function renderLO(){
+  document.getElementById('lolist').innerHTML=LOS.map(function(l,i){
+    var by=l[1].map(function(n){ var st=STEPS[n-1]; return 'Step '+n+' · '+st.name; }).join(', ');
+    return '<div class="lo"><span class="lon">'+(i+1)+'</span><div class="lotx"><div class="lot">'+l[0]+'</div><span class="loby">'+by+'</span></div></div>';
+  }).join('');
+}
+function openLO(){ renderLO(); document.getElementById('loscrim').classList.add('open'); }
+function closeLO(){ document.getElementById('loscrim').classList.remove('open'); }
 function applyPreset(name){ curPreset=name; var p=PRESETS[name]; STEPS.forEach(function(s){ if(p[s.key])state[s.key]=p[s.key]; }); render(); }
 function totalMins(){ return STEPS.reduce(function(a,s){return a+MINS[s.key];},0); }
 function render(){
+  var body=document.getElementById('viewDesign'), keep=body.scrollTop;
   renderPresets();
   var host=document.getElementById('steps'); host.innerHTML='';
   STEPS.forEach(function(s){
@@ -1921,14 +2076,19 @@ function render(){
       +'<div class="approach"><span class="amark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h11"/></svg></span><div class="atxt"><div class="ah">'+bl[0]+'</div>'+needhtml+'</div></div>';
     host.appendChild(card);
   });
+  body.scrollTop=keep;
   setDesignFoot();
 }
 function setStyle(key,name){ state[key]=name; curPreset=null; render(); }
+/* footer subline: whether the chosen plan needs experiment kit, and how much of it is yours to bring */
+function kitLine(){
+  return matsAll().length ? 'Materials needed' : 'No materials needed';
+}
 function setDesignFoot(){
   if(curView!=='design')return;
   document.getElementById('foot').innerHTML=
-    '<div class="footx"><div class="foott">'+total()+'-slide plan</div><div class="foots">4 steps · ~'+totalMins()+' min · works offline</div></div>'
-    +'<button class="buildbtn wide" onclick="startBuild()">Build my presentation <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>';
+    '<div class="footx"><div class="foott">'+total()+' Slides</div><div class="foots">'+kitLine()+'</div></div>'
+    +'<button class="buildbtn wide" onclick="startBuild()">Generate <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>';
 }
 
 /* ---------------- view switching + generation moment ---------------- */
@@ -1970,50 +2130,94 @@ function startBuild(){
 }
 var deckSlides=[], curSlide=0, classRunning=false, classSecs=0, classTick=null, teachPaused=false;
 /* grade-level topic → applicable classrooms (prepared once for Grade 5, taught per section) */
-var CLASSES=[{id:'5A',status:'done',when:'Taught Mon, 10 Aug'},{id:'5B',status:'ready'},{id:'5C',status:'ready'}];
+var CLASSES=[{id:'5A',status:'done',when:'Taught 10 Aug'},{id:'5B',status:'ready'},{id:'5C',status:'ready'}];
 var selClass=null;
 function firstReady(){ var r=CLASSES.filter(function(c){return c.status==='ready';})[0]; return r?r.id:null; }
+var ASSIGN=null; /* null → not created yet; {q, due, cls} once generated */
 function renderDeck(){
   var host=document.getElementById('viewDeck');
   deckSlides=[]; STEPS.forEach(function(s){ slidesOf(s).forEach(function(sl){ deckSlides.push({s:s,sl:sl}); }); });
-  if(curSlide>=deckSlides.length) curSlide=0;
-  var g=0, film='';
-  STEPS.forEach(function(s){
-    film+='<span class="filmtag"><b>'+s.n+'</b> '+s.name+'</span>';
-    slidesOf(s).forEach(function(sl){ var gi=g++; film+='<div class="fthumb'+(gi===curSlide?' on':'')+'" onclick="selectSlide('+gi+')"><span class="fn">'+(gi+1)+'</span>'+mount(sl)+'</div>'; });
+  var strip='', gi=0;
+  STEPS.forEach(function(st,si){
+    var th=slidesOf(st).map(function(sl){ var i=gi++; return '<div class="sthumb" onclick="openDeck('+i+')"><span class="fn">'+(i+1)+'</span>'+mount(sl)+'</div>'; }).join('');
+    strip+=(si?'<span class="sdiv"></span>':'')+'<div class="sgrp"><div class="sglab"><b>'+st.n+'</b>'+st.name+'</div><div class="sgthumbs">'+th+'</div></div>';
   });
   var mats=matsAll();
-  var self=mats.filter(function(m){return m.src==='self';}), pool=mats.filter(function(m){return m.src==='pool';});
-  function kitRows(list,tag){ return list.map(function(m){ return '<div class="kitrow"><div class="kx"><div class="kn">'+m.n+'</div><div class="kq">'+m.q+' · for '+m.step+'</div></div><span class="kittag '+tag+'">'+(tag==='self'?'You bring':'Petrilab kit')+'</span></div>'; }).join(''); }
-  var kitHtml='';
-  if(self.length) kitHtml+='<div class="kitgrp"><div class="kitglab self">'+iconHand()+'Bring yourself · from home / kitchen</div>'+kitRows(self,'self')+'</div>';
-  if(pool.length) kitHtml+='<div class="kitgrp"><div class="kitglab pool">'+iconBox()+'Issued from the Petrilab School Kit</div>'+kitRows(pool,'pool')+'</div>';
-  if(!mats.length) kitHtml='<div class="kitrow"><div class="kx"><div class="kn">No materials needed</div><div class="kq">This lesson runs slide-only.</div></div></div>';
+  var matHtml=mats.length
+    ? '<div class="matchips">'+mats.map(function(m){ return '<span class="mchip '+m.src+'"><span class="md"></span>'+m.n+' <span class="mq">'+m.q+'</span></span>'; }).join('')+'</div>'
+    : '<div class="matchips"><span class="mchip none">No materials needed — slides only</span></div>';
   if(!selClass) selClass=firstReady();
   host.innerHTML=
-    /* 1 · Learning outcome */
-    '<div class="outcome"><div class="oic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></div><div><div class="olab">Learning outcome</div><div class="otx">'+document.querySelector("#viewDesign .otx").textContent+'</div></div></div>'
-    /* 2 · Slides */
-    +'<div class="dsec">Slides · '+total()+' · ~'+totalMins()+' min</div>'
-    +'<div class="mainstage" id="mainStage">'+mount(deckSlides[curSlide].sl)+'</div>'
-    +'<div class="filmbar" id="filmbar">'+film+'</div>'
-    /* 3 · Materials */
-    +'<div class="dsec">Materials</div>'
-    +'<div class="kitcard"><div class="kittitle">'+iconBox()+'Materials for this lesson</div>'+kitHtml+'</div>'
-    /* 4 · Status across classes */
-    +'<div class="dsec">Status across your classes</div>'
-    +'<div class="statuscard"><div class="stsub">Prepared once for Grade 5 — teach it in each section.</div><div id="statusBody"></div></div>'
-    +'<div class="changeplan" onclick="showView(\'design\')"><span>Change the plan</span></div>';
-  renderStatus();
+    /* A · presentation + materials — fixed-height card */
+    '<div class="dsec first">Teach</div>'
+    +'<div class="dcard">'
+      +'<div class="dhead"><div class="ml">'+iconSlides()+'Slides <span class="mn badge">'+total()+'</span></div><div class="dacts"><button class="dedit" title="Change the plan" onclick="askChangePlan()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button><span class="dlink" onclick="openDeck(0)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Preview</span></div></div>'
+      +'<div class="strip">'+strip+'</div>'
+      +'<div class="matrow"><div class="ml">'+iFlask()+'Materials'+(mats.length?' <span class="mn badge">'+mats.length+'</span>':'')+'</div>'+matHtml+'</div>'
+      /* classes taught — same card, same ground */
+      +'<div class="matrow clsband"><div class="ml">'+iconCls()+'Classes</div><div class="clsrow" id="statusBody"></div></div>'
+    +'</div>'
+    /* B · assignment */
+    +'<div class="dsec">Assignment</div>'
+    +'<div class="dcard" id="asgcard"></div>';
+  renderAssign(); renderStatus();
   requestAnimationFrame(fit);
 }
+function askChangePlan(){ document.getElementById('cpscrim').classList.add('open'); }
+function closeChangePlan(){ document.getElementById('cpscrim').classList.remove('open'); }
+function confirmChangePlan(){ closeChangePlan(); showView('design'); }
+function iconSlides(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>'; }
+function iconCls(){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'; }
+function iconAsg(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13l2 2 4-4"/></svg>'; }
+function renderAssign(){
+  var el=document.getElementById('asgcard'); if(!el)return; el.className='dcard';
+  if(ASSIGN==='working'){
+    el.innerHTML='<div class="asg working"><div class="aic"><span class="spark">&#10022;</span></div><div class="ax"><div class="at">Writing the '+ACFG.type.toLowerCase()+'…</div><div class="as">'+ACFG.q+' questions from these slides, in Grade 5 language.</div></div></div>';
+  } else if(ASSIGN){
+    el.innerHTML='<div class="asg made"><div class="aic">'+iconAsg()+'</div><div class="ax"><div class="at">'+ASSIGN.type+' · Seeds &amp; Germination</div><div class="as">'+ASSIGN.q+' questions · '+ASSIGN.mix.join(', ').toLowerCase()+'</div>'
+      +'<div class="asgmeta"><span>Due '+ASSIGN.due+'</span><span>'+(ASSIGN.cls?'Sent to '+ASSIGN.cls:'Not sent yet')+'</span></div></div><button class="abtn" style="background:#fff;color:var(--navy);border:1.5px solid var(--line)">Open</button></div>';
+  } else {
+    el.className='dcard cta';
+    el.innerHTML='<div class="prep" onclick="openAsgConfig()"><div class="prepic"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div><div class="prepx"><div class="prept">Create an Assignment</div><div class="preps">Petrilab drafts one from these slides</div></div></div>';
+    return;
+  }
+}
+/* assignment configuration — mirrors the slide flow: choose, then generate */
+var ACFG={type:'Home task',q:5,mix:['Draw & label','Predict'],due:'Fri, 14 Aug'};
+var AOPT={
+  type:[['Home task','Recommended for this topic'],['Worksheet','In-class, on paper'],['Quick quiz','5 min, oral or slate']],
+  q:[3,5,8],
+  mix:['Draw & label','Fill in the blanks','Predict','One-line answers','Do at home'],
+  due:['Tomorrow','Fri, 14 Aug','Next Mon']
+};
+function cfgChip(group,val,label,on){ return '<button class="cchp'+(on?' on':'')+'" onclick="setCfg(\''+group+'\',\''+String(val).replace(/'/g,"\\'")+'\')">'+label+'</button>'; }
+function renderAsgConfig(){
+  var h='';
+  h+='<div class="cfgl">Type</div><div class="cfgrow">'+AOPT.type.map(function(t){ return cfgChip('type',t[0],(t[0]===AOPT.type[0][0]?'<span class="recstar">&#9733;</span>':'')+t[0],ACFG.type===t[0]); }).join('')+'</div>';
+  var td=AOPT.type.filter(function(t){return t[0]===ACFG.type;})[0]; h+='<div class="cfgs">'+(td?td[1]:'')+'</div>';
+  h+='<div class="cfgl">Questions</div><div class="cfgrow">'+AOPT.q.map(function(n){ return cfgChip('q',n,n,ACFG.q===n); }).join('')+'</div>';
+  h+='<div class="cfgl">Mix <span>· pick any</span></div><div class="cfgrow wrap">'+AOPT.mix.map(function(m){ return cfgChip('mix',m,m,ACFG.mix.indexOf(m)>=0); }).join('')+'</div>';
+  h+='<div class="cfgl">Due</div><div class="cfgrow">'+AOPT.due.map(function(d){ return cfgChip('due',d,d,ACFG.due===d); }).join('')+'</div>';
+  document.getElementById('asgcfg').innerHTML=h;
+  document.getElementById('asggen').disabled=!ACFG.mix.length;
+}
+function setCfg(g,v){
+  if(g==='q') ACFG.q=+v;
+  else if(g==='mix'){ var i=ACFG.mix.indexOf(v); if(i>=0) ACFG.mix.splice(i,1); else ACFG.mix.push(v); }
+  else ACFG[g]=v;
+  renderAsgConfig();
+}
+function openAsgConfig(){ renderAsgConfig(); document.getElementById('asgscrim').classList.add('open'); }
+function closeAsgConfig(){ document.getElementById('asgscrim').classList.remove('open'); }
+function makeAssign(){
+  closeAsgConfig(); ASSIGN='working'; renderAssign();
+  setTimeout(function(){ ASSIGN={type:ACFG.type,q:ACFG.q,mix:ACFG.mix.slice(),due:ACFG.due,cls:null}; renderAssign(); },1400);
+}
 function classRow(c){
-  if(c.status==='done')
-    return '<div class="crow"><span class="cico done"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg></span><div class="cx"><div class="cn">Class '+c.id+'</div><div class="cq">'+(c.when||'Completed')+'</div></div><span class="cpill done">Completed</span></div>';
-  if(c.status==='live')
-    return '<div class="crow live"><span class="cico live"><span class="rddot"></span></span><div class="cx"><div class="cn">Class '+c.id+'</div><div class="cq">Class in progress</div></div><span class="cpill live" id="liveTimer">'+fmt(classSecs)+'</span></div>';
-  var sel=(selClass===c.id);
-  return '<div class="crow ready'+(sel?' sel':'')+'" onclick="selectClass(\''+c.id+'\')"><span class="cradio'+(sel?' on':'')+'"></span><div class="cx"><div class="cn">Class '+c.id+'</div><div class="cq">Ready to teach'+(sel?' · selected':'')+'</div></div><span class="cpill ready">Ready</span></div>';
+  var tick='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>';
+  if(c.status==='done') return '<span class="cchip done"><span style="color:var(--green)">'+tick+'</span>'+c.id+'<span class="cd">'+(c.when||'Taught').replace('Taught ','')+'</span></span>';
+  if(c.status==='live') return '<span class="cchip live"><span class="rddot"></span>'+c.id+'<span class="cd" id="liveTimer">'+fmt(classSecs)+'</span></span>';
+  return '<span class="cchip">'+c.id+'<span class="cd">Ready</span></span>';
 }
 function renderStatus(){ var el=document.getElementById('statusBody'); if(el) el.innerHTML=CLASSES.map(classRow).join(''); }
 function selectClass(id){ if(classRunning)return; selClass=id; renderStatus(); setDeckFoot(); }
