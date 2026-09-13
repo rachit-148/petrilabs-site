@@ -125,10 +125,10 @@ svg{display:block}
 
 #pgT .zone{scroll-margin-top:8px;margin:0 -20px;padding:14px 20px 20px}
 #band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 0 auto;
-      margin:0 -20px;padding:0 20px;display:flex;flex-direction:column;overflow:hidden}
+      margin:16px -20px 0;padding:0 20px;display:flex;flex-direction:column}
 #band > *{position:relative;z-index:1}
 #zTodo{background:transparent}
-#zExp{background:transparent;padding:30px 20px 40px;flex:1 0 auto}
+#zExp{background:transparent;padding:16px 20px 40px;flex:1 0 auto}
 #doodles{position:absolute;inset:0;z-index:0;width:100%;height:100%;
          color:var(--doodle);opacity:var(--doodle-o);pointer-events:none}
 .bandsep{height:1px;background:var(--line);margin:0 -20px;opacity:.7}
@@ -146,37 +146,158 @@ svg{display:block}
 #pgT .filtic{flex:none;width:28px;height:34px;background:transparent;border:none;
         color:var(--body);display:flex;align-items:center;justify-content:center;cursor:pointer}
 #pgT .subs{align-items:center}
-/* horizontal card deck */
-.deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 4px;
-      scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.deck::-webkit-scrollbar{display:none}
-.dc{flex:0 0 79%;scroll-snap-align:center;height:152px;border-radius:18px;padding:13px 15px;
-    background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;
-    box-shadow:var(--shadow);transition:background .25s,border-color .25s,color .25s;cursor:pointer}
-.dc .src2{display:flex;align-items:center;gap:9px}
-.dc .sic{width:27px;height:27px;border-radius:8px;background:var(--icbg);color:var(--body);flex:none;
-         display:flex;align-items:center;justify-content:center;transition:.25s}
-.dc .slbl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--body);
-          overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dc h3{margin:9px 0 0;font-size:15.5px;font-weight:700;line-height:1.25;letter-spacing:-.2px}
-.dc .sub2{font-size:12px;color:var(--body);margin-top:4px;line-height:1.38;
-          display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.dc .foot{display:flex;align-items:center;margin-top:auto;padding-top:9px}
-.dc .tm{font-size:11.5px;font-weight:700;color:var(--body)}
-.dc .arw{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;
-         border-radius:999px;padding:7px 12px;background:var(--btint);color:var(--blue-dk);transition:.25s}
-.dc.act{background:var(--ink);border-color:var(--ink);color:var(--card)}
-.dc.act .sic{background:rgba(255,255,255,.14);color:var(--card)}
-.dc.act .slbl{color:#A9B8D2}
-.dc.act .sub2{color:#C8D2E4}
-.dc.act .tm{color:#A9B8D2}
-.dc.act .arw{background:var(--card);color:var(--ink)}
-[data-theme="dark"] .dc.act .slbl,[data-theme="dark"] .dc.act .tm{color:#55607A}
-[data-theme="dark"] .dc.act .sub2{color:#3B465C}
-[data-theme="dark"] .dc.act .sic{background:rgba(20,33,61,.09);color:#2C3A52}
-.deckfoot{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px}
-.pd{width:6px;height:6px;border-radius:50%;background:var(--line)}
-#pgT .pd.on{background:var(--ink);width:18px;border-radius:3px}
+/* ---------- primary destination + rail ---------- */
+#pgT .hwtile{display:flex;align-items:center;gap:13px;background:var(--ink);color:var(--card);border-radius:17px;
+      padding:13px 14px;margin-top:2px;box-shadow:0 6px 18px rgba(20,33,61,.22);cursor:pointer}
+[data-theme="dark"] #pgT .hwtile{box-shadow:0 6px 18px rgba(0,0,0,.5);border:1px solid #2A3448}
+#pgT .hwtile .hic{width:40px;height:40px;border-radius:12px;flex:none;
+      display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.13)}
+[data-theme="dark"] #pgT .hwtile .hic{background:rgba(20,33,61,.30)}
+#pgT .hwtile .hm{flex:1;min-width:0}
+#pgT .hwtile .hk{font-size:9px;font-weight:800;letter-spacing:1.1px;color:#9FB0CE;
+      display:flex;align-items:center;gap:7px}
+[data-theme="dark"] #pgT .hwtile .hk{color:#5B6880}
+#pgT .hwtile .hnow{color:#0F1420;background:#7FB6FA;border-radius:999px;padding:2px 6px;letter-spacing:.7px}
+#pgT .hwtile .ht{font-size:14.5px;font-weight:700;margin-top:3px;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pgT .hwtile .hd{display:flex;align-items:center;gap:5px;margin-top:6px}
+#pgT .hwtile .hd i{width:6px;height:6px;border-radius:50%;display:block;flex:none}
+#pgT .hwtile .hd .lbl{font-size:10px;font-weight:700;color:#8798B8;margin-left:3px;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-theme="dark"] #pgT .hwtile .hd .lbl{color:#55627A}
+#pgT .hwtile .cnt{flex:none;min-width:34px;height:34px;padding:0 8px;border-radius:999px;background:var(--blue);
+      color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center}
+#pgT .hwtile .cnt.ok{background:var(--green)}
+#pgT .rail{display:flex;gap:9px;margin:10px -20px 0;padding:0 20px 2px;overflow-x:auto;scrollbar-width:none}
+#pgT .rail::-webkit-scrollbar{display:none}
+#pgT .tile{flex:none;width:auto;min-width:92px;background:var(--card);border:1px solid var(--line);
+      border-radius:14px;padding:11px 11px 10px;box-shadow:var(--shadow);text-align:center;
+      cursor:pointer;position:relative}
+#pgT .tile .tic{width:30px;height:30px;border-radius:10px;background:var(--icbg);color:var(--body);
+      margin:0 auto;display:flex;align-items:center;justify-content:center}
+#pgT .tile .tl{font-size:10.5px;font-weight:700;color:var(--body);margin-top:7px;line-height:1.25;
+      white-space:nowrap}
+#pgT .tile .lk{position:absolute;top:7px;right:8px;color:var(--muted)}
+#pgT .tile.new .tic{background:var(--btint);color:var(--blue-dk)}
+#pgT .tile .ndot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+
+/* the wide child switcher — the one identity control, held apart from the destinations */
+#pgT .tile.kidtile{width:auto;padding:9px 12px 10px;background:var(--btint);border-color:#CFE0FA;
+      box-shadow:0 3px 10px rgba(38,128,235,.14)}
+[data-theme="dark"] #pgT .tile.kidtile{background:#1B2A44;border-color:#31456B;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+#pgT .tile.kidtile .tl{color:var(--blue-dk)}
+#pgT .kdiv{width:1px;height:22px;background:#C6D8F2;flex:none;margin:0 2px}
+[data-theme="dark"] #pgT .kdiv{background:#3A4E72}
+#pgT .kids{display:flex;align-items:center;gap:8px;justify-content:center}
+#pgT .kf{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;display:block;
+      border:2px solid transparent;box-shadow:0 0 0 1px #CFE0FA;cursor:pointer;
+      opacity:.5;filter:grayscale(.6);transition:.18s}
+#pgT .kf.on{opacity:1;filter:none;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+#pgT .kf.edit{display:flex;align-items:center;justify-content:center;background:var(--card);
+      color:var(--blue-dk);opacity:1;filter:none;border-style:dashed;border-color:#BBD0EE;box-shadow:none}
+[data-theme="dark"] #pgT .kf.edit{background:#141C2C;border-color:#3A4E72}
+#pgT .tile.kidtile .tl{margin-top:8px}
+#pgT .kpic{width:38px;height:38px;border-radius:50%;overflow:hidden;flex:none;display:block;
+      box-shadow:0 0 0 1px var(--line)}
+#pgT .kidrow{cursor:pointer}
+#pgT .kon{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--gdeep);background:var(--gtint);
+      border-radius:999px;padding:4px 8px;flex:none}
+/* ---------- Explore hero ---------- */
+#pgT .hero{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;margin-bottom:13px;
+      background:linear-gradient(160deg,var(--gtint),var(--card) 70%);
+      border:1px solid var(--gline);box-shadow:0 4px 16px rgba(20,33,61,.07)}
+#pgT .hero .hdoo{position:absolute;inset:0;color:var(--gdeep);opacity:.10;pointer-events:none}
+#pgT .hero .hin{position:relative;padding:15px 16px 14px}
+#pgT .hbadge{font-size:9px;font-weight:800;letter-spacing:.9px;color:var(--gdeep);background:var(--card);
+      border:1px solid var(--gline);border-radius:999px;padding:4px 9px;display:inline-block}
+#pgT .hero h3{margin:10px 0 0;font-size:19px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+#pgT .hero .hs{font-size:12.5px;color:var(--body);margin-top:5px;line-height:1.4}
+#pgT .hmats{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+#pgT .hmats span{font-size:10px;font-weight:700;color:var(--gdeep);background:var(--card);
+      border:1px solid var(--gline);border-radius:999px;padding:4px 9px}
+#pgT .hfoot{display:flex;align-items:center;gap:10px;margin-top:14px}
+#pgT .xp{font-size:10px;font-weight:800;letter-spacing:.6px;color:var(--amber);background:var(--atint);
+      border:1px solid #EFDCB4;border-radius:999px;padding:5px 9px}
+[data-theme="dark"] #pgT .xp{border-color:#4A3D22}
+#pgT .who{display:flex;align-items:center;gap:7px}
+#pgT .stack{display:flex}
+#pgT .stack i{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);margin-left:-7px;
+      display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-style:normal}
+#pgT .stack i:first-child{margin-left:0}
+#pgT .who .wl{font-size:10.5px;font-weight:700;color:var(--body)}
+#pgT .hgo{margin-left:auto;background:var(--ink);color:var(--card);font-size:12.5px;font-weight:800;
+      border-radius:999px;padding:9px 15px;display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- the From School screen ---------- */
+#pgT .hwscreen{position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;
+      transform:translateX(100%);transition:transform .3s cubic-bezier(.3,.9,.3,1);visibility:hidden}
+#pgT .hwscreen.on{transform:translateX(0);visibility:visible}
+#pgT .hwbar{display:flex;align-items:center;gap:11px;padding:16px 20px 8px;flex:none}
+#pgT .hwbar .back{width:32px;height:32px;border-radius:50%;background:var(--chip);border:1px solid var(--line);
+      color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+#pgT .hwt{font-weight:700;font-size:15.5px;display:inline-flex;align-items:center;gap:9px;flex:none}
+#pgT .hwbar .zsp{flex:1}
+#pgT .hwbar .zlink{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;
+      font-size:12px;font-weight:700;color:var(--blue-dk);cursor:pointer}
+/* the filter pins to the top and fades onto the app bar's surface */
+#pgT #expFilt{position:sticky;top:0;z-index:8;background:transparent;border-bottom:0;box-shadow:none;
+      margin:0 -20px 11px;padding:0 20px 9px}
+#pgT #expFilt::before{content:"";position:absolute;inset:-1px 0 0;background:var(--bg);
+      opacity:var(--wf,0);pointer-events:none;
+      border-bottom:1px solid rgba(0,0,0,0);box-shadow:0 6px 14px -12px rgba(20,33,61,0)}
+#pgT #expFilt.stuck::before{border-bottom-color:var(--bline);box-shadow:0 6px 14px -12px rgba(20,33,61,.45)}
+#pgT #expFilt > *{position:relative;z-index:1}
+#pgT #zExp .filtrow{margin-top:0}
+#pgT .hwfilt{margin-bottom:4px}
+#pgT .hwbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 20px calc(26px + env(safe-area-inset-bottom))}
+
+/* ---------- From School · the spine ---------- */
+
+#pgT .fs-voice{--tc:var(--blue);--tt:var(--btint);--td:var(--blue-dk)}
+#pgT .fs-quiz {--tc:#7A6BD0;--tt:var(--vtint);--td:var(--violet)}
+#pgT .fs-act  {--tc:var(--green);--tt:var(--gtint);--td:var(--gdeep)}
+#pgT .fs-cust {--tc:#D2A24C;--tt:var(--atint);--td:var(--amber)}
+[data-theme="dark"] #pgT .fs-cust{--tc:#C89A4E}
+
+#pgT .fs-spine{position:relative;padding-left:36px}
+#pgT .fs-spine::before{content:"";position:absolute;left:13px;top:8px;bottom:14px;width:2px;background:var(--line)}
+#pgT .fs-spine.hassent::after{content:"";position:absolute;left:13px;top:8px;height:26px;width:2px;background:var(--green)}
+#pgT .fs-node{position:absolute;left:-36px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--card);
+      border:2px solid var(--tc);display:flex;align-items:center;justify-content:center;color:var(--td);z-index:2}
+#pgT .fs-node.ok{background:var(--gtint);border-color:#BFE3CE;color:var(--gdeep)}
+[data-theme="dark"] #pgT .fs-node.ok{border-color:#2A5B3E}
+#pgT .fs-row.live .fs-node{background:var(--tc);border-color:var(--tc);color:#fff}
+[data-theme="dark"] #pgT .fs-row.live .fs-node{color:#0F1420}
+#pgT .fs-sent{position:relative;min-height:32px;margin-bottom:11px}
+#pgT .fs-sent .fs-node{top:0}
+#pgT .fs-sentlbl{font-size:11.5px;font-weight:700;color:var(--gdeep);padding-top:6px;cursor:pointer}
+#pgT .fs-row{position:relative;margin-bottom:11px}
+#pgT .fs-row:last-child{margin-bottom:2px}
+#pgT .fs-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+      box-shadow:var(--shadow);cursor:pointer}
+#pgT .fs-top{display:flex;align-items:center;gap:8px}
+#pgT .fs-src{flex:1;min-width:0;font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--body);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pgT .fs-title{margin:7px 0 0;font-size:14px;font-weight:700;line-height:1.3}
+#pgT .fs-foot{display:flex;align-items:flex-end;gap:12px;margin-top:9px}
+#pgT .fs-sig{flex:1;min-width:0}
+#pgT .fs-where{font-size:11.5px;color:var(--body);font-weight:600;margin-top:7px;line-height:1.35}
+#pgT .fs-go{flex:none;font-size:11.5px;font-weight:800;color:var(--td);white-space:nowrap}
+#pgT .fs-due{font-size:9.5px;font-weight:800;letter-spacing:.7px;color:var(--muted);background:var(--icbg);
+      border-radius:999px;padding:3px 8px;white-space:nowrap;flex:none}
+#pgT .fs-due.now{color:var(--blue-dk);background:var(--btint)}
+#pgT .fs-due.late{color:#C0392B;background:#FDECEA}
+[data-theme="dark"] #pgT .fs-due.late{color:#F0837A;background:#3A2220}
+/* type signatures */
+#pgT .fs-wave{display:flex;align-items:center;gap:3px;height:20px}
+#pgT .fs-wave i{width:3px;border-radius:2px;background:var(--tc);opacity:.55}
+#pgT .fs-pips{display:flex;gap:5px;align-items:center}
+#pgT .fs-pips i{width:26px;height:7px;border-radius:4px;background:var(--tt)}
+#pgT .fs-mats{display:flex;gap:5px;flex-wrap:wrap}
+#pgT .fs-mats span{font-size:10px;font-weight:700;color:var(--td);background:var(--tt);
+      border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+#pgT .fs-ruled{display:flex;flex-direction:column;gap:4px;padding-top:3px;width:74px}
+#pgT .fs-ruled i{height:2px;border-radius:2px;background:var(--tc);opacity:.35}
 /* to-do list */
 .asg{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
 .ai{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
@@ -537,14 +658,13 @@ svg{display:block}
       <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="color:var(--amber)"><path d="M12 3c1 3-3 4.5-3 8a3 3 0 0 0 6 0c0-1 -.5-2-.5-2s2.5 1.5 2.5 4.5A5 5 0 0 1 7 13.5C7 8.5 11 7 12 3z"/></svg>
       <span class="n">4</span>
     </div>
-    <div class="avatar" id="avatarBtn">A</div>
   </div>
 
   <div class="scroll" id="scroll">
     <div class="hello">
       <div class="hrow">
         <div class="hl">
-          <h1 id="helloH">Good evening, Aarav</h1>
+          <h1 id="helloH">Good evening, Ridhaan</h1>
           <p id="helloSub">Grade 5A</p>
           <div id="helloTag"></div>
         </div>
@@ -556,39 +676,30 @@ svg{display:block}
       </div>
     </div>
 
-    <div class="anchors">
-      <div class="filtrow">
-        <div class="filtic" id="filtIc" title="Show all subjects">
-          <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
-        </div>
-        <div class="subswrap"><div class="subs open" id="subs"></div></div>
-      </div>
-    </div>
+    <div class="hwtile" id="hwTile"></div>
+    <div class="rail" id="rail"></div>
 
     <!-- one doodled surface for To do + Explore -->
     <div id="band">
     <svg id="doodles" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="url(#dooPat)"/></svg>
 
-    <div class="zone" id="zTodo">
-      <div class="zhead">
-        <div class="zt" id="ztTodo">From School</div>
-        <div class="zsp"></div>
-        <div class="zlink" id="lessonLink">Lesson plan
-          <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg></div>
-      </div>
-      <div id="todoWrap"></div>
-      <div class="zfoot" id="todoFoot"></div>
-    </div>
-
-      <div class="bandsep"></div>
-
     <!-- EXPLORE zone -->
     <div class="zone" id="zExp">
-    
+
+      <div class="anchors" id="expFilt">
+        <div class="filtrow">
+          <div class="filtic" id="filtIc" title="Show all subjects">
+            <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
+          </div>
+          <div class="subswrap"><div class="subs open" id="subs"></div></div>
+        </div>
+      </div>
+
       <div class="zhead">
         <div class="zt" id="ztExp">Explore</div>
         <span class="pulse" id="expPulse" title="Something new"></span>
       </div>
+      <div id="heroWrap"></div>
       <div class="ex" id="exList"></div>
 
       <div class="jy" id="jyCard">
@@ -613,35 +724,68 @@ svg{display:block}
     </div>
   </div>
 
+  <!-- app settings -->
+  <div class="sheet" id="setSheet">
+    <div class="grab"></div>
+    <div class="sbody">
+      <div class="slab" style="margin-top:2px">SETTINGS</div>
+      <div class="sgrp">
+        <div class="srow">
+          <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg></div>
+          <div class="srm"><div class="srt">App language</div><div class="srs">Menus and instructions</div></div>
+          <div class="srv" id="langV">English</div>
+        </div>
+        <div class="srow" id="sndRow">
+          <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M11 5L6 9H3v6h3l5 4V5zM16 9a4 4 0 0 1 0 6"/></svg></div>
+          <div class="srm"><div class="srt">Sounds</div><div class="srs">Taps, ticks and cheers</div></div>
+          <div class="toggle" id="sndT" data-nogen><i></i></div>
+        </div>
+        <div class="srow" id="darkRow2">
+          <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M20 14A8.5 8.5 0 1 1 10 4a7 7 0 0 0 10 10z"/></svg></div>
+          <div class="srm"><div class="srt">Dark mode</div><div class="srs">Easier on the eyes at night</div></div>
+          <div class="toggle off" id="darkT2" data-nogen><i></i></div>
+        </div>
+      </div>
+      <div class="sfoot">Petrilab Home · v0.1 prototype</div>
+    </div>
+  </div>
+
+  <!-- From School, as its own screen -->
+  <div class="hwscreen" id="hwScreen">
+    <div class="hwbar">
+      <div class="back" id="hwBack"><svg width="16" height="16" viewBox="0 0 24 24" class="ic" style="stroke-width:2"><path d="M15 6l-6 6 6 6"/></svg></div>
+      <div class="hwt" id="hwTitle">From School</div>
+      <div class="zsp"></div>
+      <div class="zlink" id="lessonLink">Lesson plan
+        <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="anchors hwfilt">
+      <div class="filtrow">
+        <div class="filtic" id="hFiltIc" title="Show all subjects">
+          <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
+        </div>
+        <div class="subswrap"><div class="subs open" id="hSubs"></div></div>
+      </div>
+    </div>
+    <div class="hwbody" id="hwBody">
+      <div id="todoWrap"></div>
+      <div class="zfoot" id="todoFoot"></div>
+    </div>
+  </div>
+
   <!-- settings sheet -->
   <div class="veil" id="veil"></div>
   <div class="sheet" id="sheet">
     <div class="grab"></div>
     <div class="sbody">
       <div id="paneMe">
-        <div class="sme"><div class="sav">A</div>
-          <div><div class="sn">Aarav Sharma</div><div class="sc">Grade 5A · St. Xavier's</div></div></div>
-        <div class="sgrp">
-          <div class="srow">
-            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M16 21v-2a4 4 0 0 0-8 0v2M12 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg></div>
-            <div class="srm"><div class="srt">Switch child</div><div class="srs">Meera · Grade 3B</div></div>
+        <div class="slab" style="margin-top:2px">CHILDREN</div>
+        <div class="sgrp" id="kidList"></div>
+        <div class="sgrp" style="margin-top:9px">
+          <div class="srow" id="addKid">
+            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M12 5v14M5 12h14"/></svg></div>
+            <div class="srm"><div class="srt">Add a child</div><div class="srs">Link another school code</div></div>
             <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
-          </div>
-        </div>
-        <div class="slab">MY APP</div>
-        <div class="sgrp">
-          <div class="srow">
-            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M11 5L6 9H3v6h3l5 4V5zM16 9a4 4 0 0 1 0 6"/></svg></div>
-            <div class="srm"><div class="srt">Sounds</div></div><div class="toggle"><i></i></div>
-          </div>
-          <div class="srow" id="darkRow">
-            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M20 14A8.5 8.5 0 1 1 10 4a7 7 0 0 0 10 10z"/></svg></div>
-            <div class="srm"><div class="srt">Dark mode</div><div class="srs">Easier on the eyes at night</div></div>
-            <div class="toggle off" id="darkT" data-nogen><i></i></div>
-          </div>
-          <div class="srow">
-            <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></svg></div>
-            <div class="srm"><div class="srt">App language</div></div><div class="srv">English</div>
           </div>
         </div>
         <div class="slab">FOR PARENTS</div>
@@ -667,7 +811,7 @@ svg{display:block}
       <div id="paneParent" style="display:none">
         <div class="sme">
           <div class="sav"><svg width="20" height="20" viewBox="0 0 24 24" class="ic"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-          <div><div class="sn">Parent zone</div><div class="sc">Aarav · Grade 5A</div></div></div>
+          <div><div class="sn">Parent zone</div><div class="sc">Ridhaan · Grade 5A</div></div></div>
         <div class="sgrp">
           <div class="srow">
             <div class="sri"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div>
@@ -711,7 +855,7 @@ svg{display:block}
             <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
           </div>
         </div>
-        <div class="sfoot">Aarav can't open this. Only you have the PIN.</div>
+        <div class="sfoot">Ridhaan can't open this. Only you have the PIN.</div>
       </div>
     </div>
   </div>
@@ -838,7 +982,7 @@ var GO=(function(){
 const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
 const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
 const EXPLORE=[
- {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",
+ {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",mats:["3 bowls","cotton","chana"],
   s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",
   s:"Halve a recipe for two people, then write the steps so a friend could follow them.",
@@ -861,17 +1005,21 @@ const MATHS={n:"Maths",title:"Comparing Large Numbers",book:"Maths Mela 5",
   po:"compare 5- and 6-digit numbers and say why one is bigger",
   alts:["Numbers up to 5 digits","Comparing Large Numbers","Addition & Subtraction","Multiplication","Fractions","Patterns"],pick:1};
 const TYIC={
-  text:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
-  mcq:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M3.5 7.5l1.6 1.6L8.4 5.8M3.5 17l1.6 1.6L8.4 15.3M12 7.5h8.5M12 17h8.5"/></svg>',
-  speak:'<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'
+  voice:'<svg width="14" height="14" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  quiz :'<svg width="14" height="14" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 4"/><path d="M12 17h.01"/></svg>',
+  act  :'<svg width="14" height="14" viewBox="0 0 24 24" class="ic"><path d="M9 2h6M10 2v7l-5 9a3 3 0 0 0 2.6 4.5h8.8A3 3 0 0 0 19 18l-5-9V2"/><path d="M7.5 15h9"/></svg>',
+  cust :'<svg width="14" height="14" viewBox="0 0 24 24" class="ic"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>'
 };
-const TYNAME={text:"Written",mcq:"Questions",speak:"Spoken"};
-const AIC={
-  school:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
-  set:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM13.5 7.5l3 3"/></svg>',
-  voice:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'
-};
-let mode="conn", state="pend";
+const TCLS={voice:'fs-voice',quiz:'fs-quiz',act:'fs-act',cust:'fs-cust'};
+/* the four assignment types the teacher publishes */
+function sigFor(a){
+  if(a.ty==='quiz')  return '<div class="fs-pips">'+Array(a.n||6).fill('<i></i>').join('')+'</div>';
+  if(a.ty==='voice') return '<div class="fs-wave">'+[6,12,19,9,15,7,17,11,6,14,8,16,10]
+                            .map(h=>'<i style="height:'+h+'px"></i>').join('')+'</div>';
+  if(a.ty==='act')   return '<div class="fs-mats">'+(a.mats||[]).map(m=>'<span>'+m+'</span>').join('')+'</div>';
+  return '<div class="fs-ruled"><i style="width:100%"></i><i style="width:82%"></i><i style="width:58%"></i></div>';
+}
+let mode="conn", state="pend", hsubj="all";
 
 function todoItems(){
   const conn=mode==='conn', T=TEACHER;
@@ -879,24 +1027,24 @@ function todoItems(){
   const CH=MATHS.alts[MATHS.pick];
   if(conn){
     return [
-      {sj:"maths",ty:"text",src:"MATHS"+who('maths'),t:MATHS.title,
-       s:"Ex 4.2 \u00b7 Questions 1\u201310, in your notebook.",a:"due tomorrow"},
-      {sj:"maths",ty:"mcq",src:"MATHS"+who('maths'),t:MATHS.title,
-       s:"Six questions \u2014 four on today\u2019s chapter, two from earlier weeks.",a:""},
-      {sj:"maths",ty:"speak",src:"MATHS"+who('maths'),t:MATHS.title,
-       s:"Explain out loud how you worked out Q3.",a:""},
-      {sj:"english",ty:"text",src:"ENGLISH"+who('english'),t:"The Talkative Barber",
-       s:"Read pages 22\u201324 in your book.",a:"due Monday"},
-      {sj:"hindi",ty:"mcq",src:"HINDI"+who('hindi'),t:"\u0938\u0902\u091c\u094d\u091e\u093e \u0914\u0930 \u0938\u0930\u094d\u0935\u0928\u093e\u092e",
-       s:"\u0905\u092d\u094d\u092f\u093e\u0938 \u00b7 4 \u092a\u094d\u0930\u0936\u094d\u0928 \u2014 \u0935\u093e\u0915\u094d\u092f\u094b\u0902 \u092e\u0947\u0902 \u0938\u0902\u091c\u094d\u091e\u093e \u092a\u0939\u091a\u093e\u0928\u094b\u0964",a:""}
+      {sj:"evs",ty:"quiz",n:6,src:"EVS"+who('evs'),t:"Seeds & Germination",
+       w:"6 questions \u00b7 tap the right one",due:"DUE TODAY",dc:" now",live:false},
+      {sj:"maths",ty:"voice",src:"MATHS"+who('maths'),t:MATHS.title,
+       w:"Somewhere quiet \u00b7 3 questions",due:"TOMORROW",dc:"",live:true},
+      {sj:"evs",ty:"act",mats:["3 bowls","cotton","chana"],src:"EVS"+who('evs'),t:"Sprouting experiment",
+       w:"In the kitchen \u00b7 photograph it",due:"MONDAY",dc:"",live:true},
+      {sj:"hindi",ty:"cust",src:"HINDI"+who('hindi'),
+       t:"\u0938\u0902\u091c\u094d\u091e\u093e \u0914\u0930 \u0938\u0930\u094d\u0935\u0928\u093e\u092e",
+       w:"In your notebook \u00b7 then a photo",due:"FRIDAY",dc:"",live:false}
     ];
   }
   return [
-    {sj:"maths",ty:"text",src:"MATHS",t:CH,s:"Your homework first \u2014 in your notebook.",a:""},
-    {sj:"maths",ty:"mcq",src:"MATHS",t:CH,s:"Six questions \u2014 four on this chapter, two from earlier weeks.",a:""},
-    {sj:"maths",ty:"speak",src:"MATHS",t:CH,s:"Explain out loud how you worked it out.",a:""}
+    {sj:"maths",ty:"quiz",n:6,src:"MATHS",t:CH,w:"6 questions \u00b7 tap the right one",due:"TODAY",dc:" now",live:false},
+    {sj:"maths",ty:"voice",src:"MATHS",t:CH,w:"Somewhere quiet \u00b7 3 questions",due:"TODAY",dc:" now",live:false}
   ];
 }
+/* assignments already submitted are no longer pending — they collapse to one line */
+function sentToday(){ return mode==='conn' ? 2 : 0; }
 const MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const WDAY=["SUN","MON","TUE","WED","THU","FRI","SAT"];
 function greeting(h){
@@ -907,61 +1055,200 @@ function greeting(h){
 }
 function clockTick(){
   const d=new Date();
-  document.getElementById('helloH').textContent=greeting(d.getHours())+', Aarav';
+  document.getElementById('helloH').textContent=greeting(d.getHours())+', '+KIDS[kid].name;
   document.getElementById('calM').textContent=MON[d.getMonth()];
   document.getElementById('calD').textContent=d.getDate();
   document.getElementById('calW').textContent=WDAY[d.getDay()];
 }
 setInterval(clockTick,60000);
 
+/* ---------- destinations ---------- */
+const DIC={
+ plan:'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3.5 7l1.6 1.6L8.4 5.3M3.5 16l1.6 1.6L8.4 14.3M12 7h8.5M12 16h8.5"/></svg>',
+ time:'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3M8 14h3M8 17.5h3M14 14h2.5"/></svg>',
+ work:'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg>',
+ fees:'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M2.5 10h19M6 14.5h4"/></svg>',
+ kid :'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>',
+ book:'<svg width="19" height="19" viewBox="0 0 24 24" class="ic"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 8h8M8 12h5"/></svg>',
+ grow:'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 20.5h18"/><path d="M4.5 16.5l4.5-5 3.2 3 5.3-7"/><circle cx="4.5" cy="16.5" r="1.1"/><circle cx="9" cy="11.5" r="1.1"/><circle cx="12.2" cy="14.5" r="1.1"/><circle cx="17.5" cy="7.5" r="1.1"/></svg>',
+ set :'<svg width="17" height="17" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H23a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" transform="translate(1 1) scale(.92)"/></svg>'
+};
+/* illustrated stand-ins until real photos are uploaded */
+function face(o){
+  return '<svg viewBox="0 0 44 44" width="100%" height="100%" aria-hidden="true">'+
+   '<rect width="44" height="44" rx="22" fill="'+o.bg+'"/>'+
+   '<path d="M22 25c7 0 12 4.4 12 10v9H10v-9c0-5.6 5-10 12-10z" fill="'+o.shirt+'"/>'+
+   '<circle cx="22" cy="18" r="8.6" fill="'+o.skin+'"/>'+
+   (o.hair==='long'
+     ? '<path d="M22 6c-6.2 0-9.6 4-9.6 9.4 0 3 .5 5.6.5 8.4-2.4 0-3.4-2-3.4-5.4C9.5 10.6 14.4 5 22 5s12.5 5.6 12.5 13.4c0 3.4-1 5.4-3.4 5.4 0-2.8.5-5.4.5-8.4C31.6 10 28.2 6 22 6z" fill="'+o.hairc+'"/>'
+     : '<path d="M13.2 15.6C13.2 10.8 17 8 22 8s8.8 2.8 8.8 7.6c0 1.2-.3 2.2-.3 2.2-.5-2.6-2.2-4.2-4.6-4.2-3 0-4.2 1.4-7.4 1.4-1.6 0-2.6-.5-3.1-1.2-.1.6-.2 1.3-.2 1.8z" fill="'+o.hairc+'"/>')+
+   '<circle cx="18.6" cy="18.4" r="1.25" fill="#3A2C22"/><circle cx="25.4" cy="18.4" r="1.25" fill="#3A2C22"/>'+
+   '<path d="M19.4 22.2c1.6 1.3 3.6 1.3 5.2 0" stroke="#8A5B44" stroke-width="1.3" stroke-linecap="round" fill="none"/>'+
+   '</svg>';
+}
+const KIDS=[
+  {id:'ridhaan',name:'Ridhaan',grade:'Grade 5A',
+   pic:face({bg:'#DCE7F7',skin:'#E8B98E',hair:'short',hairc:'#2C2118',shirt:'#3F63C4'})},
+  {id:'ilika',name:'Ilika',grade:'Grade 3B',
+   pic:face({bg:'#F6E3EC',skin:'#EFC49F',hair:'long',hairc:'#241A14',shirt:'#C4527E'})}
+];
+let kid=0;
+const LOCK='<svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+const TDOT={quiz:'#7A6BD0',voice:'#2680EB',act:'#2E9E5B',cust:'#D2A24C'};
+const TWORD={quiz:'quiz',voice:'voice',act:'experiment',cust:'notebook'};
+
+function renderTile(){
+  const items=todoItems(), el=document.getElementById('hwTile');
+  const conn=mode==='conn';
+  if(state==='done'||!items.length){
+    el.innerHTML='<span class="hic">'+DIC.book+'</span>'+
+      '<div class="hm"><div class="hk">'+(conn?'FROM SCHOOL':"TODAY'S WORK")+'</div>'+
+      '<div class="ht">All done for today</div>'+
+      '<div class="hd"><span class="lbl">Nothing left to send</span></div></div>'+
+      '<span class="cnt ok"><svg width="15" height="15" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg></span>';
+    return;
+  }
+  const first=items[0];
+  const kinds=[];
+  items.forEach(a=>{ if(kinds.indexOf(a.ty)<0) kinds.push(a.ty); });
+  el.innerHTML='<span class="hic">'+DIC.book+'</span>'+
+    '<div class="hm"><div class="hk">'+(conn?'FROM SCHOOL':"TODAY'S WORK")+
+      (first.dc===' now'?'<span class="hnow">DUE TODAY</span>':'')+'</div>'+
+    '<div class="ht">'+first.t+'</div>'+
+    '<div class="hd">'+kinds.map(k=>'<i style="background:'+TDOT[k]+'"></i>').join('')+
+      '<span class="lbl">'+kinds.map(k=>TWORD[k]).join(' · ')+'</span></div></div>'+
+    '<span class="cnt">'+items.length+'</span>';
+}
+function renderRail(){
+  const conn=mode==='conn';
+  const D=[['plan','Lesson plan',{n:conn,hide:!conn}],['time','Timetable',{hide:!conn}],
+           ['grow','Growth report',{}],['work','My work',{}],['fees','Fees',{lock:1,hide:!conn}],
+           ['kid','',{kid:1}],['set','Settings',{}]];
+  document.getElementById('rail').innerHTML=D.filter(d=>!d[2].hide).map(d=>{
+    if(d[2].kid){
+      return '<div class="tile kidtile"><div class="kids">'
+       + KIDS.map((k,i)=>'<span class="kf'+(i===kid?' on':'')+'" data-kid="'+i+'" title="'+k.name+'">'+k.pic+'</span>').join('')
+       + '<span class="kdiv"></span>'
+       + '<span class="kf edit" id="kidEdit" title="Edit profiles">'
+       +   '<svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>'
+       + '</div><div class="tl">'+KIDS[kid].name+'</div></div>';
+    }
+    return '<div class="tile'+(d[2].n?' new':'')+'" data-d="'+d[0]+'">'+
+      (d[2].lock?'<span class="lk">'+LOCK+'</span>':'')+(d[2].n?'<span class="ndot"></span>':'')+
+      '<span class="tic">'+DIC[d[0]]+'</span><div class="tl">'+d[1]+'</div></div>';
+  }).join('');
+  document.querySelectorAll('#rail .kf[data-kid]').forEach(f=>f.onclick=e=>{
+    e.stopPropagation(); const i=+f.dataset.kid; if(i===kid)return; kid=i; render();
+    toast2('Switched to '+KIDS[kid].name);
+  });
+  const ke=document.getElementById('kidEdit');
+  if(ke) ke.onclick=e=>{ e.stopPropagation(); openProfiles(); };
+  document.querySelectorAll('#rail .tile:not(.kidtile)').forEach(t=>t.onclick=()=>{
+    const d=t.dataset.d;
+    if(d==='plan') return openLP();
+    if(d==='work') return GO('journey');
+    if(d==='set') return openSet();
+    if(d==='grow') return toast2('Growth report — not built yet');
+    if(d==='fees') return openParent();
+    toast2(d==='time'?'Timetable — not built yet':'Not built yet');
+  });
+}
+let toastT2=null;
+function toast2(m){
+  let el=document.getElementById('toast2');
+  if(!el){ el=document.createElement('div'); el.id='toast2';
+    el.style.cssText='position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:60;'+
+      'background:#10182B;color:#fff;font-size:12px;font-weight:700;padding:9px 15px;border-radius:999px;'+
+      'opacity:0;transition:.2s;pointer-events:none;white-space:nowrap';
+    document.getElementById('pgT').appendChild(el); }
+  el.textContent=m; el.style.opacity='1';
+  clearTimeout(toastT2); toastT2=setTimeout(()=>{el.style.opacity='0';},1800);
+}
+
+/* ---------- the hero: the one Explore item that gets the page ---------- */
+function renderHero(list){
+  const el=document.getElementById('heroWrap');
+  const h=list[0];
+  if(!h){ el.innerHTML=''; return null; }
+  el.innerHTML='<div class="hero" id="heroCard">'+
+    '<svg class="hdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+    '<div class="hin"><span class="hbadge">TONIGHT · '+h.b+'</span>'+
+    '<h3>'+h.t+'</h3><div class="hs">'+h.s+'</div>'+
+    (h.mats?'<div class="hmats">'+h.mats.map(m=>'<span>'+m+'</span>').join('')+'</div>':'')+
+    '<div class="hfoot"><span class="xp">+20 XP</span>'+
+    '<span class="who"><span class="stack">'+
+      [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E'],['D','#7A6BD0']]
+        .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
+    '</span><span class="wl">12 in 5A</span></span>'+
+    '<span class="hgo">Start <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></span>'+
+    '</div></div></div>';
+  return h;
+}
+
+/* ---------- the From School screen ---------- */
+function openHw(){ document.getElementById('hwScreen').classList.add('on'); renderHw(); }
+function closeHw(){ document.getElementById('hwScreen').classList.remove('on'); }
+function renderHSubs(){
+  const el=document.getElementById('hSubs');
+  el.innerHTML=SUBJ.map(x=>'<div class="sb'+(hsubj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
+  el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{ hsubj=c.dataset.k; renderHw(); });
+}
+function renderHw(){
+  const conn=mode==='conn';
+  renderHSubs();
+  const wrap=document.getElementById('todoWrap');
+  const items=todoItems().filter(a=>hsubj==='all'||a.sj===hsubj);
+  const nsent=(hsubj==='all')?sentToday():0;
+  document.getElementById('hwTitle').innerHTML=(conn?'From School':"Today's Work")+
+    (state==='pend'&&items.length?'<span class="zbadge">'+items.length+'</span>':'');
+  if(state!=='pend'){
+    wrap.innerHTML='<div class="done">'+
+      '<div class="dh"><svg width="19" height="19" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M4 12l6 6L20 6"/></svg>Done for today!</div>'+
+      '<div class="dl">YOU CAN NOW</div>'+
+      '<div class="dp">'+MATHS.po.charAt(0).toUpperCase()+MATHS.po.slice(1)+'.</div></div>';
+    document.getElementById('todoFoot').textContent=''; return;
+  }
+  if(!items.length){
+    wrap.innerHTML='<div class="empty"><div class="et2">Nothing due in '+
+      (SUBJ.find(x=>x[0]===hsubj)||[0,'All'])[1]+' today</div>'+
+      '<div class="es2">Everything else is on the home screen \u2191</div></div>';
+  } else {
+    wrap.innerHTML='<div class="fs-spine'+(nsent?' hassent':'')+'">'+
+      (nsent?'<div class="fs-sent"><span class="fs-node ok">'+
+        '<svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg>'+
+        '</span><div class="fs-sentlbl">'+nsent+' sent today</div></div>':'')+
+      items.map(a=>
+        '<div class="fs-row '+TCLS[a.ty]+(a.live?' live':'')+'">'+
+          '<span class="fs-node">'+TYIC[a.ty]+'</span>'+
+          '<div class="fs-card">'+
+            '<div class="fs-top"><div class="fs-src">'+a.src+'</div>'+
+              '<span class="fs-due'+a.dc+'">'+a.due+'</span></div>'+
+            '<div class="fs-title">'+a.t+'</div>'+
+            '<div class="fs-foot"><div class="fs-sig">'+sigFor(a)+
+              '<div class="fs-where">'+a.w+'</div></div>'+
+              '<div class="fs-go">'+(a.live?'Carry on':'Start')+' \u203a</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>').join('')+'</div>';
+  }
+  document.getElementById('todoFoot').innerHTML=(!conn&&items.length&&(hsubj==='all'||hsubj==='maths'))
+    ? 'Studying something else? <span class="chg2" id="chg">Change chapter</span>' : '';
+  const c=document.getElementById('chg'); if(c)c.onclick=openCh;
+}
+
 function render(){
   const conn=mode==='conn';
   clockTick();
-  document.getElementById('helloSub').textContent=conn?'Grade 5A':'Grade 5';
+  document.getElementById('helloSub').textContent=conn?KIDS[kid].grade:KIDS[kid].grade.replace(/[A-Z]$/,'');
   document.getElementById('helloTag').innerHTML=conn
     ? '<div class="schl"><span class="dot"></span>St. Xavier\'s School</div>'
     : '<div class="schl off"><span class="dot"></span>No school linked</div>';
 
-  const wrap=document.getElementById('todoWrap');
-  if(state==='pend'){
-    const items=todoItems().filter(a=>subj==='all'||a.sj===subj);
-    if(items.length){
-      wrap.innerHTML='<div class="deck" id="deck">'+items.map((a,i)=>
-        '<div class="dc'+(i===0?' act':'')+'" data-i="'+i+'">'+
-          '<div class="src2"><div class="sic" title="'+TYNAME[a.ty]+'">'+TYIC[a.ty]+'</div>'+
-            '<div class="slbl">'+a.src+'</div></div>'+
-          '<h3>'+a.t+'</h3>'+
-          '<div class="sub2">'+a.s+'</div>'+
-          '<div class="foot"><div class="tm">'+TYNAME[a.ty]+(a.a?' \u00b7 '+a.a:'')+'</div>'+
-            '<div class="arw">Open<svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M9 6l6 6-6 6"/></svg></div>'+
-          '</div>'+
-        '</div>').join('')+'</div>'+
-        '<div class="deckfoot" id="pdots">'+items.map((a,i)=>'<span class="pd'+(i===0?' on':'')+'"></span>').join('')+'</div>';
-      wireDeck();
-    } else {
-      wrap.innerHTML='<div class="empty"><div class="et2">Nothing due in '+subjName()+' today</div>'+
-        '<div class="es2">Take a look at Explore below \u2193</div></div>';
-    }
-    const zn = conn ? 'From School' : "Today's Work";
-    document.getElementById('ztTodo').innerHTML = items.length
-      ? zn+'<span class="zbadge">'+items.length+'</span>' : zn;
-    document.getElementById('todoFoot').innerHTML = (!conn && items.length && (subj==='all'||subj==='maths'))
-      ? 'Studying something else? <span class="chg2" id="chg">Change chapter</span>' : '';
-  }else{
-
-    wrap.innerHTML='<div class="done">'+
-      '<div class="dh"><svg width="19" height="19" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M4 12l6 6L20 6"/></svg>Done for today!</div>'+
-      '<div class="dl">YOU CAN NOW</div>'+
-      '<div class="dp">'+MATHS.po.charAt(0).toUpperCase()+MATHS.po.slice(1)+'.</div>'+
-      '<div class="dgo" id="dgo">Something fun in Explore <svg width="14" height="14" viewBox="0 0 24 24" class="ic"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div></div>';
-    document.getElementById('ztTodo').innerHTML=(conn?'From School':"Today's Work")+
-      '<span class="zbadge done"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:3.2"><path d="M4 12l6 6L20 6"/></svg></span>';
-    document.getElementById('todoFoot').textContent='';
-    document.getElementById('dgo').onclick=()=>jump('zExp');
-  }
-  const c=document.getElementById('chg'); if(c)c.onclick=openCh;
+  renderTile(); renderRail();
   const lp=document.getElementById('lessonLink');
   lp.style.display=conn?'':'none'; lp.onclick=openLP;
+  document.getElementById('hwTile').onclick=openHw;
+  document.getElementById('hwBack').onclick=closeHw;
   const jy=document.getElementById('jyCard');
   if(jy)jy.onclick=()=>{GO('journey');};
 
@@ -975,31 +1262,17 @@ function render(){
   document.getElementById('dMon').classList.toggle('on',SCHOOL.planWindow==='monthly');
   document.getElementById('dPend').classList.toggle('on',state==='pend');
   document.getElementById('dDone').classList.toggle('on',state==='done');
-  renderExplore(); renderSubs2();
+  renderSubs2(); renderExplore();
   const exn=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0).length;
   document.getElementById('ztExp').textContent='Explore';
   document.getElementById('expPulse').style.display = exn ? '' : 'none';
   if(window.__spy) requestAnimationFrame(window.__spy);
 }
-function wireDeck(){
-  const d=document.getElementById('deck'); if(!d)return;
-  const cards=[...d.querySelectorAll('.dc')], dots=[...document.querySelectorAll('#pdots .pd')];
-  let t=false;
-  function upd(){
-    t=false;
-    const mid=d.scrollLeft+d.clientWidth/2;
-    let best=0,bd=1e9;
-    cards.forEach((c,i)=>{const cm=c.offsetLeft+c.offsetWidth/2;const dd=Math.abs(cm-mid);if(dd<bd){bd=dd;best=i;}});
-    cards.forEach((c,i)=>c.classList.toggle('act',i===best));
-    dots.forEach((p,i)=>p.classList.toggle('on',i===best));
-  }
-  d.addEventListener('scroll',()=>{if(!t){t=true;requestAnimationFrame(upd);}},{passive:true});
-  cards.forEach(c=>c.onclick=()=>c.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}));
-  upd();
-}
 function subjName(){ const f=SUBJ.find(x=>x[0]===subj); return f?f[1]:'All'; }
 function renderExplore(){
-  const list=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+  const all=EXPLORE.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+  const hero=renderHero(all);
+  const list=hero?all.slice(1):all;
   const el=document.getElementById('exList');
   if(!list.length){
     el.outerHTML='<div class="ex" id="exList"><div class="empty" style="border:none;background:transparent">'+
@@ -1039,13 +1312,16 @@ function jump(id){
 
 /* sticky bar picks up a hairline once it pins */
 (function(){
-  const scroll=document.getElementById('scroll'), row=document.querySelector('.anchors');
-  const zT=document.getElementById('zTodo');
+  const scroll=document.getElementById('scroll'), row=document.getElementById('expFilt');
+  const FADE=64;                       /* the last 64px of travel paints it in */
   let ticking=false;
   function sync(){
     ticking=false;
-    const base=scroll.getBoundingClientRect().top+row.offsetHeight+12;
-    row.classList.toggle('stuck', zT.getBoundingClientRect().top<=base);
+    if(!row) return;
+    const d=row.getBoundingClientRect().top-scroll.getBoundingClientRect().top;
+    const t=Math.max(0,Math.min(1,1-d/FADE));
+    row.style.setProperty('--wf',t.toFixed(3));
+    row.classList.toggle('stuck', d<=0.5);
   }
   scroll.addEventListener('scroll',()=>{ if(!ticking){ticking=true;requestAnimationFrame(sync);} },{passive:true});
   window.__spy=sync; sync();
@@ -1208,6 +1484,7 @@ function openCh(){
 }
 function closeSheets(){
   veil.classList.remove('open');
+  document.getElementById('setSheet').classList.remove('open');
   document.getElementById('lpsheet').classList.remove('open');
   document.getElementById('chsheet').classList.remove('open');
   document.getElementById('sheet').classList.remove('open');
@@ -1219,7 +1496,23 @@ veil.addEventListener('click',closeSheets);
   const sheet=document.getElementById('sheet');
   const pMe=document.getElementById('paneMe'),pPin=document.getElementById('panePin'),pPar=document.getElementById('paneParent');
   function show(p){[pMe,pPin,pPar].forEach(x=>x.style.display='none');p.style.display='block';}
-  document.getElementById('avatarBtn').onclick=()=>{veil.classList.add('open');sheet.classList.add('open');show(pMe);pinVal='';paint();};
+  window.openParent=function(){veil.classList.add('open');sheet.classList.add('open');show(pPin);pinVal='';paint();};
+  function paintKids(){
+    document.getElementById('kidList').innerHTML=KIDS.map((k,i)=>
+      '<div class="srow kidrow" data-kid="'+i+'">'+
+        '<span class="kpic">'+k.pic+'</span>'+
+        '<div class="srm"><div class="srt">'+k.name+' Sharma</div>'+
+        '<div class="srs">'+k.grade+" · St. Xavier's"+'</div></div>'+
+        (i===kid?'<span class="kon">USING NOW</span>':'<span class="srv">Switch</span>')+
+        '<div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>'+
+      '</div>').join('');
+    document.querySelectorAll('#kidList .kidrow').forEach(r=>r.onclick=()=>{
+      const i=+r.dataset.kid;
+      if(i!==kid){ kid=i; render(); closeSheets(); toast2('Switched to '+KIDS[kid].name); }
+      else toast2('Editing a profile — not built yet');
+    });
+  }
+  window.openProfiles=function(){veil.classList.add('open');sheet.classList.add('open');show(pMe);pinVal='';paint();paintKids();};
   document.getElementById('openPin').onclick=()=>{show(pPin);pinVal='';paint();};
   let pinVal='';
   function paint(){document.querySelectorAll('#dots i').forEach((d,i)=>d.classList.toggle('f',i<pinVal.length));}
@@ -1230,12 +1523,18 @@ veil.addEventListener('click',closeSheets);
     if(pinVal.length===4)setTimeout(()=>show(pPar),220);
   };
   document.querySelectorAll('.toggle:not([data-nogen])').forEach(t=>{t.parentElement.onclick=()=>t.classList.toggle('off');});
-  document.getElementById('darkRow').onclick=()=>{
-    const t=document.getElementById('darkT'), dark=t.classList.contains('off');
+
+  document.getElementById('schoolRow').onclick=()=>{mode=(mode==='conn')?'solo':'conn';render();closeSheets();};
+
+  /* app settings, in their own sheet */
+  const setS=document.getElementById('setSheet');
+  window.openSet=function(){ veil.classList.add('open'); setS.classList.add('open'); };
+  document.getElementById('sndRow').onclick=()=>document.getElementById('sndT').classList.toggle('off');
+  document.getElementById('darkRow2').onclick=()=>{
+    const t=document.getElementById('darkT2'), dark=t.classList.contains('off');
     t.classList.toggle('off',!dark);
     document.documentElement.setAttribute('data-theme', dark?'dark':'light');
   };
-  document.getElementById('schoolRow').onclick=()=>{mode=(mode==='conn')?'solo':'conn';render();closeSheets();};
 })();
 
 /* prototype chrome */
