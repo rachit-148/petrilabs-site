@@ -345,6 +345,54 @@ svg{display:block}
 #pgT .fs-ruled i{height:2px;border-radius:2px;background:var(--tc);opacity:.35}
 
 
+
+/* ==================== Today's Pack · the one card on the homepage ====================
+   The list showed the goods; a single card has to promise them. The deck edges do
+   the part no sentence can — they say there is more behind this one.              */
+#pgT .pkhead{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
+#pgT .pkt{font-size:16.5px;font-weight:800;letter-spacing:-.3px}
+#pgT .pkc{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--body);background:var(--card);
+      border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
+
+#pgT .hc-deck{position:relative;z-index:0;padding-bottom:15px}
+#pgT .hc-deck > i{position:absolute;left:13px;right:13px;height:26px;border-radius:0 0 16px 16px;
+      background:var(--card);border:1px solid var(--bline);border-top:0;z-index:0;
+      box-shadow:0 3px 8px rgba(20,33,61,.06)}
+#pgT .hc-deck > i.l1{bottom:7px}
+#pgT .hc-deck > i.l2{left:27px;right:27px;bottom:0}
+[data-theme="dark"] #pgT .hc-deck > i{background:#141A27;border-color:#2A3243;box-shadow:none}
+#pgT .hc-deck.flat{padding-bottom:0}
+#pgT .hc-deck.flat > i{display:none}
+
+#pgT .hc{position:relative;z-index:1;border-radius:19px;overflow:hidden;cursor:pointer;
+      border:1px solid var(--gline);background:linear-gradient(162deg,var(--gtint),var(--card) 66%);
+      box-shadow:0 6px 20px rgba(20,33,61,.09);transition:transform .13s ease}
+#pgT .hc:active{transform:scale(.993)}
+#pgT .hc .hcdoo{position:absolute;inset:0;color:var(--gdeep);opacity:.09;pointer-events:none;
+      -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 40%,#000 100%);
+              mask-image:linear-gradient(to bottom,transparent 0,transparent 40%,#000 100%)}
+#pgT .hcin{position:relative;padding:16px 17px 15px}
+#pgT .hcb{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.9px;
+      color:var(--gdeep);background:var(--card);border:1px solid var(--gline);border-radius:999px;padding:5px 11px 5px 8px}
+#pgT .hcb .pulse{width:7px;height:7px;background:var(--green)}
+#pgT .hcb .pulse::after{background:var(--green)}
+#pgT .hcq{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.24;margin:12px 0 0}
+#pgT .hcs{font-size:13px;color:var(--body);line-height:1.45;margin-top:7px}
+#pgT .hcm{display:flex;align-items:center;gap:9px;margin-top:14px}
+#pgT .hcp{display:flex;gap:4px;flex:none}
+#pgT .hcp i{width:17px;height:5px;border-radius:3px;background:#D8DEE7;flex:none}
+[data-theme="dark"] #pgT .hcp i{background:#2B3446}
+#pgT .hcp i.f{background:var(--green)}
+#pgT .hcmin{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;
+      overflow:hidden;text-overflow:ellipsis}
+#pgT .hcf{display:flex;align-items:center;gap:10px;margin-top:15px}
+#pgT .hcgo{margin-left:auto;flex:none;border:0;border-radius:999px;background:var(--ink);color:var(--card);
+      font-size:13.5px;font-weight:800;padding:11px 18px;font-family:inherit;cursor:pointer;
+      display:inline-flex;align-items:center;gap:6px}
+#pgT .hc.fin{border-color:var(--gline);background:linear-gradient(162deg,var(--gtint),var(--card) 72%)}
+#pgT .hc.fin .hcq{font-size:18px}
+#pgT .hc.fin .hcgo{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+
 /* ==================== Today's pack · full-page cards ====================
    A vertical pager. One card fills the screen, you flick up for the next,
    and the last page is the end of the pack — so the boundary is something
@@ -1034,18 +1082,11 @@ svg{display:block}
     <!-- EXPLORE zone -->
     <div class="zone" id="zExp">
 
-      <div class="anchors" id="expFilt">
-        <i class="fbg"></i>
-        <div class="filtrow">
-          <div class="filtic" id="filtIc" title="Show all subjects">
-            <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
-          </div>
-          <div class="subswrap"><div class="subs open" id="subs"></div></div>
-        </div>
+      <div class="pkhead">
+        <div class="pkt">Today's Pack</div>
+        <div class="pkc" id="packCount"></div>
       </div>
-
-      <div id="heroWrap"></div>
-      <div class="ex" id="exList"></div>
+      <div id="packWrap"></div>
 
       <div class="jy" id="jyCard">
         <div class="jic"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg></div>
@@ -1388,16 +1429,16 @@ var GO=(function(){
 const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
 const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
 const EXPLORE=[
- {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
+ {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",hook:"Which way does a root grow — up, or down?",mins:8,steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
   s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
- {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
+ {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",hook:"Can you cook for two when the recipe feeds four?",mins:15,steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
   s:"Halve a recipe for two people, then write the steps so a friend could follow them.",
   tags:["Fractions","Measurement","Describing words"],subj:["maths","english"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",steps:["Ten sums you found hard last month.","Say your working out loud as you go.","Mark the two that still feel slow — those are the ones to bring to class."],
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",hook:"Is 3/4 bigger than 2/3 — are you sure?",mins:10,done:true,steps:["Ten sums you found hard last month.","Say your working out loud as you go.","Mark the two that still feel slow — those are the ones to bring to class."],
   s:"A 10-minute run through the sums you found hard last month.",subj:["maths"]},
- {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",steps:["Look at 8 × 5. You already know it.","Now add one more 8.","That’s 8 × 6. You just did Monday’s lesson."],
+ {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",hook:"Can you make 8 × 6 out of 8 × 5?",mins:2,done:true,steps:["Look at 8 × 5. You already know it.","Now add one more 8.","That’s 8 × 6. You just did Monday’s lesson."],
   s:"Can you make 8 × 6 out of 8 × 5? A 2-minute puzzle before Sharma Ma'am begins the chapter.",subj:["maths"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",steps:["Read one page out loud, slowly.","Record yourself reading it.","Listen back once. Would you change anything?"],
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",hook:"How do you read a page so someone wants to listen?",mins:5,steps:["Read one page out loud, slowly.","Record yourself reading it.","Listen back once. Would you change anything?"],
   s:"Read one page out loud and record it. Iyer Sir's class, last week.",subj:["english"]}
 ];
 const EIC={
@@ -1464,14 +1505,14 @@ const ILIKA_TODO=[
    w:"In your notebook \u00b7 then a photo",k:"in your notebook",due:"THURSDAY",dc:"",live:false}
 ];
 const ILIKA_EXPLORE=[
-  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",steps:["Wet the cotton and put it in the jar.","Push one bean down the side so you can see it.","Look every morning and remember what changed."],
+  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",hook:"What comes out of a bean first — the root or the leaf?",mins:6,steps:["Wet the cotton and put it in the jar.","Push one bean down the side so you can see it.","Look every morning and remember what changed."],
    mats:["a jar","cotton","one bean"],
    s:"Keep it on the windowsill and look every morning. Which way does the root go?",subj:["evs"]},
-  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",steps:["Lay the spoons out in twos and count.","Now lay them in fives and count again.","Which way was quicker? Why do you think so?"],
+  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",hook:"Is it quicker to count in twos, or in fives?",mins:8,steps:["Lay the spoons out in twos and count.","Now lay them in fives and count again.","Which way was quicker? Why do you think so?"],
    s:"Lay them in twos and fives. Which way is quicker to count?",subj:["maths"]},
-  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",steps:["Say the 2s out loud, all the way to 20.","Then the 5s, all the way to 50.","Find a number that turns up in both."],
+  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",hook:"Which numbers turn up in both the 2s and the 5s?",mins:5,done:true,steps:["Say the 2s out loud, all the way to 20.","Then the 5s, all the way to 50.","Find a number that turns up in both."],
    s:"A five-minute run before Friday.",subj:["maths"]},
-  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",steps:["Find your lunchbox.","Count the corners.","Now count the flat sides. Monday’s lesson, done early."],
+  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",hook:"How many corners does your lunchbox have?",mins:3,steps:["Find your lunchbox.","Count the corners.","Now count the flat sides. Monday’s lesson, done early."],
    s:"How many corners does your lunchbox have?",subj:["maths"]}
 ];
 function exploreItems(){ return KIDS[kid].id==='ilika' ? ILIKA_EXPLORE : EXPLORE; }
@@ -1772,27 +1813,7 @@ function toast2(m){
   clearTimeout(toastT2); toastT2=setTimeout(()=>{el.style.opacity='0';},1800);
 }
 
-/* ---------- the hero: the one Explore item that gets the page ---------- */
-function renderHero(list){
-  const el=document.getElementById('heroWrap');
-  const h=list[0];
-  if(!h){ el.innerHTML=''; return null; }
-  el.innerHTML='<div class="hero" id="heroCard">'+
-    '<svg class="hdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
-    '<div class="hin"><span class="hbadge"><span class="pulse"></span>TONIGHT · '+h.b+'</span>'+
-    '<h3>'+h.t+'</h3><div class="hs">'+h.s+'</div>'+
-    (h.mats?'<div class="hmats">'+h.mats.map(m=>'<span>'+m+'</span>').join('')+'</div>':'')+
-    '<div class="hfoot">'+
-    '<span class="who"><span class="stack">'+
-      [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E'],['D','#7A6BD0']]
-        .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
-    '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+'</span></span>'+
-    '<span class="hgo">Start <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></span>'+
-    '</div></div></div>';
-  const hc=document.getElementById('heroCard');
-  if(hc) hc.onclick=()=>openPack(0);
-  return h;
-}
+
 
 /* ---------- the From School screen ---------- */
 function openHw(){ document.getElementById('hwScreen').classList.add('on'); renderHw(); }
@@ -1872,6 +1893,60 @@ function renderHw(){
    The pack, as full-page cards you flick through.
    Browsing is not doing: paging never marks anything complete.
    ============================================================ */
+
+/* ---------- what the child has already cleared out of tonight's pack ---------- */
+const EDONE={};
+function ekey(e){ return KIDS[kid].id+'/'+e.t; }
+function isDone(e){ return !!EDONE[ekey(e)]; }
+function setDone(e){ EDONE[ekey(e)]=true; }
+function seedPack(list){ list.forEach(e=>{ if(e.done && EDONE[ekey(e)]===undefined) EDONE[ekey(e)]=true; }); }
+
+/* One card, three faces. It is the only thing on the page that has to make five
+   unseen items feel worth opening, so it leads with a question, not a summary. */
+function renderPackCard(){
+  const list=exploreItems(); seedPack(list);
+  const left=list.filter(e=>!isDone(e)), done=list.length-left.length;
+  const wrap=document.getElementById('packWrap');
+  document.getElementById('packCount').textContent =
+    !done ? list.length+' things' : done===list.length ? 'all done' : done+' of '+list.length+' done';
+
+  const pips='<span class="hcp">'+list.map((e,i)=>'<i class="'+(i<done?'f':'')+'"></i>').join('')+'</span>';
+  const faces='<span class="who"><span class="stack">'+
+    [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E']]
+      .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
+    '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+' opened it</span></span>';
+  const doo='<svg class="hcdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>';
+
+  if(!left.length){
+    /* the deck edges go with the last card — the stack has been dealt */
+    wrap.innerHTML='<div class="hc-deck flat"><div class="hc fin" id="packOpen">'+doo+'<div class="hcin">'+
+      '<span class="hcb"><span class="pulse" style="animation:none"></span>ALL '+list.length+' DONE</span>'+
+      '<div class="hcq">That’s your whole pack for today</div>'+
+      '<div class="hcs">A new one lands tomorrow morning.</div>'+
+      '<div class="hcm">'+pips+'<span class="hcmin">back tomorrow</span></div>'+
+      '<div class="hcf"><span class="who"><span class="wl">Nothing left tonight</span></span>'+
+      '<button class="hcgo">Look again ›</button></div>'+
+      '</div></div></div>';
+  }else{
+    const n=left[0], mins=left.reduce((a,e)=>a+(e.mins||5),0);
+    const quick=Math.min.apply(null,left.map(e=>e.mins||5));
+    const fresh=!done;
+    wrap.innerHTML='<div class="hc-deck"><i class="l2"></i><i class="l1"></i>'+
+      '<div class="hc" id="packOpen">'+doo+'<div class="hcin">'+
+      '<span class="hcb"><span class="pulse"></span>'+(fresh?'OPEN NOW':left.length+' STILL WAITING')+'</span>'+
+      '<div class="hcq">'+(n.hook||n.t)+'</div>'+
+      '<div class="hcs">'+(fresh
+        ? 'The first thing in tonight’s pack answers it. '+(list.length-1)+' more behind it.'
+        : left.length+' left in tonight’s pack. The quickest takes '+quick+' minutes.')+'</div>'+
+      '<div class="hcm">'+pips+'<span class="hcmin">about '+mins+' minutes'+(fresh?', all '+list.length:' left')+'</span></div>'+
+      '<div class="hcf">'+faces+'<button class="hcgo">'+(fresh?'Open':'Carry on')+' ›</button></div>'+
+      '</div></div></div>';
+  }
+  const card=document.getElementById('packOpen');
+  const start=left.length?list.indexOf(left[0]):0;
+  if(card) card.onclick=()=>openPack(start);
+}
+
 const pkS=document.getElementById('packScreen');
 const pkPager=document.getElementById('pkPager');
 const PKIC={kit:'kit',chal:'star',rev:'rev',peek:'eye'};
@@ -1891,7 +1966,7 @@ function openPack(i){
 }
 function closePack(){ pkS.classList.remove('on'); }
 
-function pkPage(e){
+function pkPage(e,i){
   return '<div class="pk-page '+e.bc+'">'+
     '<div class="pk-in">'+
       '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
@@ -1909,8 +1984,10 @@ function pkPage(e){
           [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E'],['D','#7A6BD0']]
             .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
         '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+'</span></span>'+
-        '<button class="pk-go" data-go="'+e.t.replace(/"/g,'')+'">'+(e.bc==='peek'?'Have a look':'Start')+
-          ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></button>'+
+        (isDone(e)
+          ? '<span class="pk-go dn">Done <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.8"><path d="M4 12l6 6L20 6"/></svg></span>'
+          : '<button class="pk-go" data-i="'+i+'">'+(e.bc==='peek'?'Have a look':'Start')+
+            ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></button>')+
       '</div>'+
     '</div></div>';
 }
@@ -1949,7 +2026,17 @@ pkPager.addEventListener('scroll',()=>{ if(!pkTick){ pkTick=true; requestAnimati
 window.addEventListener('resize',()=>requestAnimationFrame(pkSync));
 
 function wirePack(){
-  pkPager.querySelectorAll('.pk-go').forEach(b=>b.onclick=()=>toast2('“'+b.dataset.go+'” — not built yet'));
+  pkPager.querySelectorAll('.pk-go[data-i]').forEach(b=>b.onclick=()=>{
+    const e=PK[+b.dataset.i]; if(!e) return;
+    setDone(e);
+    /* the activity itself is not built; marking it done is what lets the
+       homepage card be reviewed across all three of its states */
+    toast2('Marked done — the activity itself isn’t built yet');
+    const at=pkPager.scrollTop;
+    pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
+    pkPager.scrollTop=at; wirePack(); pkSync();
+    renderPackCard();
+  });
   const ag=document.getElementById('pkAgain'); if(ag) ag.onclick=closePack;
 }
 document.getElementById('pkX').onclick=closePack;
@@ -2377,42 +2464,9 @@ function render(){
   document.getElementById('dMon').classList.toggle('on',SCHOOL.planWindow==='monthly');
   document.getElementById('dPend').classList.toggle('on',state==='pend');
   document.getElementById('dDone').classList.toggle('on',state==='done');
-  renderSubs2(); renderExplore();
+  renderPackCard();
   if(window.__spy) requestAnimationFrame(window.__spy);
 }
-function subjName(){ const f=SUBJ.find(x=>x[0]===subj); return f?f[1]:'All'; }
-function renderExplore(){
-  const all=exploreItems().filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
-  const hero=renderHero(all);
-  const list=hero?all.slice(1):all;
-  const el=document.getElementById('exList');
-  if(!list.length){
-    el.outerHTML='<div class="ex" id="exList"><div class="empty" style="border:none;background:transparent">'+
-      '<div class="et2">Nothing extra in '+subjName()+' yet</div>'+
-      '<div class="es2">New things appear here every week.</div></div></div>';
-    return;
-  }
-  el.outerHTML='<div class="ex" id="exList">'+list.map((e,i)=>
-    '<div class="ei" data-pk="'+(i+(hero?1:0))+'"><div class="eic">'+EIC[e.ic]+'</div><div class="em">'+
-    '<span class="badge '+e.bc+'">'+e.b+'</span>'+
-    '<div class="et">'+e.t+'</div><div class="es">'+e.s+'</div>'+
-    (e.tags?'<div class="tags2">'+e.tags.map(t=>'<span class="tg">'+t+'</span>').join('')+'</div>':'')+
-    '</div></div>').join('')+'</div>';
-  document.querySelectorAll('#exList .ei[data-pk]').forEach(r=>r.onclick=()=>openPack(+r.dataset.pk));
-}
-function renderSubs2(){
-  const el=document.getElementById('subs');
-  el.innerHTML=SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
-  document.getElementById('filtIc').onclick=()=>{ subj='all'; render(); el.scrollTo({left:0,behavior:'smooth'}); };
-  el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{
-    subj=c.dataset.k; render();
-    const on=el.querySelector('.sb.on');
-    if(on){ const l=on.offsetLeft-24, r=on.offsetLeft+on.offsetWidth+62-el.clientWidth;
-      if(el.scrollLeft>l) el.scrollTo({left:Math.max(0,l),behavior:'smooth'});
-      else if(el.scrollLeft<r) el.scrollTo({left:r,behavior:'smooth'}); }
-  });
-}
-
 /* anchors: jump, not filter */
 function jump(id){
   const z=document.getElementById(id), sc=document.getElementById('scroll');
