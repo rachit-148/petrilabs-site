@@ -71,8 +71,9 @@ svg{display:block}
 .schoolbar{display:flex;align-items:center;gap:7px;padding:0 20px;margin-bottom:2px;font-size:11px;
            font-weight:600;color:var(--muted)}
 .schoolbar .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
-#pgT .scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 0;scroll-behavior:smooth;display:flex;flex-direction:column}
-#pgT .scroll > *{flex:none}
+/* the homepage is a fixed layout now: everything it has to say fits one screen */
+#pgT .scroll{flex:1;min-height:0;overflow:hidden;padding:0 20px 0;display:flex;flex-direction:column}
+#pgT .scroll > *:not(#band){flex:none}
 .hello{margin:14px 2px 13px}
 .hello h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.2px}
 .hello p{margin:3px 0 0;color:var(--muted);font-size:13px;font-weight:500}
@@ -144,14 +145,19 @@ svg{display:block}
 #pgT .zhead .zt b{color:var(--blue-dk);font-weight:800}
 
 #pgT .zone{scroll-margin-top:8px;margin:0 -20px;padding:14px 20px 20px}
-#band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 0 auto;
-      margin:16px -20px 0;padding:0 20px;display:flex;flex-direction:column}
+#band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 1 auto;min-height:0;
+      margin:16px -20px 0;padding:0 20px;display:flex;flex-direction:column;overflow:hidden}
 #band > *{position:relative;z-index:1}
 #zTodo{background:transparent}
-#zExp{background:transparent;padding:16px 20px 40px;flex:1 0 auto}
+#zExp{background:transparent;padding:14px 20px 18px;flex:1 1 auto;min-height:0;
+      display:flex;flex-direction:column}
+#pgT #packWrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+
 #pgT #expFilt{margin-bottom:13px}
 #doodles{position:absolute;inset:0;z-index:0;width:100%;height:100%;
-         color:var(--doodle);opacity:var(--doodle-o);pointer-events:none}
+         color:var(--doodle);opacity:var(--doodle-o);pointer-events:none;
+         -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 52%,rgba(0,0,0,.35) 76%,transparent 94%);
+                 mask-image:linear-gradient(to bottom,#000 0,#000 52%,rgba(0,0,0,.35) 76%,transparent 94%)}
 .bandsep{height:1px;background:var(--line);margin:0 -20px;opacity:.7}
 #pgT .zone.hl .zhead .zt{color:var(--blue-dk)}
 
@@ -346,6 +352,32 @@ svg{display:block}
 
 
 
+@media (max-height:620px){
+  /* last thing to go: the streak. Everything else is the evening itself. */
+  #pgT .wk{display:none}
+  #pgT .hello{margin:9px 2px 8px}
+  #pgT .hwtile{margin-top:7px;padding:11px 13px}
+  #pgT .rail{margin-top:7px}
+  #pgT .tile{padding:8px 10px 8px}
+}
+
+/* ---------- the week, as a bare strip on the band ---------- */
+#pgT .wk{margin-top:0;padding-top:13px;flex:none}
+#pgT .wkh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+#pgT .wkl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+#pgT .wkn{margin-left:auto;font-size:11px;font-weight:700;color:var(--body)}
+#pgT .wkr{display:flex;gap:5px}
+#pgT .wd{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;
+      border-radius:11px;padding:6px 0 5px}
+#pgT .wd .dl{font-size:8.5px;font-weight:800;letter-spacing:.6px;color:var(--muted)}
+#pgT .wd .dn{font-size:13px;font-weight:800;line-height:1.1;color:var(--body);font-variant-numeric:tabular-nums}
+#pgT .wd.on{background:var(--btint)}
+#pgT .wd.on .dn{color:var(--blue-dk)}
+#pgT .wd.on .dl{color:var(--blue-dk);opacity:.7}
+#pgT .wd.now{box-shadow:inset 0 0 0 1.5px var(--line)}
+#pgT .wd.now .dn{color:var(--ink)}
+#pgT .wd.fut .dn{color:var(--muted);font-weight:700}
+
 /* ==================== Today's Pack · the one card on the homepage ====================
    The list showed the goods; a single card has to promise them. The deck edges do
    the part no sentence can — they say there is more behind this one.              */
@@ -354,7 +386,8 @@ svg{display:block}
 #pgT .pkc{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--body);background:var(--card);
       border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
 
-#pgT .hc-deck{position:relative;z-index:0;padding-bottom:15px}
+#pgT .hc-deck{position:relative;z-index:0;padding-bottom:15px;
+      flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 #pgT .hc-deck > i{position:absolute;left:13px;right:13px;height:26px;border-radius:0 0 16px 16px;
       background:var(--card);border:1px solid var(--bline);border-top:0;z-index:0;
       box-shadow:0 3px 8px rgba(20,33,61,.06)}
@@ -365,13 +398,30 @@ svg{display:block}
 #pgT .hc-deck.flat > i{display:none}
 
 #pgT .hc{position:relative;z-index:1;border-radius:19px;overflow:hidden;cursor:pointer;
+      flex:1 1 auto;min-height:0;display:flex;flex-direction:column;touch-action:none;
       border:1px solid var(--gline);background:linear-gradient(162deg,var(--gtint),var(--card) 66%);
       box-shadow:0 6px 20px rgba(20,33,61,.09);transition:transform .13s ease}
 #pgT .hc:active{transform:scale(.993)}
-#pgT .hc .hcdoo{position:absolute;inset:0;color:var(--gdeep);opacity:.09;pointer-events:none;
+#pgT .hc .hcdoo{position:absolute;inset:0;color:var(--gdeep);opacity:.13;pointer-events:none;
       -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 40%,#000 100%);
               mask-image:linear-gradient(to bottom,transparent 0,transparent 40%,#000 100%)}
-#pgT .hcin{position:relative;padding:16px 17px 15px}
+#pgT .hcin{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;
+      display:flex;flex-direction:column;align-items:stretch;padding:16px 17px 15px}
+#pgT .hcin > *{flex:none}
+/* the air that absorbs the difference between a tall phone and a short one */
+#pgT .hcsp{flex:1 1 0;min-height:0}
+#pgT .hcb{align-self:flex-start}
+#pgT .hcq{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+#pgT .hcs{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+/* shed in this order when the screen is short, measured not guessed */
+#pgT .hc.c1 .hcs{display:none}
+#pgT .hc.c2 .hcq{font-size:17px;-webkit-line-clamp:2}
+#pgT .hc.c2 .hcin{padding:13px 15px 12px}
+#pgT .hc.c2 .hcm{margin-top:10px}
+#pgT .hc.c2 .hcf{margin-top:11px}
+#pgT .hc.c3 .hcb{display:none}
+#pgT .hc.c3 .hcq{margin-top:0;font-size:16px}
+#pgT .hc.c3 .hcgo{padding:9px 15px}
 #pgT .hcb{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.9px;
       color:var(--gdeep);background:var(--card);border:1px solid var(--gline);border-radius:999px;padding:5px 11px 5px 8px}
 #pgT .hcb .pulse{width:7px;height:7px;background:var(--green)}
@@ -398,8 +448,10 @@ svg{display:block}
    and the last page is the end of the pack — so the boundary is something
    you feel with your thumb, not just something a header claims.          */
 #pgT .pkscreen{position:absolute;inset:0;z-index:33;background:var(--bg);display:flex;flex-direction:column;
-      opacity:0;transform:scale(.985);transition:opacity .2s ease,transform .2s ease;visibility:hidden}
-#pgT .pkscreen.on{opacity:1;transform:none;visibility:visible}
+      --zx:.9;--zy:.35;opacity:0;transform:scale(var(--zx),var(--zy));visibility:hidden;
+      transition:opacity .19s ease,transform .3s cubic-bezier(.2,.82,.25,1),visibility 0s .3s}
+#pgT .pkscreen.on{opacity:1;transform:none;visibility:visible;transition:opacity .19s ease,
+      transform .3s cubic-bezier(.2,.82,.25,1),visibility 0s}
 
 #pgT .pk-top{flex:none;display:flex;align-items:center;gap:12px;padding:16px 20px 12px;
       position:relative;z-index:3}
@@ -416,10 +468,18 @@ svg{display:block}
       scroll-snap-type:y mandatory;scrollbar-width:none;perspective:1100px}
 #pgT .pk-pager::-webkit-scrollbar{display:none}
 #pgT .pk-page{height:100%;scroll-snap-align:start;scroll-snap-stop:always;
-      position:relative;padding:0 20px 18px}
+      position:relative;padding:0 20px 30px}
+/* the same two edges the homepage card sits on — the language carries over */
+#pgT .pk-page > i{position:absolute;left:31px;right:31px;height:26px;border-radius:0 0 19px 19px;
+      background:var(--card);border:1px solid var(--bline);border-top:0;z-index:0;
+      box-shadow:0 4px 9px rgba(20,33,61,.07)}
+#pgT .pk-page > i.l1{bottom:16px}
+#pgT .pk-page > i.l2{left:47px;right:47px;bottom:7px}
+[data-theme="dark"] #pgT .pk-page > i{background:#141A27;box-shadow:none}
+#pgT .pk-page.endp > i{display:none}
 
 /* the card that recedes as you flick past it */
-#pgT .pk-in{height:100%;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;
+#pgT .pk-in{height:100%;z-index:1;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;
       border:1px solid var(--pln);background:linear-gradient(165deg,var(--ptt),var(--card) 62%);
       box-shadow:0 8px 26px rgba(20,33,61,.10);transform-origin:50% 12%;will-change:transform,opacity}
 #pgT .pk-doo{position:absolute;inset:0;width:100%;height:100%;color:var(--pc);opacity:.14;pointer-events:none;
@@ -474,7 +534,7 @@ svg{display:block}
       border-radius:999px;padding:11px 19px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
 
 /* the one gesture hint, shown once */
-#pgT .pk-hint{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);z-index:4;pointer-events:none;
+#pgT .pk-hint{position:absolute;left:50%;bottom:112px;transform:translateX(-50%);z-index:4;pointer-events:none;
       display:flex;flex-direction:column;align-items:center;gap:5px;
       font-size:11.5px;font-weight:800;letter-spacing:.3px;color:var(--muted);
       background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;
@@ -1088,24 +1148,8 @@ svg{display:block}
       </div>
       <div id="packWrap"></div>
 
-      <div class="jy" id="jyCard">
-        <div class="jic"><svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></svg></div>
-        <div><div class="jt">Your journey</div><div class="js">12 ideas collected this term</div></div>
-        <div class="chev"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></div>
-      </div>
 
-      <div class="card" style="margin-top:12px">
-        <div class="rowhead"><div class="t">This week</div><div class="s">4 evenings in a row</div></div>
-        <div class="days">
-          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">M</div></div>
-          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">T</div></div>
-          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">W</div></div>
-          <div class="day done2"><div class="b"><svg width="11" height="11" viewBox="0 0 24 24" class="ic" style="stroke-width:2.5"><path d="M4 12l6 6L20 6"/></svg></div><div class="l">T</div></div>
-          <div class="day today"><div class="b"></div><div class="l">F</div></div>
-          <div class="day"><div class="b"></div><div class="l">S</div></div>
-          <div class="day"><div class="b"></div><div class="l">S</div></div>
-        </div>
-      </div>
+      <div class="wk" id="wkStrip"></div>
     </div>
     </div>
   </div>
@@ -1901,6 +1945,22 @@ function isDone(e){ return !!EDONE[ekey(e)]; }
 function setDone(e){ EDONE[ekey(e)]=true; }
 function seedPack(list){ list.forEach(e=>{ if(e.done && EDONE[ekey(e)]===undefined) EDONE[ekey(e)]=true; }); }
 
+const WKL=['M','T','W','T','F','S','S'];
+function renderWeek(allDone){
+  const el=document.getElementById('wkStrip'); if(!el) return;
+  const d=new Date(), wd=(d.getDay()+6)%7;           /* 0 = Monday */
+  const mon=new Date(d); mon.setDate(d.getDate()-wd);
+  let n=wd+(allDone?1:0);
+  el.innerHTML='<div class="wkh"><span class="wkl">THIS WEEK</span>'+
+    '<span class="wkn">'+(n?n+(n===1?' evening':' evenings')+' in a row':'starts tonight')+'</span></div>'+
+    '<div class="wkr">'+Array.from({length:7},(_,i)=>{
+      const x=new Date(mon); x.setDate(mon.getDate()+i);
+      const cls = i<wd ? 'on' : i===wd ? (allDone?'on':'now') : 'fut';
+      return '<div class="wd '+cls+'"><span class="dl">'+WKL[i]+'</span>'+
+             '<span class="dn">'+x.getDate()+'</span></div>';
+    }).join('')+'</div>';
+}
+
 /* One card, three faces. It is the only thing on the page that has to make five
    unseen items feel worth opening, so it leads with a question, not a summary. */
 function renderPackCard(){
@@ -1922,7 +1982,7 @@ function renderPackCard(){
     wrap.innerHTML='<div class="hc-deck flat"><div class="hc fin" id="packOpen">'+doo+'<div class="hcin">'+
       '<span class="hcb"><span class="pulse" style="animation:none"></span>ALL '+list.length+' DONE</span>'+
       '<div class="hcq">That’s your whole pack for today</div>'+
-      '<div class="hcs">A new one lands tomorrow morning.</div>'+
+      '<div class="hcs">A new one lands tomorrow morning.</div><div class="hcsp"></div>'+
       '<div class="hcm">'+pips+'<span class="hcmin">back tomorrow</span></div>'+
       '<div class="hcf"><span class="who"><span class="wl">Nothing left tonight</span></span>'+
       '<button class="hcgo">Look again ›</button></div>'+
@@ -1938,13 +1998,53 @@ function renderPackCard(){
       '<div class="hcs">'+(fresh
         ? 'The first thing in tonight’s pack answers it. '+(list.length-1)+' more behind it.'
         : left.length+' left in tonight’s pack. The quickest takes '+quick+' minutes.')+'</div>'+
+      '<div class="hcsp"></div>'+
       '<div class="hcm">'+pips+'<span class="hcmin">about '+mins+' minutes'+(fresh?', all '+list.length:' left')+'</span></div>'+
       '<div class="hcf">'+faces+'<button class="hcgo">'+(fresh?'Open':'Carry on')+' ›</button></div>'+
       '</div></div></div>';
   }
+  renderWeek(!left.length);
+  requestAnimationFrame(fitPack);
   const card=document.getElementById('packOpen');
   const start=left.length?list.indexOf(left[0]):0;
-  if(card) card.onclick=()=>openPack(start);
+  if(card){ card.onclick=()=>{ if(!card.__sw) openPack(start); }; swipeUp(card,()=>openPack(start)); }
+}
+
+/* The card is the page's shock absorber: it gives back height in a fixed
+   order until everything fits, so the page itself never has to scroll. */
+function fitPack(){
+  const card=document.querySelector('#pgT .hc'); if(!card) return;
+  const inn=card.querySelector('.hcin'); if(!inn) return;
+  card.classList.remove('c1','c2','c3');
+  ['c1','c2','c3'].forEach(c=>{
+    if(inn.scrollHeight>inn.clientHeight+1) card.classList.add(c);
+  });
+}
+window.addEventListener('resize',()=>requestAnimationFrame(fitPack));
+
+/* The deck edges promise a gesture. Before this they were lying: only a tap
+   opened the pager. Now an upward flick starts it, and the motion carries
+   straight into the pager's own vertical paging. */
+function swipeUp(el,go){
+  let y0=null,dy=0;
+  const move=e=>{
+    if(y0===null) return;
+    dy=e.clientY-y0;
+    el.style.transform = dy<0 ? 'translateY('+Math.max(dy*.45,-42)+'px)' : '';
+  };
+  const end=()=>{
+    if(y0===null) return;
+    const fire=dy<-38; y0=null;
+    el.style.transition='transform .2s cubic-bezier(.2,.9,.3,1)';
+    el.style.transform='';
+    setTimeout(()=>{ el.style.transition=''; },220);
+    if(fire){ el.__sw=1; setTimeout(()=>{ el.__sw=0; },350); go(); }
+  };
+  el.addEventListener('pointerdown',e=>{ y0=e.clientY; dy=0; el.style.transition=''; });
+  el.addEventListener('pointermove',move);
+  el.addEventListener('pointerup',end);
+  el.addEventListener('pointercancel',end);
+  el.addEventListener('pointerleave',end);
 }
 
 const pkS=document.getElementById('packScreen');
@@ -1952,10 +2052,11 @@ const pkPager=document.getElementById('pkPager');
 const PKIC={kit:'kit',chal:'star',rev:'rev',peek:'eye'};
 let PK=[], pkTick=false, pkSeen=false;
 
-function openPack(i){
+function openPack(i,from){
   PK=exploreItems().filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
   if(!PK.length) return;
   pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
+  zoomFrom(from||document.getElementById('packOpen'));
   pkS.classList.add('on');
   document.getElementById('pkHint').classList.toggle('gone',pkSeen);
   requestAnimationFrame(()=>{
@@ -1964,7 +2065,21 @@ function openPack(i){
   });
   wirePack();
 }
-function closePack(){ pkS.classList.remove('on'); }
+function closePack(){
+  zoomFrom(document.getElementById('packOpen'));
+  pkS.classList.remove('on');
+}
+/* The pager opens out of the card that was tapped and folds back into it.
+   Without this the jump from one card to a full screen reads as a different app. */
+function zoomFrom(el){
+  if(!el){ pkS.style.transform=''; pkS.style.transformOrigin=''; return; }
+  const r=el.getBoundingClientRect(), b=pkS.getBoundingClientRect();
+  if(!b.width || !b.height) return;
+  pkS.style.transformOrigin =
+    (((r.left+r.width/2)-b.left)/b.width*100)+'% '+(((r.top+r.height/2)-b.top)/b.height*100)+'%';
+  pkS.style.setProperty('--zx', (r.width/b.width).toFixed(4));
+  pkS.style.setProperty('--zy', (r.height/b.height).toFixed(4));
+}
 
 function pkPage(e,i){
   return '<div class="pk-page '+e.bc+'">'+
@@ -1989,7 +2104,8 @@ function pkPage(e,i){
           : '<button class="pk-go" data-i="'+i+'">'+(e.bc==='peek'?'Have a look':'Start')+
             ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></button>')+
       '</div>'+
-    '</div></div>';
+    '</div>'+
+    '<i class="l2"></i><i class="l1"></i></div>';
 }
 function pkEndPage(){
   return '<div class="pk-page endp"><div class="pk-in">'+
@@ -2013,7 +2129,7 @@ function pkSync(){
     Array.from({length:n},(_,k)=>'<i class="'+(k<cur?'dn':k===cur?'cur':'')+'"></i>').join('');
   [...pkPager.children].forEach((pg,k)=>{
     const d=(k*H-top)/H;                       /* -1 = just left, 0 = here, 1 = next up */
-    const card=pg.firstElementChild; if(!card) return;
+    const card=pg.querySelector('.pk-in'); if(!card) return;
     if(d<=-1||d>=1){ card.style.transform=''; card.style.opacity=''; return; }
     if(d<0){ const a=-d;                       /* leaving upward */
       card.style.transform='translateY('+(a*26)+'px) scale('+(1-a*.09)+')';
@@ -2451,8 +2567,6 @@ function render(){
   renderTile(); renderRail();
   document.getElementById('hwTile').onclick=openHw;
   document.getElementById('hwBack').onclick=closeHw;
-  const jy=document.getElementById('jyCard');
-  if(jy)jy.onclick=()=>{GO('journey');};
 
   document.getElementById('pSchool').textContent=conn?"St. Xavier's · Grade 5A":'No school linked';
   document.getElementById('pSchoolS').textContent=conn?"Linked — your teacher's lessons come through":'Have a school code? Tap to link';
