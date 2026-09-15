@@ -344,6 +344,106 @@ svg{display:block}
 #pgT .fs-ruled{display:flex;flex-direction:column;gap:4px;padding-top:3px;width:74px}
 #pgT .fs-ruled i{height:2px;border-radius:2px;background:var(--tc);opacity:.35}
 
+
+/* ==================== Today's pack · full-page cards ====================
+   A vertical pager. One card fills the screen, you flick up for the next,
+   and the last page is the end of the pack — so the boundary is something
+   you feel with your thumb, not just something a header claims.          */
+#pgT .pkscreen{position:absolute;inset:0;z-index:33;background:var(--bg);display:flex;flex-direction:column;
+      opacity:0;transform:scale(.985);transition:opacity .2s ease,transform .2s ease;visibility:hidden}
+#pgT .pkscreen.on{opacity:1;transform:none;visibility:visible}
+
+#pgT .pk-top{flex:none;display:flex;align-items:center;gap:12px;padding:16px 20px 12px;
+      position:relative;z-index:3}
+#pgT .pk-x{width:30px;height:30px;border-radius:50%;background:var(--icbg);color:var(--body);flex:none;
+      display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pgT .pk-segs{flex:1;display:flex;gap:4px}
+#pgT .pk-segs i{flex:1;height:4px;border-radius:3px;background:var(--icbg);transition:background .25s}
+#pgT .pk-segs i.dn{background:var(--body);opacity:.35}
+#pgT .pk-segs i.cur{background:var(--pcur,var(--ink));opacity:1}
+#pgT .pk-ct{flex:none;font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* the pager itself — native snap, so momentum and rubber-banding stay real */
+#pgT .pk-pager{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+      scroll-snap-type:y mandatory;scrollbar-width:none;perspective:1100px}
+#pgT .pk-pager::-webkit-scrollbar{display:none}
+#pgT .pk-page{height:100%;scroll-snap-align:start;scroll-snap-stop:always;
+      position:relative;padding:0 20px 18px}
+
+/* the card that recedes as you flick past it */
+#pgT .pk-in{height:100%;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;
+      border:1px solid var(--pln);background:linear-gradient(165deg,var(--ptt),var(--card) 62%);
+      box-shadow:0 8px 26px rgba(20,33,61,.10);transform-origin:50% 12%;will-change:transform,opacity}
+#pgT .pk-doo{position:absolute;inset:0;width:100%;height:100%;color:var(--pc);opacity:.14;pointer-events:none;
+      -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 34%,#000 78%);
+              mask-image:linear-gradient(to bottom,transparent 0,transparent 34%,#000 78%)}
+
+#pgT .pk-body{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;
+      padding:22px 20px 8px;scrollbar-width:none}
+#pgT .pk-body::-webkit-scrollbar{display:none}
+#pgT .pk-badge{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.9px;
+      color:var(--pdk);background:var(--card);border:1px solid var(--pln);border-radius:999px;padding:5px 11px 5px 8px}
+#pgT .pk-badge .pulse{width:7px;height:7px;background:var(--pc)}
+#pgT .pk-badge .pulse::after{background:var(--pc)}
+#pgT .pk-h{font-size:26px;font-weight:800;letter-spacing:-.6px;line-height:1.16;margin:14px 0 0}
+#pgT .pk-s{font-size:14.5px;line-height:1.5;color:var(--body);margin-top:11px}
+#pgT .pk-mats{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
+#pgT .pk-mats span{font-size:11px;font-weight:700;color:var(--pdk);background:var(--card);
+      border:1px solid var(--pln);border-radius:999px;padding:5px 11px}
+#pgT .pk-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
+#pgT .pk-tags span{font-size:11px;font-weight:700;color:var(--pdk);background:var(--ptt);border-radius:999px;padding:5px 11px}
+
+/* what happens next — the reason a full page beats a list row */
+#pgT .pk-steps{margin-top:20px;counter-reset:pst}
+#pgT .pk-sl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+#pgT .pk-st{display:flex;gap:11px;align-items:flex-start;margin-top:11px}
+#pgT .pk-st b{counter-increment:pst;flex:none;width:21px;height:21px;border-radius:50%;background:var(--ptt);
+      color:var(--pdk);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+#pgT .pk-st b::before{content:counter(pst)}
+#pgT .pk-st span{font-size:13.5px;line-height:1.45}
+
+#pgT .pk-foot{position:relative;z-index:1;flex:none;display:flex;align-items:center;gap:11px;
+      padding:13px 16px 15px;border-top:1px solid var(--pln);background:rgba(255,255,255,.55);
+      backdrop-filter:blur(6px)}
+[data-theme="dark"] #pgT .pk-foot{background:rgba(23,29,43,.55)}
+#pgT .pk-who{display:flex;align-items:center;gap:8px;min-width:0}
+#pgT .pk-who .wl{font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+#pgT .pk-go{margin-left:auto;flex:none;border:0;border-radius:999px;background:var(--ink);color:var(--card);
+      font-size:14px;font-weight:800;padding:12px 20px;cursor:pointer;font-family:inherit;
+      display:inline-flex;align-items:center;gap:6px;transition:transform .12s ease}
+#pgT .pk-go:active{transform:scale(.97)}
+#pgT .pk-go.dn{background:var(--gtint);color:var(--gdeep)}
+
+/* the last page: the pack has a bottom, and you arrive at it */
+#pgT .pk-page.endp .pk-in{border-color:var(--gline);background:linear-gradient(165deg,var(--gtint),var(--card) 66%)}
+#pgT .pk-end{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:0 30px;position:relative;z-index:1}
+#pgT .pk-end .tick{width:66px;height:66px;border-radius:50%;background:var(--card);color:var(--gdeep);
+      border:1px solid var(--gline);display:flex;align-items:center;justify-content:center;margin-bottom:17px}
+#pgT .pk-end h3{font-size:22px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
+#pgT .pk-end p{font-size:13.5px;color:var(--body);margin-top:9px;line-height:1.5}
+#pgT .pk-again{margin-top:20px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+      border-radius:999px;padding:11px 19px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
+
+/* the one gesture hint, shown once */
+#pgT .pk-hint{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);z-index:4;pointer-events:none;
+      display:flex;flex-direction:column;align-items:center;gap:5px;
+      font-size:11.5px;font-weight:800;letter-spacing:.3px;color:var(--muted);
+      background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;
+      box-shadow:0 4px 14px rgba(20,33,61,.10);transition:opacity .3s ease}
+#pgT .pk-hint.gone{opacity:0}
+#pgT .pk-hint .ch{animation:pkup 1.5s ease-in-out infinite}
+@keyframes pkup{0%,100%{transform:translateY(2px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+
+/* type palettes, matching the badges the list already uses */
+#pgT .pk-page.kit {--pc:var(--green); --ptt:var(--gtint); --pdk:var(--gdeep); --pln:var(--gline)}
+#pgT .pk-page.chal{--pc:#7A6BD0;      --ptt:var(--vtint); --pdk:var(--violet); --pln:#DCD7F2}
+#pgT .pk-page.rev {--pc:var(--blue);   --ptt:var(--btint); --pdk:var(--blue-dk);--pln:#CFE0FA}
+#pgT .pk-page.peek{--pc:#D2A24C;      --ptt:var(--atint); --pdk:var(--amber);  --pln:#EFDCB4}
+[data-theme="dark"] #pgT .pk-page.chal{--pln:#332C55}
+[data-theme="dark"] #pgT .pk-page.rev {--pln:#2A3E5E}
+[data-theme="dark"] #pgT .pk-page.peek{--pln:#4A3D22}
+
 /* ==================== Assignment brief (Stage 2) ==================== */
 #pgT .asgscreen{position:absolute;inset:0;z-index:31;background:var(--bg);display:flex;flex-direction:column;
       opacity:0;transform:translateX(14px);transition:opacity .17s ease,transform .17s ease;visibility:hidden}
@@ -1032,6 +1132,21 @@ svg{display:block}
   </div>
 
 
+
+  <!-- the pack, as full-page cards -->
+  <div class="pkscreen" id="packScreen">
+    <div class="pk-top">
+      <div class="pk-x" id="pkX"><svg width="15" height="15" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+      <div class="pk-segs" id="pkSegs"></div>
+      <div class="pk-ct" id="pkCt"></div>
+    </div>
+    <div class="pk-pager" id="pkPager"></div>
+    <div class="pk-hint" id="pkHint">
+      <span class="ch"><svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M6 15l6-6 6 6"/></svg></span>
+      swipe up for the next one
+    </div>
+  </div>
+
   <!-- Stage 2 · the brief -->
   <div class="asgscreen" id="asgScreen">
     <div class="abhead">
@@ -1273,16 +1388,16 @@ var GO=(function(){
 const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
 const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
 const EXPLORE=[
- {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",mats:["3 bowls","cotton","chana"],
+ {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
   s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
- {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",
+ {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
   s:"Halve a recipe for two people, then write the steps so a friend could follow them.",
   tags:["Fractions","Measurement","Describing words"],subj:["maths","english"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",steps:["Ten sums you found hard last month.","Say your working out loud as you go.","Mark the two that still feel slow — those are the ones to bring to class."],
   s:"A 10-minute run through the sums you found hard last month.",subj:["maths"]},
- {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",
+ {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",steps:["Look at 8 × 5. You already know it.","Now add one more 8.","That’s 8 × 6. You just did Monday’s lesson."],
   s:"Can you make 8 × 6 out of 8 × 5? A 2-minute puzzle before Sharma Ma'am begins the chapter.",subj:["maths"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",steps:["Read one page out loud, slowly.","Record yourself reading it.","Listen back once. Would you change anything?"],
   s:"Read one page out loud and record it. Iyer Sir's class, last week.",subj:["english"]}
 ];
 const EIC={
@@ -1349,14 +1464,14 @@ const ILIKA_TODO=[
    w:"In your notebook \u00b7 then a photo",k:"in your notebook",due:"THURSDAY",dc:"",live:false}
 ];
 const ILIKA_EXPLORE=[
-  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",
+  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",steps:["Wet the cotton and put it in the jar.","Push one bean down the side so you can see it.","Look every morning and remember what changed."],
    mats:["a jar","cotton","one bean"],
    s:"Keep it on the windowsill and look every morning. Which way does the root go?",subj:["evs"]},
-  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",
+  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",steps:["Lay the spoons out in twos and count.","Now lay them in fives and count again.","Which way was quicker? Why do you think so?"],
    s:"Lay them in twos and fives. Which way is quicker to count?",subj:["maths"]},
-  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",
+  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",steps:["Say the 2s out loud, all the way to 20.","Then the 5s, all the way to 50.","Find a number that turns up in both."],
    s:"A five-minute run before Friday.",subj:["maths"]},
-  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",
+  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",steps:["Find your lunchbox.","Count the corners.","Now count the flat sides. Monday’s lesson, done early."],
    s:"How many corners does your lunchbox have?",subj:["maths"]}
 ];
 function exploreItems(){ return KIDS[kid].id==='ilika' ? ILIKA_EXPLORE : EXPLORE; }
@@ -1632,6 +1747,7 @@ function switchKid(i){
   document.querySelectorAll('#rail .kf[data-kid]').forEach(f=>f.classList.toggle('on',+f.dataset.kid===i));
   setTimeout(()=>{
     kid=i; subj='all'; hsubj='all';
+    if(typeof closePack==='function') closePack();
     if(typeof closeRun==='function'){ runS.classList.remove('on'); stopWave(); R=null; }
     if(typeof closeAsg==='function') closeAsg();
     if(typeof closeHw==='function') closeHw();
@@ -1673,6 +1789,8 @@ function renderHero(list){
     '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+'</span></span>'+
     '<span class="hgo">Start <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></span>'+
     '</div></div></div>';
+  const hc=document.getElementById('heroCard');
+  if(hc) hc.onclick=()=>openPack(0);
   return h;
 }
 
@@ -1748,6 +1866,93 @@ function renderHw(){
   const c=document.getElementById('chg'); if(c)c.onclick=openCh;
 }
 
+
+
+/* ============================================================
+   The pack, as full-page cards you flick through.
+   Browsing is not doing: paging never marks anything complete.
+   ============================================================ */
+const pkS=document.getElementById('packScreen');
+const pkPager=document.getElementById('pkPager');
+const PKIC={kit:'kit',chal:'star',rev:'rev',peek:'eye'};
+let PK=[], pkTick=false, pkSeen=false;
+
+function openPack(i){
+  PK=exploreItems().filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+  if(!PK.length) return;
+  pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
+  pkS.classList.add('on');
+  document.getElementById('pkHint').classList.toggle('gone',pkSeen);
+  requestAnimationFrame(()=>{
+    pkPager.scrollTop=i*pkPager.clientHeight;
+    pkSync();
+  });
+  wirePack();
+}
+function closePack(){ pkS.classList.remove('on'); }
+
+function pkPage(e){
+  return '<div class="pk-page '+e.bc+'">'+
+    '<div class="pk-in">'+
+      '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+      '<div class="pk-body">'+
+        '<span class="pk-badge"><span class="pulse"></span>'+e.b+'</span>'+
+        '<h2 class="pk-h">'+e.t+'</h2>'+
+        '<div class="pk-s">'+e.s+'</div>'+
+        (e.mats?'<div class="pk-mats">'+e.mats.map(m=>'<span>'+m+'</span>').join('')+'</div>':'')+
+        (e.tags?'<div class="pk-tags">'+e.tags.map(t=>'<span>'+t+'</span>').join('')+'</div>':'')+
+        (e.steps?'<div class="pk-steps"><div class="pk-sl">WHAT YOU’LL DO</div>'+
+          e.steps.map(x=>'<div class="pk-st"><b></b><span>'+x+'</span></div>').join('')+'</div>':'')+
+      '</div>'+
+      '<div class="pk-foot">'+
+        '<span class="pk-who"><span class="stack">'+
+          [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E'],['D','#7A6BD0']]
+            .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
+        '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+'</span></span>'+
+        '<button class="pk-go" data-go="'+e.t.replace(/"/g,'')+'">'+(e.bc==='peek'?'Have a look':'Start')+
+          ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></button>'+
+      '</div>'+
+    '</div></div>';
+}
+function pkEndPage(){
+  return '<div class="pk-page endp"><div class="pk-in">'+
+    '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+    '<div class="pk-end">'+
+      '<span class="tick"><svg width="30" height="30" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M4 12l6 6L20 6"/></svg></span>'+
+      '<h3>That’s everything for today</h3>'+
+      '<p>New things land tomorrow morning.</p>'+
+      '<button class="pk-again" id="pkAgain">Back to the list</button>'+
+    '</div></div></div>';
+}
+
+/* the flick: the page you leave recedes and dims, the next one rises over it */
+function pkSync(){
+  pkTick=false;
+  const H=pkPager.clientHeight; if(!H) return;
+  const top=pkPager.scrollTop, n=PK.length+1;
+  const cur=Math.round(top/H);
+  document.getElementById('pkCt').textContent=cur>=PK.length?'end':(cur+1)+' of '+PK.length;
+  document.getElementById('pkSegs').innerHTML=
+    Array.from({length:n},(_,k)=>'<i class="'+(k<cur?'dn':k===cur?'cur':'')+'"></i>').join('');
+  [...pkPager.children].forEach((pg,k)=>{
+    const d=(k*H-top)/H;                       /* -1 = just left, 0 = here, 1 = next up */
+    const card=pg.firstElementChild; if(!card) return;
+    if(d<=-1||d>=1){ card.style.transform=''; card.style.opacity=''; return; }
+    if(d<0){ const a=-d;                       /* leaving upward */
+      card.style.transform='translateY('+(a*26)+'px) scale('+(1-a*.09)+')';
+      card.style.opacity=String(1-a*.85);
+    }else{ card.style.transform='scale('+(1-d*.03)+')'; card.style.opacity='1'; }
+  });
+  if(top>12 && !pkSeen){ pkSeen=true; document.getElementById('pkHint').classList.add('gone'); }
+}
+pkPager.addEventListener('scroll',()=>{ if(!pkTick){ pkTick=true; requestAnimationFrame(pkSync); } },{passive:true});
+window.addEventListener('resize',()=>requestAnimationFrame(pkSync));
+
+function wirePack(){
+  pkPager.querySelectorAll('.pk-go').forEach(b=>b.onclick=()=>toast2('“'+b.dataset.go+'” — not built yet'));
+  const ag=document.getElementById('pkAgain'); if(ag) ag.onclick=closePack;
+}
+document.getElementById('pkX').onclick=closePack;
 
 /* ============================================================
    STAGE 2 — the brief.  One screen, no scroll if we can help it.
@@ -2187,12 +2392,13 @@ function renderExplore(){
       '<div class="es2">New things appear here every week.</div></div></div>';
     return;
   }
-  el.outerHTML='<div class="ex" id="exList">'+list.map(e=>
-    '<div class="ei"><div class="eic">'+EIC[e.ic]+'</div><div class="em">'+
+  el.outerHTML='<div class="ex" id="exList">'+list.map((e,i)=>
+    '<div class="ei" data-pk="'+(i+(hero?1:0))+'"><div class="eic">'+EIC[e.ic]+'</div><div class="em">'+
     '<span class="badge '+e.bc+'">'+e.b+'</span>'+
     '<div class="et">'+e.t+'</div><div class="es">'+e.s+'</div>'+
     (e.tags?'<div class="tags2">'+e.tags.map(t=>'<span class="tg">'+t+'</span>').join('')+'</div>':'')+
     '</div></div>').join('')+'</div>';
+  document.querySelectorAll('#exList .ei[data-pk]').forEach(r=>r.onclick=()=>openPack(+r.dataset.pk));
 }
 function renderSubs2(){
   const el=document.getElementById('subs');
