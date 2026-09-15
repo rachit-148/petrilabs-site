@@ -344,6 +344,8 @@ svg{display:block}
 #pgT .fs-wave i{width:3px;border-radius:2px;background:var(--tc);opacity:.55}
 #pgT .fs-pips{display:flex;gap:5px;align-items:center}
 #pgT .fs-pips i{width:26px;height:7px;border-radius:4px;background:var(--tt)}
+#pgT .hwc .fs-pips i{background:var(--card);border:1px solid var(--tl)}
+#pgT .hwc .fs-ruled i{opacity:.55}
 #pgT .fs-mats{display:flex;gap:5px;flex-wrap:wrap}
 #pgT .fs-mats span{font-size:10px;font-weight:700;color:var(--td);background:var(--tt);
       border:1px solid var(--line);border-radius:999px;padding:3px 8px}
@@ -361,41 +363,154 @@ svg{display:block}
   #pgT .tile{padding:8px 10px 8px}
 }
 
+
+/* ==================== Homework, in the same card language as Explore ====================
+   The spine is gone: a queue of four things does not need a timeline drawn
+   beside it, and the nodes were a second visual system to learn.            */
+#pgT .fs-voice{--tl:#CFE0FA} #pgT .fs-quiz{--tl:#DCD7F2}
+#pgT .fs-act  {--tl:var(--gline)} #pgT .fs-cust{--tl:#EFDCB4}
+[data-theme="dark"] #pgT .fs-voice{--tl:#2A3E5E} [data-theme="dark"] #pgT .fs-quiz{--tl:#332C55}
+[data-theme="dark"] #pgT .fs-act{--tl:#265B3B}   [data-theme="dark"] #pgT .fs-cust{--tl:#4A3D22}
+
+#pgT .hwlist{display:flex;flex-direction:column;gap:12px}
+#pgT .hwc{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;
+      border:1px solid var(--tl);background:linear-gradient(162deg,var(--tt),var(--card) 64%);
+      box-shadow:0 4px 14px rgba(20,33,61,.07);transition:transform .12s ease}
+#pgT .hwc:active{transform:scale(.995)}
+#pgT .hwcdoo{position:absolute;inset:0;color:var(--tc);opacity:.12;pointer-events:none;
+      -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 42%,#000 100%);
+              mask-image:linear-gradient(to bottom,transparent 0,transparent 42%,#000 100%)}
+#pgT .hwcin{position:relative;padding:14px 15px 12px}
+#pgT .hwcb{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.9px;
+      color:var(--td);background:var(--card);border:1px solid var(--tl);border-radius:999px;
+      padding:4px 11px 4px 5px;max-width:100%;min-width:0}
+#pgT .hwcb .tkc{width:19px;height:19px;border-radius:50%;background:var(--tc);color:#fff;flex:none;
+      display:flex;align-items:center;justify-content:center}
+[data-theme="dark"] #pgT .hwcb .tkc{color:#0F1420}
+#pgT .hwcb em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#pgT .hwct{font-size:17px;font-weight:800;letter-spacing:-.3px;line-height:1.24;margin-top:11px}
+#pgT .hwcs{font-size:12.5px;font-weight:600;color:var(--body);margin-top:6px;line-height:1.4}
+#pgT .hwcsig{margin-top:11px}
+#pgT .hwcf{position:relative;display:flex;align-items:center;gap:10px;
+      padding:11px 15px 12px;border-top:1px solid var(--tl);background:rgba(255,255,255,.5)}
+[data-theme="dark"] #pgT .hwcf{background:rgba(0,0,0,.16)}
+#pgT .hwcgo{margin-left:auto;flex:none;font-size:13px;font-weight:800;color:var(--td);white-space:nowrap}
+
+/* what was sent today, as a plain summary rather than a node on a rail */
+#pgT .hwsent{border:1px solid var(--line);background:var(--card);border-radius:14px;
+      padding:11px 13px;margin-bottom:13px;box-shadow:var(--shadow)}
+#pgT .hwsent .sh2{display:flex;align-items:center;gap:9px;cursor:pointer}
+#pgT .hwsent .tk2{width:24px;height:24px;border-radius:50%;background:var(--gtint);color:var(--gdeep);
+      flex:none;display:flex;align-items:center;justify-content:center}
+#pgT .hwsent .sl2{flex:1;min-width:0;font-size:12.5px;font-weight:800;color:var(--gdeep)}
+#pgT .hwsent .cv{color:var(--muted);transition:transform .18s ease;font-size:11px}
+#pgT .hwsent.open .cv{transform:rotate(90deg)}
+#pgT .hwsent .fs-done{display:none;flex-direction:column;gap:7px;margin-top:10px}
+#pgT .hwsent.open .fs-done{display:flex}
+
+/* ==================== the brief, wearing the same skin ==================== */
+#pgT .abdoo{position:absolute;inset:0;color:var(--tc);opacity:.12;pointer-events:none;z-index:0;
+      -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 50%,#000 92%);
+              mask-image:linear-gradient(to bottom,transparent 0,transparent 50%,#000 92%)}
+#pgT .ab-foot{border-top-color:var(--abln,var(--bline))}
+#pgT .asgscreen.fs-voice{--abln:#CFE0FA} #pgT .asgscreen.fs-quiz{--abln:#DCD7F2}
+#pgT .asgscreen.fs-act{--abln:var(--gline)} #pgT .asgscreen.fs-cust{--abln:#EFDCB4}
+[data-theme="dark"] #pgT .asgscreen.fs-voice{--abln:#2A3E5E}
+[data-theme="dark"] #pgT .asgscreen.fs-quiz{--abln:#332C55}
+[data-theme="dark"] #pgT .asgscreen.fs-act{--abln:#265B3B}
+[data-theme="dark"] #pgT .asgscreen.fs-cust{--abln:#4A3D22}
+#pgT .ab-need{background:rgba(255,255,255,.8);border-color:var(--tl)}
+[data-theme="dark"] #pgT .ab-need{background:rgba(23,29,43,.7)}
+#pgT .ab-note{background:rgba(255,255,255,.62);border-color:var(--tl)}
+[data-theme="dark"] #pgT .ab-note{background:rgba(0,0,0,.2)}
+#pgT .ab-note .anl{color:var(--td)}
+
+
+/* ---------- homework inside the evening pager ---------- */
+#pgT .pk-page.hw{--pc:var(--tc);--ptt:var(--tt);--pdk:var(--td);--pln:var(--tl)}
+#pgT .pk-top{display:flex;align-items:center;gap:9px}
+#pgT .pk-top .pk-badge{flex:1;min-width:0;padding-left:5px;overflow:hidden}
+#pgT .pk-top .pk-badge .tkc{width:19px;height:19px;border-radius:50%;background:var(--pc);color:#fff;
+      flex:none;display:flex;align-items:center;justify-content:center}
+[data-theme="dark"] #pgT .pk-top .pk-badge .tkc{color:#0F1420}
+#pgT .pk-page.hw .ab-need{margin-top:16px;background:rgba(255,255,255,.78);border-color:var(--pln)}
+[data-theme="dark"] #pgT .pk-page.hw .ab-need{background:rgba(23,29,43,.7)}
+#pgT .pk-page.hw .ab-note{margin-top:13px;background:rgba(255,255,255,.6);border-color:var(--pln)}
+[data-theme="dark"] #pgT .pk-page.hw .ab-note{background:rgba(0,0,0,.2)}
+#pgT .pk-page.hw .ab-note .anl{color:var(--pdk)}
+#pgT .pk-go[disabled]{opacity:.4;cursor:default}
+#pgT .pk-go.go{background:var(--green);color:#fff}
+
+/* the strip: two groups with a visible hand-over between them */
+#pgT .pk-segs{align-items:center}
+#pgT .pk-segs .sgap{flex:none;width:9px;height:4px;position:relative}
+#pgT .pk-segs .sgap::after{content:"";position:absolute;left:3.5px;top:-2px;width:2px;height:8px;
+      border-radius:2px;background:var(--line)}
+#pgT .pk-segs i.endseg{flex:0 0 14px}
+
+/* ---------- the summary page ---------- */
+#pgT .pk-body.sum{padding-bottom:16px}
+#pgT .sum-lo{margin-top:15px;display:flex;flex-direction:column;gap:10px}
+#pgT .sl-row{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:700;line-height:1.35}
+#pgT .sl-row .slk{flex:none;width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;
+      display:flex;align-items:center;justify-content:center;margin-top:1px}
+[data-theme="dark"] #pgT .sl-row .slk{color:#0F1420}
+#pgT .sum-out{margin-top:9px;display:flex;flex-direction:column;gap:7px}
+#pgT .so-row{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);
+      border-radius:12px;padding:9px 12px}
+#pgT .so-row .sok{flex:none;font-size:8.5px;font-weight:800;letter-spacing:.8px;border-radius:999px;
+      padding:3px 8px;background:var(--icbg);color:var(--body)}
+#pgT .so-row .sot{flex:1;min-width:0;font-size:13px;font-weight:700;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pgT .so-row.fs-voice .sok{background:var(--btint);color:var(--blue-dk)}
+#pgT .so-row.fs-quiz  .sok{background:var(--vtint);color:var(--violet)}
+#pgT .so-row.fs-act   .sok{background:var(--gtint);color:var(--gdeep)}
+#pgT .so-row.fs-cust  .sok{background:var(--atint);color:var(--amber)}
+#pgT .so-row.ex-kit   .sok{background:var(--gtint);color:var(--gdeep)}
+#pgT .so-row.ex-chal  .sok{background:var(--vtint);color:var(--violet)}
+#pgT .so-row.ex-rev   .sok{background:var(--btint);color:var(--blue-dk)}
+#pgT .so-row.ex-peek  .sok{background:var(--atint);color:var(--amber)}
+
+/* ---------- what is in tonight's pack, on the home card ---------- */
+#pgT .hckinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}
+#pgT .hckinds span{font-size:11px;font-weight:800;border-radius:999px;padding:5px 10px;
+      background:var(--card);border:1px solid var(--gline);color:var(--gdeep)}
+#pgT .hckinds span.dn{opacity:.45;text-decoration:line-through;text-decoration-thickness:1.5px}
+
 /* ---------- the week, as a bare strip on the band ---------- */
-#pgT .wk{margin-top:0;padding-top:13px;flex:none}
-#pgT .wkh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+#pgT .wk{margin-top:0;padding-top:15px;flex:none}
+#pgT .wkh{display:flex;align-items:baseline;gap:8px;margin-bottom:9px}
 #pgT .wkl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
-#pgT .wkn{margin-left:auto;font-size:11px;font-weight:700;color:var(--body)}
-#pgT .wkr{display:flex;gap:5px}
-#pgT .wd{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;
-      border-radius:11px;padding:6px 0 5px}
-#pgT .wd .dl{font-size:8.5px;font-weight:800;letter-spacing:.6px;color:var(--muted)}
-#pgT .wd .dn{font-size:13px;font-weight:800;line-height:1.1;color:var(--body);font-variant-numeric:tabular-nums}
-#pgT .wd.on{background:var(--btint)}
-#pgT .wd.on .dn{color:var(--blue-dk)}
-#pgT .wd.on .dl{color:var(--blue-dk);opacity:.7}
-#pgT .wd.now{box-shadow:inset 0 0 0 1.5px var(--line)}
+#pgT .wkn{margin-left:auto;font-size:11px;font-weight:800;color:var(--gdeep)}
+#pgT .wkr{display:flex;gap:6px}
+/* the same chip the date wears in the header — a soft card, a label, a number */
+#pgT .wd{flex:1;min-width:0;border:1px solid var(--line);border-radius:13px;background:var(--card);
+      box-shadow:var(--shadow);overflow:hidden;text-align:center}
+#pgT .wd .dl{display:block;font-size:8.5px;font-weight:800;letter-spacing:1px;color:var(--muted);
+      background:var(--icbg);padding:4px 0 3px}
+#pgT .wd .dn{display:block;font-size:16px;font-weight:800;letter-spacing:-.4px;line-height:1;
+      color:var(--body);padding:6px 0 7px;font-variant-numeric:tabular-nums}
+#pgT .wd.hit{border-color:var(--gline)}
+#pgT .wd.hit .dl{color:var(--gdeep);background:var(--gtint)}
+#pgT .wd.hit .dn{color:var(--gdeep)}
+#pgT .wd.miss{border-color:#EFDCB4}
+#pgT .wd.miss .dl{color:var(--amber);background:var(--atint)}
+#pgT .wd.miss .dn{color:var(--amber)}
+[data-theme="dark"] #pgT .wd.miss{border-color:#4A3D22}
+#pgT .wd.now{border-color:var(--blue);box-shadow:0 3px 10px rgba(38,128,235,.18)}
+#pgT .wd.now .dl{color:var(--blue-dk);background:var(--btint)}
 #pgT .wd.now .dn{color:var(--ink)}
-#pgT .wd.fut .dn{color:var(--muted);font-weight:700}
+#pgT .wd.fut{background:transparent;box-shadow:none;border-style:dashed}
+#pgT .wd.fut .dl{background:transparent}
+#pgT .wd.fut .dn,#pgT .wd.fut .dl{color:var(--muted);opacity:.7}
 
 /* ==================== Today's Pack · the one card on the homepage ====================
    The list showed the goods; a single card has to promise them. The deck edges do
    the part no sentence can — they say there is more behind this one.              */
 #pgT .pkhead{display:flex;align-items:baseline;gap:10px;margin-bottom:13px}
 #pgT .pkt{font-size:16.5px;font-weight:800;letter-spacing:-.3px}
-#pgT .pkc{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--body);background:var(--card);
-      border:1px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap}
 
-#pgT .hc-deck{position:relative;z-index:0;padding-bottom:15px;
-      flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
-#pgT .hc-deck > i{position:absolute;left:13px;right:13px;height:26px;border-radius:0 0 16px 16px;
-      background:var(--card);border:1px solid var(--bline);border-top:0;z-index:0;
-      box-shadow:0 3px 8px rgba(20,33,61,.06)}
-#pgT .hc-deck > i.l1{bottom:7px}
-#pgT .hc-deck > i.l2{left:27px;right:27px;bottom:0}
-[data-theme="dark"] #pgT .hc-deck > i{background:#141A27;border-color:#2A3243;box-shadow:none}
-#pgT .hc-deck.flat{padding-bottom:0}
-#pgT .hc-deck.flat > i{display:none}
+#pgT .hc-deck{position:relative;z-index:0;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 
 #pgT .hc{position:relative;z-index:1;border-radius:19px;overflow:hidden;cursor:pointer;
       flex:1 1 auto;min-height:0;display:flex;flex-direction:column;touch-action:none;
@@ -409,7 +524,8 @@ svg{display:block}
       display:flex;flex-direction:column;align-items:stretch;padding:16px 17px 15px}
 #pgT .hcin > *{flex:none}
 /* the air that absorbs the difference between a tall phone and a short one */
-#pgT .hcsp{flex:1 1 0;min-height:0}
+#pgT .hcsp{flex:1 1 0;min-height:10px}
+#pgT .hcsp.top{display:none}
 #pgT .hcb{align-self:flex-start}
 #pgT .hcq{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 #pgT .hcs{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
@@ -428,20 +544,20 @@ svg{display:block}
 #pgT .hcb .pulse::after{background:var(--green)}
 #pgT .hcq{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.24;margin:12px 0 0}
 #pgT .hcs{font-size:13px;color:var(--body);line-height:1.45;margin-top:7px}
-#pgT .hcm{display:flex;align-items:center;gap:9px;margin-top:14px}
-#pgT .hcp{display:flex;gap:4px;flex:none}
-#pgT .hcp i{width:17px;height:5px;border-radius:3px;background:#D8DEE7;flex:none}
-[data-theme="dark"] #pgT .hcp i{background:#2B3446}
-#pgT .hcp i.f{background:var(--green)}
-#pgT .hcmin{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap;
-      overflow:hidden;text-overflow:ellipsis}
-#pgT .hcf{display:flex;align-items:center;gap:10px;margin-top:15px}
+#pgT .hcf{display:flex;align-items:center;gap:12px;flex:none;
+      margin:0 -17px -15px;padding:12px 17px 13px;border-top:1px solid var(--gline);
+      background:rgba(255,255,255,.5)}
+[data-theme="dark"] #pgT .hc .hcf{background:rgba(0,0,0,.14);border-top-color:#2A4A38}
+#pgT .hcleft{min-width:0;flex:1}
+#pgT .hcleft b{display:block;font-size:14.5px;font-weight:800;line-height:1.15}
+#pgT .hcleft span{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-top:3px}
 #pgT .hcgo{margin-left:auto;flex:none;border:0;border-radius:999px;background:var(--ink);color:var(--card);
       font-size:13.5px;font-weight:800;padding:11px 18px;font-family:inherit;cursor:pointer;
       display:inline-flex;align-items:center;gap:6px}
 #pgT .hc.fin{border-color:var(--gline);background:linear-gradient(162deg,var(--gtint),var(--card) 72%)}
 #pgT .hc.fin .hcq{font-size:18px}
 #pgT .hc.fin .hcgo{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+#pgT .hc.fin .hcf{border-top-color:var(--gline)}
 
 /* ==================== Today's pack · full-page cards ====================
    A vertical pager. One card fills the screen, you flick up for the next,
@@ -459,8 +575,9 @@ svg{display:block}
       display:flex;align-items:center;justify-content:center;cursor:pointer}
 #pgT .pk-segs{flex:1;display:flex;gap:4px}
 #pgT .pk-segs i{flex:1;height:4px;border-radius:3px;background:var(--icbg);transition:background .25s}
-#pgT .pk-segs i.dn{background:var(--body);opacity:.35}
-#pgT .pk-segs i.cur{background:var(--pcur,var(--ink));opacity:1}
+#pgT .pk-segs i.ok{background:var(--green)}
+#pgT .pk-segs i.cur{box-shadow:inset 0 0 0 1.5px var(--ink)}
+[data-theme="dark"] #pgT .pk-segs i.cur{box-shadow:inset 0 0 0 1.5px var(--ink)}
 #pgT .pk-ct{flex:none;font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* the pager itself — native snap, so momentum and rubber-banding stay real */
@@ -468,15 +585,7 @@ svg{display:block}
       scroll-snap-type:y mandatory;scrollbar-width:none;perspective:1100px}
 #pgT .pk-pager::-webkit-scrollbar{display:none}
 #pgT .pk-page{height:100%;scroll-snap-align:start;scroll-snap-stop:always;
-      position:relative;padding:0 20px 30px}
-/* the same two edges the homepage card sits on — the language carries over */
-#pgT .pk-page > i{position:absolute;left:31px;right:31px;height:26px;border-radius:0 0 19px 19px;
-      background:var(--card);border:1px solid var(--bline);border-top:0;z-index:0;
-      box-shadow:0 4px 9px rgba(20,33,61,.07)}
-#pgT .pk-page > i.l1{bottom:16px}
-#pgT .pk-page > i.l2{left:47px;right:47px;bottom:7px}
-[data-theme="dark"] #pgT .pk-page > i{background:#141A27;box-shadow:none}
-#pgT .pk-page.endp > i{display:none}
+      position:relative;padding:0 20px 18px}
 
 /* the card that recedes as you flick past it */
 #pgT .pk-in{height:100%;z-index:1;border-radius:22px;overflow:hidden;position:relative;display:flex;flex-direction:column;
@@ -516,9 +625,9 @@ svg{display:block}
 [data-theme="dark"] #pgT .pk-foot{background:rgba(23,29,43,.55)}
 #pgT .pk-who{display:flex;align-items:center;gap:8px;min-width:0}
 #pgT .pk-who .wl{font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
-#pgT .pk-go{margin-left:auto;flex:none;border:0;border-radius:999px;background:var(--ink);color:var(--card);
-      font-size:14px;font-weight:800;padding:12px 20px;cursor:pointer;font-family:inherit;
-      display:inline-flex;align-items:center;gap:6px;transition:transform .12s ease}
+#pgT .pk-go{flex:1;border:0;border-radius:14px;background:var(--ink);color:var(--card);
+      font-size:14.5px;font-weight:800;padding:14px 20px;cursor:pointer;font-family:inherit;
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s ease}
 #pgT .pk-go:active{transform:scale(.97)}
 #pgT .pk-go.dn{background:var(--gtint);color:var(--gdeep)}
 
@@ -544,6 +653,7 @@ svg{display:block}
 @keyframes pkup{0%,100%{transform:translateY(2px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
 
 /* type palettes, matching the badges the list already uses */
+#pgT .pk-page.endp{--pc:var(--green); --ptt:var(--gtint); --pdk:var(--gdeep); --pln:var(--gline)}
 #pgT .pk-page.kit {--pc:var(--green); --ptt:var(--gtint); --pdk:var(--gdeep); --pln:var(--gline)}
 #pgT .pk-page.chal{--pc:#7A6BD0;      --ptt:var(--vtint); --pdk:var(--violet); --pln:#DCD7F2}
 #pgT .pk-page.rev {--pc:var(--blue);   --ptt:var(--btint); --pdk:var(--blue-dk);--pln:#CFE0FA}
@@ -554,17 +664,24 @@ svg{display:block}
 
 /* ==================== Assignment brief (Stage 2) ==================== */
 #pgT .asgscreen{position:absolute;inset:0;z-index:31;background:var(--bg);display:flex;flex-direction:column;
-      opacity:0;transform:translateX(14px);transition:opacity .17s ease,transform .17s ease;visibility:hidden}
-#pgT .asgscreen.on{opacity:1;transform:none;visibility:visible}
+      --zx:.9;--zy:.3;opacity:0;transform:scale(var(--zx),var(--zy));visibility:hidden;
+      transition:opacity .19s ease,transform .3s cubic-bezier(.2,.82,.25,1),visibility 0s .3s}
+#pgT .asgscreen.on{opacity:1;transform:none;visibility:visible;
+      transition:opacity .19s ease,transform .3s cubic-bezier(.2,.82,.25,1),visibility 0s}
 #pgT .abhead{flex:none;display:flex;align-items:center;gap:11px;padding:16px 20px 11px;background:var(--bg);
       border-bottom:1px solid var(--bline);box-shadow:0 6px 14px -12px rgba(20,33,61,.45);position:relative;z-index:2}
 #pgT .abhead .back{width:32px;height:32px;border-radius:50%;background:var(--chip);border:1px solid var(--line);
       color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 #pgT .abhead .abs{flex:1;min-width:0;font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--body);
       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#pgT .abbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px 20px 20px}
+#pgT .abbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:14px 20px 18px;background:var(--bg)}
+#pgT .abcard{position:relative;border-radius:22px;overflow:hidden;min-height:100%;
+      border:1px solid var(--tl);background:linear-gradient(165deg,var(--tt),var(--card) 62%);
+      box-shadow:0 6px 20px rgba(20,33,61,.07);padding:18px 17px 20px}
+#pgT .abcard > *:not(.abdoo){position:relative;z-index:1}
 
-#pgT .ab-tok{display:inline-flex;align-items:center;gap:6px;background:var(--tt);color:var(--td);
+#pgT .ab-tok{display:inline-flex;align-items:center;gap:6px;background:var(--card);color:var(--td);
+      border:1px solid var(--tl);
       border-radius:999px;padding:5px 11px 5px 7px;font-size:10px;font-weight:800;letter-spacing:.8px}
 #pgT .ab-tok .tkc{width:19px;height:19px;border-radius:50%;background:var(--tc);color:#fff;
       display:flex;align-items:center;justify-content:center;flex:none}
@@ -647,7 +764,7 @@ svg{display:block}
       color:var(--muted);cursor:pointer;background:none;border:0;font-family:inherit;padding:2px}
 
 /* ==================== the runner (Quiz · Voice) ==================== */
-#pgT .runscreen{position:absolute;inset:0;z-index:32;background:var(--card);display:flex;flex-direction:column;
+#pgT .runscreen{position:absolute;inset:0;z-index:34;background:var(--card);display:flex;flex-direction:column;
       opacity:0;transform:scale(.985);transition:opacity .18s ease,transform .18s ease;visibility:hidden}
 #pgT .runscreen.on{opacity:1;transform:none;visibility:visible}
 #pgT .rn-top{flex:none;display:flex;align-items:center;gap:12px;padding:16px 20px 12px}
@@ -751,8 +868,7 @@ svg{display:block}
 
 /* a node that has just arrived in the sent group */
 @keyframes fsland{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.14)}100%{transform:scale(1);opacity:1}}
-#pgT .fs-sent.land .fs-node{animation:fsland .42s cubic-bezier(.2,1.4,.4,1) both}
-#pgT .fs-sent.land .fs-sentlbl{animation:fsland .42s .06s ease both}
+#pgT .hwsent.land{animation:fsland .42s cubic-bezier(.2,1.4,.4,1) both}
 
 /* to-do list */
 .asg{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
@@ -1144,7 +1260,6 @@ svg{display:block}
 
       <div class="pkhead">
         <div class="pkt">Today's Pack</div>
-        <div class="pkc" id="packCount"></div>
       </div>
       <div id="packWrap"></div>
 
@@ -1197,7 +1312,7 @@ svg{display:block}
   <div class="hwscreen" id="hwScreen">
     <div class="hwhead">
     <div class="hwbar">
-      <div class="back" id="hwBack"><svg width="16" height="16" viewBox="0 0 24 24" class="ic" style="stroke-width:2"><path d="M15 6l-6 6 6 6"/></svg></div>
+      <div class="back" id="hwBack"><svg width="15" height="15" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
       <div class="hwt" id="hwTitle">School Assignments</div>
       <div class="zsp"></div>
     </div>
@@ -1473,16 +1588,16 @@ var GO=(function(){
 const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
 const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
 const EXPLORE=[
- {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",hook:"Which way does a root grow — up, or down?",mins:8,steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
+ {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",kind:"Experiment",lo:"Explain what a seed needs before it can grow.",hook:"Which way does a root grow — up, or down?",mins:8,steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
   s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
- {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",hook:"Can you cook for two when the recipe feeds four?",mins:15,steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
+ {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",kind:"Challenge",lo:"Halve a quantity and write a method someone else can follow.",hook:"Can you cook for two when the recipe feeds four?",mins:15,steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
   s:"Halve a recipe for two people, then write the steps so a friend could follow them.",
   tags:["Fractions","Measurement","Describing words"],subj:["maths","english"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",hook:"Is 3/4 bigger than 2/3 — are you sure?",mins:10,done:true,steps:["Ten sums you found hard last month.","Say your working out loud as you go.","Mark the two that still feel slow — those are the ones to bring to class."],
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Fractions, before Friday's test",kind:"Practice",lo:"Compare two fractions that don’t share a denominator.",hook:"Is 3/4 bigger than 2/3 — are you sure?",mins:10,done:true,steps:["Ten sums you found hard last month.","Say your working out loud as you go.","Mark the two that still feel slow — those are the ones to bring to class."],
   s:"A 10-minute run through the sums you found hard last month.",subj:["maths"]},
- {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",hook:"Can you make 8 × 6 out of 8 × 5?",mins:2,done:true,steps:["Look at 8 × 5. You already know it.","Now add one more 8.","That’s 8 × 6. You just did Monday’s lesson."],
+ {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Multiplication starts Monday",kind:"Peek",lo:"Build a new times-table fact out of one you already know.",hook:"Can you make 8 × 6 out of 8 × 5?",mins:2,done:true,steps:["Look at 8 × 5. You already know it.","Now add one more 8.","That’s 8 × 6. You just did Monday’s lesson."],
   s:"Can you make 8 × 6 out of 8 × 5? A 2-minute puzzle before Sharma Ma'am begins the chapter.",subj:["maths"]},
- {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",hook:"How do you read a page so someone wants to listen?",mins:5,steps:["Read one page out loud, slowly.","Record yourself reading it.","Listen back once. Would you change anything?"],
+ {b:"REVISION",bc:"rev",ic:"rev",t:"Read-aloud: The Talkative Barber",kind:"Story",lo:"Read a page aloud with pace and expression.",hook:"How do you read a page so someone wants to listen?",mins:5,steps:["Read one page out loud, slowly.","Record yourself reading it.","Listen back once. Would you change anything?"],
   s:"Read one page out loud and record it. Iyer Sir's class, last week.",subj:["english"]}
 ];
 const EIC={
@@ -1549,14 +1664,14 @@ const ILIKA_TODO=[
    w:"In your notebook \u00b7 then a photo",k:"in your notebook",due:"THURSDAY",dc:"",live:false}
 ];
 const ILIKA_EXPLORE=[
-  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",hook:"What comes out of a bean first — the root or the leaf?",mins:6,steps:["Wet the cotton and put it in the jar.","Push one bean down the side so you can see it.","Look every morning and remember what changed."],
+  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Grow a bean in cotton wool",kind:"Experiment",lo:"Say what a seed needs before it can sprout.",hook:"What comes out of a bean first — the root or the leaf?",mins:6,steps:["Wet the cotton and put it in the jar.","Push one bean down the side so you can see it.","Look every morning and remember what changed."],
    mats:["a jar","cotton","one bean"],
    s:"Keep it on the windowsill and look every morning. Which way does the root go?",subj:["evs"]},
-  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",hook:"Is it quicker to count in twos, or in fives?",mins:8,steps:["Lay the spoons out in twos and count.","Now lay them in fives and count again.","Which way was quicker? Why do you think so?"],
+  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Count the spoons, then the forks",kind:"Challenge",lo:"Count in twos and in fives, and say which is quicker.",hook:"Is it quicker to count in twos, or in fives?",mins:8,steps:["Lay the spoons out in twos and count.","Now lay them in fives and count again.","Which way was quicker? Why do you think so?"],
    s:"Lay them in twos and fives. Which way is quicker to count?",subj:["maths"]},
-  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",hook:"Which numbers turn up in both the 2s and the 5s?",mins:5,done:true,steps:["Say the 2s out loud, all the way to 20.","Then the 5s, all the way to 50.","Find a number that turns up in both."],
+  {b:"REVISION",bc:"rev",ic:"rev",t:"Tables of 2 and 5",kind:"Practice",lo:"Spot the numbers that appear in both the 2s and the 5s.",hook:"Which numbers turn up in both the 2s and the 5s?",mins:5,done:true,steps:["Say the 2s out loud, all the way to 20.","Then the 5s, all the way to 50.","Find a number that turns up in both."],
    s:"A five-minute run before Friday.",subj:["maths"]},
-  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",hook:"How many corners does your lunchbox have?",mins:3,steps:["Find your lunchbox.","Count the corners.","Now count the flat sides. Monday’s lesson, done early."],
+  {b:"SNEAK PEEK",bc:"peek",ic:"eye",t:"Shapes start Monday",kind:"Peek",lo:"Name the corners and flat sides of an everyday object.",hook:"How many corners does your lunchbox have?",mins:3,steps:["Find your lunchbox.","Count the corners.","Now count the flat sides. Monday’s lesson, done early."],
    s:"How many corners does your lunchbox have?",subj:["maths"]}
 ];
 function exploreItems(){ return KIDS[kid].id==='ilika' ? ILIKA_EXPLORE : EXPLORE; }
@@ -1571,6 +1686,7 @@ function exploreItems(){ return KIDS[kid].id==='ilika' ? ILIKA_EXPLORE : EXPLORE
 const ASG={
 
 'r-seeds':{
+  lo:"Name the parts of a seed and say what each one does.",
   why:"Nair Ma'am wants to see if you can name the parts of a seed and say what each one does.",
   note:"We opened the soaked chana in class on Friday. Think about what you saw inside.",
   mins:5,
@@ -1608,6 +1724,7 @@ const ASG={
   ]},
 
 'r-voice':{
+  lo:"Explain out loud how you compare two large numbers.",
   why:"Sharma Ma'am wants to hear you explain how you compare two big numbers — not just pick the bigger one.",
   note:"Say it the way you'd explain it to someone younger than you.",
   mins:4,
@@ -1621,6 +1738,7 @@ const ASG={
   ]},
 
 'r-sprout':{
+  lo:"Watch something change over days and describe what changed.",
   why:"Nair Ma'am wants to see whether you can watch something change over three days and notice what changed.",
   note:"Start it tonight so the roots have time. Photograph it on Monday morning, not before.",
   mins:15,
@@ -1632,6 +1750,7 @@ const ASG={
   shot:"Your three bowls, side by side"},
 
 'r-hindi':{
+  lo:"Tell a noun from a pronoun in your own writing.",
   why:"Gupta Sir wants to see if you can spot a noun and a pronoun in your own sentences.",
   note:"पांच वाक्य लिखो। हर वाक्य में एक संज्ञा और एक सर्वनाम हो।",
   mins:20,
@@ -1645,6 +1764,7 @@ const ASG={
   prompts:[{p:"Which is bigger — 8,200 or 82,000? Say how you know.",h:"Count the digits."}]},
 
 'i-animals':{
+  lo:"Match an animal to the home it makes.",
   why:"Nair Ma'am wants to hear you match an animal to the home it makes.",
   note:"Somewhere quiet. Take your time — you can record again if you want.",
   mins:3,
@@ -1656,6 +1776,7 @@ const ASG={
   ]},
 
 'i-numbers':{
+  lo:"Put numbers up to 100 in order.",
   why:"Rao Ma'am wants to see if you can put numbers up to 100 in order.",
   note:"",
   mins:4,
@@ -1676,6 +1797,7 @@ const ASG={
   ]},
 
 'i-crow':{
+  lo:"Retell a story in your own order, start to finish.",
   why:"Iyer Sir wants to see if you can tell the story back in your own order, start to finish.",
   note:"Three sentences is plenty. Draw the crow if you like.",
   mins:15,
@@ -1746,9 +1868,9 @@ function face(o){
    '</svg>';
 }
 const KIDS=[
-  {id:'ridhaan',name:'Ridhaan',grade:'Grade 5A',sent:2,
+  {id:'ridhaan',name:'Ridhaan',grade:'Grade 5A',sent:2,hist:[1,1,0,1,1,1],
    pic:face({bg:'#DCE7F7',skin:'#E8B98E',hair:'short',hairc:'#2C2118',shirt:'#3F63C4'})},
-  {id:'ilika',name:'Ilika',grade:'Grade 3B',sent:1,
+  {id:'ilika',name:'Ilika',grade:'Grade 3B',sent:1,hist:[1,0,0,1,1,1],
    pic:face({bg:'#F6E3EC',skin:'#EFC49F',hair:'long',hairc:'#241A14',shirt:'#C4527E'})}
 ];
 let kid=0;
@@ -1889,37 +2011,36 @@ function renderHw(){
       (SUBJ.find(x=>x[0]===hsubj)||[0,'All'])[1]+' today</div>'+
       '<div class="es2">Everything else is on the home screen \u2191</div></div>';
   } else {
-    wrap.innerHTML='<div class="fs-spine'+(nsent?' hassent':'')+'">'+
-      (nsent?'<div class="fs-sent" id="fsSent"><span class="fs-node ok">'+
-        '<svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg>'+
-        '</span><div class="fs-sentlbl" id="fsSentL">'+nsent+' sent today'+
+    wrap.innerHTML=
+      (nsent?'<div class="hwsent" id="fsSent"><div class="sh2" id="fsSentL">'+
+        '<span class="tk2"><svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg></span>'+
+        '<span class="sl2">'+nsent+' sent today</span>'+
         (done.length?'<span class="cv">\u203a</span>':'')+'</div>'+
         '<div class="fs-done">'+done.map(a=>
           '<div class="fs-dn '+TCLS[a.ty]+'" data-did="'+a.id+'">'+
             '<span class="dc2">'+TYIC[a.ty]+'</span><span class="dt">'+a.t+'</span>'+
             '<span class="dw">'+(ast(a.id).at||'sent').replace('Sent ','')+'</span></div>').join('')+
         '</div></div>':'')+
-      items.map(a=>
-        '<div class="fs-row '+TCLS[a.ty]+(ast(a.id).st==='inprog'?' live':'')+'" data-id="'+a.id+'">'+
-          '<span class="fs-node">'+TYIC[a.ty]+'</span>'+
-          '<div class="fs-card">'+
-            '<div class="fs-top"><div class="fs-src">'+a.src+'</div>'+
-              '<span class="fs-due'+a.dc+'">'+a.due+'</span></div>'+
-            '<div class="fs-title">'+a.t+'</div>'+
-            '<div class="fs-foot"><div class="fs-sig">'+sigFor(a)+
-              '<div class="fs-where">'+a.w+'</div></div>'+
-              '<div class="fs-go">'+VERB[ast(a.id).st]+' \u203a</div>'+
-            '</div>'+
+      '<div class="hwlist">'+items.map(a=>
+        '<div class="hwc '+TCLS[a.ty]+'" data-id="'+a.id+'">'+
+          '<svg class="hwcdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+          '<div class="hwcin">'+
+            '<span class="hwcb"><span class="tkc">'+TYIC[a.ty]+'</span><em>'+a.src+'</em></span>'+
+            '<div class="hwct">'+a.t+'</div>'+
+            '<div class="hwcs">'+a.w+'</div>'+
+            '<div class="hwcsig">'+sigFor(a)+'</div>'+
           '</div>'+
+          '<div class="hwcf"><span class="fs-due'+a.dc+'">'+a.due+'</span>'+
+            '<span class="hwcgo">'+VERB[ast(a.id).st]+' \u203a</span></div>'+
         '</div>').join('')+'</div>';
   }
-  document.querySelectorAll('#todoWrap .fs-row').forEach(r=>r.onclick=()=>{
-    const a=items.find(x=>x.id===r.dataset.id); if(a) openAsg(a);
+  document.querySelectorAll('#todoWrap .hwc').forEach(r=>r.onclick=()=>{
+    const a=items.find(x=>x.id===r.dataset.id); if(a) openEvening2(a,r);
   });
   const sl=document.getElementById('fsSentL');
   if(sl) sl.onclick=()=>{
     const g=document.getElementById('fsSent');
-    if(!done.length) return toast2('Everything you sent earlier is in Your journey');
+    if(!done.length) return toast2('Everything you sent earlier is in My work');
     g.classList.toggle('open');
   };
   document.querySelectorAll('#todoWrap .fs-dn').forEach(r=>r.onclick=e=>{
@@ -1945,18 +2066,22 @@ function isDone(e){ return !!EDONE[ekey(e)]; }
 function setDone(e){ EDONE[ekey(e)]=true; }
 function seedPack(list){ list.forEach(e=>{ if(e.done && EDONE[ekey(e)]===undefined) EDONE[ekey(e)]=true; }); }
 
-const WKL=['M','T','W','T','F','S','S'];
+const WKL=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+/* Six days back plus today, so the streak always has history to show whatever
+   weekday it is. `hist` is oldest-first and covers the six days before today. */
 function renderWeek(allDone){
   const el=document.getElementById('wkStrip'); if(!el) return;
-  const d=new Date(), wd=(d.getDay()+6)%7;           /* 0 = Monday */
-  const mon=new Date(d); mon.setDate(d.getDate()-wd);
-  let n=wd+(allDone?1:0);
+  const hist=(KIDS[kid].hist||[1,1,1,1,1,1]).slice(-6);
+  const d=new Date();
+  let run=allDone?1:0;
+  for(let i=hist.length-1;i>=0;i--){ if(hist[i]) run++; else break; }
+
   el.innerHTML='<div class="wkh"><span class="wkl">THIS WEEK</span>'+
-    '<span class="wkn">'+(n?n+(n===1?' evening':' evenings')+' in a row':'starts tonight')+'</span></div>'+
+    '<span class="wkn">'+(run?run+(run===1?' evening':' evenings')+' in a row':'starts tonight')+'</span></div>'+
     '<div class="wkr">'+Array.from({length:7},(_,i)=>{
-      const x=new Date(mon); x.setDate(mon.getDate()+i);
-      const cls = i<wd ? 'on' : i===wd ? (allDone?'on':'now') : 'fut';
-      return '<div class="wd '+cls+'"><span class="dl">'+WKL[i]+'</span>'+
+      const x=new Date(d); x.setDate(d.getDate()-6+i);
+      const cls = i===6 ? (allDone?'hit':'now') : (hist[i]?'hit':'miss');
+      return '<div class="wd '+cls+'"><span class="dl">'+WKL[x.getDay()]+'</span>'+
              '<span class="dn">'+x.getDate()+'</span></div>';
     }).join('')+'</div>';
 }
@@ -1967,40 +2092,35 @@ function renderPackCard(){
   const list=exploreItems(); seedPack(list);
   const left=list.filter(e=>!isDone(e)), done=list.length-left.length;
   const wrap=document.getElementById('packWrap');
-  document.getElementById('packCount').textContent =
-    !done ? list.length+' things' : done===list.length ? 'all done' : done+' of '+list.length+' done';
-
-  const pips='<span class="hcp">'+list.map((e,i)=>'<i class="'+(i<done?'f':'')+'"></i>').join('')+'</span>';
-  const faces='<span class="who"><span class="stack">'+
-    [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E']]
-      .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
-    '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+' opened it</span></span>';
   const doo='<svg class="hcdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>';
+  const tally='<b>'+done+' of '+list.length+' done</b>';
+  const kinds={}; list.forEach(e=>{ const k=e.kind||'Thing';
+    (kinds[k]=kinds[k]||{n:0,d:0}).n++; if(isDone(e)) kinds[k].d++; });
+  const mix='<div class="hckinds">'+Object.keys(kinds).map(k=>
+    '<span'+(kinds[k].d===kinds[k].n?' class="dn"':'')+'>'+kinds[k].n+' '+k+(kinds[k].n>1?'s':'')+'</span>'
+  ).join('')+'</div>';
 
   if(!left.length){
-    /* the deck edges go with the last card — the stack has been dealt */
-    wrap.innerHTML='<div class="hc-deck flat"><div class="hc fin" id="packOpen">'+doo+'<div class="hcin">'+
+    wrap.innerHTML='<div class="hc-deck"><div class="hc fin" id="packOpen">'+doo+'<div class="hcin">'+
+      '<div class="hcsp top"></div>'+
       '<span class="hcb"><span class="pulse" style="animation:none"></span>ALL '+list.length+' DONE</span>'+
-      '<div class="hcq">That’s your whole pack for today</div>'+
+      '<div class="hcq">That\u2019s your whole pack for today</div>'+
       '<div class="hcs">A new one lands tomorrow morning.</div><div class="hcsp"></div>'+
-      '<div class="hcm">'+pips+'<span class="hcmin">back tomorrow</span></div>'+
-      '<div class="hcf"><span class="who"><span class="wl">Nothing left tonight</span></span>'+
-      '<button class="hcgo">Look again ›</button></div>'+
+      '<div class="hcf"><div class="hcleft"><b>All '+list.length+' done</b></div>'+
+      '<button class="hcgo">Look again \u203a</button></div>'+
       '</div></div></div>';
   }else{
-    const n=left[0], mins=left.reduce((a,e)=>a+(e.mins||5),0);
-    const quick=Math.min.apply(null,left.map(e=>e.mins||5));
-    const fresh=!done;
-    wrap.innerHTML='<div class="hc-deck"><i class="l2"></i><i class="l1"></i>'+
-      '<div class="hc" id="packOpen">'+doo+'<div class="hcin">'+
-      '<span class="hcb"><span class="pulse"></span>'+(fresh?'OPEN NOW':left.length+' STILL WAITING')+'</span>'+
+    const n=left[0], fresh=!done;
+    wrap.innerHTML='<div class="hc-deck"><div class="hc" id="packOpen">'+doo+'<div class="hcin">'+
+      '<div class="hcsp top"></div>'+
+      '<span class="hcb"><span class="pulse"></span>'+(fresh?'OPEN NOW':'PICK UP WHERE YOU LEFT OFF')+'</span>'+
       '<div class="hcq">'+(n.hook||n.t)+'</div>'+
       '<div class="hcs">'+(fresh
-        ? 'The first thing in tonight’s pack answers it. '+(list.length-1)+' more behind it.'
-        : left.length+' left in tonight’s pack. The quickest takes '+quick+' minutes.')+'</div>'+
-      '<div class="hcsp"></div>'+
-      '<div class="hcm">'+pips+'<span class="hcmin">about '+mins+' minutes'+(fresh?', all '+list.length:' left')+'</span></div>'+
-      '<div class="hcf">'+faces+'<button class="hcgo">'+(fresh?'Open':'Carry on')+' ›</button></div>'+
+        ? 'The first thing in tonight\u2019s pack answers it. '+(list.length-1)+' more behind it.'
+        : 'Then there are '+(left.length-1)+' more waiting behind it.')+'</div>'+
+      mix+'<div class="hcsp"></div>'+
+      '<div class="hcf"><div class="hcleft">'+tally+'</div>'+
+      '<button class="hcgo">'+(fresh?'Open':'Carry on')+' \u203a</button></div>'+
       '</div></div></div>';
   }
   renderWeek(!left.length);
@@ -2049,28 +2169,44 @@ function swipeUp(el,go){
 
 const pkS=document.getElementById('packScreen');
 const pkPager=document.getElementById('pkPager');
-const PKIC={kit:'kit',chal:'star',rev:'rev',peek:'eye'};
-let PK=[], pkTick=false, pkSeen=false;
+let PK=[], pkTick=false, pkSeen=false, pkHw=0;
 
-function openPack(i,from){
-  PK=exploreItems().filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+/* ============================================================
+   One pager for the whole evening. An entry is either an Explore
+   item or {hw:assignment}; homework runs first and hands over to
+   the pack without a break, which is why they share a scroller.
+   ============================================================ */
+function isHw(e){ return !!e.hw; }
+function entDone(e){ return isHw(e) ? ast(e.hw.id).st==='sent' : isDone(e); }
+
+function openPack(i,from){                 /* from the home pack card: the pack alone */
+  PK=exploreItems().slice(); pkHw=0;
+  openEvening(i,from||document.getElementById('packOpen'));
+}
+function openEvening2(a,from){             /* from a homework card: school, then the pack */
+  const hw=pending().map(x=>({hw:x}));
+  PK=hw.concat(exploreItems()); pkHw=hw.length;
+  openEvening(Math.max(0,hw.findIndex(x=>x.hw.id===a.id)),from);
+}
+function openEvening(i,from){
   if(!PK.length) return;
-  pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
-  zoomFrom(from||document.getElementById('packOpen'));
+  paintPages();
+  zoomFrom(from);
   pkS.classList.add('on');
   document.getElementById('pkHint').classList.toggle('gone',pkSeen);
-  requestAnimationFrame(()=>{
-    pkPager.scrollTop=i*pkPager.clientHeight;
-    pkSync();
-  });
+  requestAnimationFrame(()=>{ pkPager.scrollTop=i*pkPager.clientHeight; pkSync(); });
+}
+function paintPages(){
+  pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
   wirePack();
+}
+function repaintPages(){
+  const at=pkPager.scrollTop; paintPages(); pkPager.scrollTop=at; pkSync();
 }
 function closePack(){
   zoomFrom(document.getElementById('packOpen'));
   pkS.classList.remove('on');
 }
-/* The pager opens out of the card that was tapped and folds back into it.
-   Without this the jump from one card to a full screen reads as a different app. */
 function zoomFrom(el){
   if(!el){ pkS.style.transform=''; pkS.style.transformOrigin=''; return; }
   const r=el.getBoundingClientRect(), b=pkS.getBoundingClientRect();
@@ -2081,7 +2217,9 @@ function zoomFrom(el){
   pkS.style.setProperty('--zy', (r.height/b.height).toFixed(4));
 }
 
+/* ---------- an Explore page ---------- */
 function pkPage(e,i){
+  if(isHw(e)) return hwPage(e.hw,i);
   return '<div class="pk-page '+e.bc+'">'+
     '<div class="pk-in">'+
       '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
@@ -2095,43 +2233,109 @@ function pkPage(e,i){
           e.steps.map(x=>'<div class="pk-st"><b></b><span>'+x+'</span></div>').join('')+'</div>':'')+
       '</div>'+
       '<div class="pk-foot">'+
-        '<span class="pk-who"><span class="stack">'+
-          [['R','#5B6BF0'],['M','#2E9E5B'],['K','#B07A1E'],['D','#7A6BD0']]
-            .map(a=>'<i style="background:'+a[1]+'">'+a[0]+'</i>').join('')+
-        '</span><span class="wl">12 in '+KIDS[kid].grade.replace('Grade ','')+'</span></span>'+
         (isDone(e)
           ? '<span class="pk-go dn">Done <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.8"><path d="M4 12l6 6L20 6"/></svg></span>'
           : '<button class="pk-go" data-i="'+i+'">'+(e.bc==='peek'?'Have a look':'Start')+
             ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M9 6l6 6-6 6"/></svg></button>')+
       '</div>'+
-    '</div>'+
-    '<i class="l2"></i><i class="l1"></i></div>';
-}
-function pkEndPage(){
-  return '<div class="pk-page endp"><div class="pk-in">'+
-    '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
-    '<div class="pk-end">'+
-      '<span class="tick"><svg width="30" height="30" viewBox="0 0 24 24" class="ic" style="stroke-width:2.4"><path d="M4 12l6 6L20 6"/></svg></span>'+
-      '<h3>That’s everything for today</h3>'+
-      '<p>New things land tomorrow morning.</p>'+
-      '<button class="pk-again" id="pkAgain">Back to the list</button>'+
-    '</div></div></div>';
+    '</div></div>';
 }
 
-/* the flick: the page you leave recedes and dims, the next one rises over it */
+/* ---------- a homework page, in the same card ---------- */
+function hwPage(a,i){
+  const d=ASG[a.id]||{}, s=ast(a.id);
+  const work=(a.ty==='act'||a.ty==='cust') && s.st==='inprog';
+  return '<div class="pk-page hw '+TCLS[a.ty]+'" data-hw="'+a.id+'">'+
+    '<div class="pk-in">'+
+      '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+      '<div class="pk-body">'+
+        '<div class="pk-top"><span class="pk-badge"><span class="tkc">'+TYIC[a.ty]+'</span>'+a.src+'</span>'+
+          '<span class="fs-due'+(s.st==='sent'?' sent':a.dc)+'">'+(s.st==='sent'?'SENT':a.due)+'</span></div>'+
+        '<h2 class="pk-h">'+a.t+'</h2>'+
+        (d.why?'<div class="pk-s">'+d.why+'</div>':'')+
+        needHtml(a,d,s)+
+        (d.note?'<div class="ab-note"><div class="anl">FROM '+a.src.split('·').pop().trim()+
+                '</div><div class="ant">'+d.note+'</div></div>':'')+
+        (work?workHtml(a,d,s):'')+
+      '</div>'+
+      '<div class="pk-foot">'+hwBtn(a,d,s,i)+'</div>'+
+    '</div></div>';
+}
+function hwBtn(a,d,s,i){
+  if(s.st==='sent')
+    return '<span class="pk-go dn">Sent to '+shortT(a)+
+      ' <svg width="13" height="13" viewBox="0 0 24 24" class="ic" style="stroke-width:2.8"><path d="M4 12l6 6L20 6"/></svg></span>';
+  if(a.ty==='act'||a.ty==='cust'){
+    if(s.st==='new'){
+      const need=(d.mats||[]).length, got=(s.ticked||[]).length;
+      const ready = a.ty!=='act' || got>=need;
+      return '<button class="pk-go" data-hwgo="'+i+'"'+(ready?'':' disabled')+'>'+
+        (a.ty!=='act' ? 'Show me what to do'
+         : ready ? 'I’ve got everything' : 'Tick what you have ('+got+' of '+need+')')+'</button>';
+    }
+    return '<button class="pk-go'+(s.shot?' go':'')+'" data-hwgo="'+i+'"'+(s.shot?'':' disabled')+'>'+
+      (s.shot?'Check and send':'Photograph it to send')+'</button>';
+  }
+  const tot=a.ty==='quiz'?(d.qs||[]).length:(d.prompts||[]).length;
+  return '<button class="pk-go" data-hwgo="'+i+'">'+
+    (s.st==='inprog' && s.rev ? 'Check and send'
+     : s.st==='inprog' && tot ? 'Carry on  ·  '+Math.min(s.prog+1,tot)+' of '+tot
+     : 'Start')+'</button>';
+}
+
+/* ---------- the last page: what tonight actually came to ---------- */
+function pkEndPage(){
+  const ex=exploreItems().filter(isDone);
+  const hw=todoItems().filter(a=>ast(a.id).st==='sent');
+  const outs=hw.map(a=>({t:a.t,k:TWORD2[a.ty],c:TCLS[a.ty]}))
+    .concat(ex.map(e=>({t:e.t,k:(e.kind||'').toUpperCase(),c:'ex-'+e.bc})));
+  const los=hw.map(a=>(ASG[a.id]||{}).lo).concat(ex.map(e=>e.lo)).filter(Boolean);
+  if(!outs.length)
+    return '<div class="pk-page endp"><div class="pk-in"><div class="pk-end">'+
+      '<span class="tick">✨</span><h3>Nothing finished yet</h3>'+
+      '<p>Flick back up and start anything — this page fills in as you go.</p>'+
+      '<button class="pk-again" id="pkAgain">Back</button></div></div></div>';
+  return '<div class="pk-page endp"><div class="pk-in">'+
+    '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+    '<div class="pk-body sum">'+
+      '<span class="pk-badge"><span class="pulse" style="animation:none"></span>TODAY, SO FAR</span>'+
+      '<h2 class="pk-h">You can now…</h2>'+
+      '<div class="sum-lo">'+los.map(l=>
+        '<div class="sl-row"><span class="slk"><svg width="12" height="12" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg></span><span>'+l+'</span></div>').join('')+
+      '</div>'+
+      '<div class="pk-sl" style="margin-top:20px">WHAT YOU FINISHED</div>'+
+      '<div class="sum-out">'+outs.map(o=>
+        '<div class="so-row '+o.c+'"><span class="sok">'+(o.k||'DONE')+'</span><span class="sot">'+o.t+'</span></div>').join('')+
+      '</div>'+
+    '</div>'+
+    '<div class="pk-foot"><button class="pk-go" id="pkAgain">Back to the evening</button></div>'+
+    '</div></div>';
+}
+
+/* ---------- the flick, and a progress strip in two clusters ---------- */
 function pkSync(){
   pkTick=false;
   const H=pkPager.clientHeight; if(!H) return;
   const top=pkPager.scrollTop, n=PK.length+1;
   const cur=Math.round(top/H);
-  document.getElementById('pkCt').textContent=cur>=PK.length?'end':(cur+1)+' of '+PK.length;
-  document.getElementById('pkSegs').innerHTML=
-    Array.from({length:n},(_,k)=>'<i class="'+(k<cur?'dn':k===cur?'cur':'')+'"></i>').join('');
+  const ct=document.getElementById('pkCt');
+  ct.textContent = cur>=PK.length ? 'today'
+    : pkHw && cur<pkHw ? 'School '+(cur+1)+' of '+pkHw
+    : pkHw ? 'Pack '+(cur-pkHw+1)+' of '+(PK.length-pkHw)
+    : (cur+1)+' of '+PK.length;
+  /* one strip, two groups: the gap is where school hands over to the pack */
+  let segs='';
+  for(let k=0;k<n;k++){
+    if(pkHw && k===pkHw) segs+='<b class="sgap"></b>';
+    const done = k<PK.length && entDone(PK[k]);
+    segs+='<i class="'+(done?'ok':'')+(k===cur?' cur':'')+(k>=PK.length?' endseg':'')+'"></i>';
+  }
+  document.getElementById('pkSegs').innerHTML=segs;
   [...pkPager.children].forEach((pg,k)=>{
-    const d=(k*H-top)/H;                       /* -1 = just left, 0 = here, 1 = next up */
+    const d=(k*H-top)/H;
     const card=pg.querySelector('.pk-in'); if(!card) return;
     if(d<=-1||d>=1){ card.style.transform=''; card.style.opacity=''; return; }
-    if(d<0){ const a=-d;                       /* leaving upward */
+    if(d<0){ const a=-d;
       card.style.transform='translateY('+(a*26)+'px) scale('+(1-a*.09)+')';
       card.style.opacity=String(1-a*.85);
     }else{ card.style.transform='scale('+(1-d*.03)+')'; card.style.opacity='1'; }
@@ -2143,15 +2347,33 @@ window.addEventListener('resize',()=>requestAnimationFrame(pkSync));
 
 function wirePack(){
   pkPager.querySelectorAll('.pk-go[data-i]').forEach(b=>b.onclick=()=>{
-    const e=PK[+b.dataset.i]; if(!e) return;
+    const e=PK[+b.dataset.i]; if(!e||isHw(e)) return;
     setDone(e);
-    /* the activity itself is not built; marking it done is what lets the
-       homepage card be reviewed across all three of its states */
     toast2('Marked done — the activity itself isn’t built yet');
-    const at=pkPager.scrollTop;
-    pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
-    pkPager.scrollTop=at; wirePack(); pkSync();
-    renderPackCard();
+    repaintPages(); renderPackCard();
+  });
+  /* homework acts on the page it is on, exactly as the brief used to */
+  pkPager.querySelectorAll('.pk-go[data-hwgo]').forEach(b=>b.onclick=()=>{
+    const ent=PK[+b.dataset.hwgo]; if(!ent||!isHw(ent)) return;
+    const a=ent.hw, d=ASG[a.id]||{}, s=ast(a.id);
+    if(a.ty==='act'||a.ty==='cust'){
+      if(s.st==='new'){ s.st='inprog'; s.prog=1; return repaintPages(); }
+      if(s.shot) return openRun(a,true);
+      return;
+    }
+    openRun(a);
+  });
+  pkPager.querySelectorAll('.pk-page.hw .ab-ck').forEach(c=>c.onclick=()=>{
+    const id=c.closest('.pk-page').dataset.hw, s=ast(id);
+    const i=+c.dataset.ck, t=s.ticked, p=t.indexOf(i);
+    if(p>=0) t.splice(p,1); else t.push(i);
+    repaintPages();
+  });
+  pkPager.querySelectorAll('.pk-page.hw #abFrame').forEach(f=>f.onclick=()=>{
+    ast(f.closest('.pk-page').dataset.hw).shot=1; repaintPages();
+  });
+  pkPager.querySelectorAll('.pk-page.hw #abRetake').forEach(r=>r.onclick=()=>{
+    ast(r.closest('.pk-page').dataset.hw).shot=0; repaintPages();
   });
   const ag=document.getElementById('pkAgain'); if(ag) ag.onclick=closePack;
 }
@@ -2172,6 +2394,7 @@ const ICN={
   redo :'<svg width="13" height="13" viewBox="0 0 24 24" class="ic"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>'
 };
 const TWORD2={voice:'VOICE',quiz:'QUIZ',act:'EXPERIMENT',cust:'NOTEBOOK'};
+const TYL=['fs-voice','fs-quiz','fs-act','fs-cust'];
 
 /* a stand-in for the camera. A prototype cannot take a photo, so it draws
    the thing the child would have photographed, and says so. */
@@ -2199,10 +2422,25 @@ const asgS=document.getElementById('asgScreen');
 const runS=document.getElementById('runScreen');
 const sentO=document.getElementById('sentOver');
 
-function openAsg(a){
-  cur=a; asgS.classList.add('on'); renderAsg();
+function openAsg(a,from){
+  cur=a;
+  zoomInto(asgS, from||document.querySelector('#todoWrap .hwc[data-id="'+a.id+'"]'));
+  asgS.classList.add('on'); renderAsg();
 }
-function closeAsg(){ asgS.classList.remove('on'); cur=null; }
+/* the brief grows out of the card that was tapped, exactly as the pack does */
+function zoomInto(screen,el){
+  if(!el){ screen.style.transformOrigin=''; return; }
+  const r=el.getBoundingClientRect(), b=screen.getBoundingClientRect();
+  if(!b.width||!b.height) return;
+  screen.style.transformOrigin =
+    (((r.left+r.width/2)-b.left)/b.width*100)+'% '+(((r.top+r.height/2)-b.top)/b.height*100)+'%';
+  screen.style.setProperty('--zx',(r.width/b.width).toFixed(4));
+  screen.style.setProperty('--zy',(r.height/b.height).toFixed(4));
+}
+function closeAsg(){
+  if(cur) zoomInto(asgS, document.querySelector('#todoWrap .hwc[data-id="'+cur.id+'"]'));
+  asgS.className='asgscreen'; cur=null;
+}
 
 function renderAsg(){
   const a=cur, d=ASG[a.id]||{}, s=ast(a.id);
@@ -2212,6 +2450,7 @@ function renderAsg(){
   else { due.textContent=a.due; due.className='fs-due'+a.dc; }
   const body=document.getElementById('abBody');
   body.className='abbody '+TCLS[a.ty];
+  asgS.classList.add('on'); TYL.forEach(c=>asgS.classList.remove(c)); asgS.classList.add(TCLS[a.ty]);
 
   let h='<span class="ab-tok"><span class="tkc">'+TYIC[a.ty]+'</span>'+TWORD2[a.ty]+'</span>'+
         '<h1 class="ab-h1">'+a.t+'</h1>'+
@@ -2227,7 +2466,9 @@ function renderAsg(){
        happens off the phone, so a page-turn would buy nothing */
     if((a.ty==='act'||a.ty==='cust') && s.st==='inprog') h+=workHtml(a,d,s);
   }
-  body.innerHTML=h; body.scrollTop=0;
+  body.innerHTML='<div class="abcard">'+
+    '<svg class="abdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+h+'</div>';
+  body.scrollTop=0;
   wireAsg(a,d,s);
   paintFoot(a,d,s);
 }
@@ -2235,13 +2476,11 @@ function renderAsg(){
 function needHtml(a,d,s){
   if(a.ty==='quiz')
     return '<div class="ab-need"><div class="ab-nl">WHAT THIS IS</div>'+
-      '<div class="ab-nb"><span class="nic">'+TYIC.quiz+'</span>'+(d.qs?d.qs.length:6)+' questions · tap the right one</div>'+
-      '<div class="ab-mins">'+ICN.clock.replace('width="15" height="15"','width="12" height="12"')+
-      ' about '+(d.mins||5)+' minutes</div></div>';
+      '<div class="ab-nb"><span class="nic">'+TYIC.quiz+'</span>'+(d.qs?d.qs.length:6)+' questions · tap the right one</div></div>';
   if(a.ty==='voice')
     return '<div class="ab-need"><div class="ab-nl">BEFORE YOU START</div>'+
       '<div class="ab-nb"><span class="nic">'+ICN.quiet+'</span>Find somewhere quiet</div>'+
-      '<div class="ab-mins">'+(d.prompts?d.prompts.length:3)+' questions · you speak your answers · about '+(d.mins||4)+' minutes</div></div>';
+      '<div class="ab-mins">'+(d.prompts?d.prompts.length:3)+' questions · you speak your answers</div></div>';
   if(a.ty==='act'){
     const t=s.ticked||[];
     if(s.st!=='new')
@@ -2546,8 +2785,9 @@ function send(a){
     sentO.classList.remove('on');
     closeAsg();
     KIDS[kid].sent=(KIDS[kid].sent||0)+1;
+    if(pkS.classList.contains('on')) repaintPages();
     renderHw(); renderTile();
-    const sn=document.querySelector('#hwScreen .fs-sent');
+    const sn=document.querySelector('#hwScreen .hwsent');
     if(sn){ sn.classList.add('land'); setTimeout(()=>sn.classList.remove('land'),500); }
   },1700);
 }
@@ -2565,7 +2805,13 @@ function render(){
     : '<div class="schl off"><span class="dot"></span>No school linked</div>';
 
   renderTile(); renderRail();
-  document.getElementById('hwTile').onclick=openHw;
+  const tl=document.getElementById('hwTile');
+  /* the assignment itself opens that assignment; "+N more" opens the list */
+  tl.onclick=e=>{
+    const list=pending();
+    if(e.target.closest('.hmore') || !list.length) return openHw();
+    openEvening2(list[0], tl);
+  };
   document.getElementById('hwBack').onclick=closeHw;
 
   document.getElementById('pSchool').textContent=conn?"St. Xavier's · Grade 5A":'No school linked';
