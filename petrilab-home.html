@@ -471,9 +471,118 @@ svg{display:block}
 #pgT .ex-chal{--tc:#7A6BD0;      --tt:var(--vtint);--td:var(--violet); --tl:#DCD7F2}
 #pgT .ex-rev {--tc:var(--blue);  --tt:var(--btint);--td:var(--blue-dk);--tl:#CFE0FA}
 #pgT .ex-peek{--tc:#D2A24C;      --tt:var(--atint);--td:var(--amber);  --tl:#EFDCB4}
+#pgT .ex-sky {--tc:#3B5BC4;      --tt:#EAEEFB;     --td:#2D47A0;       --tl:#CBD5F4}
+[data-theme="dark"] #pgT .ex-sky {--tc:#7C93E8;--tt:#1B2144;--td:#9FB2F0;--tl:#2E3868}
 [data-theme="dark"] #pgT .ex-chal{--tl:#332C55}
 [data-theme="dark"] #pgT .ex-rev {--tl:#2A3E5E}
 [data-theme="dark"] #pgT .ex-peek{--tl:#4A3D22}
+/* ---------- Eclipse Lab: the solar half of eclipse-lab.html, scoped ----------
+   Every class is prefixed el- and every rule lives under #labScreen, because this
+   file brings in generic names (card, badge, btn, sheet) that already mean
+   something else in this prototype. */
+#pgT #labScreen{position:absolute;inset:0;z-index:36;background:var(--bg);display:flex;flex-direction:column;
+      opacity:0;transform:scale(.985);transition:opacity .18s ease,transform .18s ease;visibility:hidden;
+      --solar:#D2A24C; --stint:#FDF4E6; --accent:var(--solar); --scene:#0B1020}
+[data-theme="dark"] #pgT #labScreen{--solar:#E2B865; --stint:#2A2416}
+#pgT #labScreen.on{opacity:1;transform:none;visibility:visible}
+
+#pgT #labScreen .el-app{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;
+      padding:14px 16px 14px}
+#pgT #labScreen .el-bar{display:flex;align-items:center;gap:10px;flex:none}
+#pgT #labScreen .el-x{width:30px;height:30px;border-radius:50%;background:var(--icbg);color:var(--body);flex:none;
+      display:flex;align-items:center;justify-content:center;cursor:pointer}
+#pgT #labScreen .el-name{font-weight:800;font-size:15.5px;letter-spacing:-.2px}
+#pgT #labScreen .el-when{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--amber);
+      background:var(--stint);border-radius:999px;padding:4px 9px;white-space:nowrap}
+
+/* the two views */
+#pgT #labScreen .el-scene{position:relative;background:var(--scene);border:1px solid var(--line);
+      border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+#pgT #labScreen .el-space{flex:1 1 0}
+#pgT #labScreen .el-sky{flex:1.3 1 0}
+#pgT #labScreen .el-scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#pgT #labScreen .el-tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:800;letter-spacing:1.1px;
+      text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+#pgT #labScreen .el-legend{position:absolute;left:11px;right:11px;bottom:8px;display:flex;flex-wrap:wrap;
+      gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.75);pointer-events:none}
+#pgT #labScreen .el-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+#pgT #labScreen .el-pill{position:absolute;top:6px;right:7px;font-size:11px;font-weight:800;padding:4px 9px;
+      border-radius:999px;pointer-events:none;white-space:nowrap;background:rgba(15,20,32,.72);
+      color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14)}
+#pgT #labScreen .el-pill.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+#pgT #labScreen .el-pill.hot{background:var(--accent);border-color:var(--accent);color:#1A1206}
+#pgT #labScreen .el-pill.warm{color:var(--accent);border-color:var(--accent)}
+
+/* what is happening, in words */
+#pgT #labScreen .el-card{flex:none;height:104px;background:var(--card);border:1px solid var(--line);
+      border-radius:14px;padding:10px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+#pgT #labScreen .el-card p{margin:0;font-size:13.5px;font-weight:600;line-height:1.34;color:var(--ink);
+      height:4em;overflow:hidden;display:flex;align-items:center}
+#pgT #labScreen .el-meter{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;color:var(--muted)}
+#pgT #labScreen .el-track{flex:1;height:7px;border-radius:4px;background:var(--icbg);overflow:hidden}
+#pgT #labScreen .el-track b{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
+#pgT #labScreen .el-meter output{min-width:34px;text-align:right;color:var(--ink);font-weight:800;
+      font-variant-numeric:tabular-nums}
+
+/* controls */
+#pgT #labScreen .el-slider{flex:none;display:flex;align-items:center;gap:10px}
+#pgT #labScreen .el-lab{font-size:10px;font-weight:800;letter-spacing:1.1px;color:var(--muted);
+      text-transform:uppercase;white-space:nowrap}
+#pgT #labScreen input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+#pgT #labScreen .el-chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap}
+#pgT #labScreen .el-chips button{flex:1 1 auto;min-height:34px;padding:0 8px;border-radius:999px;
+      border:1px solid var(--line);background:var(--chip);font-size:12.5px;font-weight:700;color:var(--body);
+      font-family:inherit;cursor:pointer}
+#pgT #labScreen .el-chips button[aria-pressed="true"]{background:var(--btint);border-color:var(--blue);
+      color:var(--blue-dk)}
+#pgT #labScreen .el-chips .el-sep{flex:none;width:1px;height:20px;background:var(--line);margin:0 2px}
+#pgT #labScreen .el-acts{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#pgT #labScreen .el-btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+      display:flex;align-items:center;justify-content:center;gap:7px;font-size:14.5px;font-weight:800;
+      color:var(--ink);box-shadow:var(--shadow);font-family:inherit;cursor:pointer}
+#pgT #labScreen .el-btn.go{background:var(--blue);border-color:var(--blue);color:#fff}
+#pgT #labScreen .el-btn:active{transform:scale(.98)}
+#pgT #labScreen .el-btn svg{display:block}
+
+/* the "why" sheet */
+#pgT #labScreen .el-veil{position:absolute;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;
+      transition:opacity .25s;z-index:40}
+#pgT #labScreen .el-veil.on{opacity:1;pointer-events:auto}
+#pgT #labScreen .el-sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;background:var(--sheet);
+      border-radius:24px 24px 0 0;z-index:41;display:flex;flex-direction:column;
+      box-shadow:0 -8px 30px rgba(20,33,61,.18);transform:translateY(105%);
+      transition:transform .32s cubic-bezier(.3,.9,.3,1)}
+#pgT #labScreen .el-sheet.on{transform:none}
+#pgT #labScreen .el-grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+#pgT #labScreen .el-grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+#pgT #labScreen .el-shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:2px 20px 6px}
+#pgT #labScreen .el-shead h2{margin:0;font-size:18px;font-weight:800;letter-spacing:-.2px}
+#pgT #labScreen .el-sbody{overflow-y:auto;overscroll-behavior:contain;padding:4px 20px 24px}
+#pgT #labScreen .el-sbody h3{margin:16px 0 6px;font-size:15px;font-weight:800;letter-spacing:-.1px;
+      line-height:1.3;color:var(--blue-dk)}
+#pgT #labScreen .el-sbody h3:first-child{margin-top:4px}
+#pgT #labScreen .el-sbody p{margin:0;font-size:14px;line-height:1.45;color:var(--ink);background:var(--card);
+      border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+#pgT #labScreen .el-sbody h3.el-warn{color:var(--amber)}
+#pgT #labScreen .el-sbody p.el-warn{background:var(--stint);border-color:transparent}
+
+@media (max-height:700px){
+  #pgT #labScreen .el-app{gap:6px}
+  #pgT #labScreen .el-btn{min-height:40px}
+  #pgT #labScreen .el-card{height:96px}
+  #pgT #labScreen .el-card p{font-size:12.5px}
+  #pgT #labScreen .el-legend{display:none}
+}
+@media (max-width:400px){
+  /* five chips plus two labels do not fit; "Path" is the one the chips explain themselves */
+  #pgT #labScreen .el-chips .el-lab:first-child{display:none}
+  #pgT #labScreen .el-chips button{padding:0 6px;font-size:12px}
+}
+@media (prefers-reduced-motion: reduce){
+  #pgT #labScreen .el-sheet,#pgT #labScreen .el-veil{transition:none}
+}
+
 /* a finished item collapses to a slim row, so the list shortens as the evening goes
    and whatever is left is always the tallest thing on screen */
 #pgT .exdone{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);
@@ -737,9 +846,11 @@ svg{display:block}
 #pgT .pk-page.chal{--pc:#7A6BD0;      --ptt:var(--vtint); --pdk:var(--violet); --pln:#DCD7F2}
 #pgT .pk-page.rev {--pc:var(--blue);   --ptt:var(--btint); --pdk:var(--blue-dk);--pln:#CFE0FA}
 #pgT .pk-page.peek{--pc:#D2A24C;      --ptt:var(--atint); --pdk:var(--amber);  --pln:#EFDCB4}
+#pgT .pk-page.sky {--pc:#3B5BC4;      --ptt:#EAEEFB;      --pdk:#2D47A0;       --pln:#CBD5F4}
 [data-theme="dark"] #pgT .pk-page.chal{--pln:#332C55}
 [data-theme="dark"] #pgT .pk-page.rev {--pln:#2A3E5E}
 [data-theme="dark"] #pgT .pk-page.peek{--pln:#4A3D22}
+[data-theme="dark"] #pgT .pk-page.sky {--pc:#7C93E8;--ptt:#1B2144;--pdk:#9FB2F0;--pln:#2E3868}
 
 /* ==================== Assignment brief (Stage 2) ==================== */
 #pgT .asgscreen{position:absolute;inset:0;z-index:31;background:var(--bg);display:flex;flex-direction:column;
@@ -880,6 +991,21 @@ svg{display:block}
 #pgT .rn-fb b{display:block;font-weight:800;margin-bottom:3px}
 
 /* voice recorder */
+/* the photo has a fixed 320x200 shape, so the empty frame is cut to the same
+   proportion and both sit under the instruction rather than floating mid-screen */
+#pgT .rn-recap{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+      background:var(--icbg)}
+#pgT .rn-recap .rcl{font-size:9px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
+#pgT .rn-recap .rcs{display:flex;gap:9px;margin-top:9px;font-size:12.5px;font-weight:600;
+      color:var(--body);line-height:1.4}
+#pgT .rn-recap .rcs b{width:5px;height:5px;border-radius:50%;background:var(--tc);flex:none;margin-top:7px}
+/* the frame sits at the foot, where the thumb already is */
+#pgT .rn-shot{margin-top:18px;margin-bottom:2px;display:flex;flex-direction:column;flex:1;min-height:0;
+      justify-content:center}
+#pgT .rn-shot .ab-frame{flex:1 1 auto;min-height:170px;display:flex;
+      flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
+#pgT .rn-shot .ab-photo{flex:0 0 auto;max-height:100%}
+#pgT .rn-shot .ab-photo svg{width:100%;height:auto}
 #pgT .rn-mic{margin-top:30px;display:flex;flex-direction:column;align-items:center}
 #pgT .rn-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:56px;width:100%;margin-bottom:18px}
 #pgT .rn-wave i{width:4px;border-radius:3px;background:var(--tc);opacity:.3;height:5px;transition:height .09s linear}
@@ -1456,6 +1582,56 @@ svg{display:block}
     <div class="rn-foot"><button class="rn-next" id="rnNext"></button></div>
   </div>
 
+  <!-- Eclipse Lab · the solar half, opened from Today's Pack -->
+  <div id="labScreen">
+    <div class="el-app">
+      <div class="el-bar">
+        <div class="el-x" id="elX"><svg width="15" height="15" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+        <span class="el-name">Solar eclipse</span>
+        <span class="el-when" id="elWhen">NEXT WEDNESDAY</span>
+      </div>
+
+      <section class="el-scene el-space">
+        <canvas id="elSpace" aria-label="Sun, Moon and Earth seen from space"></canvas>
+        <span class="el-tag">In space</span>
+        <div class="el-legend" id="elLegend"></div>
+        <span class="el-pill" id="elOrder"></span>
+      </section>
+
+      <section class="el-scene el-sky">
+        <canvas id="elSky" aria-label="What you see from Earth"></canvas>
+        <span class="el-tag">What you see from Earth</span>
+        <span class="el-pill" id="elState">No eclipse</span>
+      </section>
+
+      <div class="el-card">
+        <p id="elSay"></p>
+        <div class="el-meter"><span id="elMeterL">Sun covered</span>
+          <div class="el-track"><b id="elBar"></b></div><output id="elMeterV">0%</output></div>
+      </div>
+
+      <div class="el-slider">
+        <span class="el-lab">Moon</span>
+        <input id="elRange" type="range" min="-3.6" max="3.6" step="0.02" value="0" aria-label="Move the Moon">
+      </div>
+      <div class="el-chips" id="elChips"></div>
+
+      <div class="el-acts">
+        <button id="elPlay" class="el-btn go"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+        <button id="elWhy" class="el-btn" aria-expanded="false"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Why?</button>
+      </div>
+    </div>
+
+    <div class="el-veil" id="elVeil"></div>
+    <div class="el-sheet" id="elSheet" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="el-grab" id="elGrab"><i></i></div>
+      <div class="el-shead"><h2>Why?</h2>
+        <button class="el-x" id="elSheetX" aria-label="Close"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="el-sbody" id="elSheetB"></div>
+    </div>
+  </div>
+
   <!-- the moment it lands with the teacher -->
   <div class="sentover" id="sentOver">
     <div class="tick"><svg width="34" height="34" viewBox="0 0 24 24" class="ic" style="stroke-width:2.6"><path d="M4 12l6 6L20 6"/></svg></div>
@@ -1672,6 +1848,14 @@ var GO=(function(){
 const SUBJ=[["all","All"],["maths","Maths"],["evs","EVS"],["english","English"],["hindi","Hindi"]];
 const TEACHER={maths:"Sharma Ma'am",evs:"Nair Ma'am",english:"Iyer Sir",hindi:"Gupta Sir"};
 const EXPLORE=[
+ /* the one item in the pack that is pegged to a date rather than to the syllabus:
+    it is here because of something happening in the sky, not because a teacher set it */
+ {b:"HAPPENING SOON",bc:"sky",ic:"sky",t:"A solar eclipse, next Wednesday",kind:"Sky watch",
+  lo:"Explain why the Moon can hide the Sun, and why it does not happen every month.",
+  hook:"How can the Moon \u2014 400 times smaller than the Sun \u2014 hide it completely?",
+  lab:true,
+  steps:["Drag the Moon across the Sun and watch the sky go dark.","Move it to Far and find the ring of fire.","Try the Miss path \u2014 that is why there isn\u2019t one every month."],
+  s:"Next Wednesday the Moon passes in front of the Sun. Move it yourself and see what happens.",subj:["evs"]},
  {b:"FROM YOUR KIT",bc:"kit",ic:"kit",t:"Sprout a seed in a glass jar",kind:"Experiment",lo:"Explain what a seed needs before it can grow.",hook:"Which way does a root grow — up, or down?",mins:8,steps:["Wet the cotton and line the inside of the jar.","Tuck four chana between the glass and the cotton so you can see them.","Look every morning. The root comes before the shoot — watch which way it goes."],mats:["3 bowls","cotton","chana"],
   s:"Seeds + cotton + the jar — watch the root before the shoot. Saturday's experiment.",subj:["evs"]},
  {b:"CHALLENGE",bc:"chal",ic:"star",t:"Cook it, measure it, write it",kind:"Challenge",lo:"Halve a quantity and write a method someone else can follow.",hook:"Can you cook for two when the recipe feeds four?",mins:15,steps:["Pick a recipe that feeds four.","Halve every amount. Write the new ones down.","Write the steps so a friend could cook it without asking you anything."],
@@ -1688,7 +1872,8 @@ const EIC={
  kit:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></svg>',
  star:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M12 3l2.2 4.9 5.3.6-4 3.6 1.1 5.2L12 14.7 7.4 17.3l1.1-5.2-4-3.6 5.3-.6z"/></svg>',
  rev:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><path d="M3 12a9 9 0 1 0 3-6.7M3 5v4h4"/></svg>',
- eye:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/></svg>'
+ eye:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/></svg>',
+ sky:'<svg width="16" height="16" viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="8.2"/><path d="M15.4 5.1a8.2 8.2 0 0 0 0 13.8" style="fill:currentColor;stroke:none"/></svg>'
 };
 let subj="all";
 const MATHS={n:"Maths",title:"Comparing Large Numbers",book:"Maths Mela 5",
@@ -2048,6 +2233,7 @@ function switchKid(i){
     if(typeof closeRun==='function'){ runS.classList.remove('on'); stopWave(); R=null; }
     if(typeof closeAsg==='function') closeAsg();
     if(typeof closeHw==='function') closeHw();
+    if(typeof LAB!=='undefined') LAB.close();
     render();
     const sc=document.getElementById('scroll'); if(sc) sc.scrollTop=0;
     requestAnimationFrame(()=>{
@@ -2424,8 +2610,8 @@ function hwBtn(a,d,s,i){
         (a.ty!=='act' ? 'Show me what to do'
          : ready ? 'I’ve got everything' : 'Tick what you have ('+got+' of '+need+')')+'</button>';
     }
-    return '<button class="pk-go'+(s.shot?' go':'')+'" data-hwgo="'+i+'"'+(s.shot?'':' disabled')+'>'+
-      (s.shot?'Check and send':'Photograph it to send')+'</button>';
+    return '<button class="pk-go go" data-hwgo="'+i+'">'+
+      (s.shot?'Check and send':'Photograph it')+'</button>';
   }
   const tot=a.ty==='quiz'?(d.qs||[]).length:(d.prompts||[]).length;
   return '<button class="pk-go" data-hwgo="'+i+'">'+
@@ -2516,6 +2702,8 @@ window.addEventListener('resize',()=>requestAnimationFrame(pkSync));
 function wirePack(){
   pkPager.querySelectorAll('.pk-go[data-i]').forEach(b=>b.onclick=()=>{
     const e=PK[+b.dataset.i]; if(!e||isHw(e)) return;
+    /* this one has a real activity behind it; the rest still only tick over */
+    if(e.lab){ LAB.open(); return; }
     setDone(e);
     toast2('Marked done — the activity itself isn’t built yet');
     repaintPages(); renderPackCard();
@@ -2524,12 +2712,8 @@ function wirePack(){
   pkPager.querySelectorAll('.pk-go[data-hwgo]').forEach(b=>b.onclick=()=>{
     const ent=PK[+b.dataset.hwgo]; if(!ent||!isHw(ent)) return;
     const a=ent.hw, d=ASG[a.id]||{}, s=ast(a.id);
-    if(a.ty==='act'||a.ty==='cust'){
-      if(s.st==='new'){ s.st='inprog'; s.prog=1; return repaintPages(); }
-      if(s.shot) return openRun(a,true);
-      return;
-    }
-    openRun(a);
+    if((a.ty==='act'||a.ty==='cust') && s.st==='new'){ s.st='inprog'; s.prog=1; return repaintPages(); }
+    openRun(a, a.ty!=='act'&&a.ty!=='cust' ? false : !!s.shot);
   });
   pkPager.querySelectorAll('.pk-page.hw .ab-ck').forEach(c=>c.onclick=()=>{
     const id=c.closest('.pk-page').dataset.hw, s=ast(id);
@@ -2537,15 +2721,338 @@ function wirePack(){
     if(p>=0) t.splice(p,1); else t.push(i);
     repaintPages();
   });
-  pkPager.querySelectorAll('.pk-page.hw #abFrame').forEach(f=>f.onclick=()=>{
-    ast(f.closest('.pk-page').dataset.hw).shot=1; repaintPages();
-  });
-  pkPager.querySelectorAll('.pk-page.hw #abRetake').forEach(r=>r.onclick=()=>{
-    ast(r.closest('.pk-page').dataset.hw).shot=0; repaintPages();
-  });
   const ag=document.getElementById('pkAgain'); if(ag) ag.onclick=closePack;
 }
 document.getElementById('pkX').onclick=closePack;
+
+/* ============================================================
+   ECLIPSE LAB — the solar half of eclipse-lab.html, lifted in.
+   The lunar mode, its segmented tabs and the textured Moon renderer
+   are left behind: the card is about a solar eclipse, so the lab is too.
+   Ids are prefixed el* and the CSS is scoped to #labScreen, because the
+   original uses generic names (card, badge, btn, sheet) that already
+   mean something else in this file.
+   ============================================================ */
+const LAB=(()=>{
+  const $=id=>document.getElementById(id);
+  const DPR=Math.min(window.devicePixelRatio||1,2);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FONT='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const K=12;                                  /* orbit radius, in Moon radii as drawn */
+  const smooth=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a))); return t*t*(3-2*t);};
+  const mix=(a,b,t)=>a+(b-a)*t;
+  let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  const stars=Array.from({length:90},()=>({x:rnd(),y:rnd(),s:rnd()*1.3+0.4,a:rnd()}));
+  const streaks=Array.from({length:28},()=>({a:rnd()*Math.PI*2,l:1.6+rnd()*1.6,w:0.08+rnd()*0.18}));
+
+  let space,sky,xS,G={},built=false,anim=null;
+  const S={psi:Math.asin(-2.6/K),y:0.05,dist:10};   /* psi 0 = Moon straight between Sun and Earth */
+  const Sx=()=>-K*Math.sin(S.psi);
+  const Sfront=()=>Math.cos(S.psi)>0;
+  const mR=()=>1.075-S.dist/100*0.14;               /* Moon's size in the sky ÷ the Sun's */
+
+  function fit(c){
+    const r=c.getBoundingClientRect();
+    c.width=Math.round(r.width*DPR); c.height=Math.round(r.height*DPR);
+    return {w:r.width,h:r.height,ctx:c.getContext('2d')};
+  }
+  function starfield(ctx,w,h,alpha){
+    if(alpha<=0) return;
+    for(const s of stars){ ctx.fillStyle='rgba(225,232,255,'+((0.2+s.a*0.8)*alpha)+')'; ctx.fillRect(s.x*w,s.y*h,s.s,s.s); }
+  }
+  function drawSunEdge(ctx,w,h,ey){
+    const sg=ctx.createRadialGradient(-w*0.05,ey,4,-w*0.05,ey,w*0.21);
+    sg.addColorStop(0,'#FFF3C8'); sg.addColorStop(0.35,'#FFC94A'); sg.addColorStop(1,'rgba(255,201,74,0)');
+    ctx.fillStyle=sg; ctx.beginPath(); ctx.arc(-w*0.05,ey,w*0.21,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#FFC94A'; ctx.font='800 13px '+FONT; ctx.fillText('SUN',8,36);
+  }
+  function drawEarth(ctx,ex,ey,Re){
+    const eg=ctx.createLinearGradient(ex-Re,0,ex+Re,0);
+    eg.addColorStop(0,'#6FB6F6'); eg.addColorStop(0.5,'#2F72BD'); eg.addColorStop(0.55,'#10264A'); eg.addColorStop(1,'#0B1A36');
+    ctx.fillStyle=eg; ctx.beginPath(); ctx.arc(ex,ey,Re,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#A9CFF6'; ctx.font='800 13px '+FONT; ctx.textAlign='center';
+    ctx.fillText('EARTH',ex,ey+Re+17); ctx.textAlign='left';
+  }
+  function labelMoon(ctx,mx,my,R){
+    ctx.strokeStyle='rgba(241,243,250,.6)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(mx,my,R+6,0,Math.PI*2); ctx.stroke(); ctx.lineWidth=1;
+    ctx.fillStyle='#F1F3FA'; ctx.font='800 13px '+FONT; ctx.textAlign='center';
+    ctx.fillText('MOON',mx,my-R-11); ctx.textAlign='left';
+  }
+  /* area where two circles overlap — this is what "how much of the Sun is covered" means */
+  function overlap(R,r,d){
+    if(d>=R+r) return 0;
+    if(d<=Math.abs(R-r)) return Math.PI*Math.min(R,r)**2;
+    const a=r*r*Math.acos((d*d+r*r-R*R)/(2*d*r));
+    const b=R*R*Math.acos((d*d+R*R-r*r)/(2*d*R));
+    const c=0.5*Math.sqrt((-d+r+R)*(d+r-R)*(d-r+R)*(d+r+R));
+    return a+b-c;
+  }
+  function coverage(){
+    if(!Sfront()) return 0;
+    return Math.min(1,overlap(1,mR(),Math.hypot(Sx(),S.y))/Math.PI);
+  }
+  function kindOf(){
+    if(!Sfront()) return 'away';
+    const d=Math.hypot(Sx(),S.y), m=mR();
+    if(d>=1+m) return 'none';
+    if(m>=1 && d<=m-1) return 'total';
+    if(m<1 && d<=1-m) return 'annular';
+    return 'partial';
+  }
+
+  const sunLayer=document.createElement('canvas'), sctx=sunLayer.getContext('2d');
+
+  function drawSpace(){
+    const {w,h,ctx}=G.space;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle='#070B1A'; ctx.fillRect(0,0,w,h);
+    starfield(ctx,w,h,0.5);
+    const ex=w*0.68, ey=h/2-4, D=Math.min(h/2-26,ex-w*0.22), r=D/K, Re=3.67*r;
+    Object.assign(G,{ex,ey,D});
+    drawSunEdge(ctx,w,h,ey);
+    ctx.strokeStyle='rgba(255,201,74,.16)';
+    for(let k=-4;k<=4;k++){ ctx.beginPath(); ctx.moveTo(w*0.15,ey+k*h*0.11); ctx.lineTo(w,ey+k*h*0.11); ctx.stroke(); }
+    ctx.setLineDash([3,5]); ctx.strokeStyle='#3B4A85'; ctx.beginPath(); ctx.arc(ex,ey,D,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    const phi=Math.PI+S.psi;
+    const mx=ex+D*Math.cos(phi), my=ey-D*Math.sin(phi), R=Math.max(r,8);
+    G.mx=mx; G.my=my;
+    const L2=(D-Re)*(1+(mR()-1)*5), far=w+10, pw=R+(far-mx)*0.16;
+    ctx.fillStyle='rgba(130,145,190,.25)';
+    ctx.beginPath(); ctx.moveTo(mx,my-R); ctx.lineTo(far,my-pw); ctx.lineTo(far,my+pw); ctx.lineTo(mx,my+R); ctx.fill();
+    const apex=mx+Math.max(0,L2);
+    ctx.fillStyle='rgba(0,0,0,.9)'; ctx.strokeStyle='rgba(255,201,74,.7)';
+    ctx.beginPath(); ctx.moveTo(mx,my-R); ctx.lineTo(apex,my); ctx.lineTo(mx,my+R); ctx.closePath(); ctx.fill(); ctx.stroke();
+    drawEarth(ctx,ex,ey,Re);
+    if(Sfront() && mx<ex && Math.abs(my-ey)<Re){
+      const sx=ex-Math.sqrt(Re*Re-(my-ey)**2);
+      ctx.fillStyle='rgba(130,145,190,.6)'; ctx.beginPath(); ctx.arc(sx+3,my,Math.max(7,R*1.8),0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#FF6B4A'; ctx.beginPath(); ctx.arc(sx+2,my,4,0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle='#20232E'; ctx.beginPath(); ctx.arc(mx,my,R,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#E2DED2'; ctx.beginPath(); ctx.arc(mx,my,R,Math.PI/2,Math.PI*1.5); ctx.fill();
+    labelMoon(ctx,mx,my,R);
+  }
+
+  function drawSky(){
+    const {w,h,ctx}=G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    const s=Math.min(w,h)/7; G.S=s; G.cx=w/2; G.cy=h/2+6;
+    const cx=G.cx, cy=G.cy, cov=G.cov, kind=G.kind;
+    const light=Math.pow(1-cov,0.45);
+    const g=ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0,'rgb('+(mix(10,70,light)|0)+','+(mix(12,135,light)|0)+','+(mix(28,210,light)|0)+')');
+    g.addColorStop(1,'rgb('+(mix(28,160,light)|0)+','+(mix(22,200,light)|0)+','+(mix(40,238,light)|0)+')');
+    ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+    if(light<0.6){
+      const hz=ctx.createLinearGradient(0,h*0.72,0,h);
+      hz.addColorStop(0,'rgba(255,140,70,0)'); hz.addColorStop(1,'rgba(255,140,70,'+(0.5*(1-light))+')');
+      ctx.fillStyle=hz; ctx.fillRect(0,h*0.72,w,h*0.28);
+    }
+    starfield(ctx,w,h,1-light*4);
+    const mx=cx+Sx()*s, my=cy-S.y*s, mr=mR()*s;
+    const coronaA=smooth(0.96,1,cov);
+    if(coronaA>0){
+      ctx.save(); ctx.globalAlpha=coronaA;
+      const cg=ctx.createRadialGradient(cx,cy,s*0.95,cx,cy,s*3);
+      cg.addColorStop(0,'rgba(235,240,255,.95)'); cg.addColorStop(0.2,'rgba(210,222,255,.45)'); cg.addColorStop(1,'rgba(180,200,255,0)');
+      ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cy,s*3,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(220,230,255,.18)';
+      for(const st of streaks){
+        ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(st.a-st.w)*s, cy+Math.sin(st.a-st.w)*s);
+        ctx.lineTo(cx+Math.cos(st.a)*s*st.l, cy+Math.sin(st.a)*s*st.l);
+        ctx.lineTo(cx+Math.cos(st.a+st.w)*s, cy+Math.sin(st.a+st.w)*s);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    const cw=Math.round(w*DPR), ch=Math.round(h*DPR);
+    if(sunLayer.width!==cw||sunLayer.height!==ch){ sunLayer.width=cw; sunLayer.height=ch; }
+    sctx.setTransform(1,0,0,1,0,0); sctx.clearRect(0,0,cw,ch);
+    sctx.setTransform(DPR,0,0,DPR,0,0);
+    const glowR=s*(1.5+2*light);
+    const gg=sctx.createRadialGradient(cx,cy,s*0.9,cx,cy,glowR);
+    gg.addColorStop(0,'rgba(255,236,170,'+(0.75*light+0.1)+')'); gg.addColorStop(1,'rgba(255,236,170,0)');
+    sctx.fillStyle=gg; sctx.beginPath(); sctx.arc(cx,cy,glowR,0,Math.PI*2); sctx.fill();
+    const sg=sctx.createRadialGradient(cx,cy,0,cx,cy,s);
+    sg.addColorStop(0,'#FFFBEA'); sg.addColorStop(0.7,'#FFE9A8'); sg.addColorStop(1,'#F2B544');
+    sctx.fillStyle=sg; sctx.beginPath(); sctx.arc(cx,cy,s,0,Math.PI*2); sctx.fill();
+    if(Sfront()){
+      sctx.globalCompositeOperation='destination-out';
+      sctx.beginPath(); sctx.arc(mx,my,mr,0,Math.PI*2); sctx.fill();
+      sctx.globalCompositeOperation='source-over';
+    }
+    ctx.drawImage(sunLayer,0,0,w,h);
+    if(Sfront()){
+      ctx.fillStyle='rgba(6,8,14,'+(0.12+0.2*(1-light))+')';
+      ctx.beginPath(); ctx.arc(mx,my,mr,0,Math.PI*2); ctx.fill();
+      ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,s,0,Math.PI*2); ctx.clip();
+      ctx.fillStyle='#06080E'; ctx.beginPath(); ctx.arc(mx,my,mr,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      ctx.fillStyle=light>0.5?'#1A2333':'#EAEEF6'; ctx.font='800 13px '+FONT; ctx.textAlign='center';
+      if(mx<-mr||mx>w+mr||my<-mr||my>h+mr)
+        ctx.fillText(mx<0?'← Moon':mx>w?'Moon →':my<0?'Moon ↑':'Moon ↓',
+          Math.min(w-40,Math.max(40,mx)), Math.min(h-12,Math.max(34,my)));
+      else if(kind==='none') ctx.fillText('MOON',mx,my+4);
+    } else {
+      ctx.fillStyle=light>0.5?'#1A2333':'#EAEEF6'; ctx.font='700 14px '+FONT; ctx.textAlign='center';
+      ctx.fillText('The Moon is behind Earth —',cx,h-30);
+      ctx.fillText('it can’t block the Sun.',cx,h-12);
+    }
+    ctx.textAlign='left';
+  }
+
+  const SAY={
+    away   :['Not new Moon','','The Moon is behind Earth. A solar eclipse can only happen at new Moon, when the Moon is between the Sun and Earth.'],
+    partial:['Partial eclipse','warm','The Moon covers part of the Sun. It looks like a bite was taken out of it!'],
+    total  :['Total eclipse','hot','The Moon covers the whole Sun! The sky goes dark, stars come out, and the Sun’s glowing crown (corona) appears.'],
+    annular:['Ring of fire','hot','The Moon is too far away to cover the whole Sun, so a bright ring is left around it.'],
+  };
+  function info(){
+    const kind=G.kind, cov=G.cov;
+    const lined=Sfront() && Math.hypot(Sx(),S.y)<1+mR();
+    const T = kind==='none'
+      ? ['No eclipse','', Math.abs(Sx())<2
+          ? 'New Moon! But the Moon passes above or below the Sun in our sky, so there is no eclipse.'
+          : 'The Moon is not in front of the Sun yet. Drag it across the Sun!']
+      : SAY[kind];
+    return {label:T[0],cls:T[1],say:T[2],meter:kind==='total'?1:cov,
+            order:lined?'☀️ → 🌙 → 🌍 Lined up!':'☀️ 🌙 🌍 Not lined up',lined};
+  }
+
+  function draw(){
+    G.cov=coverage(); G.kind=kindOf();
+    drawSpace(); drawSky();
+    const inf=info();
+    const p=$('elState'); p.textContent=inf.label; p.className='el-pill '+inf.cls;
+    $('elSay').textContent=inf.say;
+    $('elBar').style.width=Math.round(inf.meter*100)+'%';
+    $('elMeterV').textContent=Math.round(inf.meter*100)+'%';
+    const o=$('elOrder'); o.textContent=inf.order; o.className='el-pill'+(inf.lined?' on':'');
+    sync();
+  }
+  function resize(){ G.space=fit(space); G.sky=fit(sky); draw(); }
+
+  const setX=x=>S.psi=Math.asin(-Math.max(-K*0.98,Math.min(K*0.98,x))/K);
+  const PATHS=[['Middle',0.05],['Edge',0.9],['Miss',2.6]];
+  function buildChips(){
+    const c=$('elChips'); c.innerHTML='<span class="el-lab">Path</span>';
+    for(const [name,y] of PATHS){
+      const b=document.createElement('button'); b.textContent=name; b.dataset.y=y;
+      b.onclick=()=>{ S.y=y; draw(); };
+      c.appendChild(b);
+    }
+    c.insertAdjacentHTML('beforeend','<i class="el-sep"></i><span class="el-lab">Moon</span>');
+    for(const [name,d] of [['Near',10],['Far',90]]){
+      const b=document.createElement('button'); b.textContent=name; b.dataset.d=d;
+      b.onclick=()=>{ S.dist=d; draw(); };
+      c.appendChild(b);
+    }
+  }
+  function sync(){
+    if(document.activeElement!==xS) xS.value=Sx();
+    for(const b of $('elChips').querySelectorAll('button')){
+      const on = b.dataset.y!==undefined ? Math.abs(+b.dataset.y-S.y)<0.01 : S.dist===+b.dataset.d;
+      b.setAttribute('aria-pressed',on);
+    }
+  }
+
+  const PLAY='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play';
+  const PAUSE='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  function stop(){ if(anim){ cancelAnimationFrame(anim); anim=null; $('elPlay').innerHTML=PLAY; draw(); } }
+
+  const WHY='<h3>How can the small Moon hide the huge Sun?</h3><p>The Sun is about 400 times wider than the Moon — but also about 400 times farther away. So in our sky they look almost the same size!</p>'+
+    '<h3>Why a ring of fire sometimes?</h3><p>The Moon’s distance from Earth changes. When it is farther away, it looks a bit smaller and can’t cover the whole Sun. Tap <b>Moon: Far</b> to try it.</p>'+
+    '<h3>Why not every new Moon?</h3><p>The Moon’s path is tilted, so most months it passes above or below the Sun in our sky. Tap <b>Miss</b> to see that.</p>'+
+    '<h3>Remember</h3><p><b>Solar eclipse:</b> the Moon blocks the Sun from us. Order: ☀️ → 🌙 → 🌍. Only a small part of Earth sees it as total.</p>'+
+    '<h3 class="el-warn">Stay safe</h3><p class="el-warn">Never look straight at the Sun, even during an eclipse. Use proper eclipse glasses or a pinhole projector.</p>';
+
+  function openWhy(){
+    $('elSheetB').innerHTML=WHY; $('elSheetB').scrollTop=0;
+    $('elVeil').classList.add('on'); $('elSheet').classList.add('on');
+    $('elSheet').setAttribute('aria-hidden','false'); $('elWhy').setAttribute('aria-expanded','true');
+  }
+  function closeWhy(){
+    $('elVeil').classList.remove('on'); $('elSheet').classList.remove('on');
+    $('elSheet').setAttribute('aria-hidden','true'); $('elWhy').setAttribute('aria-expanded','false');
+  }
+
+  function build(){
+    space=$('elSpace'); sky=$('elSky'); xS=$('elRange');
+    $('elLegend').innerHTML='<span><i style="background:#000;border:1.5px solid var(--solar)"></i>Dark shadow</span>'+
+      '<span><i style="background:#3a4568"></i>Light shadow</span>'+
+      '<span><i style="background:#FF6B4A"></i>Shadow lands here</span>';
+    buildChips();
+
+    const pos=(e,c)=>{ const r=c.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+    let drag=null;
+    space.addEventListener('pointerdown',e=>{
+      const p=pos(e,space);
+      if(Math.hypot(p.x-G.mx,p.y-G.my)<40 || Math.abs(Math.hypot(p.x-G.ex,p.y-G.ey)-G.D)<34){
+        drag='space'; space.setPointerCapture(e.pointerId); stop(); moveSpace(p);
+      }
+    });
+    function moveSpace(p){ S.psi=Math.atan2(-(p.y-G.ey),p.x-G.ex)-Math.PI; draw(); }
+    sky.addEventListener('pointerdown',e=>{ drag='sky'; sky.setPointerCapture(e.pointerId); stop(); moveSky(pos(e,sky)); });
+    function moveSky(p){
+      setX((p.x-G.cx)/G.S);
+      S.y=Math.max(-4,Math.min(4,-(p.y-G.cy)/G.S));
+      draw();
+    }
+    addEventListener('pointermove',e=>{
+      if(!labS.classList.contains('on')) return;
+      if(drag==='space') moveSpace(pos(e,space));
+      else if(drag==='sky') moveSky(pos(e,sky));
+    });
+    const endDrag=()=>{ if(drag){ drag=null; draw(); } };
+    addEventListener('pointerup',endDrag);
+    addEventListener('pointercancel',endDrag);
+    xS.addEventListener('input',()=>{ stop(); setX(+xS.value); draw(); });
+
+    $('elPlay').onclick=()=>{
+      if(anim) return stop();
+      let x=Sx();
+      if(!Sfront() || x>3.6 || x<-3.1) x=3.6;
+      if(reduce){ setX(0); draw(); return; }
+      $('elPlay').innerHTML=PAUSE;
+      let last=performance.now();
+      const step=t=>{
+        x-=(t-last)/1000*(Math.abs(x)<0.3?0.15:0.6); last=t;
+        setX(x); draw();
+        if(x<-3.6){ anim=null; $('elPlay').innerHTML=PLAY; draw(); return; }
+        anim=requestAnimationFrame(step);
+      };
+      anim=requestAnimationFrame(step);
+    };
+    $('elWhy').onclick=()=>$('elSheet').classList.contains('on')?closeWhy():openWhy();
+    $('elVeil').onclick=closeWhy;
+    $('elSheetX').onclick=closeWhy;
+
+    let sy=null;
+    $('elGrab').addEventListener('pointerdown',e=>{ sy=e.clientY; $('elGrab').setPointerCapture(e.pointerId); });
+    $('elGrab').addEventListener('pointermove',e=>{ if(sy!==null) $('elSheet').style.transform='translateY('+Math.max(0,e.clientY-sy)+'px)'; });
+    $('elGrab').addEventListener('pointerup',e=>{
+      const dy=e.clientY-(sy??e.clientY); sy=null; $('elSheet').style.transform='';
+      if(dy>60) closeWhy();
+    });
+    addEventListener('resize',()=>{ if(labS.classList.contains('on')) resize(); });
+    built=true;
+  }
+
+  const labS=$('labScreen');
+  $('elX').onclick=()=>close();
+  function open(from){
+    if(!built) build();
+    S.psi=Math.asin(-2.6/K); S.y=0.05; S.dist=10;
+    closeWhy();
+    labS.classList.add('on');
+    requestAnimationFrame(()=>requestAnimationFrame(resize));
+  }
+  function close(){ stop(); closeWhy(); labS.classList.remove('on'); }
+  return {open:open, close:close};
+})();
+
 
 /* ============================================================
    STAGE 2 — the brief.  One screen, no scroll if we can help it.
@@ -2671,12 +3178,6 @@ function workHtml(a,d,s){
        d.steps.map(x=>'<div class="ab-st"><b></b><span>'+x+'</span></div>').join('')+'</div>';
   if(a.ty==='cust' && d.brief)
     h+='<div class="ab-steps"><div class="sl">WHAT TO DO</div><div class="ab-st"><b></b><span>'+d.brief+'</span></div></div>';
-  h+='<div class="ab-shot">'+
-     (s.shot
-      ? '<div class="ab-photo">'+fakeShot(a.ty)+'<div class="ab-retake" id="abRetake">Retake</div></div>'
-      : '<div class="ab-frame" id="abFrame"><div class="fic">'+ICN.bigcam+'</div>'+
-        '<div class="ft">Photograph it</div><div class="fs2">'+(d.shot||'Your work')+'</div></div>')+
-     '</div>';
   return h;
 }
 
@@ -2778,16 +3279,43 @@ function closeRun(){
   runS.classList.remove('on'); stopWave();
   if(R){ R.s.prog=R.rev?R.n:R.i; R.s.recs=R.recs; R.s.rev=R.rev; }
   R=null; renderAsg();
+  if(pkS.classList.contains('on')) repaintPages();
 }
 document.getElementById('rnX').onclick=closeRun;
 
 function paintRun(){
   const {a,d,s,n,i,rev}=R;
   runS.className='runscreen on '+TCLS[a.ty];
-  document.getElementById('rnRail').innerHTML=
+  document.getElementById('rnRail').innerHTML = n<2 ? '' :
     Array.from({length:n},(_,k)=>'<i class="'+(rev||k<i?'dn':k===i?'cur':'')+'"></i>').join('');
-  document.getElementById('rnCt').textContent=rev?'Review':(i+1)+' / '+n;
-  rev ? paintReview() : a.ty==='quiz' ? paintQ() : paintV();
+  const shoot = a.ty==='act'||a.ty==='cust';
+  document.getElementById('rnCt').textContent=rev?'Review':shoot?'Photo':(i+1)+' / '+n;
+  rev ? paintReview() : a.ty==='quiz' ? paintQ() : shoot ? paintShot() : paintV();
+}
+
+/* The camera, on its own screen — the brief is for reading, this is for doing. */
+function paintShot(){
+  const {a,d,s}=R;
+  const steps = a.ty==='act' ? (d.steps||[]) : d.brief ? [d.brief] : [];
+  document.getElementById('rnBody').innerHTML=
+    '<div class="rn-lab">NOW PHOTOGRAPH IT</div>'+
+    '<div class="rn-q">'+(d.shot||'Your work')+'</div>'+
+    (steps.length?'<div class="rn-recap"><div class="rcl">WHAT YOU WERE ASKED TO DO</div>'+
+      steps.map(x=>'<div class="rcs"><b></b><span>'+x+'</span></div>').join('')+'</div>':'')+
+    '<div class="rn-shot">'+
+      (s.shot
+        ? '<div class="ab-photo">'+fakeShot(a.ty)+'<div class="ab-retake" id="rnRetake">Retake</div></div>'
+        : '<div class="ab-frame" id="rnFrame"><div class="fic">'+ICN.bigcam+'</div>'+
+          '<div class="ft">Tap to photograph</div></div>')+
+    '</div>';
+  const nx=document.getElementById('rnNext');
+  nx.className='rn-next'; nx.disabled=!s.shot;
+  nx.textContent = 'Check and send';
+  nx.onclick = s.shot ? ()=>{ R.rev=true; paintRun(); } : null;
+  const fr=document.getElementById('rnFrame');
+  if(fr) fr.onclick=()=>{ s.shot=1; paintRun(); };
+  const rt=document.getElementById('rnRetake');
+  if(rt) rt.onclick=()=>{ s.shot=0; paintRun(); };
 }
 
 /* Nothing leaves the phone without her seeing it laid out first. */
