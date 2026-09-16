@@ -71,8 +71,8 @@ svg{display:block}
 .schoolbar{display:flex;align-items:center;gap:7px;padding:0 20px;margin-bottom:2px;font-size:11px;
            font-weight:600;color:var(--muted)}
 .schoolbar .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
-/* the homepage is a fixed layout now: everything it has to say fits one screen */
-#pgT .scroll{flex:1;min-height:0;overflow:hidden;padding:0 20px 0;display:flex;flex-direction:column}
+#pgT .scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;
+      padding:0 20px 0;display:flex;flex-direction:column}
 #pgT .scroll > *:not(#band){flex:none}
 .hello{margin:14px 2px 13px}
 .hello h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.2px}
@@ -145,15 +145,13 @@ svg{display:block}
 #pgT .zhead .zt b{color:var(--blue-dk);font-weight:800}
 
 #pgT .zone{scroll-margin-top:8px;margin:0 -20px;padding:14px 20px 20px}
-#band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 1 auto;min-height:0;
-      margin:16px -20px 0;padding:0 20px;display:flex;flex-direction:column;overflow:hidden}
+#band{position:relative;background:var(--band2);border-top:1px solid var(--bline);flex:1 0 auto;
+      margin:16px -20px 0;padding:0 20px;display:flex;flex-direction:column}
 #band > *{position:relative;z-index:1}
 #zTodo{background:transparent}
-#zExp{background:transparent;padding:14px 20px 18px;flex:1 1 auto;min-height:0;
-      display:flex;flex-direction:column}
-#pgT #packWrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+#zExp{background:transparent;padding:10px 20px 24px;flex:1 0 auto;display:flex;flex-direction:column}
 
-#pgT #expFilt{margin-bottom:13px}
+#pgT #expFilt{margin-bottom:4px}
 #doodles{position:absolute;inset:0;z-index:0;width:100%;height:100%;
          color:var(--doodle);opacity:var(--doodle-o);pointer-events:none;
          -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 52%,rgba(0,0,0,.35) 76%,transparent 94%);
@@ -354,16 +352,6 @@ svg{display:block}
 
 
 
-@media (max-height:620px){
-  /* last thing to go: the streak. Everything else is the evening itself. */
-  #pgT .wk{display:none}
-  #pgT .hello{margin:9px 2px 8px}
-  #pgT .hwtile{margin-top:7px;padding:11px 13px}
-  #pgT .rail{margin-top:7px}
-  #pgT .tile{padding:8px 10px 8px}
-}
-
-
 /* ==================== Homework, in the same card language as Explore ====================
    The spine is gone: a queue of four things does not need a timeline drawn
    beside it, and the nodes were a second visual system to learn.            */
@@ -428,11 +416,11 @@ svg{display:block}
 
 /* ---------- homework inside the evening pager ---------- */
 #pgT .pk-page.hw{--pc:var(--tc);--ptt:var(--tt);--pdk:var(--td);--pln:var(--tl)}
-#pgT .pk-top{display:flex;align-items:center;gap:9px}
-#pgT .pk-top .pk-badge{flex:1;min-width:0;padding-left:5px;overflow:hidden}
-#pgT .pk-top .pk-badge .tkc{width:19px;height:19px;border-radius:50%;background:var(--pc);color:#fff;
+#pgT .pk-hrow{display:flex;align-items:center;gap:9px}
+#pgT .pk-hrow .pk-badge{flex:1;min-width:0;padding-left:5px;overflow:hidden}
+#pgT .pk-hrow .pk-badge .tkc{width:19px;height:19px;border-radius:50%;background:var(--pc);color:#fff;
       flex:none;display:flex;align-items:center;justify-content:center}
-[data-theme="dark"] #pgT .pk-top .pk-badge .tkc{color:#0F1420}
+[data-theme="dark"] #pgT .pk-hrow .pk-badge .tkc{color:#0F1420}
 #pgT .pk-page.hw .ab-need{margin-top:16px;background:rgba(255,255,255,.78);border-color:var(--pln)}
 [data-theme="dark"] #pgT .pk-page.hw .ab-need{background:rgba(23,29,43,.7)}
 #pgT .pk-page.hw .ab-note{margin-top:13px;background:rgba(255,255,255,.6);border-color:var(--pln)}
@@ -471,14 +459,106 @@ svg{display:block}
 #pgT .so-row.ex-rev   .sok{background:var(--btint);color:var(--blue-dk)}
 #pgT .so-row.ex-peek  .sok{background:var(--atint);color:var(--amber)}
 
+#pgT .pkempty{text-align:center;padding:26px 20px 30px}
+#pgT .pkempty .et2{font-size:15px;font-weight:800;letter-spacing:-.2px}
+#pgT .pkempty .es2{font-size:12.5px;color:var(--body);margin-top:6px}
+#pgT .pkall{margin-top:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+      border-radius:999px;padding:10px 18px;font-size:13px;font-weight:800;cursor:pointer;
+      font-family:inherit;box-shadow:var(--shadow)}
+#pgT .pkall:active{transform:scale(.98)}
+
+#pgT .ex-kit {--tc:var(--green);--tt:var(--gtint);--td:var(--gdeep); --tl:var(--gline)}
+#pgT .ex-chal{--tc:#7A6BD0;      --tt:var(--vtint);--td:var(--violet); --tl:#DCD7F2}
+#pgT .ex-rev {--tc:var(--blue);  --tt:var(--btint);--td:var(--blue-dk);--tl:#CFE0FA}
+#pgT .ex-peek{--tc:#D2A24C;      --tt:var(--atint);--td:var(--amber);  --tl:#EFDCB4}
+[data-theme="dark"] #pgT .ex-chal{--tl:#332C55}
+[data-theme="dark"] #pgT .ex-rev {--tl:#2A3E5E}
+[data-theme="dark"] #pgT .ex-peek{--tl:#4A3D22}
+/* a finished item collapses to a slim row, so the list shortens as the evening goes
+   and whatever is left is always the tallest thing on screen */
+#pgT .exdone{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);
+      border-radius:14px;padding:10px 13px;box-shadow:var(--shadow);cursor:pointer;
+      transition:transform .12s ease}
+#pgT .exdone:active{transform:scale(.995)}
+#pgT .exdone .bt{width:25px;height:25px;border-radius:50%;background:var(--green);color:#fff;flex:none;
+      display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(46,158,91,.3)}
+[data-theme="dark"] #pgT .exdone .bt{color:#0F1420;box-shadow:none}
+#pgT .exdone .bm{flex:1;min-width:0}
+#pgT .exdone .bn{display:block;font-size:13.5px;font-weight:700;line-height:1.25;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pgT .exdone .bk{display:block;font-size:9px;font-weight:800;letter-spacing:.7px;color:var(--muted);
+      margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pgT .exdone .bg2{flex:none;color:var(--muted);display:flex;align-items:center}
+#pgT .kindchip{font-size:9.5px;font-weight:800;letter-spacing:.7px;color:var(--td);
+      background:var(--tt);border-radius:999px;padding:4px 9px;white-space:nowrap}
+#pgT .donechip{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;
+      letter-spacing:.7px;color:var(--gdeep);background:var(--gtint);border-radius:999px;padding:4px 9px}
+
 /* ---------- what is in tonight's pack, on the home card ---------- */
 #pgT .hckinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}
 #pgT .hckinds span{font-size:11px;font-weight:800;border-radius:999px;padding:5px 10px;
       background:var(--card);border:1px solid var(--gline);color:var(--gdeep)}
 #pgT .hckinds span.dn{opacity:.45;text-decoration:line-through;text-decoration-thickness:1.5px}
 
+
+/* ---------- tuition, as a second source in one evening ---------- */
+#pgT .schl.tut .dot{background:#7A6BD0;box-shadow:0 0 0 3px var(--vtint)}
+#pgT .tutchip{flex:none;font-size:8.5px;font-weight:800;letter-spacing:.8px;color:var(--violet);
+      background:var(--card);border:1px solid #DCD7F2;border-radius:999px;padding:3px 8px;white-space:nowrap}
+[data-theme="dark"] #pgT .tutchip{border-color:#332C55}
+#pgT .tutchip.sch{color:var(--gdeep);background:var(--card);border-color:var(--gline)}
+[data-theme="dark"] #pgT .tutchip.sch{border-color:#1E4630}
+
+/* ---------- the bridge: two coloured halves, split down the middle ----------
+   every other page in the pager is a pale card on a tinted wash. this one is
+   solid colour edge to edge, so it reads as a boundary and not as another item. */
+#pgT .pk-page.bridge .pk-in{border:1px solid var(--bline);background:none;
+      box-shadow:0 10px 30px rgba(20,33,61,.16)}
+#pgT .brg{flex:1;display:flex;flex-direction:column;min-height:0}
+#pgT .bhalf{flex:1 1 50%;min-height:0;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;padding:0 28px;color:#fff;position:relative}
+/* white above, blue below. the state still has to be readable, so it lives in the
+   numerals and pips on the white half rather than in the colour of the half itself. */
+#pgT .bhalf.sch{background:var(--card);color:var(--ink)}
+#pgT .bhalf.now{background:linear-gradient(148deg,#4E9BF2 0%,#2680EB 55%,#1B5FBF 100%)}
+[data-theme="dark"] #pgT .bhalf.now{background:linear-gradient(148deg,#2F7FD8 0%,#1F62B4 55%,#174C8C 100%)}
+#pgT .bhalf.sch .blab{color:var(--muted)}
+#pgT .bhalf.sch .bbig{color:var(--green)}
+#pgT .bhalf.sch .bbig em{color:var(--muted)}
+#pgT .bhalf.sch .bbig .ic{stroke:var(--green)}
+#pgT .bhalf.sch.part .bbig{color:var(--amber)}
+#pgT .bhalf.sch .bsub{color:var(--body)}
+#pgT .bhalf.sch .bpips i{background:var(--line)}
+#pgT .bhalf.sch .bpips i.on{background:var(--green)}
+#pgT .bhalf.sch.part .bpips i.on{background:var(--amber)}
+
+#pgT .bhalf .blab{font-size:9.5px;font-weight:800;letter-spacing:1.4px;color:rgba(255,255,255,.72)}
+#pgT .bhalf .bbig{display:flex;align-items:baseline;gap:1px;margin-top:9px;
+      font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+#pgT .bhalf .bbig em{font-style:normal;font-size:27px;font-weight:800;letter-spacing:-1px;
+      color:rgba(255,255,255,.6)}
+#pgT .bhalf .bbig .ic{stroke:#fff}
+#pgT .bhalf .bsub{font-size:13px;font-weight:700;color:rgba(255,255,255,.88);margin-top:9px;
+      line-height:1.45;max-width:250px}
+#pgT .bhalf .bpips{display:flex;gap:6px;margin-top:20px}
+#pgT .bhalf .bpips i{width:22px;height:4px;border-radius:3px;background:rgba(255,255,255,.28)}
+#pgT .bhalf .bpips i.on{background:#fff}
+
+#pgT .bhalf h3{font-size:27px;font-weight:800;letter-spacing:-.6px;line-height:1.15;margin:9px 0 0}
+#pgT .bhalf p{font-size:13.5px;color:rgba(255,255,255,.86);margin:11px 0 0;line-height:1.5;max-width:262px}
+#pgT .bhalf .bkinds{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:18px}
+#pgT .bhalf .bkinds span{font-size:11px;font-weight:800;color:#fff;background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.26);border-radius:999px;padding:5px 11px}
+
+/* ---------- the strip, only while you are moving ---------- */
+#pgT .pk-segs{align-items:center;opacity:0;transition:opacity .28s ease}
+#pgT .pk-top.live .pk-segs{opacity:1}
+#pgT .pk-segs i{height:3px}
+#pgT .pk-segs i.cur{box-shadow:none;background:var(--body);opacity:.55}
+#pgT .pk-segs i.ok.cur{background:var(--green);opacity:1}
+
 /* ---------- the week, as a bare strip on the band ---------- */
-#pgT .wk{margin-top:0;padding-top:15px;flex:none}
+#pgT .wk{margin-top:auto;padding-top:20px;flex:none}
 #pgT .wkh{display:flex;align-items:baseline;gap:8px;margin-bottom:9px}
 #pgT .wkl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--muted)}
 #pgT .wkn{margin-left:auto;font-size:11px;font-weight:800;color:var(--gdeep)}
@@ -578,7 +658,6 @@ svg{display:block}
 #pgT .pk-segs i.ok{background:var(--green)}
 #pgT .pk-segs i.cur{box-shadow:inset 0 0 0 1.5px var(--ink)}
 [data-theme="dark"] #pgT .pk-segs i.cur{box-shadow:inset 0 0 0 1.5px var(--ink)}
-#pgT .pk-ct{flex:none;font-size:11.5px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* the pager itself — native snap, so momentum and rubber-banding stay real */
 #pgT .pk-pager{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
@@ -708,7 +787,8 @@ svg{display:block}
 
 /* the teacher's own words */
 #pgT .ab-note{margin-top:13px;background:var(--tt);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-#pgT .ab-note .anl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--td)}
+#pgT .ab-note .anl{font-size:9.5px;font-weight:800;letter-spacing:.9px;color:var(--td);
+      text-transform:uppercase}
 #pgT .ab-note .ant{font-size:13.5px;line-height:1.5;margin-top:6px;color:var(--ink)}
 
 #pgT .ab-steps{margin-top:13px;counter-reset:st}
@@ -1240,11 +1320,6 @@ svg{display:block}
           <p id="helloSub">Grade 5A</p>
           <div id="helloTag"></div>
         </div>
-        <div class="cal" aria-hidden="true">
-          <div class="cm" id="calM">SEP</div>
-          <div class="cd" id="calD">4</div>
-          <div class="cw" id="calW">FRI</div>
-        </div>
       </div>
     </div>
 
@@ -1257,6 +1332,16 @@ svg{display:block}
 
     <!-- EXPLORE zone -->
     <div class="zone" id="zExp">
+
+      <div class="anchors" id="expFilt">
+        <i class="fbg"></i>
+        <div class="filtrow">
+          <div class="filtic" id="filtIc" title="Show all subjects">
+            <svg width="17" height="17" viewBox="0 0 24 24" class="ic"><path d="M3 7h4M11 7h10M3 17h10M17 17h4"/><circle cx="9" cy="7" r="2.2"/><circle cx="15" cy="17" r="2.2"/></svg>
+          </div>
+          <div class="subswrap"><div class="subs open" id="subs"></div></div>
+        </div>
+      </div>
 
       <div class="pkhead">
         <div class="pkt">Today's Pack</div>
@@ -1338,7 +1423,6 @@ svg{display:block}
     <div class="pk-top">
       <div class="pk-x" id="pkX"><svg width="15" height="15" viewBox="0 0 24 24" class="ic" style="stroke-width:2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
       <div class="pk-segs" id="pkSegs"></div>
-      <div class="pk-ct" id="pkCt"></div>
     </div>
     <div class="pk-pager" id="pkPager"></div>
     <div class="pk-hint" id="pkHint">
@@ -1641,6 +1725,9 @@ function todoItems(){
        w:"Somewhere quiet \u00b7 3 questions",k:"3 answers out loud",due:"TOMORROW",dc:"",live:true},
       {id:"r-sprout",sj:"evs",ty:"act",mats:["3 bowls","cotton","chana"],src:"EVS"+who('evs'),t:"Sprouting experiment",
        w:"In the kitchen \u00b7 photograph it",k:"needs your kit",due:"MONDAY",dc:"",live:true},
+      {id:"r-tut1",sj:"maths",ty:"cust",tut:true,src:"MATHS",tn:"Surabhi Ma'am",
+       t:"Two-step equations",w:"In your notebook \u00b7 then a photo",k:"in your notebook",
+       due:"TOMORROW",dc:"",live:false},
       {id:"r-hindi",sj:"hindi",ty:"cust",src:"HINDI"+who('hindi'),
        t:"\u0938\u0902\u091c\u094d\u091e\u093e \u0914\u0930 \u0938\u0930\u094d\u0935\u0928\u093e\u092e",
        w:"In your notebook \u00b7 then a photo",k:"in your notebook",due:"FRIDAY",dc:"",live:false}
@@ -1749,6 +1836,12 @@ const ASG={
          "Look every morning. On Monday, photograph all three side by side."],
   shot:"Your three bowls, side by side"},
 
+'r-tut1':{
+  lo:"Undo two operations in the right order to find x.",
+  why:"Surabhi Ma'am wants to see your working, not just the answer.",
+  note:"Six sums. Show every step \u2014 that is where the marks are.",
+  brief:"Solve the six sums in your notebook. Write each step on its own line.",
+  shot:"Your notebook page"},
 'r-hindi':{
   lo:"Tell a noun from a pronoun in your own writing.",
   why:"Gupta Sir wants to see if you can spot a noun and a pronoun in your own sentences.",
@@ -1837,9 +1930,6 @@ function greeting(h){
 function clockTick(){
   const d=new Date();
   document.getElementById('helloH').textContent=greeting(d.getHours())+', '+KIDS[kid].name;
-  document.getElementById('calM').textContent=MON[d.getMonth()];
-  document.getElementById('calD').textContent=d.getDate();
-  document.getElementById('calW').textContent=WDAY[d.getDay()];
 }
 setInterval(clockTick,60000);
 
@@ -1868,7 +1958,7 @@ function face(o){
    '</svg>';
 }
 const KIDS=[
-  {id:'ridhaan',name:'Ridhaan',grade:'Grade 5A',sent:2,hist:[1,1,0,1,1,1],
+  {id:'ridhaan',name:'Ridhaan',grade:'Grade 5A',sent:2,hist:[1,1,0,1,1,1],tutor:"Surabhi Ma'am",
    pic:face({bg:'#DCE7F7',skin:'#E8B98E',hair:'short',hairc:'#2C2118',shirt:'#3F63C4'})},
   {id:'ilika',name:'Ilika',grade:'Grade 3B',sent:1,hist:[1,0,0,1,1,1],
    pic:face({bg:'#F6E3EC',skin:'#EFC49F',hair:'long',hairc:'#241A14',shirt:'#C4527E'})}
@@ -1884,7 +1974,7 @@ function renderTile(){
   el.classList.toggle('clear', state==='done'||!items.length);
   if(state==='done'||!items.length){
     el.innerHTML='<span class="hic ok"><svg width="19" height="19" viewBox="0 0 24 24" class="ic" style="stroke-width:2.6"><path d="M4 12l6 6L20 6"/></svg></span>'+
-      '<div class="hm"><div class="hk">'+(conn?'FROM SCHOOL':"TODAY'S WORK")+'</div>'+
+      '<div class="hm"><div class="hk">'+(!conn?"TODAY'S WORK":KIDS[kid].tutor?'TO HAND IN':'FROM SCHOOL')+'</div>'+
       '<div class="ht">All done for today</div>'+
       '<div class="hd"><span class="lbl">'+(sent?sent+' sent \u00b7 ':'')+'nothing left to send</span></div></div>'+
       '<span class="hmore clear"><b>See</b><span>all</span></span>';
@@ -1892,7 +1982,7 @@ function renderTile(){
   }
   const a=items[0], rest=items.length-1;
   el.innerHTML='<span class="hic">'+DIC.book+'</span>'+
-    '<div class="hm"><div class="hk">'+(conn?'FROM SCHOOL':"TODAY'S WORK")+
+    '<div class="hm"><div class="hk">'+(!conn?"TODAY'S WORK":KIDS[kid].tutor?'TO HAND IN':'FROM SCHOOL')+
       (a.dc===' now'?'<span class="hnow">DUE TODAY</span>':'')+'</div>'+
     '<div class="ht">'+a.t+'</div>'+
     '<div class="hd"><i style="background:'+TDOT[a.ty]+'"></i>'+
@@ -1997,7 +2087,8 @@ function renderHw(){
   const items=pending().filter(a=>hsubj==='all'||a.sj===hsubj);
   const done=(hsubj==='all')?todoItems().filter(a=>ast(a.id).st==='sent'):[];
   const nsent=(hsubj==='all')?sentToday():0;
-  document.getElementById('hwTitle').innerHTML=(conn?'School Assignments':"Today's Work")+
+  document.getElementById('hwTitle').innerHTML=
+    (!conn?"Today's Work":KIDS[kid].tutor?'Assignments':'School Assignments')+
     (state==='pend'&&items.length?'<span class="zbadge">'+items.length+'</span>':'');
   if(state!=='pend'){
     wrap.innerHTML='<div class="done">'+
@@ -2031,6 +2122,7 @@ function renderHw(){
             '<div class="hwcsig">'+sigFor(a)+'</div>'+
           '</div>'+
           '<div class="hwcf"><span class="fs-due'+a.dc+'">'+a.due+'</span>'+
+            srcChip(a)+
             '<span class="hwcgo">'+VERB[ast(a.id).st]+' \u203a</span></div>'+
         '</div>').join('')+'</div>';
   }
@@ -2088,46 +2180,66 @@ function renderWeek(allDone){
 
 /* One card, three faces. It is the only thing on the page that has to make five
    unseen items feel worth opening, so it leads with a question, not a summary. */
-function renderPackCard(){
-  const list=exploreItems(); seedPack(list);
-  const left=list.filter(e=>!isDone(e)), done=list.length-left.length;
-  const wrap=document.getElementById('packWrap');
-  const doo='<svg class="hcdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>';
-  const tally='<b>'+done+' of '+list.length+' done</b>';
-  const kinds={}; list.forEach(e=>{ const k=e.kind||'Thing';
-    (kinds[k]=kinds[k]||{n:0,d:0}).n++; if(isDone(e)) kinds[k].d++; });
-  const mix='<div class="hckinds">'+Object.keys(kinds).map(k=>
-    '<span'+(kinds[k].d===kinds[k].n?' class="dn"':'')+'>'+kinds[k].n+' '+k+(kinds[k].n>1?'s':'')+'</span>'
-  ).join('')+'</div>';
+function subjName(){ const f=SUBJ.find(x=>x[0]===subj); return f?f[1]:'All'; }
+function renderSubs2(){
+  const el=document.getElementById('subs'); if(!el) return;
+  el.innerHTML=SUBJ.map(x=>'<div class="sb'+(subj===x[0]?' on':'')+'" data-k="'+x[0]+'">'+x[1]+'</div>').join('');
+  document.getElementById('filtIc').onclick=()=>{ subj='all'; render(); el.scrollTo({left:0,behavior:'smooth'}); };
+  el.querySelectorAll('.sb').forEach(c=>c.onclick=()=>{
+    subj=c.dataset.k; render();
+    const on=el.querySelector('.sb.on');
+    if(on){ const l=on.offsetLeft-24, r=on.offsetLeft+on.offsetWidth+62-el.clientWidth;
+      if(el.scrollLeft>l) el.scrollTo({left:Math.max(0,l),behavior:'smooth'});
+      else if(el.scrollLeft<r) el.scrollTo({left:r,behavior:'smooth'}); }
+  });
+  const w=el.parentElement; el.onscroll=()=>edges(el,w); requestAnimationFrame(()=>edges(el,w));
+}
 
-  if(!left.length){
-    wrap.innerHTML='<div class="hc-deck"><div class="hc fin" id="packOpen">'+doo+'<div class="hcin">'+
-      '<div class="hcsp top"></div>'+
-      '<span class="hcb"><span class="pulse" style="animation:none"></span>ALL '+list.length+' DONE</span>'+
-      '<div class="hcq">That\u2019s your whole pack for today</div>'+
-      '<div class="hcs">A new one lands tomorrow morning.</div><div class="hcsp"></div>'+
-      '<div class="hcf"><div class="hcleft"><b>All '+list.length+' done</b></div>'+
-      '<button class="hcgo">Look again \u203a</button></div>'+
-      '</div></div></div>';
+/* the pack, as the same cards the assignments use */
+function exCard(e,i){
+  const done=isDone(e);
+  if(done) return '<div class="exdone" data-ex="'+i+'">'+
+    '<span class="bt"><svg width="14" height="14" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg></span>'+
+    '<span class="bm"><span class="bn">'+e.t+'</span>'+
+      '<span class="bk">'+(e.kind||'DONE').toUpperCase()+' \u00b7 '+
+      (e.subj||[]).map(k=>(SUBJ.find(x=>x[0]===k)||[0,k])[1]).join(' \u00b7 ').toUpperCase()+'</span></span>'+
+    '<span class="bg2"><svg width="15" height="15" viewBox="0 0 24 24" class="ic"><path d="M9 6l6 6-6 6"/></svg></span>'+
+  '</div>';
+  return '<div class="hwc ex-'+e.bc+'" data-ex="'+i+'">'+
+    '<svg class="hwcdoo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
+    '<div class="hwcin">'+
+      '<span class="hwcb"><span class="tkc">'+EIC[e.ic]+'</span><em>'+e.b+'</em></span>'+
+      '<div class="hwct">'+e.t+'</div>'+
+      '<div class="hwcs">'+(e.hook||e.s)+'</div>'+
+      (e.mats?'<div class="hwcsig"><div class="fs-mats">'+
+        e.mats.map(m=>'<span>'+m+'</span>').join('')+'</div></div>':'')+
+    '</div>'+
+    '<div class="hwcf">'+
+      '<span class="kindchip">'+(e.subj||[]).map(k=>
+        (SUBJ.find(x=>x[0]===k)||[0,k])[1]).join(' \u00b7 ').toUpperCase()+'</span>'+
+      '<span class="hwcgo">'+(e.bc==='peek'?'Have a look':'Start')+' \u203a</span>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderPackCard(){
+  const all=exploreItems(); seedPack(all);
+  renderSubs2();
+  const list=all.filter(e=>subj==='all'||e.subj.indexOf(subj)>=0);
+  const wrap=document.getElementById('packWrap');
+  if(!list.length){
+    wrap.innerHTML='<div class="pkempty">'+
+      '<div class="et2">Nothing in '+subjName()+' tonight</div>'+
+      '<div class="es2">Tonight\u2019s pack has '+all.length+' things in it.</div>'+
+      '<button class="pkall" id="pkAll">Show everything</button></div>';
+    const ab=document.getElementById('pkAll');
+    if(ab) ab.onclick=()=>{ subj='all'; render(); };
   }else{
-    const n=left[0], fresh=!done;
-    wrap.innerHTML='<div class="hc-deck"><div class="hc" id="packOpen">'+doo+'<div class="hcin">'+
-      '<div class="hcsp top"></div>'+
-      '<span class="hcb"><span class="pulse"></span>'+(fresh?'OPEN NOW':'PICK UP WHERE YOU LEFT OFF')+'</span>'+
-      '<div class="hcq">'+(n.hook||n.t)+'</div>'+
-      '<div class="hcs">'+(fresh
-        ? 'The first thing in tonight\u2019s pack answers it. '+(list.length-1)+' more behind it.'
-        : 'Then there are '+(left.length-1)+' more waiting behind it.')+'</div>'+
-      mix+'<div class="hcsp"></div>'+
-      '<div class="hcf"><div class="hcleft">'+tally+'</div>'+
-      '<button class="hcgo">'+(fresh?'Open':'Carry on')+' \u203a</button></div>'+
-      '</div></div></div>';
+    wrap.innerHTML='<div class="hwlist">'+list.map((e)=>exCard(e,all.indexOf(e))).join('')+'</div>';
+    wrap.querySelectorAll('[data-ex]').forEach(c=>c.onclick=()=>openPack(+c.dataset.ex,c));
   }
-  renderWeek(!left.length);
-  requestAnimationFrame(fitPack);
-  const card=document.getElementById('packOpen');
-  const start=left.length?list.indexOf(left[0]):0;
-  if(card){ card.onclick=()=>{ if(!card.__sw) openPack(start); }; swipeUp(card,()=>openPack(start)); }
+  renderWeek(!all.filter(e=>!isDone(e)).length);
+  if(window.__spy) requestAnimationFrame(window.__spy);
 }
 
 /* The card is the page's shock absorber: it gives back height in a fixed
@@ -2169,7 +2281,7 @@ function swipeUp(el,go){
 
 const pkS=document.getElementById('packScreen');
 const pkPager=document.getElementById('pkPager');
-let PK=[], pkTick=false, pkSeen=false, pkHw=0;
+let PK=[], pkTick=false, pkSeen=false, pkHw=0, pkFrom=null;
 
 /* ============================================================
    One pager for the whole evening. An entry is either an Explore
@@ -2179,9 +2291,9 @@ let PK=[], pkTick=false, pkSeen=false, pkHw=0;
 function isHw(e){ return !!e.hw; }
 function entDone(e){ return isHw(e) ? ast(e.hw.id).st==='sent' : isDone(e); }
 
-function openPack(i,from){                 /* from the home pack card: the pack alone */
+function openPack(i,from){                 /* from a pack card: the pack alone */
   PK=exploreItems().slice(); pkHw=0;
-  openEvening(i,from||document.getElementById('packOpen'));
+  openEvening(i,from);
 }
 function openEvening2(a,from){             /* from a homework card: school, then the pack */
   const hw=pending().map(x=>({hw:x}));
@@ -2190,22 +2302,60 @@ function openEvening2(a,from){             /* from a homework card: school, then
 }
 function openEvening(i,from){
   if(!PK.length) return;
+  pkFrom=from||null;
   paintPages();
   zoomFrom(from);
   pkS.classList.add('on');
   document.getElementById('pkHint').classList.toggle('gone',pkSeen);
-  requestAnimationFrame(()=>{ pkPager.scrollTop=i*pkPager.clientHeight; pkSync(); });
+  requestAnimationFrame(()=>{
+    const page = i + (pkHw && i>=pkHw ? 1 : 0);
+    pkPager.scrollTop=page*pkPager.clientHeight; pkSync();
+  });
 }
 function paintPages(){
-  pkPager.innerHTML=PK.map(pkPage).join('')+pkEndPage();
+  /* the bridge is a page of its own, so the handover is announced rather than
+     discovered — the strip is too quiet now to carry it alone */
+  const pages=PK.map((e,i)=>(pkHw && i===pkHw ? bridgePage() : '')+pkPage(e,i));
+  pkPager.innerHTML=pages.join('')+pkEndPage();
   wirePack();
+}
+function bridgePage(){
+  /* a summary, not the list again: how much of tonight's handing-in is done */
+  const all=todoItems(), sent=all.filter(a=>ast(a.id).st==='sent').length;
+  const done=sent===all.length;
+  const pips=all.map((a,i)=>'<i class="'+(ast(a.id).st==='sent'?'on':'')+'"></i>').join('');
+  const left=exploreItems().filter(e=>!isDone(e));
+  const kinds={}; left.forEach(e=>{const k=e.kind||'Thing'; kinds[k]=(kinds[k]||0)+1;});
+  return '<div class="pk-page bridge"><div class="pk-in"><div class="brg">'+
+    '<div class="bhalf sch'+(done?'':' part')+'">'+
+      '<div class="blab">'+(KIDS[kid].tutor?'HANDED IN':'FROM SCHOOL')+'</div>'+
+      (done
+        ? '<div class="bbig"><svg width="34" height="34" viewBox="0 0 24 24" class="ic" style="stroke-width:3"><path d="M4 12l6 6L20 6"/></svg></div>'+
+          '<div class="bsub">All '+all.length+' handed in</div>'
+        : '<div class="bbig">'+sent+'<em>/'+all.length+'</em></div>'+
+          '<div class="bsub">'+(all.length-sent)+' still waiting \u2014 you can come back up</div>')+
+      '<div class="bpips">'+pips+'</div>'+
+    '</div>'+
+    '<div class="bhalf now">'+
+      '<div class="blab">NOW</div>'+
+      '<h3>Today\u2019s Pack</h3>'+
+      '<p>'+(left.length?left.length+' things picked for you \u2014 nobody set these, they\u2019re yours.'
+                       :'You have already done all of tonight\u2019s pack.')+'</p>'+
+      (left.length?'<div class="bkinds">'+Object.keys(kinds).map(k=>
+        '<span>'+kinds[k]+' '+k+(kinds[k]>1?'s':'')+'</span>').join('')+'</div>':'')+
+    '</div>'+
+  '</div></div></div>';
 }
 function repaintPages(){
   const at=pkPager.scrollTop; paintPages(); pkPager.scrollTop=at; pkSync();
 }
 function closePack(){
-  zoomFrom(document.getElementById('packOpen'));
+  zoomFrom(pkFrom);
   pkS.classList.remove('on');
+  /* the list is a way in, not a place to be returned to: closing a card lands home */
+  if(document.getElementById('hwScreen').classList.contains('on')){
+    setTimeout(()=>{ closeHw(); render(); },230);
+  } else render();
 }
 function zoomFrom(el){
   if(!el){ pkS.style.transform=''; pkS.style.transformOrigin=''; return; }
@@ -2249,12 +2399,13 @@ function hwPage(a,i){
     '<div class="pk-in">'+
       '<svg class="pk-doo"><rect width="100%" height="100%" fill="url(#dooPat)"/></svg>'+
       '<div class="pk-body">'+
-        '<div class="pk-top"><span class="pk-badge"><span class="tkc">'+TYIC[a.ty]+'</span>'+a.src+'</span>'+
+        '<div class="pk-hrow"><span class="pk-badge"><span class="tkc">'+TYIC[a.ty]+'</span>'+a.src+'</span>'+
+          srcChip(a)+
           '<span class="fs-due'+(s.st==='sent'?' sent':a.dc)+'">'+(s.st==='sent'?'SENT':a.due)+'</span></div>'+
         '<h2 class="pk-h">'+a.t+'</h2>'+
         (d.why?'<div class="pk-s">'+d.why+'</div>':'')+
         needHtml(a,d,s)+
-        (d.note?'<div class="ab-note"><div class="anl">FROM '+a.src.split('·').pop().trim()+
+        (d.note?'<div class="ab-note"><div class="anl">FROM '+(a.tn||a.src.split('·').pop()).trim()+
                 '</div><div class="ant">'+d.note+'</div></div>':'')+
         (work?workHtml(a,d,s):'')+
       '</div>'+
@@ -2316,31 +2467,48 @@ function pkEndPage(){
 function pkSync(){
   pkTick=false;
   const H=pkPager.clientHeight; if(!H) return;
-  const top=pkPager.scrollTop, n=PK.length+1;
+  const top=pkPager.scrollTop;
+  const br=pkHw?1:0;                     /* the bridge sits between the two groups */
   const cur=Math.round(top/H);
-  const ct=document.getElementById('pkCt');
-  ct.textContent = cur>=PK.length ? 'today'
-    : pkHw && cur<pkHw ? 'School '+(cur+1)+' of '+pkHw
-    : pkHw ? 'Pack '+(cur-pkHw+1)+' of '+(PK.length-pkHw)
-    : (cur+1)+' of '+PK.length;
-  /* one strip, two groups: the gap is where school hands over to the pack */
-  let segs='';
-  for(let k=0;k<n;k++){
-    if(pkHw && k===pkHw) segs+='<b class="sgap"></b>';
-    const done = k<PK.length && entDone(PK[k]);
-    segs+='<i class="'+(done?'ok':'')+(k===cur?' cur':'')+(k>=PK.length?' endseg':'')+'"></i>';
+  const ent=cur<pkHw ? cur : cur===pkHw&&br ? -1 : cur-br;   /* -1 = the bridge */
+  /* only the section you are in, so the strip never becomes a map of the evening */
+  const bar=document.getElementById('pkSegs');
+  if(ent===-1){
+    /* the bridge belongs to neither section, so it shows neither section's progress */
+    bar.innerHTML=''; hideSegs();
+  } else {
+    const inHw = pkHw && ent<pkHw;
+    const from = inHw?0:pkHw, to = inHw?pkHw:PK.length;
+    let segs='';
+    for(let k=from;k<to;k++)
+      segs+='<i class="'+(entDone(PK[k])?'ok':'')+(k===ent?' cur':'')+'"></i>';
+    if(!inHw) segs+='<i class="endseg'+(cur>=PK.length+br?' cur':'')+'"></i>';
+    bar.innerHTML=segs;
+    showSegs();
   }
-  document.getElementById('pkSegs').innerHTML=segs;
   [...pkPager.children].forEach((pg,k)=>{
     const d=(k*H-top)/H;
     const card=pg.querySelector('.pk-in'); if(!card) return;
-    if(d<=-1||d>=1){ card.style.transform=''; card.style.opacity=''; return; }
-    if(d<0){ const a=-d;
-      card.style.transform='translateY('+(a*26)+'px) scale('+(1-a*.09)+')';
-      card.style.opacity=String(1-a*.85);
-    }else{ card.style.transform='scale('+(1-d*.03)+')'; card.style.opacity='1'; }
+    if(d>-0.004 || d<=-1){
+      if(card.style.transform){ card.style.transform=''; card.style.opacity=''; }
+      return;
+    }
+    const a=-d;
+    card.style.transform='translateY('+(a*30).toFixed(2)+'px)';
+    card.style.opacity=(1-a*.9).toFixed(3);
   });
   if(top>12 && !pkSeen){ pkSeen=true; document.getElementById('pkHint').classList.add('gone'); }
+}
+/* the strip appears while she is moving and gets out of the way while she reads */
+let segT=null;
+function showSegs(){
+  const top=document.querySelector('#pgT .pk-top'); if(!top) return;
+  top.classList.add('live');
+  clearTimeout(segT); segT=setTimeout(()=>top.classList.remove('live'),1100);
+}
+function hideSegs(){
+  const top=document.querySelector('#pgT .pk-top'); if(!top) return;
+  clearTimeout(segT); top.classList.remove('live');
 }
 pkPager.addEventListener('scroll',()=>{ if(!pkTick){ pkTick=true; requestAnimationFrame(pkSync); } },{passive:true});
 window.addEventListener('resize',()=>requestAnimationFrame(pkSync));
@@ -2460,7 +2628,7 @@ function renderAsg(){
     h+=receiptHtml(a,d,s);
   }else{
     h+=needHtml(a,d,s);
-    if(d.note) h+='<div class="ab-note"><div class="anl">FROM '+a.src.split('\u00b7').pop().trim()+
+    if(d.note) h+='<div class="ab-note"><div class="anl">FROM '+(a.tn||a.src.split('\u00b7').pop()).trim()+
                   '</div><div class="ant">'+d.note+'</div></div>';
     /* Activity and Custom do their work here, on this page — the real task
        happens off the phone, so a page-turn would buy nothing */
@@ -2580,7 +2748,12 @@ function paintFoot(a,d,s){
   if(s.st==='inprog' && s.rev) b.classList.add('go');
   b.onclick=()=>openRun(a);
 }
-function shortT(a){ return a.src.split('\u00b7').pop().trim().toLowerCase()
+function srcChip(a){
+  if(!KIDS[kid].tutor || mode!=='conn') return '';
+  return a.tut ? '<span class="tutchip">'+(a.tn||'Tuition').toUpperCase()+'</span>'
+               : '<span class="tutchip sch">SCHOOL</span>';
+}
+function shortT(a){ return (a.tn||a.src.split('\u00b7').pop()).trim().toLowerCase()
   .replace(/(^|\s)\S/g,c=>c.toUpperCase()); }
 
 document.getElementById('abBack').onclick=closeAsg;
@@ -2800,17 +2973,21 @@ function render(){
   const conn=mode==='conn';
   clockTick();
   document.getElementById('helloSub').textContent=conn?KIDS[kid].grade:KIDS[kid].grade.replace(/[A-Z]$/,'');
-  document.getElementById('helloTag').innerHTML=conn
+  const tut=KIDS[kid].tutor;
+  document.getElementById('helloTag').innerHTML=(conn
     ? '<div class="schl"><span class="dot"></span>St. Xavier\'s School</div>'
-    : '<div class="schl off"><span class="dot"></span>No school linked</div>';
+    : '<div class="schl off"><span class="dot"></span>No school linked</div>')+
+    (tut?'<div class="schl tut"><span class="dot"></span>Tuition with '+tut+'</div>':'');
 
   renderTile(); renderRail();
   const tl=document.getElementById('hwTile');
   /* the assignment itself opens that assignment; "+N more" opens the list */
   tl.onclick=e=>{
     const list=pending();
-    if(e.target.closest('.hmore') || !list.length) return openHw();
-    openEvening2(list[0], tl);
+    /* "+N more" is the only thing on this tile that goes to the list.
+       the assignment itself expands over the home page, with nothing in between. */
+    if(e.target.closest('.hmore') || !list.length){ openHw(); return; }
+    openEvening2(list[0],tl);
   };
   document.getElementById('hwBack').onclick=closeHw;
 
