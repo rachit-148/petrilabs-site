@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Seasons Lab</title>
+<style>
+:root{
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE;
+  --amber:#B07A1E; --atint:#FDF4E6;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --sheet:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,33,61,.04);
+  --tilt:#C88A25; --ritu:#2E8B57;
+  --accent:var(--tilt);
+  --scene:#0B1020;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+    --green:#4FBE81; --gtint:#16301F;
+    --amber:#D9A44E; --atint:#2A2416;
+    --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+    --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --tilt:#E4B461; --ritu:#5CC98C;
+  }
+}
+[data-theme="dark"]{
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F;
+  --amber:#D9A44E; --atint:#2A2416;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --tilt:#E4B461; --ritu:#5CC98C;
+}
+body.ritus{--accent:var(--ritu)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg{display:block}
+
+.app{position:relative;height:100vh;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+     padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.appbar{display:flex;align-items:center;gap:9px;flex:none}
+.appbar img{height:23px;width:auto;display:block;object-fit:contain}
+.appbar .brand{font-weight:700;font-size:15.5px}
+.appbar .spacer{flex:1}
+.appbar .sub{font-size:12px;font-weight:600;color:var(--muted)}
+
+.seg{display:flex;background:var(--icbg);border-radius:14px;padding:4px;flex:none}
+.sgi{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;border:0;background:transparent;
+     font-size:13px;font-weight:700;color:var(--body);line-height:1.15}
+.sgi .top{display:flex;align-items:center;gap:5px}
+.sgi small{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap}
+.sgi.here{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+.sgi.here small{color:var(--blue-dk)}
+.sgi .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.sgi.here .dot.t{background:var(--tilt)} .sgi.here .dot.r{background:var(--ritu)}
+
+.scenes{display:flex;flex-direction:column;gap:8px;flex:1 1 0;min-height:0;min-width:0}
+.controls{display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+
+.scene{position:relative;background:var(--scene);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+.space{flex:1.2 1 0}
+.sky{flex:1 1 0}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.t-short{display:none}
+.legend{position:absolute;left:11px;right:11px;bottom:8px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.75);pointer-events:none}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.badge{position:absolute;top:6px;right:7px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;pointer-events:none;white-space:nowrap;
+       background:rgba(15,20,32,.72);color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.badge.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+.badge.hot{background:var(--accent);border-color:var(--accent);color:#14100A}
+.badge.warm{color:var(--accent);border-color:var(--accent)}
+.places{position:absolute;left:9px;bottom:8px;display:flex;gap:5px;z-index:2}
+.places button{min-height:26px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:700;
+       background:rgba(15,20,32,.66);color:rgba(234,238,246,.8);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(4px)}
+.places button[aria-pressed="true"]{background:rgba(255,255,255,.9);color:#16203A;border-color:transparent}
+
+.card{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px;height:106px}
+.card p{margin:0;font-size:14px;font-weight:600;line-height:1.32;color:var(--ink);height:3.96em;overflow:hidden;display:flex;align-items:center}
+.meter{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.bar{flex:1;height:7px;border-radius:4px;background:var(--icbg);overflow:hidden}
+.bar b{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
+.meter output{min-width:58px;text-align:right;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+
+.slider{flex:none;display:flex;align-items:center;gap:10px}
+.slider .lab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+.chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.clab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-right:1px;flex:none}
+.chips button{flex:1 0 auto;min-height:34px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--chip);
+              font-size:12.5px;font-weight:600;color:var(--body)}
+.chips button[aria-pressed="true"]{background:var(--btint);border-color:var(--blue);color:var(--blue-dk);font-weight:700}
+.actions{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;gap:7px;
+     font-size:14.5px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:active{transform:scale(.98)}
+
+.veil{position:fixed;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.veil.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;max-height:78%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,33,61,.18);
+       translate:0 105%;transition:translate .32s cubic-bezier(.3,.9,.3,1)}
+.sheet.open{translate:0 0}
+.grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+.grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 20px 6px}
+.shead h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
+.x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--chip);color:var(--body);display:flex;align-items:center;justify-content:center;flex:none}
+.sbody{overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sbody h3{margin:16px 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px;line-height:1.3;color:var(--blue)}
+.sbody p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+@media (max-height:680px){ .app{gap:6px} .btn{min-height:40px} .card p{font-size:13px} .card{height:98px} .legend{display:none} .sgi small{display:none} }
+@media (max-width:400px){ .chips button{padding:0 8px;font-size:12px} }
+@media (orientation:landscape) and (max-height:560px){
+  .app{display:grid;max-width:none;grid-template-columns:1fr minmax(240px,300px);grid-template-rows:auto auto 1fr;gap:10px;
+       padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px, env(safe-area-inset-left,0px))}
+  .scenes{grid-column:1;grid-row:1 / -1;flex-direction:row;gap:10px}
+  .scene{flex:1 1 0}
+  .appbar{grid-column:2;grid-row:1}
+  .seg{grid-column:2;grid-row:2}
+  .controls{grid-column:2;grid-row:3;justify-content:flex-start}
+  .card{height:auto;min-height:88px;flex:0 1 auto;justify-content:center}
+  .card p{height:auto;max-height:5.3em;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .sgi small{display:none}
+  .t-long{display:none} .t-short{display:inline}
+  .legend{font-size:10px;gap:2px 8px}
+  .badge{font-size:10px;padding:4px 8px}
+  .btn{min-height:42px}
+  .sheet{max-height:92%}
+}
+@media (prefers-reduced-motion: reduce){ .sheet,.veil{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="appbar">
+    <img src="petrilab-logo.png" alt="Petrilab" onerror="this.remove()">
+    <span class="brand">Seasons Lab</span>
+    <span class="spacer"></span>
+    <span class="sub">Science · Earth</span>
+  </div>
+
+  <div class="seg" role="tablist">
+    <button class="sgi here" id="tabT" role="tab" aria-selected="true"><span class="top"><i class="dot t"></i>Tilt</span><small>Why seasons happen</small></button>
+    <button class="sgi" id="tabR" role="tab" aria-selected="false"><span class="top"><i class="dot r"></i>Six ritus</span><small>India's own calendar</small></button>
+  </div>
+
+  <div class="scenes">
+  <section class="scene space">
+    <canvas id="space" aria-label="Earth's journey around the Sun"></canvas>
+    <span class="tag" id="spaceTag"></span>
+    <div class="legend" id="legend"></div>
+    <span class="badge" id="order"></span>
+  </section>
+
+  <section class="scene sky">
+    <canvas id="sky" aria-label="What this looks like on the ground"></canvas>
+    <span class="tag" id="skyTag"></span>
+    <span id="pill" class="badge"></span>
+    <div class="places" id="places" hidden></div>
+  </section>
+  </div>
+
+  <div class="controls">
+  <div class="card">
+    <p id="say"></p>
+    <div class="meter"><span id="meterLabel">Day length</span><div class="bar"><b id="bar"></b></div><output id="meterVal"></output></div>
+  </div>
+
+  <div class="slider">
+    <span class="lab" id="slab">Date</span>
+    <input id="xS" type="range" min="1" max="365" step="0.25" value="172" aria-label="Day of the year">
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div class="actions">
+    <button id="play" class="btn primary"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+    <button id="whyBtn" class="btn" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Why?</button>
+  </div>
+  </div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="shead"><h2 id="sheetTitle">Why?</h2>
+    <button class="x" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const TAU = Math.PI*2, RAD = Math.PI/180;
+  const mod = (x,n) => ((x % n) + n) % n;
+  const clamp = (x,a,b) => Math.min(b, Math.max(a, x));
+  const smooth = (a,b,x) => { const t = clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+  const mix = (a,b,t) => a + (b-a)*t;
+  const mix3 = (c,d,t) => [mix(c[0],d[0],t), mix(c[1],d[1],t), mix(c[2],d[2],t)];
+  const css = c => `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
+  let seed = 23; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+  const stars = Array.from({length: 90}, () => ({x: rnd(), y: rnd(), s: rnd()*1.2 + 0.4, a: rnd()}));
+
+  // ---------- calendar ----------
+  const MD = [31,28,31,30,31,30,31,31,30,31,30,31];
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const CUM = [0,31,59,90,120,151,181,212,243,273,304,334];
+  const dmy = d => { let m = 0, x = Math.floor(d); while (x > MD[m]){ x -= MD[m]; m++; } return [x || 1, m]; };
+  const dateStr = d => { const [x,m] = dmy(d); return x + ' ' + MON[m]; };
+  const monthOf = d => dmy(d)[1];
+  const doy = (m, day) => CUM[m-1] + day;
+
+  // ---------- sky mechanics ----------
+  const decl = d => {                                   // Sun's angle north of the equator
+    const g = TAU/365*(d-1);
+    return (0.006918 - 0.399912*Math.cos(g) + 0.070257*Math.sin(g)
+          - 0.006758*Math.cos(2*g) + 0.000907*Math.sin(2*g)
+          - 0.002697*Math.cos(3*g) + 0.00148*Math.sin(3*g))/RAD;
+  };
+  const noonAlt = (lat, d) => 90 - Math.abs(lat - decl(d));
+  const dayLen = (lat, d) => {
+    const D = decl(d)*RAD, P = lat*RAD;
+    const c = clamp((Math.sin(-0.833*RAD) - Math.sin(P)*Math.sin(D))/(Math.cos(P)*Math.cos(D)), -1, 1);
+    return 2*Math.acos(c)/RAD/15;
+  };
+  const hm = h => Math.floor(h) + 'h ' + String(Math.round((h % 1)*60)).padStart(2,'0') + 'm';
+
+  const PLACE = [
+    {n:'Delhi',     lat: 28.61, note:'north of the Tropic'},
+    {n:'Ujjain',    lat: 23.18, note:'right on the Tropic of Cancer'},
+    {n:'Bengaluru', lat: 12.97, note:'well inside the Tropics'},
+  ];
+  PLACE.forEach(p => {                                  // days when the noon Sun is exactly overhead
+    p.zsd = [];
+    for (let d = 1; d < 365; d++){
+      const a = decl(d) - p.lat, b = decl(d+1) - p.lat;
+      if (a === 0 || a*b < 0) p.zsd.push(d + Math.abs(a)/(Math.abs(a)+Math.abs(b)));
+    }
+  });
+
+  // ---------- Delhi's year (IMD normals 1991–2020, Safdarjung) ----------
+  const TMAX = [20.1,24.2,29.9,36.5,39.9,39.0,35.6,34.2,34.1,33.0,28.4,22.8];
+  const TMIN = [7.5,10.6,15.6,21.3,25.8,27.7,27.5,26.7,25.0,19.5,13.0,8.4];
+  const RAIN = [19.1,21.3,17.4,16.3,30.7,74.1,209.7,233.1,123.5,15.1,6.0,8.1];
+  const RAIN_YEAR = RAIN.reduce((a,b) => a+b, 0);
+
+  // ---------- the six ritus ----------
+  const RITU = [
+    {n:'Śhiśhira', e:'Winter',     s: 15,  c:'#6FA8C0', months:'Māgha–Phālguna',
+     t:'The coldest weeks. Fog at dawn, mustard flowering yellow across the fields, the rabi crop fattening. Makar Sankranti and Holi fall here.'},
+    {n:'Vasanta',  e:'Spring',     s: 74,  c:'#5AA02C', months:'Chaitra–Vaiśākha',
+     t:'Spring. Neem and mango flower; the cold has broken but the heat has not arrived. New-year festivals cluster here — Ugādi, Gudi Padwa, Vishu, Baisakhi.'},
+    {n:'Grīṣhma',  e:'Summer',     s: 135, c:'#D95926', months:'Jyeṣhṭha–Āṣhāḍha',
+     t:'Summer. The Sun climbs highest, the loo blows hot and dry across the north, and the land bakes — which is exactly what pulls the monsoon in.'},
+    {n:'Varṣhā',   e:'Monsoon',    s: 196, c:'#3987E5', months:'Śhrāvaṇa–Bhādrapada',
+     t:'The rains. Two months bring more than half of Delhi’s water for the year. Rivers fill, the kharif crop is sown, and Onam and Teej are celebrated.'},
+    {n:'Śharad',   e:'Autumn',     s: 258, c:'#C98500', months:'Āśhvina–Kārtika',
+     t:'Autumn. The rain withdraws, the air turns clear and the nights cool. This is the festival season — Navrātri, Durgā Pūjā, Dussehra and Diwali.'},
+    {n:'Hemanta',  e:'Pre-winter', s: 319, c:'#9085E9', months:'Mārgaśhīrṣha–Pauṣha',
+     t:'Pre-winter. Nights get sharply colder while afternoons stay pleasant. The kharif harvest comes in and wheat is sown for spring.'},
+  ];
+  const rituAt = d => {
+    for (let i = RITU.length - 1; i >= 0; i--) if (d >= RITU[i].s) return i;
+    return RITU.length - 1;                              // before 15 Jan → Hemanta, which wraps the year
+  };
+  const rituEnd = i => RITU[(i+1) % RITU.length].s;
+
+  // ---------- coastlines ----------
+  const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const IX = {}; for (let i = 0; i < 64; i++) IX[B64[i]] = i;
+  const unpack = (s, sx, ox, sy, oy) => s.split(' ').map(r => {
+    const out = [];
+    for (let i = 0; i < r.length; i += 4){
+      out.push((IX[r[i]]*64 + IX[r[i+1]])*sx + ox, (IX[r[i+2]]*64 + IX[r[i+3]])*sy + oy);
+    }
+    return out;
+  });
+  const WORLD = unpack('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 AAKGWgKDWbKEAAKG G+K0HRK0HYKxHBKuHKKuG6KqGzKnGoKmGcKlGiKiGYKgGSKcGYKbGOKZGDKaF4KZFqKaFqKcFxKdFvKgF8KeFwKhF8KlF0KpGCKoGJKqFyKqFrKrFiKwF0KxF6KzGDKxGGKzGTK1GtK1G+K0 TpFjTqFdTuFbTxFfT5FhUSFZUYFSUfFQUcFNUjFEUrE/UgE/UYFIUTFJUNFHULFDUEFEUBFHT2FGT7FLT4FSTtFWTnFaTkFYTgFdTnFfThFfTaFkTiFnTpFj UEH9UBH1T1HyTvHuTsHyTcHwTgHtTdHmTZHmTaHpTWHtTiH2TvH2TzH9T2H7T+IBUBINUFIOUIIFUEIBUEH9 R3FRRzFRRqFXRhFlRdFpRaFvROF8RNF+RWF9RjFwRnFwRvFoRuFlRxFkR0FfR4FcR3FR SnFvSsFsSnFrSmFlSiFiShFYSbFYSVFcSQFaSJFcSIFiSEFmSEFtSHFwSNFvSNFzSUF0SZF6SlGESnGAStF+SlF1SnFv O2KDOnKDOeKGOiKLOqKPOmKPOwKTOvKUPFKZPSKaPhKcPhKZPGKVO6KROuKJOuKGO2KD EHKMEFKLEOKMEUKKEYKMEfKHEhKIEeKMEiKNEqKLEuKEE8KAE1J+E2J7EoJ9EcJ7ELJ6EJJ8EAJ9D7KAEOKBEHKCD4KCD2KEEAKFDyKGD5KLEDKNEHKM OUINOWIKOTIDOVH+ObH7OnH8OoIEOjIIOkIMOrIMOnIQOkIPOiITOdIVOZIaOdIdOkIdOkIjOdIkOPIfOLIaOOIUOUIN LEJTLAJOLIJPLEJILIJILOJCLSI8LXI7LSIzLCIxK5IxK/I1K7I4K/I5K+I+LEI+LBJCK6JFK3JLK8JTLEJT FVKcFiKbFkKYFrKWF2KWGLKXGRKUGIKSGDKSFvKSFeKTFcKYFYKZFMKbFNKdFVKc TFFuTCFqSxFpSwFmS0FiS9FmS2FgS6FbS9FTS5FTSxFcSyFSStFSSuFaSrFdSwFqS0FtTAFsTFFu DuKGDkKEDYKHDgKPDcKRDqKSD6KRECKODzKKDuKG MZKnMmKkMcKiMUKbMQKbMHKeMLKfL9KjL6KnMFKoMHKnMUKoMZKn GRHDGXHCGeG9GnG5GhG3GZG3GcG6GVG+GJHBGFHDGAHAF/HCGHHFGRHD HvIzHxIuH6ItH9ImH8IjH3IjH3InHjImHtI1HyI2HvIz KWJyKVJvKaJtKUJpKFJmJ1JoJ5JqJwJsJ3JuJvJuJxJxJ3JyJ+JvKEJxKJJwKPJyKWJy F0KnF5KlFsKhFcKhFYKjFbKmFUKlFNKpFVKtFeKtFjKrFxKpF0Kn SCFNSKFMSLFOSSFMSUFKSfFHSaFFSBFJR1FNR4FQR9FQSCFN EfKZEoKYEnKUEZKTEPKSEJKTERKVD/KUD5KVECKaEOKZEVKWEcKWEWKaEaKbEfKZ S1GyS6GsS3GoS3GhTAGfTAGaS8GeSzGfSwGkSzGyS1Gy UPIzUTIsUNItUKInUOIjUIIgUIIrUJI0UGI4UHI9UKI/UNI7UPIz RgKkRXKjRFKmRCKpQ9KpRHKsRQKtRhKnRgKk UQIZUVIaUWIVUQIUUNIQUGITUEIOUAIOUBIVUGIWUIIeUQIZ F7JvGQJnGMJmGEJoF6JkF3JoF4JvF7Jv TKGKTJGBTHGFTGF+TBGBS+GHS4GES5GIS/GJTJGNTKGK E/KPFKKPFIKMFOKKFNKHFHKFE2KKE+KLE6KNE/KP K1I5KuI3KoI3KrI7KpJAKyJFK5JCK1I5 M2KqM+KoM4KmMsKmMgKmMVKpMsKrM2Kq UUKWURKTUCKTT8KST0KVT2KYUGKYUUKW FbKLFXKIFSKIFQKMFWKRFmKPFbKL GuG3G1G4G/GyGxGwGnGzGvGzGuG3 DiIqDZIrDPIzDZIxDiIq D/KfD/KcDwKYDlKYD0KeD/Kf FGKbFJKZFHKUE8KUE9KXE2KWE2KZFGKb FAKhFBKgE0KhEqKlE9KjFAKh R0KhReKgRlKlRrKlR1KjR0Kh QVGBQRGAQPGJQRGPQXGGQVGB UwFSUpFPUiFSUrFSUxFXUwFS S1HDSzHASwHGS2HNS4HMS1HD FRJ8FPJ7FBJ+FHKBFRJ8 OdKqOOKoOMKqODKqOYKsOdKq MOIBMMH6MCH+MCIBMOIB GfKMGfKLGSKLGMKNGPKPGYKPGfKM U1FWUrFdUxFbU1FW MzKfMqKeMjKfMjKhMsKiMzKf TTFtTQFkTOFsTQFxTTFt TAGRS8GMS6GPS8GUTAGVTAGR UrKUUmKTUYKVUZKWUrKU SqGNSlGJSsGSSqGN FaKUFXKSFNKUFVKXFaKU L1INL3IKL3IFLyIFLxIML1IN SJGzSDGySEG3SLG4SJGz TrHxTkHrThHsTkHwTrHx BsJMBoJLBlJOBrJQBvJOBsJM', 0.25, -180, 0.25, -90);   // [lon,lat] pairs, whole world
+
+  // ================= a real, lit Earth =================
+  const TW = 720, TH = 360;
+  let TEX = null;
+  function buildTexture(){
+    const c = document.createElement('canvas'); c.width = TW; c.height = TH;
+    const x = c.getContext('2d');
+    x.fillStyle = '#12508C'; x.fillRect(0, 0, TW, TH);
+    x.fillStyle = '#3E8A4C';
+    for (const r of WORLD){
+      let prev = r[0];                                   // unwrap, so rings do not smear across the map
+      const pts = [r[0], r[1]];
+      for (let i = 2; i < r.length; i += 2){
+        let lon = r[i];
+        while (lon - prev > 180) lon -= 360;
+        while (lon - prev < -180) lon += 360;
+        pts.push(lon, r[i+1]); prev = lon;
+      }
+      for (const off of [-360, 0, 360]){
+        x.beginPath();
+        for (let i = 0; i < pts.length; i += 2){
+          const px = (pts[i] + off + 180)/360*TW, py = (90 - pts[i+1])/180*TH;
+          i ? x.lineTo(px, py) : x.moveTo(px, py);
+        }
+        x.closePath(); x.fill();
+      }
+    }
+    TEX = x.getImageData(0, 0, TW, TH).data;
+  }
+  const EARTH = document.createElement('canvas'), ectx = EARTH.getContext('2d');
+  const TILT = 23.44;
+  // Sun direction from Earth, in world coordinates, for an orbit angle th
+  const sunDir = th => [-Math.cos(th), -Math.sin(th), 0];
+  function drawEarth(ctx, cx, cy, R, th, spin, cam){
+    if (!TEX) buildTexture();
+    const N = Math.max(18, Math.min(240, Math.round(R*2*DPR)));
+    if (EARTH.width !== N){ EARTH.width = EARTH.height = N; }
+    const img = ectx.createImageData(N, N), d = img.data;
+    const sc = Math.cos(cam), ss = Math.sin(cam);
+    const right = [1,0,0], up = [0, ss, sc], fwd = [0, -sc, ss];     // toward the camera
+    const S = sunDir(th);
+    const Np = [Math.sin(TILT*RAD), 0, Math.cos(TILT*RAD)];          // Earth's axis — never changes
+    const E1 = [0,1,0], E2 = [-Math.cos(TILT*RAD), 0, Math.sin(TILT*RAD)];
+    const LW = clamp(260/N, 1.1, 5);                                 // line half-width, in degrees
+    const sub = Math.asin(clamp(-Math.sin(TILT*RAD)*Math.cos(th), -1, 1))/RAD;   // Sun overhead here
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++){
+      const u = (i+0.5)/N*2 - 1, v = 1 - (j+0.5)/N*2, rr = u*u + v*v;
+      const k = (j*N + i)*4;
+      if (rr > 1) continue;
+      const w = Math.sqrt(1 - rr);
+      const qx = u*right[0] + v*up[0] + w*fwd[0];
+      const qy = u*right[1] + v*up[1] + w*fwd[1];
+      const qz = u*right[2] + v*up[2] + w*fwd[2];
+      const lat = Math.asin(clamp(qx*Np[0] + qy*Np[1] + qz*Np[2], -1, 1))/RAD;
+      const lon = Math.atan2(qx*E1[0]+qy*E1[1]+qz*E1[2], qx*E2[0]+qy*E2[1]+qz*E2[2])/RAD + spin;
+      const tx = Math.floor(mod((lon + 180)/360, 1)*TW), ty = Math.floor(clamp((90-lat)/180, 0, 0.9999)*TH);
+      const t = (ty*TW + tx)*4;
+      const lam = qx*S[0] + qy*S[1] + qz*S[2];
+      const lit = 0.09 + 0.91*smooth(-0.06, 0.16, lam);              // a soft edge = twilight
+      const edge = 0.72 + 0.28*w;                                    // the limb falls away
+      let cr = TEX[t]*lit*edge + 4, cg = TEX[t+1]*lit*edge + 7, cb = TEX[t+2]*lit*edge + 18;
+      const al = Math.abs(lat), fade = (0.55 + 0.45*lit)*edge;
+      const dEq = al, dTr = Math.abs(al - TILT), dSu = Math.abs(lat - sub);
+      const dark = Math.max(1 - smooth(LW, LW*1.9, dEq), 1 - smooth(LW, LW*1.9, dTr), 1 - smooth(LW*1.15, LW*2.1, dSu));
+      if (dark > 0){ const a = dark*0.20*edge; cr = mix(cr, 12, a); cg = mix(cg, 18, a); cb = mix(cb, 34, a); }
+      const core = d => 1 - smooth(LW*0.5, LW, d);                   // flat middle, soft edge
+      const eq = core(dEq);                                          // equator
+      if (eq > 0){ const a = eq*0.38*fade; cr = mix(cr, 206, a); cg = mix(cg, 228, a); cb = mix(cb, 255, a); }
+      const tr = core(dTr);                                          // the two tropics
+      if (tr > 0){ const a = tr*0.38*fade; cr = mix(cr, 255, a); cg = mix(cg, 196, a); cb = mix(cb, 88, a); }
+      const su = 1 - smooth(LW*0.6, LW*1.15, dSu);                   // where the Sun is overhead today
+      if (su > 0){ const a = su*0.6*fade; cr = mix(cr, 255, a); cg = mix(cg, 252, a); cb = mix(cb, 228, a); }
+      d[k] = cr; d[k+1] = cg; d[k+2] = cb;
+      d[k+3] = 255*Math.min(1, (1-rr)*N*0.6 + 0.35);
+    }
+    ectx.putImageData(img, 0, 0);
+    const g = ctx.createRadialGradient(cx, cy, R*0.9, cx, cy, R*1.18);
+    g.addColorStop(0,'rgba(120,190,255,0)'); g.addColorStop(0.5,'rgba(120,190,255,.26)'); g.addColorStop(1,'rgba(120,190,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R*1.18, 0, TAU); ctx.fill();
+    ctx.drawImage(EARTH, cx - R, cy - R, R*2, R*2);
+    drawParallels(ctx, cx, cy, R, th, cam);
+  }
+  // the tropics, the equator and today's overhead-Sun line, stroked as real circles
+  function drawParallels(ctx, cx, cy, R, th, cam){
+    const ss = Math.sin(cam), sc = Math.cos(cam);
+    const up = [0, ss, sc], fwd = [0, -sc, ss];
+    const Np = [Math.sin(TILT*RAD), 0, Math.cos(TILT*RAD)];
+    const E1 = [0,1,0], E2 = [-Math.cos(TILT*RAD), 0, Math.sin(TILT*RAD)];
+    const sub = Math.asin(clamp(-Math.sin(TILT*RAD)*Math.cos(th), -1, 1))/RAD;
+    const W = Math.max(1.3, R*0.045);
+    const rings = [
+      [0,      'rgba(200,224,255,.6)',  W*0.75, 0],
+      [ TILT,  'rgba(244,201,126,.6)',  W*0.75, 0],
+      [-TILT,  'rgba(244,201,126,.6)',  W*0.75, 0],
+      [sub,    'rgba(255,248,214,1)',   W*1.2,  1],
+    ];
+    ctx.lineCap = 'round';
+    for (const [phi, col, lw, glow] of rings){
+      const sp = Math.sin(phi*RAD), cp = Math.cos(phi*RAD);
+      for (const front of [0, 1]){
+        ctx.beginPath();
+        let pen = false;
+        for (let a = 0; a <= 360.1; a += 3){
+          const ca = Math.cos(a*RAD), sa = Math.sin(a*RAD);
+          const qx = sp*Np[0] + cp*(ca*E1[0] + sa*E2[0]);
+          const qy = sp*Np[1] + cp*(ca*E1[1] + sa*E2[1]);
+          const qz = sp*Np[2] + cp*(ca*E1[2] + sa*E2[2]);
+          if (((qx*fwd[0] + qy*fwd[1] + qz*fwd[2]) > 0 ? 1 : 0) !== front){ pen = false; continue; }
+          const x = cx + R*qx, y = cy - R*(qx*up[0] + qy*up[1] + qz*up[2]);
+          if (pen) ctx.lineTo(x, y); else { ctx.moveTo(x, y); pen = true; }
+        }
+        ctx.strokeStyle = col; ctx.lineWidth = front ? lw : lw*0.7;
+        ctx.globalAlpha = front ? 1 : 0.2;
+        if (front && glow){ ctx.shadowColor = 'rgba(255,238,180,.95)'; ctx.shadowBlur = 5; }
+        ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      }
+    }
+    ctx.lineCap = 'butt'; ctx.lineWidth = 1;
+  }
+
+  // the axis, drawn in screen space — the same direction at every station
+  function axisOf(cam){
+    const sc = Math.cos(cam), ss = Math.sin(cam);
+    const Np = [Math.sin(TILT*RAD), 0, Math.cos(TILT*RAD)];
+    return [Np[0], -(Np[1]*ss + Np[2]*sc)];              // right·N , -(up·N)
+  }
+  function drawAxis(ctx, cx, cy, R, cam, strong){
+    const [ax, ay] = axisOf(cam), L = Math.hypot(ax, ay);
+    const dx = ax/L*R*1.32, dy = ay/L*R*1.32;
+    ctx.strokeStyle = strong ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.45)';
+    ctx.lineWidth = strong ? 1.8 : 1.2; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(cx - dx, cy - dy); ctx.lineTo(cx + dx, cy + dy); ctx.stroke();
+    ctx.setLineDash([]); ctx.lineWidth = 1;
+    if (strong){
+      ctx.fillStyle = 'rgba(255,255,255,.9)';
+      ctx.beginPath(); ctx.arc(cx + dx, cy + dy, 2.6, 0, TAU); ctx.fill();
+      ctx.font = '700 9px ' + FONT; ctx.textAlign = 'center';
+      ctx.fillText('N', cx + dx*1.22, cy + dy*1.22 + 3);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  // ---------- state ----------
+  let D = 172;                        // day of the year — the one number behind all three tabs
+  let mode = 'tilt', place = 0, phase = 0;
+  const G = {};
+  const space = $('space'), sky = $('sky'), xS = $('xS');
+  const th = d => mod((d - 356)/365*TAU, TAU);           // orbit angle: December solstice at 0
+
+  function fit(c){
+    const r = c.getBoundingClientRect();
+    c.width = Math.max(1, Math.round(r.width*DPR)); c.height = Math.max(1, Math.round(r.height*DPR));
+    return { w: r.width, h: r.height, ctx: c.getContext('2d') };
+  }
+  function starfield(ctx, x, y, w, h, alpha){
+    if (alpha <= 0) return;
+    for (const s of stars){ ctx.fillStyle = `rgba(228,235,255,${(0.2 + s.a*0.8)*alpha})`; ctx.fillRect(x + s.x*w, y + s.y*h, s.s, s.s); }
+  }
+  function halo(ctx, text, x, y, fill, px){
+    ctx.font = '800 ' + (px || 11) + 'px ' + FONT;
+    ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(6,10,24,.6)';
+    ctx.strokeText(text, x, y); ctx.lineWidth = 1;
+    ctx.fillStyle = fill; ctx.fillText(text, x, y);
+  }
+  function rrect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath();
+  }
+
+  // ================= SPACE: the orbit (tabs 1 and 2) =================
+  const CAM = 26*RAD;
+  const STATION = [
+    {d: doy(3,21),  n:'21 Mar', s:'Equal day & night'},
+    {d: doy(6,21),  n:'21 Jun', s:'North leans in'},
+    {d: doy(9,23),  n:'23 Sep', s:'Equal day & night'},
+    {d: doy(12,22), n:'22 Dec', s:'North leans away'},
+  ];
+  function orbitGeom(w, h){
+    const a = Math.min((w/2 - 10)/1.52, (h/2 - 20)/0.98, w*0.42);
+    return { cx: w*0.5, cy: h*0.5, a, b: a*Math.sin(CAM), R: clamp(a*0.34, 15, 58) };
+  }
+  const orbitXY = (o, t) => [o.cx + o.a*Math.cos(t), o.cy - o.b*Math.sin(t)];
+  function drawOrbit(){
+    const {w, h, ctx} = G.space;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#070B1A'; ctx.fillRect(0,0,w,h);
+    starfield(ctx, 0, 0, w, h, 0.55);
+    const o = orbitGeom(w, h); G.o = o;
+    const t = th(D), [ex, ey] = orbitXY(o, t);
+
+    if (mode === 'ritus'){                               // the year painted as six arcs
+      ctx.lineWidth = 9; ctx.lineCap = 'butt';
+      for (let i = 0; i < RITU.length; i++){
+        const a0 = th(RITU[i].s), a1 = th(rituEnd(i) - 0.001);
+        ctx.strokeStyle = RITU[i].c; ctx.globalAlpha = (i === rituAt(D)) ? 1 : 0.42;
+        ctx.beginPath();
+        ctx.ellipse(o.cx, o.cy, o.a, o.b, 0, -a0, -a1, true);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1; ctx.lineWidth = 1; ctx.lineCap = 'butt';
+      for (let i = 0; i < RITU.length; i++){             // name each arc at its midpoint
+        if (i === rituAt(D)) continue;                   // that one is on the badge, and Earth is parked on it
+        const mid = th(RITU[i].s + (mod(rituEnd(i) - RITU[i].s, 365))/2);
+        const cm = Math.cos(mid);
+        const al = cm > 0.3 ? 'left' : cm < -0.3 ? 'right' : 'center';
+        const pad = al === 'left' ? 6 : al === 'right' ? w - 6 : 0;
+        let lx = o.cx + (o.a + 14)*cm;
+        lx = al === 'left' ? Math.min(lx, w - 62) : al === 'right' ? Math.max(lx, 62) : lx;
+        const ly2 = o.cy - (o.b + 16)*Math.sin(mid);
+        ctx.textAlign = al;
+        halo(ctx, RITU[i].n, lx, ly2 + 3, i === rituAt(D) ? '#FFFFFF' : 'rgba(226,234,250,.62)', i === rituAt(D) ? 12 : 10);
+      }
+      ctx.textAlign = 'left';
+    } else {
+      ctx.setLineDash([4,5]); ctx.strokeStyle = 'rgba(140,160,215,.55)';
+      ctx.beginPath(); ctx.ellipse(o.cx, o.cy, o.a, o.b, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+      for (const st of STATION){                         // the four turning points of the year
+        const [sx, sy] = orbitXY(o, th(st.d));
+        const r = Math.max(6, o.R*0.30);
+        ctx.globalAlpha = Math.abs(mod(st.d - D + 182, 365) - 182) < 7 ? 0.3 : 1;
+        ctx.fillStyle = 'rgba(20,31,55,.95)'; ctx.beginPath(); ctx.arc(sx, sy, r, 0, TAU); ctx.fill();
+        ctx.strokeStyle = 'rgba(150,172,220,.5)'; ctx.stroke();
+        drawAxis(ctx, sx, sy, r, CAM, false);
+        if (ctx.globalAlpha === 1){
+          ctx.font = '700 9.5px ' + FONT; ctx.textAlign = 'center';
+          ctx.fillStyle = 'rgba(210,222,245,.85)';
+          ctx.fillText(st.n, sx, sy + (sy > o.cy ? r + 22 : -r - 13));
+          ctx.textAlign = 'left';
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    const sr = Math.max(13, o.a*0.115);                  // the Sun
+    const sg = ctx.createRadialGradient(o.cx, o.cy, sr*0.3, o.cx, o.cy, sr*3.4);
+    sg.addColorStop(0,'rgba(255,225,130,.85)'); sg.addColorStop(0.35,'rgba(255,196,74,.35)'); sg.addColorStop(1,'rgba(255,196,74,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(o.cx, o.cy, sr*3.4, 0, TAU); ctx.fill();
+    const sd = ctx.createRadialGradient(o.cx - sr*0.3, o.cy - sr*0.3, 1, o.cx, o.cy, sr);
+    sd.addColorStop(0,'#FFF8DC'); sd.addColorStop(1,'#FFC43E');
+    ctx.fillStyle = sd; ctx.beginPath(); ctx.arc(o.cx, o.cy, sr, 0, TAU); ctx.fill();
+    ctx.font = '800 10px ' + FONT; ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255,214,110,.9)'; ctx.fillText('SUN', o.cx, o.cy + sr + 13);
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = 'rgba(255,214,110,.35)';           // sunlight reaching Earth
+    ctx.beginPath(); ctx.moveTo(o.cx + Math.cos(t)*sr*1.4, o.cy - Math.sin(t)*sr*1.4);
+    ctx.lineTo(ex - Math.cos(t)*o.R*1.3, ey + Math.sin(t)*o.R*1.3); ctx.stroke();
+
+    drawEarth(ctx, ex, ey, o.R, t, D*12, CAM);
+    drawAxis(ctx, ex, ey, o.R, CAM, true);
+    G.ex = ex; G.ey = ey;
+
+    ctx.textAlign = 'center';
+    const ly = clamp(ey + (ey < o.cy ? -1 : 1)*(o.R*1.5 + 15), 16, h - 26);
+    halo(ctx, dateStr(D), clamp(ex, 30, w - 30), ly, '#FFFFFF', 12.5);
+    ctx.textAlign = 'left';
+  }
+
+  // ================= GROUND: noon Sun and shadow (tab 1) =================
+  // How the year actually looks on the north Indian plain: leaves fall in Feb–Mar,
+  // the land is greenest in the rains, and the showiest flowers come in the worst heat.
+  const cyc = (pts, d, f3) => {
+    const n = pts.length;
+    for (let i = 0; i < n; i++){
+      const a = pts[i], b = pts[(i+1) % n];
+      const span = mod(b[0] - a[0], 365) || 365, t = mod(d - a[0], 365);
+      if (t <= span) return (f3 ? mix3 : mix)(a[1], b[1], span ? t/span : 0);
+    }
+    return pts[0][1];
+  };
+  const K_GREEN = [[15,.40],[60,.18],[84,.40],[112,.44],[152,.22],[178,.26],[201,.80],[243,1],[288,.76],[334,.55]];
+  const K_LEAF  = [[15,.55],[46,.32],[64,.13],[84,.50],[115,.80],[166,.85],[227,1],[288,.92],[344,.70]];
+  const K_RED   = [[32,0],[52,.30],[70,1],[88,.60],[105,0],[350,0]];        // palāś, semal
+  const K_YEL   = [[110,0],[128,.4],[145,1],[168,.85],[190,0],[300,0]];     // amaltās, gulmohar
+  const K_RAIN  = [[60,0],[160,0],[178,.25],[196,.85],[235,1],[268,.5],[288,.05],[330,0]];
+  const K_HAZE  = [[15,.40],[60,.28],[100,.45],[135,.78],[166,.72],[196,.22],[250,.08],[288,.12],[330,.34]];
+  const K_CROP  = [[15,[150,162,74]],[75,[186,170,92]],[110,[188,160,86]],[140,[152,124,84]],
+                   [190,[112,140,70]],[230,[70,132,58]],[280,[150,156,84]],[310,[176,158,96]],[345,[132,152,70]]];
+
+  function canopy(ctx, x, y, r, leaf, green, sc){
+    const col = mix3([126,136,74], [46,112,48], green);
+    ctx.globalAlpha = Math.pow(clamp(leaf, 0, 1), 1.25);
+    ctx.fillStyle = css(col);
+    const k = 0.5 + 0.5*leaf;
+    for (const [dx, dy, f] of [[0,0,1],[-0.62,0.16,.72],[0.62,0.14,.74],[-0.3,-0.42,.66],[0.34,-0.4,.62]]){
+      ctx.beginPath(); ctx.arc(x + dx*r*sc, y + dy*r*sc, r*f*k*sc, 0, TAU); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function tree(ctx, x, base, hgt, leaf, green, red, yel){
+    const top = base - hgt*0.52;
+    ctx.strokeStyle = '#4B3A2A'; ctx.lineCap = 'round';
+    ctx.lineWidth = Math.max(2, hgt*0.085);
+    ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, top); ctx.stroke();
+    ctx.lineWidth = Math.max(1.2, hgt*0.045);
+    for (const [dx, dy] of [[-0.30,-0.26],[0.30,-0.24],[-0.14,-0.38],[0.16,-0.36]]){
+      ctx.beginPath(); ctx.moveTo(x, top + hgt*0.06); ctx.lineTo(x + dx*hgt, top + dy*hgt); ctx.stroke();
+    }
+    ctx.lineCap = 'butt'; ctx.lineWidth = 1;
+    canopy(ctx, x, base - hgt*0.78, hgt*0.30, leaf, green, 1);
+    const blooms = Math.round(20*Math.max(red, yel));          // flowers, on bare branches in spring
+    if (blooms){
+      seed = 91;
+      ctx.fillStyle = red > yel ? '#E8442A' : '#F6C42A';
+      for (let i = 0; i < blooms; i++){
+        const a = rnd()*TAU, rr = Math.sqrt(rnd())*hgt*0.34;
+        ctx.beginPath();
+        ctx.arc(x + Math.cos(a)*rr, base - hgt*0.78 + Math.sin(a)*rr*0.8, Math.max(1.3, hgt*0.035), 0, TAU);
+        ctx.fill();
+      }
+    }
+  }
+
+  function shadowScene(){
+    const {w, h, ctx} = G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    const p = PLACE[place], alt = noonAlt(p.lat, D), north = decl(D) > p.lat;
+    const gyy = h*0.72;
+    const green = cyc(K_GREEN, D), leaf = cyc(K_LEAF, D), red = cyc(K_RED, D),
+          yel = cyc(K_YEL, D), rain = cyc(K_RAIN, D), haze = cyc(K_HAZE, D);
+    const crop = cyc(K_CROP, D, true);
+
+    const topC = mix3(mix3([58,118,198], [134,158,184], haze), [74,84,100], rain);
+    const horC = mix3(mix3([186,214,240], [218,208,184], haze), [150,158,168], rain);
+    const sg = ctx.createLinearGradient(0, 0, 0, gyy);
+    sg.addColorStop(0, css(topC)); sg.addColorStop(1, css(horC));
+    ctx.fillStyle = sg; ctx.fillRect(0, 0, w, h);
+
+    const sunR = Math.max(9, Math.min(w,h)*0.05);              // the Sun, dimmed under cloud
+    const arc = Math.min(h*0.56, w*0.4);
+    const px = w*0.46, ph = Math.min(h*0.30, 62);
+    const dir = north ? -1 : 1;
+    const sx = px - dir*Math.cos(alt*RAD)*arc, sy = gyy - Math.sin(alt*RAD)*arc;
+    ctx.globalAlpha = 1 - rain*0.55;
+    const gg = ctx.createRadialGradient(sx, sy, sunR*0.2, sx, sy, sunR*3.2);
+    gg.addColorStop(0,'rgba(255,242,190,.8)'); gg.addColorStop(1,'rgba(255,214,120,0)');
+    ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(sx, sy, sunR*3.2, 0, TAU); ctx.fill();
+    const sd = ctx.createRadialGradient(sx, sy, 0, sx, sy, sunR);
+    sd.addColorStop(0,'#FFFBEA'); sd.addColorStop(1,'#F6BF52');
+    ctx.fillStyle = sd; ctx.beginPath(); ctx.arc(sx, sy, sunR, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+    if (rain > 0.25){                                          // monsoon cloud over it
+      ctx.fillStyle = 'rgba(214,220,230,' + (0.5*rain).toFixed(2) + ')';
+      for (let i = 0; i < 3; i++){
+        const cx2 = w*(0.18 + i*0.3), cy2 = h*0.12, r = h*0.055;
+        ctx.beginPath(); ctx.arc(cx2, cy2, r, 0, TAU); ctx.arc(cx2 + r*0.8, cy2 + r*0.12, r*0.75, 0, TAU);
+        ctx.arc(cx2 - r*0.8, cy2 + r*0.16, r*0.7, 0, TAU); ctx.fill();
+      }
+    }
+    ctx.fillStyle = 'rgba(232,226,208,' + (0.35*haze).toFixed(2) + ')';   // haze sitting on the horizon
+    ctx.fillRect(0, gyy - h*0.16, w, h*0.16);
+
+    seed = 17;                                                 // a line of trees in the distance
+    for (let i = 0; i < 5; i++){
+      const tx = w*(0.06 + i*0.21 + rnd()*0.05);
+      canopy(ctx, tx, gyy - h*0.022, h*0.05, Math.max(leaf, 0.42), green, 1);
+    }
+
+    const fieldH = Math.max(10, (h - gyy)*0.34);               // the field, then the near ground
+    ctx.fillStyle = css(crop); ctx.fillRect(0, gyy, w, fieldH);
+    ctx.fillStyle = css(mix3([158,136,92], [72,124,58], green));
+    ctx.fillRect(0, gyy + fieldH, w, h - gyy - fieldH);
+    ctx.strokeStyle = 'rgba(0,0,0,.10)';
+    ctx.beginPath(); ctx.moveTo(0, gyy + fieldH); ctx.lineTo(w, gyy + fieldH); ctx.stroke();
+    if (D > 18 && D < 78){                                     // mustard in flower
+      seed = 53; ctx.fillStyle = '#E8C33A';
+      for (let i = 0; i < 26; i++){
+        ctx.beginPath(); ctx.arc(rnd()*w, gyy + 3 + rnd()*(fieldH - 5), 1.6, 0, TAU); ctx.fill();
+      }
+    }
+    if (rain > 0.45){                                          // a puddle
+      ctx.fillStyle = 'rgba(150,186,214,.55)';
+      ctx.beginPath(); ctx.ellipse(w*0.74, gyy + fieldH + (h - gyy - fieldH)*0.6, w*0.13, h*0.018, 0, 0, TAU); ctx.fill();
+    }
+
+    const twx = Math.max(w*0.15, 38);
+    tree(ctx, twx, gyy + 1, Math.min(h*0.38, 80), leaf, green, red, yel);
+    if (leaf < 0.45 && D > 30 && D < 95){                      // the leaves coming down
+      seed = 71; ctx.fillStyle = 'rgba(176,138,74,.9)';
+      for (let i = 0; i < 9; i++){
+        const lx = twx + (rnd() - 0.5)*w*0.22;
+        const ly = gyy - h*0.30 + mod(rnd()*h*0.3 + D*3.1, h*0.30);
+        ctx.save(); ctx.translate(lx, ly); ctx.rotate(rnd()*TAU);
+        ctx.beginPath(); ctx.ellipse(0, 0, 3.2, 1.6, 0, 0, TAU); ctx.fill(); ctx.restore();
+      }
+    }
+    if (rain > 0.1){                                           // rain
+      ctx.strokeStyle = 'rgba(196,222,248,' + (0.55*rain).toFixed(2) + ')'; ctx.lineWidth = 1.3;
+      seed = 37;
+      for (let i = 0, N = Math.round(46*rain); i < N; i++){
+        const rx = rnd()*w, ry = rnd()*gyy;
+        ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 2, ry + 10); ctx.stroke();
+      }
+      ctx.lineWidth = 1;
+    }
+
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(px, gyy); ctx.lineTo(sx, sy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = 'rgba(255,255,255,.5)';
+    ctx.beginPath(); ctx.arc(px, gyy, 26, dir > 0 ? Math.PI : -alt*RAD, dir > 0 ? Math.PI + alt*RAD : 0); ctx.stroke();
+    halo(ctx, Math.round(alt) + '°', px - dir*40, gyy - 12, '#FFFFFF', 11);
+
+    const zero = alt > 89.4;
+    const shadow = zero ? 0 : ph/Math.tan(clamp(alt,1,90)*RAD);
+    ctx.fillStyle = 'rgba(0,0,0,' + (0.30 - 0.18*rain).toFixed(2) + ')';
+    if (shadow > 0.5) ctx.fillRect(Math.min(px, px + dir*shadow), gyy, Math.abs(dir*shadow), 7);
+    ctx.fillStyle = '#20293A';
+    ctx.fillRect(px - 3, gyy - ph, 6, ph);
+    ctx.beginPath(); ctx.arc(px, gyy - ph - 5, 6, 0, TAU); ctx.fill();
+
+    ctx.font = '700 10px ' + FONT;
+    ctx.textAlign = 'left';  halo(ctx, '← SOUTH', 11, gyy + 16, 'rgba(255,255,255,.72)', 9.5);
+    ctx.textAlign = 'right'; halo(ctx, 'NORTH →', w - 11, gyy + 16, 'rgba(255,255,255,.72)', 9.5);
+    ctx.textAlign = 'center';
+    if (zero){
+      halo(ctx, 'NO SHADOW AT ALL', px, gyy - 14, '#FFE08A', 12);
+    } else {
+      ctx.textAlign = dir > 0 ? 'left' : 'right';
+      halo(ctx, 'shadow ' + (shadow/ph).toFixed(2) + '× height', px + dir*12, gyy - 10, 'rgba(255,255,255,.92)', 10.5);
+    }
+    ctx.textAlign = 'left';
+    halo(ctx, p.n + ' · noon Sun in the ' + (north ? 'NORTH' : 'SOUTH'), 11, 36, 'rgba(255,255,255,.8)', 9.5);
+  }
+
+  // ================= GROUND: Delhi's year, two charts (tab 2) =================
+  const C_TEMP = '#C98500', C_RAIN = '#3987E5';
+  function climateScene(){
+    const {w, h, ctx} = G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#0B1020'; ctx.fillRect(0,0,w,h);
+    const L = 30, Rp = 10, top = 20, bot = h - 16, midGap = 14;
+    const hTemp = (bot - top - midGap)*0.46, hRain = (bot - top - midGap)*0.54;
+    const tY = top, rY = top + hTemp + midGap;
+    const X = m => L + (w - L - Rp)*((m + 0.5)/12);
+    const now = (D - 1)/365;
+    const nowX = L + (w - L - Rp)*now;
+
+    ctx.strokeStyle = 'rgba(255,255,255,.07)';            // recessive grid
+    for (let m = 0; m <= 12; m += 3){
+      const x = L + (w - L - Rp)*(m/12);
+      ctx.beginPath(); ctx.moveTo(x, tY); ctx.lineTo(x, bot); ctx.stroke();
+    }
+    ctx.font = '700 9px ' + FONT;
+
+    const tLo = 3, tHi = 45;                              // chart 1 — temperature
+    const ty = v => tY + hTemp*(1 - (v - tLo)/(tHi - tLo));
+    ctx.strokeStyle = 'rgba(255,255,255,.09)';
+    for (const v of [40, 20]){
+      ctx.beginPath(); ctx.moveTo(L, ty(v)); ctx.lineTo(w - Rp, ty(v)); ctx.stroke();
+      ctx.fillStyle = 'rgba(180,192,214,.65)'; ctx.fillText(v === 40 ? '40°C' : '20°', 4, ty(v) + 3);
+    }
+    ctx.strokeStyle = C_TEMP; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    for (let m = 0; m < 12; m++){ const x = X(m), y = ty(TMAX[m]); m ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(201,133,0,.45)'; ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    for (let m = 0; m < 12; m++){ const x = X(m), y = ty(TMIN[m]); m ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth = 1;
+    if (monthOf(D) < 9){                                  // name the two lines, where nothing else sits
+      ctx.font = '700 9px ' + FONT; ctx.textAlign = 'right';
+      ctx.fillStyle = 'rgba(226,234,250,.8)';
+      ctx.fillText('day max', w - Rp - 2, ty(TMAX[11]) - 8);
+      ctx.fillText('night min', w - Rp - 2, ty(TMIN[11]) + 14);
+      ctx.textAlign = 'left';
+    }
+
+    const rHi = 250;                                      // chart 2 — rainfall
+    const bw = (w - L - Rp)/12 - 3;
+    for (let m = 0; m < 12; m++){
+      const bh = Math.max(1.5, hRain*RAIN[m]/rHi), x = X(m) - bw/2, y = rY + hRain - bh;
+      ctx.fillStyle = C_RAIN;
+      rrect(ctx, x, y, bw, bh, Math.min(4, bh/2)); ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.09)';
+    const r200 = rY + hRain - hRain*200/rHi;
+    ctx.beginPath(); ctx.moveTo(L, r200); ctx.lineTo(w - Rp, r200); ctx.stroke();
+    ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(180,192,214,.65)';
+    ctx.fillText('200mm', 4, r200 + 3);
+    ctx.strokeStyle = 'rgba(255,255,255,.14)';
+    ctx.beginPath(); ctx.moveTo(L, rY + hRain); ctx.lineTo(w - Rp, rY + hRain); ctx.stroke();
+
+    ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(160,174,200,.7)'; ctx.textAlign = 'center';
+    for (const m of [0, 3, 6, 9]) ctx.fillText(MON[m], X(m), bot + 12);
+    ctx.textAlign = 'left';
+    const m0 = monthOf(D);                                // the month you are in, labelled directly
+    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(nowX, tY - 6); ctx.lineTo(nowX, bot); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(X(m0), ty(TMAX[m0]), 3.2, 0, TAU); ctx.fill();
+    ctx.textAlign = 'center';
+    halo(ctx, MON[m0], nowX, bot + 12, '#FFFFFF', 10);
+    halo(ctx, TMAX[m0].toFixed(0) + '°', clamp(X(m0), L + 14, w - Rp - 14), Math.max(tY + 10, ty(TMAX[m0]) - 8), '#F0C46A', 10.5);
+    halo(ctx, RAIN[m0].toFixed(0) + ' mm', clamp(X(m0), L + 22, w - Rp - 22),
+         Math.max(rY + 10, rY + hRain - Math.max(1.5, hRain*RAIN[m0]/rHi) - 6), '#9CC7F5', 10.5);
+    ctx.textAlign = 'left';
+  }
+
+  // ================= info for the card =================
+  function tiltInfo(){
+    const p = PLACE[place], dl = decl(D), len = dayLen(p.lat, D), alt = noonAlt(p.lat, D);
+    const lean = dl > 4 ? 'towards' : dl < -4 ? 'away from' : 'sideways';
+    let say;
+    if (Math.abs(dl) < 1.2) say = 'Equinox. The Sun stands right over the equator, so sunlight falls evenly on both halves and day and night are nearly equal.';
+    else if (dl > 22.5) say = 'June solstice. The Sun is directly over the Tropic of Cancer — as far north as it can ever get. India’s longest day, highest noon Sun.';
+    else if (dl < -22.5) say = 'December solstice. The Sun is directly over the Tropic of Capricorn — as far south as it can get. India’s shortest day, lowest noon Sun.';
+    else say = `The axis keeps pointing the same way, so the northern half leans ${lean} the Sun. The bright line — the Sun overhead — is at ${Math.abs(dl).toFixed(0)}° ${dl >= 0 ? 'north' : 'south'}.`;
+    const z = p.zsd.some(z => Math.abs(z - D) < 1.2);
+    return { say, label: dateStr(D), cls: Math.abs(dl) > 22.5 ? 'hot' : Math.abs(dl) < 1.2 ? 'warm' : '',
+             meterLabel: 'Day length · ' + p.n, meter: len/24, meterVal: hm(len),
+             order: z ? '☀️ Zero Shadow Day!' : 'Overhead ' + (dl >= 0 ? dl.toFixed(1) + '°N' : (-dl).toFixed(1) + '°S'), on: z };
+  }
+  function rituInfo(){
+    const i = rituAt(D), r = RITU[i];
+    let acc = 0; for (let m = 0; m < 12; m++){ const end = CUM[m] + MD[m]; if (D >= end) acc += RAIN[m]; else { acc += RAIN[m]*clamp((D - CUM[m])/MD[m], 0, 1); break; } }
+    return { say: r.t, label: r.n + ' · ' + r.e, cls: 'warm',
+             meterLabel: 'Delhi’s rain so far', meter: acc/RAIN_YEAR, meterVal: Math.round(acc) + ' mm',
+             order: r.months, on: false };
+  }
+  // ================= shell =================
+  const MODE = {
+    tilt:    { tag:'One year round the Sun', skyTag:'Noon, where you live', info: tiltInfo,
+               space: drawOrbit, ground: shadowScene, places: true,
+               legend:'<span><i style="background:#FFCE7A"></i>Tropic of Cancer &amp; Capricorn</span><span><i style="background:#FFF6CE"></i>Sun overhead here today</span>',
+               chips: [['21 Mar', doy(3,21)], ['21 Jun', doy(6,21)], ['23 Sep', doy(9,23)], ['22 Dec', doy(12,22)]], clab:'Jump' },
+    ritus:   { tag:'The year as six seasons', skyTag:'Delhi through the year', info: rituInfo,
+               space: drawOrbit, ground: climateScene, places: false,
+               legend:'<span>Each colour = one ritu, about two months</span>',
+               chips: RITU.map(r => [r.n, r.s]), clab:'Ritu' },
+  };
+
+  function draw(){
+    const m = MODE[mode];
+    m.space(); m.ground();
+    const inf = m.info();
+    const pill = $('pill'); pill.textContent = inf.label; pill.className = 'badge ' + inf.cls;
+    $('say').textContent = inf.say;
+    $('meterLabel').textContent = inf.meterLabel;
+    $('bar').style.width = Math.round(inf.meter*100) + '%';
+    $('meterVal').textContent = inf.meterVal;
+    const o = $('order'); o.textContent = inf.order; o.className = 'badge' + (inf.on ? ' on' : '');
+    if (document.activeElement !== xS) xS.value = D;
+    for (const b of $('chips').querySelectorAll('button')) b.setAttribute('aria-pressed', Math.abs(D - (+b.dataset.d)) < 2);
+    for (const b of $('places').querySelectorAll('button')) b.setAttribute('aria-pressed', +b.dataset.p === place);
+  }
+  function resize(){ G.space = fit(space); G.sky = fit(sky); draw(); }
+
+  function buildChips(){
+    const m = MODE[mode], c = $('chips');
+    c.innerHTML = '<span class="clab">' + m.clab + '</span>';
+    for (const [name, d] of m.chips){
+      const b = document.createElement('button'); b.textContent = name; b.dataset.d = d;
+      b.onclick = () => { stop(); D = d; draw(); };
+      c.appendChild(b);
+    }
+  }
+  function buildPlaces(){
+    const el = $('places'); el.innerHTML = '';
+    PLACE.forEach((p, i) => {
+      const b = document.createElement('button'); b.textContent = p.n; b.dataset.p = i;
+      b.onclick = () => { place = i; draw(); };
+      el.appendChild(b);
+    });
+  }
+  function setMode(next){
+    stop(); mode = next;
+    document.body.classList.toggle('ritus', mode === 'ritus');
+    for (const [id, on] of [['tabT', mode === 'tilt'], ['tabR', mode === 'ritus']]){
+      $(id).setAttribute('aria-selected', on); $(id).classList.toggle('here', on);
+    }
+    const m = MODE[mode];
+    $('spaceTag').textContent = m.tag;
+    $('skyTag').textContent = m.skyTag;
+    $('legend').innerHTML = m.legend;
+    $('places').hidden = !m.places;
+    buildChips(); closeWhy();
+    requestAnimationFrame(resize);
+  }
+  $('tabT').onclick = () => setMode('tilt');
+  $('tabR').onclick = () => setMode('ritus');
+
+  const pos = (e, c) => { const r = c.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; };
+  let drag = false;
+  space.addEventListener('pointerdown', e => {
+    if (!G.o) return;
+    const p = pos(e, space), d = Math.hypot((p.x - G.o.cx)/G.o.a, (p.y - G.o.cy)/G.o.b);
+    if (d > 0.45 && d < 1.6){ drag = true; space.setPointerCapture(e.pointerId); stop(); orbitTo(p); }
+  });
+  function orbitTo(p){
+    const t = Math.atan2(-(p.y - G.o.cy)/G.o.b, (p.x - G.o.cx)/G.o.a);
+    D = clamp(mod(t/TAU*365 + 356, 365), 1, 365);
+    draw();
+  }
+  addEventListener('pointermove', e => { if (drag) orbitTo(pos(e, space)); });
+  const endDrag = () => { if (drag){ drag = false; draw(); } };
+  addEventListener('pointerup', endDrag);
+  addEventListener('pointercancel', endDrag);
+  xS.addEventListener('input', () => { stop(); D = +xS.value; draw(); });
+
+  const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play';
+  const PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  let anim = null; const playBtn = $('play');
+  function stop(){ if (anim){ cancelAnimationFrame(anim); anim = null; playBtn.innerHTML = PLAY; } }
+  function speed(){
+    if (mode === 'tilt'){ const a = Math.abs(decl(D)); return (a > 22.6 || a < 1.5) ? 12 : 42; }
+    return 38;
+  }
+  playBtn.onclick = () => {
+    if (anim) return stop();
+    if (reduce){ D = doy(6,21); draw(); return; }
+    playBtn.innerHTML = PAUSE;
+    let last = performance.now(), gone = 0;
+    const step = t => {
+      const dt = Math.min(0.05, (t - last)/1000); last = t;
+      const s = speed()*dt; D = mod(D - 1 + s, 365) + 1; gone += s;
+      draw();
+      if (gone >= 365){ anim = null; playBtn.innerHTML = PLAY; return; }
+      anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  };
+
+  const WHY = {
+    tilt: `<h3>It is not about being closer</h3><p>Almost everyone gets this wrong. Earth is actually <b>closest</b> to the Sun in early January, in the middle of the northern winter. Distance is not what makes seasons.</p>
+      <h3>So what does?</h3><p>Earth spins on an axis that is tilted 23½°, and that axis keeps pointing in the same direction all year — at the Pole Star. Watch the dashed line in the top picture as Earth goes round: it never swings about. Because it stays fixed, the northern half leans towards the Sun in June and away from it in December.</p>
+      <h3>Leaning towards the Sun does two things</h3><p>The Sun climbs higher at noon, so its light hits the ground more straight-on and is concentrated instead of spread out. And the day is longer, so the heating lasts more hours. Both together make summer.</p>
+      <h3>What the two tropics are</h3><p>The Sun can only ever be <b>directly overhead</b> between two lines: the Tropic of Cancer, 23½° north, and the Tropic of Capricorn, 23½° south. Watch the pale line on the globe — it is where the Sun stands overhead today. It slides from one tropic to the other and back once a year, and touches them on exactly two days: the solstices. Those lines sit where they do because Earth’s tilt is 23½°. Ujjain is on the Tropic of Cancer, so it gets an overhead Sun; Delhi, further north, never does.</p>
+      <h3>The shadow test</h3><p>Stand a stick upright and mark the tip of its shadow at noon on the same day of each month. The shadow shrinks towards June and stretches towards December. In Delhi it never disappears — but in Bengaluru or Ujjain it does, twice a year, on <b>Zero Shadow Day</b>, because they sit inside the Tropics where the Sun can stand exactly overhead.</p>
+      <h3>Why does Earth look dark in September?</h3><p>Only because of where we are standing. We watch the orbit from one side, so in March we see Earth’s daylight face and in September its night face. Nothing about the seasons changes — sunlight always falls on exactly half the planet, whichever half we happen to be looking at.</p>
+      <h3>Why the tree is not bare in December</h3><p>Because it is a north Indian tree. Here the big leaf fall comes in February and March, at the end of Śhiśhira, and the new leaves push out straight afterwards. The land is greenest in the <b>rains</b>, not in summer. And the showiest flowers — palāś and semal on bare branches in March, amaltās and gulmohar in the worst heat of May — come at the moments a European picture book would draw as dead. Drag the date and watch the tree, the field and the sky change with it.</p>
+      <h3>Remember</h3><p><b>Rotation</b> (one spin, 24 hours) gives day and night. <b>Revolution</b> (one lap, one year) plus the <b>tilt</b> gives the seasons.</p>`,
+    ritus: `<h3>Why six and not four?</h3><p>The four-season picture — spring, summer, autumn, winter — comes from Europe, where the big yearly event is temperature. In India the big yearly event is <b>rain</b>. The classical Indian calendar therefore splits the year into six ritus and gives the rains a season of their own.</p>
+      <h3>Each ritu is two months</h3><p>Ritus follow the Hindu lunar calendar, so their dates shift by a couple of weeks from year to year: Śhiśhira (Māgha–Phālguna), Vasanta (Chaitra–Vaiśākha), Grīṣhma (Jyeṣhṭha–Āṣhāḍha), Varṣhā (Śhrāvaṇa–Bhādrapada), Śharad (Āśhvina–Kārtika), Hemanta (Mārgaśhīrṣha–Pauṣha).</p>
+      <h3>Read the two charts</h3><p>The upper line is Delhi's temperature, the lower bars are its rainfall — two different measurements, so they get two separate charts rather than one crowded picture. Notice they do not peak together: the hottest month is May, but the wettest is August. The rain actually cools the summer down.</p>
+      <h3>Look what the rain does</h3><p>July and August alone bring about 443 mm of Delhi's 774 mm for the whole year. Three months of the twelve carry most of the water. That is why Varṣhā is a season in its own right.</p>
+      <h3>Remember</h3><p>The tilt gives every place on Earth its seasons. What the seasons <i>feel</i> like depends on where you stand — and in India, that means the monsoon.</p>`,
+  };
+  const veil = $('veil'), sheet = $('sheet');
+  function openWhy(){
+    $('sheetTitle').textContent = mode === 'tilt' ? 'Why? · The tilt' : 'Why? · Six ritus';
+    $('sheetBody').innerHTML = WHY[mode];
+    $('sheetBody').scrollTop = 0;
+    veil.classList.add('open'); sheet.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false'); $('whyBtn').setAttribute('aria-expanded', 'true');
+  }
+  function closeWhy(){
+    veil.classList.remove('open'); sheet.classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true'); $('whyBtn').setAttribute('aria-expanded', 'false');
+  }
+  $('whyBtn').onclick = () => sheet.classList.contains('open') ? closeWhy() : openWhy();
+  veil.onclick = closeWhy;
+  $('sheetClose').onclick = closeWhy;
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeWhy(); });
+  let sy = null;
+  $('grab').addEventListener('pointerdown', e => { sy = e.clientY; $('grab').setPointerCapture(e.pointerId); });
+  $('grab').addEventListener('pointermove', e => { if (sy !== null) sheet.style.transform = `translateY(${Math.max(0, e.clientY - sy)}px)`; });
+  $('grab').addEventListener('pointerup', e => { const dy = e.clientY - (sy ?? e.clientY); sy = null; sheet.style.transform = ''; if (dy > 60) closeWhy(); });
+
+  addEventListener('resize', resize);
+  addEventListener('orientationchange', () => setTimeout(resize, 150));
+  if ('ResizeObserver' in window){
+    let last = '';
+    new ResizeObserver(() => {
+      const k = [space.clientWidth, space.clientHeight, sky.clientWidth, sky.clientHeight].join();
+      if (k !== last){ last = k; resize(); }
+    }).observe(document.querySelector('.app'));
+  }
+  buildPlaces();
+  setMode('tilt');
+  if (document.fonts) document.fonts.ready.then(resize);
+})();
+</script>
+</body>
+</html>
