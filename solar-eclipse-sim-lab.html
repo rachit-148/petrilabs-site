@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Solar Eclipse Simulation</title>
+<style>
+:root{
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE; --gdeep:#1F7A43;
+  --amber:#B07A1E; --atint:#FDF4E6;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --sheet:#FFFFFF; --pad:#F4F6F9;
+  --shadow:0 1px 2px rgba(20,33,61,.04);
+  --lunar:#D2643A; --ltint:#FCEEE8; --solar:#D2A24C; --stint:#FDF4E6;
+  --accent:var(--lunar); --atone:var(--ltint);
+  --scene:#0B1020;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+    --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+    --amber:#D9A44E; --atint:#2A2416;
+    --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+    --chip:#1A2130; --icbg:#212938; --sheet:#171D2B; --pad:#212938;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --lunar:#E8845C; --ltint:#33211B; --solar:#E2B865; --stint:#2A2416;
+  }
+}
+[data-theme="dark"]{
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+  --amber:#D9A44E; --atint:#2A2416;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --chip:#1A2130; --icbg:#212938; --sheet:#171D2B; --pad:#212938;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --lunar:#E8845C; --ltint:#33211B; --solar:#E2B865; --stint:#2A2416;
+}
+body.solar{--accent:var(--solar); --atone:var(--stint)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg{display:block}
+
+.app{position:relative;height:100vh;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+     padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.appbar{display:flex;align-items:center;gap:9px;flex:none}
+.appbar img{height:23px;width:auto;display:block;object-fit:contain}
+.appbar .brand{font-weight:700;font-size:15.5px}
+.appbar .spacer{flex:1}
+.appbar .sub{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* segmented control */
+.seg{display:flex;background:var(--icbg);border-radius:14px;padding:4px;flex:none}
+.sgi{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border-radius:10px;border:0;background:transparent;
+     font-size:13px;font-weight:700;color:var(--body);line-height:1.15}
+.sgi .top{display:flex;align-items:center;gap:6px}
+.sgi small{font-size:10px;font-weight:600;color:var(--muted)}
+.sgi.here{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+.sgi.here small{color:var(--blue-dk)}
+.sgi .dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.sgi.here .dot.l{background:var(--lunar)} .sgi.here .dot.s{background:var(--solar)}
+
+.scenes{display:flex;flex-direction:column;gap:8px;flex:1 1 0;min-height:0;min-width:0}
+.controls{display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+
+/* scenes */
+.scene{position:relative;background:var(--scene);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+.space{flex:1 1 0}
+.sky{flex:1.3 1 0}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.t-short{display:none}
+.legend{position:absolute;left:11px;right:11px;bottom:8px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.75);pointer-events:none}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.badge{position:absolute;top:6px;right:7px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;pointer-events:none;white-space:nowrap;
+       background:rgba(15,20,32,.72);color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.badge.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+.badge.hot{background:var(--accent);border-color:var(--accent);color:#1A1206}
+.badge.warm{color:var(--accent);border-color:var(--accent)}
+
+/* explanation card */
+.card{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+.card{height:106px}
+.card p{margin:0;font-size:14px;font-weight:600;line-height:1.32;color:var(--ink);height:3.96em;overflow:hidden;display:flex;align-items:center}
+.meter{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.bar{flex:1;height:7px;border-radius:4px;background:var(--icbg);overflow:hidden}
+.bar b{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
+.meter output{min-width:34px;text-align:right;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* controls */
+.slider{flex:none;display:flex;align-items:center;gap:10px}
+.slider .lab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+.chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.clab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-right:1px}
+.chips button{flex:1 1 auto;min-height:34px;padding:0 8px;border-radius:999px;border:1px solid var(--line);background:var(--chip);
+              font-size:12.5px;font-weight:600;color:var(--body)}
+.chips button[aria-pressed="true"]{background:var(--btint);border-color:var(--blue);color:var(--blue-dk);font-weight:700}
+.chips .sep{flex:none;width:1px;height:20px;background:var(--line);margin:0 2px}
+.actions{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;gap:7px;
+     font-size:14.5px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:active{transform:scale(.98)}
+
+/* bottom sheet */
+.veil{position:fixed;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.veil.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;max-height:78%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,33,61,.18);
+       translate:0 105%;transition:translate .32s cubic-bezier(.3,.9,.3,1)}
+.sheet.open{translate:0 0}
+.grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+.grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 20px 6px}
+.shead h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
+.x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--chip);color:var(--body);display:flex;align-items:center;justify-content:center;flex:none}
+.sbody{overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sbody h3{margin:16px 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px;line-height:1.3;color:var(--blue)}
+.sbody p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.sbody h3.warn{color:var(--amber)}
+.sbody p.warn{background:var(--atint);border-color:transparent}
+@media (max-height:640px){ .app{gap:6px} .btn{min-height:40px} .card p{font-size:13px} .card{height:98px} .legend{display:none} .sgi small{display:none} }
+@media (max-width:400px){ body.solar .chips .clab:first-child{display:none} .chips button{padding:0 6px} }
+@media (orientation:landscape) and (max-height:560px){
+  .app{display:grid;max-width:none;grid-template-columns:1fr minmax(232px,290px);grid-template-rows:auto 1fr;gap:10px;
+       padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px, env(safe-area-inset-left,0px))}
+  .scenes{grid-column:1;grid-row:1 / -1;flex-direction:row;gap:10px}
+  .scene{flex:1 1 0}
+  .appbar{grid-column:2;grid-row:1}
+  .controls{grid-column:2;grid-row:2;justify-content:flex-start}
+  .card{height:auto;min-height:88px;flex:0 1 auto;justify-content:center}
+  .card p{height:auto;max-height:5.3em;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .sgi small{display:none}
+  .t-long{display:none} .t-short{display:inline}
+  .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .chips .clab,.chips .sep{display:none}
+  .legend{font-size:10px;gap:2px 8px}
+  .space .tag{display:none}
+  .appbar .sub{display:none}
+  .badge{font-size:10px;padding:4px 8px}
+  .btn{min-height:42px}
+  .sheet{max-height:92%}
+}
+@media (prefers-reduced-motion: reduce){ .sheet,.veil{transition:none} }
+</style>
+</head>
+<body class="solar">
+<div class="app">
+  <div class="appbar">
+    <img src="petrilab-logo.png" alt="Petrilab" onerror="this.remove()">
+    <span class="brand">Solar Eclipse Simulation</span>
+    <span class="spacer"></span>
+    <span class="sub">The Moon blocks the Sun</span>
+  </div>
+
+  <div class="scenes">
+  <section class="scene space">
+    <canvas id="space" aria-label="Sun, Earth and Moon seen from space"></canvas>
+    <span class="tag">In space</span>
+    <div class="legend" id="legend"></div>
+    <span class="badge" id="order"></span>
+  </section>
+
+  <section class="scene sky">
+    <canvas id="sky" aria-label="What you see from Earth"></canvas>
+    <span class="tag"><span class="t-long">What you see from Earth</span><span class="t-short">From Earth</span></span>
+    <span id="pill" class="badge">No eclipse</span>
+  </section>
+
+  </div>
+
+  <div class="controls">
+  <div class="card">
+    <p id="say"></p>
+    <div class="meter"><span id="meterLabel">In dark shadow</span><div class="bar"><b id="bar"></b></div><output id="meterVal">0%</output></div>
+  </div>
+
+  <div class="slider">
+    <span class="lab">Moon</span>
+    <input id="xS" type="range" min="-8" max="8" step="0.02" value="0" aria-label="Move the Moon">
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div class="actions">
+    <button id="play" class="btn primary"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+    <button id="whyBtn" class="btn" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Why?</button>
+  </div>
+  </div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="shead"><h2 id="sheetTitle">Why?</h2>
+    <button class="x" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const K = 12;                       // orbit radius in Moon radii, as drawn
+  const U = 2.7, P = 4.8;             // Earth's shadow radii at the Moon (Moon radii)
+  const smooth = (a,b,x) => { const t = Math.min(1, Math.max(0, (x-a)/(b-a))); return t*t*(3-2*t); };
+  const mix = (a,b,t) => a + (b-a)*t;
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const stars = Array.from({length: 90}, () => ({x: rnd(), y: rnd(), s: rnd()*1.3 + 0.4, a: rnd()}));
+  const streaks = Array.from({length: 28}, () => ({a: rnd()*Math.PI*2, l: 1.6 + rnd()*1.6, w: 0.08 + rnd()*0.18}));
+  const space = $('space'), sky = $('sky'), xS = $('xS');
+  let mode = 'lunar', G = {};
+
+  // ---------- state ----------
+  const L = { phi: Math.asin(-6/K), y: 0.3 };            // phi: 0 = Moon directly behind Earth
+  const S = { psi: Math.asin(-2.6/K), y: 0.05, dist: 10 }; // psi: 0 = Moon directly between Sun and Earth
+
+  const Lx = () => -K * Math.sin(L.phi);
+  const Lfacing = () => Math.cos(L.phi) > 0;
+  const Sx = () => -K * Math.sin(S.psi);
+  const Sfront = () => Math.cos(S.psi) > 0;
+  const mR = () => 1.075 - S.dist / 100 * 0.14;           // Moon size ÷ Sun size in the sky
+
+  function fit(c){
+    const r = c.getBoundingClientRect();
+    c.width = Math.round(r.width*DPR); c.height = Math.round(r.height*DPR);
+    return { w: r.width, h: r.height, ctx: c.getContext('2d') };
+  }
+  function starfield(ctx, w, h, alpha){
+    if (alpha <= 0) return;
+    for (const s of stars){ ctx.fillStyle = `rgba(225,232,255,${(0.2 + s.a*0.8)*alpha})`; ctx.fillRect(s.x*w, s.y*h, s.s, s.s); }
+  }
+  function drawSunEdge(ctx, w, h, ey){
+    const sg = ctx.createRadialGradient(-w*0.05, ey, 4, -w*0.05, ey, w*0.21);
+    sg.addColorStop(0,'#FFF3C8'); sg.addColorStop(0.35,'#FFC94A'); sg.addColorStop(1,'rgba(255,201,74,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(-w*0.05, ey, w*0.21, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFC94A'; ctx.font = '800 13px ' + FONT; ctx.fillText('SUN', 8, 36);
+  }
+  function drawEarth(ctx, ex, ey, Re){
+    const eg = ctx.createLinearGradient(ex - Re, 0, ex + Re, 0);
+    eg.addColorStop(0,'#6FB6F6'); eg.addColorStop(0.5,'#2F72BD'); eg.addColorStop(0.55,'#10264A'); eg.addColorStop(1,'#0B1A36');
+    ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#A9CFF6'; ctx.font = '800 13px ' + FONT; ctx.textAlign = 'center';
+    ctx.fillText('EARTH', ex, ey + Re + 17); ctx.textAlign = 'left';
+  }
+  function labelMoon(ctx, mx, my, R){
+    ctx.strokeStyle = 'rgba(241,243,250,.6)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(mx, my, R + 6, 0, Math.PI*2); ctx.stroke(); ctx.lineWidth = 1;
+    ctx.fillStyle = '#F1F3FA'; ctx.font = '800 13px ' + FONT; ctx.textAlign = 'center';
+    ctx.fillText('MOON', mx, my - R - 11); ctx.textAlign = 'left';
+  }
+  const off = document.createElement('canvas'), octx = off.getContext('2d');
+
+  // ================= LUNAR =================
+  const maria = [[-0.25,0.35,0.32],[0.15,0.4,0.22],[0.3,0.1,0.25],[-0.45,-0.05,0.28],[0.05,-0.2,0.18],[-0.1,-0.55,0.12]];
+  function tex(u, v){
+    let t = 1;
+    for (const [mx,my,r] of maria){ const d = Math.hypot(u-mx, v-my); if (d < r) t -= 0.16*(1 - (d/r)**2); }
+    return t - 0.1*(u*u + v*v);
+  }
+  function renderMoon(R){
+    const N = Math.max(8, Math.round(R*2*DPR));
+    off.width = off.height = N;
+    const img = octx.createImageData(N, N), d = img.data;
+    const x0 = Lx(), y0 = L.y, lit = Lfacing();
+    const sx = -Math.sin(L.phi), sz = Math.cos(L.phi);
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++){
+      const u = (i+0.5)/N*2-1, v = 1-(j+0.5)/N*2, rr = u*u+v*v;
+      if (rr > 1) continue;
+      const w = Math.sqrt(1-rr), k = (j*N+i)*4, t = tex(u, v);
+      const sun = smooth(-0.03, 0.05, u*sx + w*sz);
+      let r = 230*t, g = 226*t, b = 214*t;
+      if (lit){
+        const dist = Math.hypot(x0 + u, y0 + v);
+        if (dist < P){
+          const pen = 0.3 + 0.7*Math.pow(smooth(U, P, dist), 0.8);
+          const inU = 1 - smooth(U - 0.06, U + 0.06, dist);
+          const cf = 0.35 + 0.5*Math.min(1, dist/U);
+          r = r*pen*(1-inU) + 185*cf*t*inU; g = g*pen*(1-inU) + 72*cf*t*inU; b = b*pen*(1-inU) + 38*cf*t*inU;
+        }
+      }
+      d[k] = r*sun + 6*(1-sun); d[k+1] = g*sun + 7*(1-sun); d[k+2] = b*sun + 10*(1-sun);
+      d[k+3] = 255*Math.min(1, (1-rr)*N*0.5 + 0.3);
+    }
+    octx.putImageData(img, 0, 0);
+  }
+  // area where two circles overlap (big radius R, small radius r, centres d apart)
+  function overlap(R, r, d){
+    if (d >= R + r) return 0;
+    if (d <= Math.abs(R - r)) return Math.PI * Math.min(R, r)**2;
+    const a = r*r*Math.acos((d*d + r*r - R*R) / (2*d*r));
+    const b = R*R*Math.acos((d*d + R*R - r*r) / (2*d*R));
+    const c = 0.5*Math.sqrt((-d + r + R)*(d + r - R)*(d - r + R)*(d + r + R));
+    return a + b - c;
+  }
+  function lunarUmbraFraction(){
+    if (!Lfacing()) return 0;
+    return overlap(U, 1, Math.hypot(Lx(), L.y)) / Math.PI;
+  }
+  function lunarKind(){
+    if (!Lfacing()) return 'away';
+    const d = Math.hypot(Lx(), L.y);
+    if (d <= U - 1) return 'total';
+    if (d < U + 1) return 'partial';
+    if (d < P + 1) return 'pen';
+    return 'none';
+  }
+  function lunarSpace(){
+    const {w, h, ctx} = G.space;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#070B1A'; ctx.fillRect(0,0,w,h);
+    starfield(ctx, w, h, 0.5);
+    const ex = w*0.4, ey = h/2 - 4, D = Math.max(24, Math.min(h/2 - 30, w - ex - 36)), r = D/K, Re = 3.67*r;
+    Object.assign(G, {ex, ey, D});
+    drawSunEdge(ctx, w, h, ey);
+    ctx.strokeStyle = 'rgba(255,201,74,.35)';
+    for (let k = -3; k <= 3; k++){ ctx.beginPath(); ctx.moveTo(w*0.15, ey + k*h*0.11); ctx.lineTo(ex - Re - 6, ey + k*h*0.07); ctx.stroke(); }
+    ctx.setLineDash([3,5]); ctx.strokeStyle = '#3B4A85'; ctx.beginPath(); ctx.arc(ex, ey, D, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+    const far = w + 20, pw = Re + (P*r - Re)*(far - ex)/D;
+    ctx.fillStyle = 'rgba(130,145,190,.25)';
+    ctx.beginPath(); ctx.moveTo(ex, ey - Re); ctx.lineTo(far, ey - pw); ctx.lineTo(far, ey + pw); ctx.lineTo(ex, ey + Re); ctx.fill();
+    const slope = (Re - U*r)/D, apex = Math.min(Re/slope, far - ex), uw = Math.max(0, Re - slope*apex);
+    ctx.fillStyle = 'rgba(8,5,12,.9)'; ctx.strokeStyle = 'rgba(232,106,63,.7)';
+    ctx.beginPath(); ctx.moveTo(ex, ey - Re); ctx.lineTo(ex + apex, ey - uw); ctx.lineTo(ex + apex, ey + uw); ctx.lineTo(ex, ey + Re); ctx.closePath(); ctx.fill(); ctx.stroke();
+    drawEarth(ctx, ex, ey, Re);
+    const mx = ex + D*Math.cos(L.phi), my = ey - D*Math.sin(L.phi), R = Math.max(r, 8);
+    G.mx = mx; G.my = my;
+    renderMoon(R); ctx.drawImage(off, mx - R, my - R, R*2, R*2);
+    labelMoon(ctx, mx, my, R);
+  }
+  function lunarSky(){
+    const {w, h, ctx} = G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    const s = Math.max(6, Math.min(w, h*1.05) / 11.5); G.S = s; G.cx = w/2; G.cy = h/2 + 6;
+    const {cx, cy} = G;
+    ctx.fillStyle = '#080C1E'; ctx.fillRect(0,0,w,h);
+    const kind = lunarKind();
+    starfield(ctx, w, h, kind === 'total' ? 1 : kind === 'partial' ? 0.7 : 0.4);
+    ctx.setLineDash([5,6]); ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(150,165,210,.6)'; ctx.beginPath(); ctx.arc(cx, cy, P*s, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(232,106,63,.85)'; ctx.beginPath(); ctx.arc(cx, cy, U*s, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]); ctx.lineWidth = 1;
+    ctx.font = '800 11px ' + FONT; ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(232,106,63,.95)'; ctx.fillText('DARK SHADOW', cx, cy + U*s - 8);
+    ctx.fillStyle = 'rgba(170,182,220,.9)'; ctx.fillText('LIGHT SHADOW', cx, cy + P*s - 8);
+    if (!Lfacing()){
+      ctx.font = '700 14px ' + FONT; ctx.fillStyle = '#F1F3FA';
+      ctx.fillText('The Moon is on the Sun’s side —', cx, cy - 8);
+      ctx.fillText('it is far from Earth’s shadow.', cx, cy + 12);
+      ctx.textAlign = 'left'; return;
+    }
+    const mx = cx + Lx()*s, my = cy - L.y*s;
+    renderMoon(s); ctx.drawImage(off, mx - s, my - s, s*2, s*2);
+    if (mx < -s || mx > w + s || my < -s || my > h + s){
+      ctx.font = '800 13px ' + FONT; ctx.fillStyle = '#F1F3FA';
+      ctx.fillText(mx < 0 ? '← Moon' : mx > w ? 'Moon →' : my < 0 ? 'Moon ↑' : 'Moon ↓', Math.min(w-40, Math.max(40, mx)), Math.min(h-12, Math.max(34, my)));
+    }
+    ctx.textAlign = 'left';
+  }
+  function lunarInfo(){
+    const kind = lunarKind(), frac = lunarUmbraFraction();
+    const lined = Lfacing() && Math.hypot(Lx(), L.y) < P + 1;
+    const T = {
+      away:    ['Not full Moon', '', 'The Moon is on the same side as the Sun. A lunar eclipse can only happen at full Moon, when Earth is in the middle.'],
+      none:    ['No eclipse', '', Math.abs(Lx()) < P + 1
+                 ? 'Full Moon! But the Moon passes above or below Earth’s shadow, so there is no eclipse.'
+                 : 'The Moon is not lined up with Earth’s shadow yet. Drag it into the shadow!'],
+      pen:     ['Light-shadow eclipse', 'warm', 'The Moon is in Earth’s light shadow. It only looks a little dimmer — most people don’t notice!'],
+      partial: ['Partial eclipse', 'warm', 'Part of the Moon is in Earth’s dark shadow. That part looks dark and reddish, like a bite was taken out.'],
+      total:   ['Total eclipse', 'hot', 'The whole Moon is inside Earth’s dark shadow. It doesn’t vanish — it glows red!'],
+    }[kind];
+    return { label: T[0], cls: T[1], say: T[2], meterLabel: 'In dark shadow', meter: frac,
+             order: lined ? '☀️ → 🌍 → 🌙 Lined up!' : '☀️ 🌍 🌙 Not lined up', lined, kind };
+  }
+
+  // ================= SOLAR =================
+  const sunLayer = document.createElement('canvas'), sctx = sunLayer.getContext('2d');
+  function solarCoverage(){
+    if (!Sfront()) return 0;
+    return Math.min(1, overlap(1, mR(), Math.hypot(Sx(), S.y)) / Math.PI);
+  }
+  function solarKind(){
+    if (!Sfront()) return 'away';
+    const d = Math.hypot(Sx(), S.y), m = mR();
+    if (d >= 1 + m) return 'none';
+    if (m >= 1 && d <= m - 1) return 'total';
+    if (m < 1 && d <= 1 - m) return 'annular';
+    return 'partial';
+  }
+  function solarSpace(){
+    const {w, h, ctx} = G.space;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#070B1A'; ctx.fillRect(0,0,w,h);
+    starfield(ctx, w, h, 0.5);
+    const ex = w*0.68, ey = h/2 - 4, Dmax = Math.max(24, Math.min(h/2 - 30, ex - w*0.26)), r = Dmax/K, Re = 3.67*r;
+    const orbit = d => Dmax * (0.70 + (d/100)*0.30);        // a near Moon sits on a tighter orbit
+    const D = orbit(S.dist);
+    Object.assign(G, {ex, ey, D});
+    drawSunEdge(ctx, w, h, ey);
+    ctx.strokeStyle = 'rgba(255,201,74,.16)';
+    for (let k = -4; k <= 4; k++){ ctx.beginPath(); ctx.moveTo(w*0.15, ey + k*h*0.11); ctx.lineTo(w, ey + k*h*0.11); ctx.stroke(); }
+    ctx.setLineDash([2,6]); ctx.strokeStyle = 'rgba(90,110,176,.4)';   // the other distance, faint
+    ctx.beginPath(); ctx.arc(ex, ey, orbit(S.dist > 50 ? 10 : 90), 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([3,5]); ctx.strokeStyle = '#6E82C4'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(ex, ey, D, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]); ctx.lineWidth = 1;
+    const phi = Math.PI + S.psi;
+    const mx = ex + D*Math.cos(phi), my = ey - D*Math.sin(phi), R = Math.max(r, 8);
+    G.mx = mx; G.my = my;
+    const L2 = (D - Re) * (1 + (mR() - 1)*5), far = w + 10, pw = R + (far - mx)*0.16;
+    ctx.fillStyle = 'rgba(130,145,190,.25)';
+    ctx.beginPath(); ctx.moveTo(mx, my - R); ctx.lineTo(far, my - pw); ctx.lineTo(far, my + pw); ctx.lineTo(mx, my + R); ctx.fill();
+    const apex = mx + Math.max(0, L2);
+    ctx.fillStyle = 'rgba(0,0,0,.9)'; ctx.strokeStyle = 'rgba(255,201,74,.7)';
+    ctx.beginPath(); ctx.moveTo(mx, my - R); ctx.lineTo(apex, my); ctx.lineTo(mx, my + R); ctx.closePath(); ctx.fill(); ctx.stroke();
+    drawEarth(ctx, ex, ey, Re);
+    if (Sfront() && mx < ex && Math.abs(my - ey) < Re){
+      const sx = ex - Math.sqrt(Re*Re - (my-ey)**2);
+      ctx.fillStyle = 'rgba(130,145,190,.6)'; ctx.beginPath(); ctx.arc(sx + 3, my, Math.max(7, R*1.8), 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#FF6B4A'; ctx.beginPath(); ctx.arc(sx + 2, my, 4, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle = '#20232E'; ctx.beginPath(); ctx.arc(mx, my, R, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#E2DED2'; ctx.beginPath(); ctx.arc(mx, my, R, Math.PI/2, Math.PI*1.5); ctx.fill();
+    labelMoon(ctx, mx, my, R);
+    ctx.font = '700 10px ' + FONT; ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(231,234,243,.75)';
+    ctx.fillText(S.dist > 50 ? 'far orbit' : 'near orbit', mx, my + R + 17);
+    ctx.textAlign = 'left';
+  }
+  function solarSky(){
+    const {w, h, ctx} = G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    const s = Math.max(6, Math.min(w, h) / 7); G.S = s; G.cx = w/2; G.cy = h/2 + 6;
+    const {cx, cy} = G, cov = G.cov, kind = G.kind;
+    const light = Math.pow(1 - cov, 0.45);
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0, `rgb(${mix(10,70,light)|0},${mix(12,135,light)|0},${mix(28,210,light)|0})`);
+    g.addColorStop(1, `rgb(${mix(28,160,light)|0},${mix(22,200,light)|0},${mix(40,238,light)|0})`);
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+    if (light < 0.6){
+      const hz = ctx.createLinearGradient(0, h*0.72, 0, h);
+      hz.addColorStop(0, 'rgba(255,140,70,0)'); hz.addColorStop(1, `rgba(255,140,70,${0.5*(1-light)})`);
+      ctx.fillStyle = hz; ctx.fillRect(0, h*0.72, w, h*0.28);
+    }
+    starfield(ctx, w, h, 1 - light*4);
+    const mx = cx + Sx()*s, my = cy - S.y*s, mr = mR()*s;
+    const coronaA = smooth(0.96, 1, cov);
+    if (coronaA > 0){
+      ctx.save(); ctx.globalAlpha = coronaA;
+      const cg = ctx.createRadialGradient(cx, cy, s*0.95, cx, cy, s*3);
+      cg.addColorStop(0, 'rgba(235,240,255,.95)'); cg.addColorStop(0.2, 'rgba(210,222,255,.45)'); cg.addColorStop(1, 'rgba(180,200,255,0)');
+      ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(cx, cy, s*3, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba(220,230,255,.18)';
+      for (const st of streaks){
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(st.a - st.w)*s, cy + Math.sin(st.a - st.w)*s);
+        ctx.lineTo(cx + Math.cos(st.a)*s*st.l, cy + Math.sin(st.a)*s*st.l);
+        ctx.lineTo(cx + Math.cos(st.a + st.w)*s, cy + Math.sin(st.a + st.w)*s);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    const cw = Math.round(w*DPR), ch = Math.round(h*DPR);
+    if (sunLayer.width !== cw || sunLayer.height !== ch){ sunLayer.width = cw; sunLayer.height = ch; }
+    const octx = sctx;
+    octx.setTransform(1,0,0,1,0,0); octx.clearRect(0, 0, cw, ch);
+    octx.setTransform(DPR,0,0,DPR,0,0);
+    const glowR = s*(1.5 + 2*light);
+    const gg = octx.createRadialGradient(cx, cy, s*0.9, cx, cy, glowR);
+    gg.addColorStop(0, `rgba(255,236,170,${0.75*light + 0.1})`); gg.addColorStop(1, 'rgba(255,236,170,0)');
+    octx.fillStyle = gg; octx.beginPath(); octx.arc(cx, cy, glowR, 0, Math.PI*2); octx.fill();
+    const sg = octx.createRadialGradient(cx, cy, 0, cx, cy, s);
+    sg.addColorStop(0, '#FFFBEA'); sg.addColorStop(0.7, '#FFE9A8'); sg.addColorStop(1, '#F2B544');
+    octx.fillStyle = sg; octx.beginPath(); octx.arc(cx, cy, s, 0, Math.PI*2); octx.fill();
+    if (Sfront()){
+      octx.globalCompositeOperation = 'destination-out';
+      octx.beginPath(); octx.arc(mx, my, mr, 0, Math.PI*2); octx.fill();
+      octx.globalCompositeOperation = 'source-over';
+    }
+    ctx.drawImage(sunLayer, 0, 0, w, h);
+    if (Sfront()){
+      ctx.fillStyle = `rgba(6,8,14,${0.12 + 0.2*(1-light)})`;
+      ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI*2); ctx.fill();
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, s, 0, Math.PI*2); ctx.clip();
+      ctx.fillStyle = '#06080E'; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = light > 0.5 ? '#1A2333' : '#EAEEF6'; ctx.font = '800 13px ' + FONT; ctx.textAlign = 'center';
+      if (mx < -mr || mx > w + mr || my < -mr || my > h + mr)
+        ctx.fillText(mx < 0 ? '← Moon' : mx > w ? 'Moon →' : my < 0 ? 'Moon ↑' : 'Moon ↓', Math.min(w-40, Math.max(40, mx)), Math.min(h-12, Math.max(34, my)));
+      else if (kind === 'none') ctx.fillText('MOON', mx, my + 4);
+    } else {
+      ctx.fillStyle = light > 0.5 ? '#1A2333' : '#EAEEF6'; ctx.font = '700 14px ' + FONT; ctx.textAlign = 'center';
+      ctx.fillText('The Moon is behind Earth —', cx, h - 30);
+      ctx.fillText('it can’t block the Sun.', cx, h - 12);
+    }
+    ctx.textAlign = 'left';
+  }
+  function solarInfo(){
+    const kind = G.kind, cov = G.cov;
+    const lined = Sfront() && Math.hypot(Sx(), S.y) < 1 + mR();
+    const T = {
+      away:    ['Not new Moon', '', 'The Moon is behind Earth. A solar eclipse can only happen at new Moon, when the Moon is between the Sun and Earth.'],
+      none:    ['No eclipse', '', Math.abs(Sx()) < 2
+                 ? 'New Moon! But the Moon passes above or below the Sun in our sky, so there is no eclipse.'
+                 : 'The Moon is not in front of the Sun yet. Drag it across the Sun!'],
+      partial: ['Partial eclipse', 'warm', 'The Moon covers part of the Sun. It looks like a bite was taken out of it!'],
+      total:   ['Total eclipse', 'hot', 'The Moon covers the whole Sun! The sky goes dark, stars come out, and the Sun’s glowing crown (corona) appears.'],
+      annular: ['Ring of fire', 'hot', 'The Moon is too far away to cover the whole Sun, so a bright ring is left around it.'],
+    }[kind];
+    return { label: T[0], cls: T[1], say: T[2], meterLabel: 'Sun covered', meter: kind === 'total' ? 1 : cov,
+             order: lined ? '☀️ → 🌙 → 🌍 Lined up!' : '☀️ 🌙 🌍 Not lined up', lined, kind };
+  }
+
+  // ================= shared UI =================
+  const M = {
+    lunar: { space: lunarSpace, sky: lunarSky, info: lunarInfo, st: L, yMax: 7,
+             getX: Lx, setX: x => L.phi = Math.asin(-Math.max(-K*0.98, Math.min(K*0.98, x))/K),
+             setAngle: a => L.phi = a, angle: a => a,
+             play: {from: 8, to: -8, speed: x => 0.26 + 0.55*smooth(1.5, 3.2, Math.abs(x)) + 1.5*smooth(3.4, 6.2, Math.abs(x))},
+             legend: '<span><i style="background:#1a0f14;border:1.5px solid var(--lunar)"></i>Dark shadow</span><span><i style="background:#3a4568"></i>Light shadow</span>' },
+    solar: { space: solarSpace, sky: solarSky, info: solarInfo, st: S, yMax: 4,
+             getX: Sx, setX: x => S.psi = Math.asin(-Math.max(-K*0.98, Math.min(K*0.98, x))/K),
+             setAngle: a => S.psi = a - Math.PI,
+             play: {from: 3.6, to: -3.6, speed: x => {          // crawl through totality / the ring
+               const m = mR(), a = Math.abs(x);
+               const inner = Math.max(0.05, Math.abs(1 - m)), first = 1 + m;
+               return 0.012 + 0.58*smooth(inner*1.25, inner*3 + 0.2, a) + 0.5*smooth(first*0.94, first*1.2, a);
+             }},
+             legend: '<span><i style="background:#000;border:1.5px solid var(--solar)"></i>Dark shadow</span><span><i style="background:#3a4568"></i>Light shadow</span><span><i style="background:#FF6B4A"></i>Shadow lands here</span>' },
+  };
+
+  function draw(){
+    if (mode === 'solar'){ G.cov = solarCoverage(); G.kind = solarKind(); }
+    const m = M[mode];
+    m.space(); m.sky();
+    const inf = m.info();
+    const pill = $('pill'); pill.textContent = inf.label; pill.className = 'badge ' + inf.cls;
+    $('say').textContent = inf.say;
+    $('meterLabel').textContent = inf.meterLabel;
+    $('bar').style.width = Math.round(inf.meter*100) + '%';
+    $('meterVal').textContent = Math.round(inf.meter*100) + '%';
+    syncControls();
+    const o = $('order'); o.textContent = inf.order; o.className = 'badge' + (inf.lined ? ' on' : '');
+  }
+  function resize(){ G.space = fit(space); G.sky = fit(sky); draw(); }
+
+  function setMode(next){
+    stop(); mode = next;
+    document.body.classList.toggle('solar', mode === 'solar');
+    for (const [id, on] of [['tabL', mode === 'lunar'], ['tabS', mode === 'solar']]){
+      const el = $(id); if (!el) continue;
+      el.setAttribute('aria-selected', on); el.classList.toggle('here', on);
+    }
+    const m = M[mode];
+    xS.min = -m.play.from; xS.max = m.play.from;
+    $('legend').innerHTML = m.legend;
+    buildChips();
+    closeWhy();
+    requestAnimationFrame(resize);
+  }
+
+  // dragging
+  const pos = (e, c) => { const r = c.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; };
+  let drag = null;
+  space.addEventListener('pointerdown', e => {
+    const p = pos(e, space);
+    if (Math.hypot(p.x - G.mx, p.y - G.my) < 40 || Math.abs(Math.hypot(p.x - G.ex, p.y - G.ey) - G.D) < 34){
+      drag = 'space'; space.setPointerCapture(e.pointerId); stop(); moveSpace(p);
+    }
+  });
+  function moveSpace(p){ M[mode].setAngle(Math.atan2(-(p.y - G.ey), p.x - G.ex)); draw(); }
+  sky.addEventListener('pointerdown', e => { drag = 'sky'; sky.setPointerCapture(e.pointerId); stop(); moveSky(pos(e, sky)); });
+  function moveSky(p){
+    const m = M[mode];
+    m.setX((p.x - G.cx) / G.S);
+    m.st.y = Math.max(-m.yMax, Math.min(m.yMax, -(p.y - G.cy) / G.S));
+    draw();
+  }
+  addEventListener('pointermove', e => {
+    if (drag === 'space') moveSpace(pos(e, space));
+    else if (drag === 'sky') moveSky(pos(e, sky));
+  });
+  const endDrag = () => { if (drag){ drag = null; draw(); } };
+  addEventListener('pointerup', endDrag);
+  addEventListener('pointercancel', endDrag);
+  xS.addEventListener('input', () => { stop(); M[mode].setX(+xS.value); draw(); });
+  xS.addEventListener('change', draw);
+
+  // path + distance chips
+  const PATHS = {
+    lunar: [['Middle', 0], ['Edge', 2.6], ['Outer', 4.4], ['Miss', 6.4]],
+    solar: [['Middle', 0], ['Edge', 0.9], ['Miss', 2.6]],
+  };
+  function buildChips(){
+    const c = $('chips'); c.innerHTML = '<span class="clab">Path</span>';
+    for (const [name, y] of PATHS[mode]){
+      const b = document.createElement('button'); b.textContent = name; b.dataset.y = y;
+      b.onclick = () => { M[mode].st.y = y; draw(); };
+      c.appendChild(b);
+    }
+    if (mode === 'solar'){
+      c.insertAdjacentHTML('beforeend', '<i class="sep"></i><span class="clab">Moon</span>');
+      for (const [name, d] of [['Near', 10], ['Far', 90]]){
+        const b = document.createElement('button'); b.textContent = name; b.dataset.d = d;
+        b.onclick = () => { S.dist = d; draw(); };
+        c.appendChild(b);
+      }
+    }
+  }
+  function syncControls(){
+    const m = M[mode];
+    if (document.activeElement !== xS) xS.value = m.getX();
+    for (const b of $('chips').querySelectorAll('button')){
+      const on = b.dataset.y !== undefined ? Math.abs(+b.dataset.y - m.st.y) < 0.01 : S.dist === +b.dataset.d;
+      b.setAttribute('aria-pressed', on);
+    }
+  }
+
+  // play
+  const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play';
+  const PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  let anim = null; const playBtn = $('play');
+  function stop(){ if (anim){ cancelAnimationFrame(anim); anim = null; playBtn.innerHTML = PLAY; draw(); } }
+  playBtn.onclick = () => {
+    if (anim) return stop();
+    const m = M[mode], pl = m.play;
+    let x = m.getX();
+    const onNight = mode === 'lunar' ? Lfacing() : Sfront();
+    if (!onNight || x > pl.from || x < pl.to + 0.5) x = pl.from;
+    
+    if (reduce){ m.setX(0); draw(); return; }
+    playBtn.innerHTML = PAUSE;
+    let last = performance.now();
+    const step = t => {
+      x -= (t - last)/1000 * pl.speed(x); last = t;
+      m.setX(x); draw();
+      if (x < pl.to){ anim = null; playBtn.innerHTML = PLAY; draw(); return; }
+      anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  };
+
+  // why card
+  const WHY = {
+    lunar: `<h3>Why does the Moon turn red?</h3><p>Some sunlight bends through Earth’s air and reaches the Moon. The air lets red light through best — the same reason sunsets are red. The Moon is lit by all of Earth’s sunsets at once!</p>
+      <h3>Why not every full Moon?</h3><p>The Moon’s path is tilted a little. Most months it passes just above or below Earth’s shadow. Tap <b>Miss</b> next to “Path” to see this.</p>
+      <h3>Light vs dark shadow</h3><p>In the dark shadow, Earth blocks all of the Sun. In the light shadow, Earth blocks only part of it.</p>
+      <h3>Remember</h3><p><b>Lunar eclipse:</b> Earth blocks sunlight from reaching the Moon. Order: ☀️ → 🌍 → 🌙. Safe to watch with your eyes!</p>`,
+    solar: `<h3>How can the small Moon hide the huge Sun?</h3><p>The Sun is about 400 times wider than the Moon — but also about 400 times farther away. So in our sky they look almost the same size!</p>
+      <h3>Why a ring of fire sometimes?</h3><p>The Moon’s distance from Earth changes. When it is farther away, it looks a bit smaller and can’t cover the whole Sun. Tap <b>Moon: Far</b> to try it.</p>
+      <h3>Why not every new Moon?</h3><p>The Moon’s path is tilted, so most months it passes above or below the Sun in our sky.</p>
+      <h3>Remember</h3><p><b>Solar eclipse:</b> the Moon blocks the Sun from us. Order: ☀️ → 🌙 → 🌍. Only a small area of Earth sees it as total.</p>
+      <h3 class="warn">Stay safe</h3><p class="warn">Never look straight at the Sun, even during an eclipse. Use proper eclipse glasses or a pinhole projector.</p>`,
+  };
+  const veil = $('veil'), sheet = $('sheet');
+  function openWhy(){
+    $('sheetTitle').textContent = mode === 'lunar' ? 'Why? · Lunar eclipse' : 'Why? · Solar eclipse';
+    $('sheetBody').innerHTML = WHY[mode];
+    $('sheetBody').scrollTop = 0;
+    veil.classList.add('open'); sheet.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false');
+    $('whyBtn').setAttribute('aria-expanded', 'true');
+  }
+  function closeWhy(){
+    veil.classList.remove('open'); sheet.classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true');
+    $('whyBtn').setAttribute('aria-expanded', 'false');
+  }
+  $('whyBtn').onclick = () => sheet.classList.contains('open') ? closeWhy() : openWhy();
+  veil.onclick = closeWhy;
+  $('sheetClose').onclick = closeWhy;
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeWhy(); });
+  // swipe the sheet down to close
+  let sy = null;
+  $('grab').addEventListener('pointerdown', e => { sy = e.clientY; $('grab').setPointerCapture(e.pointerId); });
+  $('grab').addEventListener('pointermove', e => { if (sy !== null) sheet.style.transform = `translateY(${Math.max(0, e.clientY - sy)}px)`; });
+  $('grab').addEventListener('pointerup', e => { const dy = e.clientY - (sy ?? e.clientY); sy = null; sheet.style.transform = ''; if (dy > 60) closeWhy(); });
+
+  addEventListener('resize', resize);
+  addEventListener('orientationchange', () => setTimeout(resize, 150));
+  if ('ResizeObserver' in window){
+    let last = '';
+    new ResizeObserver(() => {
+      const k = [space.clientWidth, space.clientHeight, sky.clientWidth, sky.clientHeight].join();
+      if (k !== last){ last = k; resize(); }
+    }).observe(document.querySelector('.app'));
+  }
+  setMode('solar');
+  if (document.fonts) document.fonts.ready.then(resize);
+})();
+</script>
+</body>
+</html>
