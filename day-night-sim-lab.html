@@ -226,11 +226,27 @@ input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blu
   // ---------- model ----------
   // One number runs everything: UT, the world clock. Each place adds its own offset.
   const CITY = [
-    {n:'Delhi',    sub:'India', off: 5.5},
-    {n:'London',   sub:'UK',    off: 0},
-    {n:'New York', sub:'USA',   off: -5},
-    {n:'Tokyo',    sub:'Japan', off: 9},
+    {n:'Delhi',    sub:'India', off: 5.5, lat: 28.6},
+    {n:'London',   sub:'UK',    off: 0,   lat: 51.5},
+    {n:'New York', sub:'USA',   off: -5,  lat: 40.7},
+    {n:'Tokyo',    sub:'Japan', off: 9,   lat: 35.7},
   ];
+
+  // ---- the land of Earth: coastlines (Natural Earth 110m, simplified) ----
+  // Seen from above the North Pole. Distance from the centre grows with distance
+  // from the pole, so the rim of the disc is the equator.
+  const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const IX = {}; for (let i = 0; i < 64; i++) IX[B64[i]] = i;
+  const rOf = lat => { const p = (90 - lat)/90; return p <= 1 ? 0.7*p + 0.3*Math.sin(p*Math.PI/2) : 1 + 0.7*(p - 1); };
+  const LAND = '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 AAKGWgKDWbKEAAKG G+K0HRK0HYKxHBKuHKKuG6KqGzKnGoKmGcKlGiKiGYKgGSKcGYKbGOKZGDKaF4KZFqKaFqKcFxKdFvKgF8KeFwKhF8KlF0KpGCKoGJKqFyKqFrKrFiKwF0KxF6KzGDKxGGKzGTK1GtK1G+K0 TpFjTqFdTuFbTxFfT5FhUSFZUYFSUfFQUcFNUjFEUrE/UgE/UYFIUTFJUNFHULFDUEFEUBFHT2FGT7FLT4FSTtFWTnFaTkFYTgFdTnFfThFfTaFkTiFnTpFj UEH9UBH1T1HyTvHuTsHyTcHwTgHtTdHmTZHmTaHpTWHtTiH2TvH2TzH9T2H7T+IBUBINUFIOUIIFUEIBUEH9 R3FRRzFRRqFXRhFlRdFpRaFvROF8RNF+RWF9RjFwRnFwRvFoRuFlRxFkR0FfR4FcR3FR SnFvSsFsSnFrSmFlSiFiShFYSbFYSVFcSQFaSJFcSIFiSEFmSEFtSHFwSNFvSNFzSUF0SZF6SlGESnGAStF+SlF1SnFv O2KDOnKDOeKGOiKLOqKPOmKPOwKTOvKUPFKZPSKaPhKcPhKZPGKVO6KROuKJOuKGO2KD EHKMEFKLEOKMEUKKEYKMEfKHEhKIEeKMEiKNEqKLEuKEE8KAE1J+E2J7EoJ9EcJ7ELJ6EJJ8EAJ9D7KAEOKBEHKCD4KCD2KEEAKFDyKGD5KLEDKNEHKM OUINOWIKOTIDOVH+ObH7OnH8OoIEOjIIOkIMOrIMOnIQOkIPOiITOdIVOZIaOdIdOkIdOkIjOdIkOPIfOLIaOOIUOUIN LEJTLAJOLIJPLEJILIJILOJCLSI8LXI7LSIzLCIxK5IxK/I1K7I4K/I5K+I+LEI+LBJCK6JFK3JLK8JTLEJT FVKcFiKbFkKYFrKWF2KWGLKXGRKUGIKSGDKSFvKSFeKTFcKYFYKZFMKbFNKdFVKc TFFuTCFqSxFpSwFmS0FiS9FmS2FgS6FbS9FTS5FTSxFcSyFSStFSSuFaSrFdSwFqS0FtTAFsTFFu DuKGDkKEDYKHDgKPDcKRDqKSD6KRECKODzKKDuKG MZKnMmKkMcKiMUKbMQKbMHKeMLKfL9KjL6KnMFKoMHKnMUKoMZKn GRHDGXHCGeG9GnG5GhG3GZG3GcG6GVG+GJHBGFHDGAHAF/HCGHHFGRHD HvIzHxIuH6ItH9ImH8IjH3IjH3InHjImHtI1HyI2HvIz KWJyKVJvKaJtKUJpKFJmJ1JoJ5JqJwJsJ3JuJvJuJxJxJ3JyJ+JvKEJxKJJwKPJyKWJy F0KnF5KlFsKhFcKhFYKjFbKmFUKlFNKpFVKtFeKtFjKrFxKpF0Kn SCFNSKFMSLFOSSFMSUFKSfFHSaFFSBFJR1FNR4FQR9FQSCFN EfKZEoKYEnKUEZKTEPKSEJKTERKVD/KUD5KVECKaEOKZEVKWEcKWEWKaEaKbEfKZ S1GyS6GsS3GoS3GhTAGfTAGaS8GeSzGfSwGkSzGyS1Gy UPIzUTIsUNItUKInUOIjUIIgUIIrUJI0UGI4UHI9UKI/UNI7UPIz RgKkRXKjRFKmRCKpQ9KpRHKsRQKtRhKnRgKk UQIZUVIaUWIVUQIUUNIQUGITUEIOUAIOUBIVUGIWUIIeUQIZ F7JvGQJnGMJmGEJoF6JkF3JoF4JvF7Jv TKGKTJGBTHGFTGF+TBGBS+GHS4GES5GIS/GJTJGNTKGK E/KPFKKPFIKMFOKKFNKHFHKFE2KKE+KLE6KNE/KP K1I5KuI3KoI3KrI7KpJAKyJFK5JCK1I5 M2KqM+KoM4KmMsKmMgKmMVKpMsKrM2Kq UUKWURKTUCKTT8KST0KVT2KYUGKYUUKW FbKLFXKIFSKIFQKMFWKRFmKPFbKL GuG3G1G4G/GyGxGwGnGzGvGzGuG3 DiIqDZIrDPIzDZIxDiIq D/KfD/KcDwKYDlKYD0KeD/Kf FGKbFJKZFHKUE8KUE9KXE2KWE2KZFGKb FAKhFBKgE0KhEqKlE9KjFAKh R0KhReKgRlKlRrKlR1KjR0Kh QVGBQRGAQPGJQRGPQXGGQVGB UwFSUpFPUiFSUrFSUxFXUwFS S1HDSzHASwHGS2HNS4HMS1HD FRJ8FPJ7FBJ+FHKBFRJ8 OdKqOOKoOMKqODKqOYKsOdKq MOIBMMH6MCH+MCIBMOIB GfKMGfKLGSKLGMKNGPKPGYKPGfKM U1FWUrFdUxFbU1FW MzKfMqKeMjKfMjKhMsKiMzKf TTFtTQFkTOFsTQFxTTFt TAGRS8GMS6GPS8GUTAGVTAGR UrKUUmKTUYKVUZKWUrKU SqGNSlGJSsGSSqGN FaKUFXKSFNKUFVKXFaKU L1INL3IKL3IFLyIFLxIML1IN SJGzSDGySEG3SLG4SJGz TrHxTkHrThHsTkHwTrHx BsJMBoJLBlJOBrJQBvJOBsJM'.split(' ').map(s => {
+    const out = [];
+    for (let i = 0; i < s.length; i += 4){
+      const lon = (IX[s[i]]*64 + IX[s[i+1]])/4 - 180, lat = (IX[s[i+2]]*64 + IX[s[i+3]])/4 - 90;
+      const r = rOf(lat), a = lon*RAD;
+      out.push(r*Math.cos(a), -r*Math.sin(a));
+    }
+    return out;
+  });
   const HOME = CITY[0];
   let UT = mod(9 - HOME.off, 24);      // start at 9:00 am in Delhi
   let focus = 0, mode = 'day';
@@ -305,17 +321,75 @@ input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blu
     ctx.fillStyle = day ? '#FFD27A' : '#8FB0EE'; ctx.font = '700 10.5px ' + FONT; ctx.fillText(time, px + pw/2, py + 25);
     ctx.textAlign = 'left';
   }
+  function halo(ctx, text, x, y, fill){
+    ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(6,10,24,.55)';
+    ctx.strokeText(text, x, y); ctx.lineWidth = 1;
+    ctx.fillStyle = fill; ctx.fillText(text, x, y);
+  }
+  // Earth: ocean, coastlines and meridians turning together, then the night side over the top
+  function drawGlobe(ctx, ex, ey, R){
+    const glow = ctx.createRadialGradient(ex, ey, R*0.88, ex, ey, R*1.13);
+    glow.addColorStop(0,'rgba(120,190,255,0)'); glow.addColorStop(0.55,'rgba(120,190,255,.28)'); glow.addColorStop(1,'rgba(120,190,255,0)');
+    ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(ex, ey, R*1.13, 0, TAU); ctx.fill();
+
+    ctx.save();
+    ctx.beginPath(); ctx.arc(ex, ey, R, 0, TAU); ctx.clip();
+    const og = ctx.createRadialGradient(ex - R*0.3, ey - R*0.35, R*0.08, ex, ey, R*1.05);
+    og.addColorStop(0,'#2E8AD6'); og.addColorStop(0.7,'#1C68B2'); og.addColorStop(1,'#12457F');
+    ctx.fillStyle = og; ctx.fillRect(ex - R, ey - R, R*2, R*2);
+
+    ctx.save(); ctx.translate(ex, ey); ctx.rotate(-15*UT*RAD);   // Earth turns; the Sun does not
+    ctx.beginPath();
+    for (const r of LAND){
+      ctx.moveTo(r[0]*R, r[1]*R);
+      for (let i = 2; i < r.length; i += 2) ctx.lineTo(r[i]*R, r[i+1]*R);
+      ctx.closePath();
+    }
+    ctx.fillStyle = '#54A75F'; ctx.fill();
+    ctx.strokeStyle = 'rgba(20,60,45,.35)'; ctx.lineWidth = 0.6; ctx.stroke(); ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(255,255,255,.11)';                    // one meridian per hour
+    ctx.beginPath();
+    for (let m = 0; m < 24; m++){ const a = m*15*RAD; ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a)*R, -Math.sin(a)*R); }
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.strokeStyle = 'rgba(255,255,255,.13)';                    // parallels stay put
+    for (const la of [60, 30]){ ctx.beginPath(); ctx.arc(ex, ey, R*rOf(la), 0, TAU); ctx.stroke(); }
+
+    const x0 = ex - R*0.09, x1 = ex + R*0.15;                     // nightfall, with a band of twilight
+    const ng = ctx.createLinearGradient(x0, 0, x1, 0);
+    ng.addColorStop(0,'rgba(5,10,26,0)'); ng.addColorStop(1,'rgba(5,10,26,.82)');
+    ctx.fillStyle = ng; ctx.fillRect(x0, ey - R, x1 - x0, R*2);
+    ctx.fillStyle = 'rgba(5,10,26,.82)'; ctx.fillRect(x1, ey - R, R + 2, R*2);
+
+    const sh = ctx.createRadialGradient(ex - R*0.3, ey - R*0.3, R*0.15, ex, ey, R*1.02);
+    sh.addColorStop(0,'rgba(0,0,0,0)'); sh.addColorStop(0.7,'rgba(0,0,0,.07)'); sh.addColorStop(1,'rgba(0,0,0,.45)');
+    ctx.fillStyle = sh; ctx.fillRect(ex - R, ey - R, R*2, R*2);
+    ctx.restore();
+
+    ctx.strokeStyle = 'rgba(200,225,255,.4)'; ctx.beginPath(); ctx.arc(ex, ey, R, 0, TAU); ctx.stroke();
+  }
   function drawPin(ctx, c, strong){
     const {ex, ey, Re} = G;
-    const h = localH(c), a = (180 + (h-12)*15)*RAD;
-    const x = ex + Re*Math.cos(a), y = ey - Re*Math.sin(a), day = altOf(h) > 0;
-    const col = day ? '#FFD27A' : '#7FA0E0';
-    ctx.globalAlpha = .4; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(x, y, strong ? 11 : 8, 0, TAU); ctx.stroke();
+    const h = localH(c), a = (180 + (h-12)*15)*RAD, rr = Re*rOf(c.lat);
+    const ca = Math.cos(a), sa = Math.sin(a);
+    const x = ex + rr*ca, y = ey - rr*sa, day = altOf(h) > 0;
+    const col = day ? '#FFD27A' : '#FFBE86';
+    if (!day){                                   // its lights are on
+      const g = ctx.createRadialGradient(x, y, 0, x, y, strong ? 16 : 11);
+      g.addColorStop(0,'rgba(255,196,110,.55)'); g.addColorStop(1,'rgba(255,196,110,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, strong ? 16 : 11, 0, TAU); ctx.fill();
+    }
+    // leader out to a label beyond the rim
+    const lx = ex + (Re + 13)*ca, ly = ey - (Re + 13)*sa;
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(x + ca*7, y - sa*7); ctx.lineTo(lx, ly); ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha = .55; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, strong ? 9 : 7, 0, TAU); ctx.stroke();
     ctx.globalAlpha = 1; ctx.lineWidth = 1;
-    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, strong ? 5 : 4, 0, TAU); ctx.fill();
-    ctx.fillStyle = '#0B1020'; ctx.beginPath(); ctx.arc(x, y, strong ? 1.8 : 1.4, 0, TAU); ctx.fill();
-    placeLabel(ctx, x, y, Math.cos(a), c.n, clock(h), day, strong);
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, strong ? 4.5 : 3.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(11,16,32,.9)'; ctx.beginPath(); ctx.arc(x, y, strong ? 1.7 : 1.3, 0, TAU); ctx.fill();
+    placeLabel(ctx, lx, ly, ca, c.n, clock(h), day, strong);
   }
   function drawSpace(){
     const {w, h, ctx} = G.space;
@@ -335,35 +409,26 @@ input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blu
     ctx.strokeStyle = 'rgba(255,201,74,.30)';
     for (let k = -3; k <= 3; k++){
       const y = ey + k*Re*0.42;
-      ctx.beginPath(); ctx.moveTo(w*0.10, y); ctx.lineTo(ex - Re - 8, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.10, y); ctx.lineTo(ex - Re*1.18 - 3, y); ctx.stroke();
     }
 
-    // night half, then the lit half clipped to the Sun's side
-    ctx.fillStyle = '#0B1226'; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.fill();
-    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, ex, h); ctx.clip();
-    const eg = ctx.createLinearGradient(ex - Re, 0, ex, 0);
-    eg.addColorStop(0,'#8FCBF8'); eg.addColorStop(0.55,'#3E86D2'); eg.addColorStop(1,'#1E4C86');
-    ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.fill();
-    ctx.restore();
-    ctx.strokeStyle = 'rgba(180,200,240,.35)'; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.stroke();
+    drawGlobe(ctx, ex, ey, Re);
 
-    // latitude rings + pole
-    ctx.strokeStyle = 'rgba(180,200,240,.15)';
-    for (const f of [0.34, 0.67]){ ctx.beginPath(); ctx.arc(ex, ey, Re*f, 0, TAU); ctx.stroke(); }
-    ctx.fillStyle = 'rgba(228,238,255,.85)'; ctx.beginPath(); ctx.arc(ex, ey, 2.6, 0, TAU); ctx.fill();
-    ctx.textAlign = 'center'; ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(200,215,245,.65)';
-    ctx.fillText('N. POLE', ex, ey - Re*0.23 - 7);
+    // pole, spin, and the line between day and night
+    ctx.fillStyle = 'rgba(232,242,255,.9)'; ctx.beginPath(); ctx.arc(ex, ey, 2.6, 0, TAU); ctx.fill();
+    ctx.textAlign = 'center';
     spinArrow(ctx, ex, ey, Re*0.23);
-
-    // the line between day and night
-    ctx.setLineDash([4,5]); ctx.strokeStyle = 'rgba(255,220,150,.75)';
-    ctx.beginPath(); ctx.moveTo(ex, ey - Re); ctx.lineTo(ex, ey + Re); ctx.stroke(); ctx.setLineDash([]);
+    ctx.setLineDash([4,5]); ctx.strokeStyle = 'rgba(255,225,160,.85)'; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(ex, ey - Re); ctx.lineTo(ex, ey + Re); ctx.stroke();
+    ctx.setLineDash([]); ctx.lineWidth = 1;
     ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(255,220,150,.9)';
     ctx.fillText('SUNRISE', ex, ey - Re - 7);
     ctx.fillText('SUNSET', ex, ey + Re + 14);
-    ctx.font = '800 11px ' + FONT;
-    ctx.fillStyle = 'rgba(12,38,72,.8)';   ctx.fillText('DAY', ex - Re*0.55, ey + 5);
-    ctx.fillStyle = 'rgba(160,182,226,.8)'; ctx.fillText('NIGHT', ex + Re*0.55, ey + 5);
+    if (mode === 'day'){                                  // beyond every pin's reach
+      ctx.font = '800 11px ' + FONT;
+      halo(ctx, 'DAY',   ex + Re*0.88*Math.cos(200*RAD), ey - Re*0.88*Math.sin(200*RAD), '#FFEFC4');
+      halo(ctx, 'NIGHT', ex + Re*0.88*Math.cos(340*RAD), ey - Re*0.88*Math.sin(340*RAD), '#A9BEE6');
+    }
     ctx.textAlign = 'left';
 
     if (mode === 'day') drawPin(ctx, HOME, true);
@@ -486,7 +551,7 @@ input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blu
     day:   { off: () => HOME.off, ref: () => HOME, slab: 'Time',
              legend: '<span><i style="background:#8FCBF8"></i>Day half</span><span><i style="background:#16203c;border:1px solid #38507e"></i>Night half</span><span>One spin = 24 hours</span>' },
     zones: { off: () => 0, ref: () => CITY[focus], slab: 'Spin',
-             legend: '<span><i style="background:#FFD27A"></i>In daylight</span><span><i style="background:#7FA0E0"></i>In night</span><span>Half of Earth is always lit</span>' },
+             legend: '<span><i style="background:#FFD27A"></i>In daylight</span><span><i style="background:#FFBE86"></i>Lights on</span><span>Half of Earth is always lit</span>' },
   };
   const sliderVal = () => mod(UT + MODE[mode].off(), 24);
   const setSlider = v => { UT = mod(v - MODE[mode].off(), 24); };
