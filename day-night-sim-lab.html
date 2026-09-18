@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Day &amp; Night Lab</title>
+<style>
+:root{
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE; --gdeep:#1F7A43;
+  --amber:#B07A1E; --atint:#FDF4E6;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --sheet:#FFFFFF; --pad:#F4F6F9;
+  --shadow:0 1px 2px rgba(20,33,61,.04);
+  --sun:#C88A25; --suntint:#FDF3E3; --zone:#5461C8; --zonetint:#EEEFFC;
+  --accent:var(--sun); --atone:var(--suntint);
+  --scene:#0B1020;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+    --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+    --amber:#D9A44E; --atint:#2A2416;
+    --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+    --chip:#1A2130; --icbg:#212938; --sheet:#171D2B; --pad:#212938;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --sun:#E4B461; --suntint:#2A2416; --zone:#8E97F2; --zonetint:#1F2340;
+  }
+}
+[data-theme="dark"]{
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+  --amber:#D9A44E; --atint:#2A2416;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --chip:#1A2130; --icbg:#212938; --sheet:#171D2B; --pad:#212938;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --sun:#E4B461; --suntint:#2A2416; --zone:#8E97F2; --zonetint:#1F2340;
+}
+body.zones{--accent:var(--zone); --atone:var(--zonetint)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg{display:block}
+
+.app{position:relative;height:100vh;height:100dvh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+     padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.appbar{display:flex;align-items:center;gap:9px;flex:none}
+.appbar img{height:23px;width:auto;display:block;object-fit:contain}
+.appbar .brand{font-weight:700;font-size:15.5px}
+.appbar .spacer{flex:1}
+.appbar .sub{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* segmented control */
+.seg{display:flex;background:var(--icbg);border-radius:14px;padding:4px;flex:none}
+.sgi{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border-radius:10px;border:0;background:transparent;
+     font-size:13px;font-weight:700;color:var(--body);line-height:1.15}
+.sgi .top{display:flex;align-items:center;gap:6px}
+.sgi small{font-size:10px;font-weight:600;color:var(--muted)}
+.sgi.here{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+.sgi.here small{color:var(--blue-dk)}
+.sgi .dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.sgi.here .dot.d{background:var(--sun)} .sgi.here .dot.z{background:var(--zone)}
+
+.scenes{display:flex;flex-direction:column;gap:8px;flex:1 1 0;min-height:0;min-width:0}
+.controls{display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+
+/* scenes */
+.scene{position:relative;background:var(--scene);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+.space{flex:1 1 0}
+.sky{flex:1.15 1 0}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.t-short{display:none}
+.legend{position:absolute;left:11px;right:11px;bottom:8px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.75);pointer-events:none}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.badge{position:absolute;top:6px;right:7px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;pointer-events:none;white-space:nowrap;
+       background:rgba(15,20,32,.72);color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.badge.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+.badge.hot{background:var(--accent);border-color:var(--accent);color:#1A1206}
+.badge.warm{color:var(--accent);border-color:var(--accent)}
+
+/* explanation card */
+.card{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 13px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+.card{height:106px}
+.card p{margin:0;font-size:14px;font-weight:600;line-height:1.32;color:var(--ink);height:3.96em;overflow:hidden;display:flex;align-items:center}
+.meter{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.bar{flex:1;height:7px;border-radius:4px;background:var(--icbg);overflow:hidden}
+.bar b{display:block;height:100%;width:0;background:var(--accent);border-radius:4px}
+.meter output{min-width:34px;text-align:right;color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+
+/* controls */
+.slider{flex:none;display:flex;align-items:center;gap:10px}
+.slider .lab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+.chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.clab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-right:1px}
+.chips button{flex:1 1 auto;min-height:34px;padding:0 8px;border-radius:999px;border:1px solid var(--line);background:var(--chip);
+              font-size:12.5px;font-weight:600;color:var(--body)}
+.chips button[aria-pressed="true"]{background:var(--btint);border-color:var(--blue);color:var(--blue-dk);font-weight:700}
+.actions{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;gap:7px;
+     font-size:14.5px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:active{transform:scale(.98)}
+
+/* bottom sheet */
+.veil{position:fixed;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.veil.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;max-height:78%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,33,61,.18);
+       translate:0 105%;transition:translate .32s cubic-bezier(.3,.9,.3,1)}
+.sheet.open{translate:0 0}
+.grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+.grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 20px 6px}
+.shead h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
+.x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--chip);color:var(--body);display:flex;align-items:center;justify-content:center;flex:none}
+.sbody{overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sbody h3{margin:16px 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px;line-height:1.3;color:var(--blue)}
+.sbody p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.sbody h3.warn{color:var(--amber)}
+.sbody p.warn{background:var(--atint);border-color:transparent}
+@media (max-height:640px){ .app{gap:6px} .btn{min-height:40px} .card p{font-size:13px} .card{height:98px} .legend{display:none} .sgi small{display:none} }
+@media (max-width:400px){ .chips button{padding:0 6px;font-size:12px} }
+@media (orientation:landscape) and (max-height:560px){
+  .app{display:grid;max-width:none;grid-template-columns:1fr minmax(232px,290px);grid-template-rows:auto auto 1fr;gap:10px;
+       padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px, env(safe-area-inset-left,0px))}
+  .scenes{grid-column:1;grid-row:1 / -1;flex-direction:row;gap:10px}
+  .scene{flex:1 1 0}
+  .appbar{grid-column:2;grid-row:1}
+  .seg{grid-column:2;grid-row:2}
+  .controls{grid-column:2;grid-row:3;justify-content:flex-start}
+  .card{height:auto;min-height:88px;flex:0 1 auto;justify-content:center}
+  .card p{height:auto;max-height:5.3em;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .sgi small{display:none}
+  .t-long{display:none} .t-short{display:inline}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .chips .clab{display:none}
+  .legend{font-size:10px;gap:2px 8px}
+  .badge{font-size:10px;padding:4px 8px}
+  .btn{min-height:42px}
+  .sheet{max-height:92%}
+}
+@media (prefers-reduced-motion: reduce){ .sheet,.veil{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="appbar">
+    <img src="petrilab-logo.png" alt="Petrilab" onerror="this.remove()">
+    <span class="brand">Day &amp; Night Lab</span>
+    <span class="spacer"></span>
+    <span class="sub">Science · Earth</span>
+  </div>
+
+  <div class="seg" role="tablist">
+    <button class="sgi here" id="tabD" role="tab" aria-selected="true"><span class="top"><i class="dot d"></i>Day &amp; night</span><small>Earth spins once a day</small></button>
+    <button class="sgi" id="tabZ" role="tab" aria-selected="false"><span class="top"><i class="dot z"></i>Time zones</span><small>One spin, many clocks</small></button>
+  </div>
+
+  <div class="scenes">
+  <section class="scene space">
+    <canvas id="space" aria-label="Earth seen from above the North Pole, with the Sun to the left"></canvas>
+    <span class="tag"><span class="t-long">From above the North Pole</span><span class="t-short">From above</span></span>
+    <div class="legend" id="legend"></div>
+    <span class="badge" id="order"></span>
+  </section>
+
+  <section class="scene sky">
+    <canvas id="sky" aria-label="The sky seen from the ground"></canvas>
+    <span class="tag" id="skyTag"><span class="t-long">What you see from the ground</span><span class="t-short">From the ground</span></span>
+    <span id="pill" class="badge">Morning</span>
+  </section>
+
+  </div>
+
+  <div class="controls">
+  <div class="card">
+    <p id="say"></p>
+    <div class="meter"><span id="meterLabel">Sun’s height</span><div class="bar"><b id="bar"></b></div><output id="meterVal">0%</output></div>
+  </div>
+
+  <div class="slider">
+    <span class="lab" id="slab">Time</span>
+    <input id="xS" type="range" min="0" max="24" step="0.02" value="9" aria-label="Time of day">
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div class="actions">
+    <button id="play" class="btn primary"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+    <button id="whyBtn" class="btn" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Why?</button>
+  </div>
+  </div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="shead"><h2 id="sheetTitle">Why?</h2>
+    <button class="x" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const TAU = Math.PI*2, RAD = Math.PI/180;
+  const mod = (x,n) => ((x % n) + n) % n;
+  const clamp = (x,a,b) => Math.min(b === undefined ? 1 : b, Math.max(a === undefined ? 0 : a, x));
+  const smooth = (a,b,x) => { const t = clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+  const mix = (a,b,t) => a + (b-a)*t;
+  const mix3 = (c,d,t) => [mix(c[0],d[0],t), mix(c[1],d[1],t), mix(c[2],d[2],t)];
+  const css = c => `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;
+  let seed = 11; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+  const stars = Array.from({length: 110}, () => ({x: rnd(), y: rnd(), s: rnd()*1.3 + 0.4, a: rnd()}));
+
+  // ---------- model ----------
+  // One number runs everything: UT, the world clock. Each place adds its own offset.
+  const CITY = [
+    {n:'Delhi',    sub:'India', off: 5.5},
+    {n:'London',   sub:'UK',    off: 0},
+    {n:'New York', sub:'USA',   off: -5},
+    {n:'Tokyo',    sub:'Japan', off: 9},
+  ];
+  const HOME = CITY[0];
+  let UT = mod(9 - HOME.off, 24);      // start at 9:00 am in Delhi
+  let focus = 0, mode = 'day';
+  const G = {};
+
+  const localH = c => mod(UT + c.off, 24);
+  const altOf  = h => 90*Math.sin((h-6)*Math.PI/12);   // Sun's height, ° above the horizon
+  const isDay  = c => altOf(localH(c)) > 0;
+  const clock = h => {
+    let m = mod(Math.round(h*60), 1440), hh = Math.floor(m/60) , mm = m%60;
+    const ap = hh < 12 ? 'am' : 'pm'; let d = hh % 12; if (d === 0) d = 12;
+    return d + ':' + String(mm).padStart(2,'0') + ' ' + ap;
+  };
+  const phase = h => {
+    if (h >= 23 || h < 1)   return ['Midnight', 'the middle of the night', 'Midnight. Your town is on the far side of Earth from the Sun — as far from sunlight as it gets.'];
+    if (h < 5)             return ['Night', 'night', 'Night. Your town is on the dark half of Earth. The other half is having its day right now.'];
+    if (h < 7)             return ['Sunrise', 'sunrise', 'Sunrise! Earth has just turned your town into the sunlight. The Sun does not rise — you do.'];
+    if (h < 11.5)          return ['Morning', 'morning', 'Morning. Earth is turning your town towards the Sun, so the Sun climbs higher in the sky.'];
+    if (h <= 12.5)         return ['Noon', 'midday', 'The Sun is almost overhead. Your side of Earth is facing the Sun most directly — the middle of the day.'];
+    if (h < 17)            return ['Afternoon', 'afternoon', 'Afternoon. Earth is turning your town away from the Sun, so the Sun sinks lower.'];
+    if (h < 19)            return ['Sunset', 'sunset', 'Sunset. Earth is turning your town out of the sunlight. You are turning away from the Sun.'];
+    return ['Night', 'night', 'Night. Your town is on the dark half of Earth. The other half is having its day right now.'];
+  };
+
+  const space = $('space'), sky = $('sky'), xS = $('xS');
+
+  function fit(c){
+    const r = c.getBoundingClientRect();
+    c.width = Math.max(1, Math.round(r.width*DPR)); c.height = Math.max(1, Math.round(r.height*DPR));
+    return { w: r.width, h: r.height, ctx: c.getContext('2d') };
+  }
+  function starfield(ctx, x, y, w, h, alpha){
+    if (alpha <= 0) return;
+    for (const s of stars){ ctx.fillStyle = `rgba(228,235,255,${(0.2 + s.a*0.8)*alpha})`; ctx.fillRect(x + s.x*w, y + s.y*h, s.s, s.s); }
+  }
+  function rrect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath();
+  }
+
+  // ================= SPACE: Earth from above the North Pole =================
+  function spinArrow(ctx, cx, cy, rr){
+    const a1 = -35*RAD, a2 = 200*RAD;                       // an arrow curling around the pole
+    ctx.strokeStyle = 'rgba(205,224,255,.8)'; ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.arc(cx, cy, rr, -a2, -a1); ctx.stroke(); ctx.lineWidth = 1;
+    const x = cx + rr*Math.cos(a2), y = cy - rr*Math.sin(a2);
+    const tx = -Math.sin(a2), ty = -Math.cos(a2);          // direction of travel on screen
+    ctx.fillStyle = 'rgba(205,224,255,.95)';
+    ctx.beginPath();
+    ctx.moveTo(x + tx*8, y + ty*8);
+    ctx.lineTo(x - ty*4.2 - tx*2, y + tx*4.2 - ty*2);
+    ctx.lineTo(x + ty*4.2 - tx*2, y - tx*4.2 - ty*2);
+    ctx.fill();
+  }
+  function placeLabel(ctx, x, y, ca, name, time, day, strong){
+    const {w:W, h:H} = G.space;
+    ctx.font = '800 11px ' + FONT; const w1 = ctx.measureText(name).width;
+    ctx.font = '700 10.5px ' + FONT; const w2 = ctx.measureText(time).width;
+    const pw = Math.max(w1, w2) + 15, ph = 30;
+    let px = ca > .25 ? x + 4 : ca < -.25 ? x - pw - 4 : x - pw/2;
+    let py = y - ph/2;
+    px = Math.max(3, Math.min(W - pw - 3, px)); py = Math.max(3, Math.min(H - ph - 3, py));
+    ctx.fillStyle = strong ? 'rgba(10,15,33,.94)' : 'rgba(9,13,28,.82)';
+    rrect(ctx, px, py, pw, ph, 8); ctx.fill();
+    ctx.strokeStyle = strong ? (day ? 'rgba(255,208,120,.85)' : 'rgba(126,160,226,.85)') : 'rgba(255,255,255,.12)';
+    ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#EAEEF6'; ctx.font = '800 11px ' + FONT; ctx.fillText(name, px + pw/2, py + 13);
+    ctx.fillStyle = day ? '#FFD27A' : '#8FB0EE'; ctx.font = '700 10.5px ' + FONT; ctx.fillText(time, px + pw/2, py + 25);
+    ctx.textAlign = 'left';
+  }
+  function drawPin(ctx, c, strong){
+    const {ex, ey, Re} = G;
+    const h = localH(c), a = (180 + (h-12)*15)*RAD;
+    const x = ex + Re*Math.cos(a), y = ey - Re*Math.sin(a), day = altOf(h) > 0;
+    const col = day ? '#FFD27A' : '#7FA0E0';
+    ctx.globalAlpha = .4; ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, strong ? 11 : 8, 0, TAU); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.lineWidth = 1;
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, strong ? 5 : 4, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#0B1020'; ctx.beginPath(); ctx.arc(x, y, strong ? 1.8 : 1.4, 0, TAU); ctx.fill();
+    placeLabel(ctx, x, y, Math.cos(a), c.n, clock(h), day, strong);
+  }
+  function drawSpace(){
+    const {w, h, ctx} = G.space;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#070B1A'; ctx.fillRect(0,0,w,h);
+    starfield(ctx, 0, 0, w, h, 0.5);
+
+    const Re = Math.max(22, Math.min(h*0.33, w*0.24));
+    const ex = Math.max(w*0.42, Math.min(w*0.58, w - Re - 66)), ey = h/2;
+    Object.assign(G, {ex, ey, Re});
+
+    // Sun at the left, with its light streaming right
+    const sg = ctx.createRadialGradient(-w*0.05, ey, 4, -w*0.05, ey, w*0.22);
+    sg.addColorStop(0,'#FFF3C8'); sg.addColorStop(0.35,'#FFC94A'); sg.addColorStop(1,'rgba(255,201,74,0)');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(-w*0.05, ey, w*0.22, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#FFC94A'; ctx.font = '800 13px ' + FONT; ctx.textAlign = 'left'; ctx.fillText('SUN', 8, 34);
+    ctx.strokeStyle = 'rgba(255,201,74,.30)';
+    for (let k = -3; k <= 3; k++){
+      const y = ey + k*Re*0.42;
+      ctx.beginPath(); ctx.moveTo(w*0.10, y); ctx.lineTo(ex - Re - 8, y); ctx.stroke();
+    }
+
+    // night half, then the lit half clipped to the Sun's side
+    ctx.fillStyle = '#0B1226'; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, ex, h); ctx.clip();
+    const eg = ctx.createLinearGradient(ex - Re, 0, ex, 0);
+    eg.addColorStop(0,'#8FCBF8'); eg.addColorStop(0.55,'#3E86D2'); eg.addColorStop(1,'#1E4C86');
+    ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(180,200,240,.35)'; ctx.beginPath(); ctx.arc(ex, ey, Re, 0, TAU); ctx.stroke();
+
+    // latitude rings + pole
+    ctx.strokeStyle = 'rgba(180,200,240,.15)';
+    for (const f of [0.34, 0.67]){ ctx.beginPath(); ctx.arc(ex, ey, Re*f, 0, TAU); ctx.stroke(); }
+    ctx.fillStyle = 'rgba(228,238,255,.85)'; ctx.beginPath(); ctx.arc(ex, ey, 2.6, 0, TAU); ctx.fill();
+    ctx.textAlign = 'center'; ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(200,215,245,.65)';
+    ctx.fillText('N. POLE', ex, ey - Re*0.23 - 7);
+    spinArrow(ctx, ex, ey, Re*0.23);
+
+    // the line between day and night
+    ctx.setLineDash([4,5]); ctx.strokeStyle = 'rgba(255,220,150,.75)';
+    ctx.beginPath(); ctx.moveTo(ex, ey - Re); ctx.lineTo(ex, ey + Re); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = '700 9px ' + FONT; ctx.fillStyle = 'rgba(255,220,150,.9)';
+    ctx.fillText('SUNRISE', ex, ey - Re - 7);
+    ctx.fillText('SUNSET', ex, ey + Re + 14);
+    ctx.font = '800 11px ' + FONT;
+    ctx.fillStyle = 'rgba(12,38,72,.8)';   ctx.fillText('DAY', ex - Re*0.55, ey + 5);
+    ctx.fillStyle = 'rgba(160,182,226,.8)'; ctx.fillText('NIGHT', ex + Re*0.55, ey + 5);
+    ctx.textAlign = 'left';
+
+    if (mode === 'day') drawPin(ctx, HOME, true);
+    else CITY.forEach((c,i) => drawPin(ctx, c, i === focus));
+  }
+
+  // ================= SKY: from the ground =================
+  const NIGHT = [[8,12,32],[22,30,62]], DUSK = [[44,50,100],[236,126,64]], BRIGHT = [[58,138,232],[180,220,250]];
+  function skyPair(alt){
+    if (alt <= 0){ const t = smooth(-13, 1, alt); return [mix3(NIGHT[0], DUSK[0], t), mix3(NIGHT[1], DUSK[1], t)]; }
+    const t = smooth(0, 22, alt); return [mix3(DUSK[0], BRIGHT[0], t), mix3(DUSK[1], BRIGHT[1], t)];
+  }
+  function sunDisc(ctx, x, y, r){
+    const g = ctx.createRadialGradient(x, y, r*0.2, x, y, r*3.2);
+    g.addColorStop(0,'rgba(255,240,190,.75)'); g.addColorStop(1,'rgba(255,214,120,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r*3.2, 0, TAU); ctx.fill();
+    const d = ctx.createRadialGradient(x, y, 0, x, y, r);
+    d.addColorStop(0,'#FFFBEA'); d.addColorStop(0.65,'#FFE9A8'); d.addColorStop(1,'#F6BF52');
+    ctx.fillStyle = d; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+  }
+  function moonDisc(ctx, x, y, r){
+    ctx.fillStyle = '#E8EAF2'; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(160,170,196,.55)';
+    ctx.beginPath(); ctx.arc(x - r*0.3, y - r*0.2, r*0.27, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + r*0.28, y + r*0.26, r*0.19, 0, TAU); ctx.fill();
+  }
+  function skyScene(ctx, w, h){
+    const hl = localH(HOME), alt = altOf(hl), gy = h*0.80;
+    const [top, bot] = skyPair(alt);
+    const g = ctx.createLinearGradient(0, 0, 0, gy);
+    g.addColorStop(0, css(top)); g.addColorStop(1, css(bot));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    starfield(ctx, 0, 0, w, gy, clamp((-alt - 2)/14, 0, 1));
+
+    const top0 = h*0.14, rise = gy - top0;
+    if (alt > -7){
+      const xf = clamp((hl - 6)/12, -0.04, 1.04);
+      sunDisc(ctx, w*(0.12 + 0.76*xf), gy - (alt/90)*rise, Math.max(9, Math.min(w, h)*0.055));
+    }
+    if (alt < 4){
+      const nf = hl >= 18 ? (hl - 18)/12 : (hl + 6)/12;
+      moonDisc(ctx, w*(0.12 + 0.76*nf), gy - Math.sin(nf*Math.PI)*rise*0.78, Math.max(7, Math.min(w, h)*0.042));
+    }
+    // ground + silhouettes
+    const lit = clamp((alt + 8)/34, 0, 1);
+    ctx.fillStyle = css(mix3([13,18,26], [44,72,50], lit));
+    ctx.fillRect(0, gy, w, h - gy);
+    ctx.fillStyle = 'rgba(255,255,255,.10)'; ctx.fillRect(0, gy, w, 1);
+    ctx.fillStyle = css(mix3([6,9,14], [16,26,20], lit*0.5));
+    const bx = w*0.60, bw = Math.min(46, w*0.13), bh = Math.min(30, h*0.11);
+    ctx.fillRect(bx, gy - bh, bw, bh);
+    ctx.beginPath(); ctx.moveTo(bx - 5, gy - bh); ctx.lineTo(bx + bw/2, gy - bh - bh*0.55); ctx.lineTo(bx + bw + 5, gy - bh); ctx.fill();
+    const tx = w*0.26, tr = Math.min(15, h*0.055);
+    ctx.fillRect(tx - 2.5, gy - tr*1.6, 5, tr*1.6);
+    ctx.beginPath(); ctx.arc(tx, gy - tr*1.9, tr, 0, TAU); ctx.fill();
+    ctx.font = '700 9.5px ' + FONT; ctx.fillStyle = 'rgba(235,240,250,.6)';
+    ctx.textAlign = 'left';  ctx.fillText('EAST', 10, gy + 15);
+    ctx.textAlign = 'right'; ctx.fillText('WEST', w - 10, gy + 15);
+    ctx.textAlign = 'left';
+  }
+  function zonesScene(ctx, w, h){
+    const bh = h/CITY.length;
+    CITY.forEach((c, i) => {
+      const y = i*bh, hl = localH(c), alt = altOf(hl), day = alt > 0;
+      const [top, bot] = skyPair(alt);
+      const g = ctx.createLinearGradient(0, y, 0, y + bh);
+      g.addColorStop(0, css(top)); g.addColorStop(1, css(bot));
+      ctx.fillStyle = g; ctx.fillRect(0, y, w, bh);
+      ctx.save(); ctx.beginPath(); ctx.rect(0, y, w, bh); ctx.clip();
+      starfield(ctx, 0, y, w, bh, clamp((-alt - 2)/14, 0, 1));
+      const r = Math.min(bh*0.22, 13);
+      if (alt > -7) sunDisc(ctx, w*0.80, y + bh*0.46 - (alt/90)*(bh*0.26), r);
+      else moonDisc(ctx, w*0.80, y + bh*0.44, r*0.8);
+      ctx.restore();
+      const ink = alt > 8 ? '#12233F' : '#EAEEF6';
+      ctx.fillStyle = ink;
+      ctx.font = '800 11px ' + FONT; ctx.textAlign = 'left';
+      ctx.globalAlpha = .75; ctx.fillText(c.n.toUpperCase(), 13, y + bh*0.40); ctx.globalAlpha = 1;
+      ctx.font = '800 17px ' + FONT; const cw = ctx.measureText(clock(hl)).width;
+      ctx.fillText(clock(hl), 13, y + bh*0.68);
+      ctx.font = '700 10.5px ' + FONT; ctx.globalAlpha = .7;
+      ctx.fillText(day ? 'daytime' : 'night', 13 + cw + 12, y + bh*0.68);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.fillRect(0, y + bh - 1, w, 1);
+      if (i === focus){
+        ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2;
+        rrect(ctx, 2, y + 2, w - 4, bh - 4, 9); ctx.stroke(); ctx.lineWidth = 1;
+      }
+    });
+  }
+  function drawSky(){
+    const {w, h, ctx} = G.sky;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle = '#080C1E'; ctx.fillRect(0,0,w,h);
+    if (mode === 'day') skyScene(ctx, w, h); else zonesScene(ctx, w, h);
+  }
+
+  // ================= info =================
+  function dayInfo(){
+    const hl = localH(HOME), a = altOf(hl), [word, , say] = phase(hl);
+    const edge = word === 'Sunrise' || word === 'Sunset';
+    return { label: word + ' · ' + clock(hl), cls: edge ? 'warm' : a > 0 ? 'hot' : '',
+             say, meterLabel: 'Sun’s height', meter: Math.max(0, a)/90,
+             order: edge ? '🌅 Delhi: ' + word.toUpperCase() : a > 0 ? '🌞 Delhi: DAY' : '🌙 Delhi: NIGHT',
+             on: a > 0 && !edge };
+  }
+  function zoneInfo(){
+    const f = CITY[focus], hf = localH(f), af = altOf(hf);
+    let other = CITY[0], best = -1;
+    for (const c of CITY){ const d = Math.abs(altOf(localH(c)) - af); if (c !== f && d > best){ best = d; other = c; } }
+    const lit = CITY.filter(isDay).length;
+    return { label: 'Same moment', cls: '',
+             say: `In ${f.n} it is ${clock(hf)} — ${phase(hf)[1]}. At that very same moment it is ${clock(localH(other))} in ${other.n} — ${phase(localH(other))[1]}.`,
+             meterLabel: 'Places in daylight', meter: lit/CITY.length,
+             order: '🌍 Same moment', on: false };
+  }
+
+  // ================= shell =================
+  const MODE = {
+    day:   { off: () => HOME.off, ref: () => HOME, slab: 'Time',
+             legend: '<span><i style="background:#8FCBF8"></i>Day half</span><span><i style="background:#16203c;border:1px solid #38507e"></i>Night half</span><span>One spin = 24 hours</span>' },
+    zones: { off: () => 0, ref: () => CITY[focus], slab: 'Spin',
+             legend: '<span><i style="background:#FFD27A"></i>In daylight</span><span><i style="background:#7FA0E0"></i>In night</span><span>Half of Earth is always lit</span>' },
+  };
+  const sliderVal = () => mod(UT + MODE[mode].off(), 24);
+  const setSlider = v => { UT = mod(v - MODE[mode].off(), 24); };
+
+  function draw(){
+    drawSpace(); drawSky();
+    const inf = mode === 'day' ? dayInfo() : zoneInfo();
+    const pill = $('pill'); pill.textContent = inf.label; pill.className = 'badge ' + inf.cls;
+    $('say').textContent = inf.say;
+    $('meterLabel').textContent = inf.meterLabel;
+    $('bar').style.width = Math.round(inf.meter*100) + '%';
+    $('meterVal').textContent = Math.round(inf.meter*100) + '%';
+    const o = $('order'); o.textContent = inf.order; o.className = 'badge' + (inf.on ? ' on' : '');
+    syncControls();
+  }
+  function resize(){ G.space = fit(space); G.sky = fit(sky); draw(); }
+
+  // chips
+  const STOPS = [['Sunrise',6], ['Noon',12], ['Sunset',18], ['Midnight',0]];
+  function buildChips(){
+    const c = $('chips'); c.innerHTML = '';
+    if (mode === 'day'){
+      c.insertAdjacentHTML('beforeend', '<span class="clab">Jump</span>');
+      for (const [name, hh] of STOPS){
+        const b = document.createElement('button'); b.textContent = name; b.dataset.h = hh;
+        b.onclick = () => { stop(); UT = mod(hh - HOME.off, 24); draw(); };
+        c.appendChild(b);
+      }
+    } else {
+      c.insertAdjacentHTML('beforeend', '<span class="clab">Noon in</span>');
+      CITY.forEach((city, i) => {
+        const b = document.createElement('button'); b.textContent = city.n; b.dataset.i = i;
+        b.onclick = () => { stop(); focus = i; UT = mod(12 - city.off, 24); draw(); };
+        c.appendChild(b);
+      });
+    }
+  }
+  function syncControls(){
+    if (document.activeElement !== xS) xS.value = sliderVal();
+    for (const b of $('chips').querySelectorAll('button')){
+      const on = mode === 'day'
+        ? Math.abs(mod(localH(HOME) - (+b.dataset.h) + 12, 24) - 12) < 0.08
+        : (+b.dataset.i === focus && Math.abs(localH(CITY[+b.dataset.i]) - 12) < 0.08);
+      b.setAttribute('aria-pressed', on);
+    }
+  }
+
+  function setMode(next){
+    stop(); mode = next;
+    document.body.classList.toggle('zones', mode === 'zones');
+    for (const [id, on] of [['tabD', mode === 'day'], ['tabZ', mode === 'zones']]){
+      $(id).setAttribute('aria-selected', on); $(id).classList.toggle('here', on);
+    }
+    $('slab').textContent = MODE[mode].slab;
+    $('legend').innerHTML = MODE[mode].legend;
+    $('skyTag').hidden = mode === 'zones';
+    buildChips(); closeWhy();
+    requestAnimationFrame(resize);
+  }
+  $('tabD').onclick = () => setMode('day');
+  $('tabZ').onclick = () => setMode('zones');
+
+  // dragging the globe
+  const pos = (e, c) => { const r = c.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; };
+  let drag = false;
+  space.addEventListener('pointerdown', e => {
+    const p = pos(e, space), d = Math.hypot(p.x - G.ex, p.y - G.ey);
+    if (d > G.Re*0.25 && d < G.Re + 52){ drag = true; space.setPointerCapture(e.pointerId); stop(); spinTo(p); }
+  });
+  function spinTo(p){
+    const deg = mod(Math.atan2(-(p.y - G.ey), p.x - G.ex)/RAD, 360);
+    const ref = MODE[mode].ref();
+    UT = mod(12 + (deg - 180)/15 - ref.off, 24);
+    draw();
+  }
+  addEventListener('pointermove', e => { if (drag) spinTo(pos(e, space)); });
+  const endDrag = () => { if (drag){ drag = false; draw(); } };
+  addEventListener('pointerup', endDrag);
+  addEventListener('pointercancel', endDrag);
+  xS.addEventListener('input', () => { stop(); setSlider(+xS.value); draw(); });
+  xS.addEventListener('change', draw);
+
+  // play: one full spin
+  const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play';
+  const PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  let anim = null; const playBtn = $('play');
+  function stop(){ if (anim){ cancelAnimationFrame(anim); anim = null; playBtn.innerHTML = PLAY; } }
+  function speed(){
+    if (mode === 'zones') return 2.6;
+    const hl = localH(HOME), d = Math.min(Math.abs(hl - 6), Math.abs(hl - 18), Math.abs(hl + 6), Math.abs(hl - 30));
+    return 0.65 + 3.3*smooth(0.7, 2.6, d);            // linger over sunrise and sunset
+  }
+  playBtn.onclick = () => {
+    if (anim) return stop();
+    if (reduce){ UT = mod(12 - MODE[mode].ref().off, 24); draw(); return; }
+    playBtn.innerHTML = PAUSE;
+    let last = performance.now(), gone = 0;
+    const step = t => {
+      const dt = Math.min(0.05, (t - last)/1000); last = t;
+      const d = speed()*dt; UT = mod(UT + d, 24); gone += d;
+      draw();
+      if (gone >= 24){ anim = null; playBtn.innerHTML = PLAY; return; }
+      anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  };
+
+  // why sheet
+  const WHY = {
+    day: `<h3>What is really moving?</h3><p>The Sun does not travel across the sky — <b>Earth spins</b>. One full spin takes about 24 hours, and that is exactly one day. Your town is carried into the sunlight and out again.</p>
+      <h3>Why does the Sun rise in the east?</h3><p>Earth spins from west to east. Because you are turning east, places in the east meet the sunlight first — so the Sun seems to come up there, and go down in the west.</p>
+      <h3>Is half of Earth always dark?</h3><p>Yes. Sunlight can only light the half of Earth facing the Sun. The dashed line in the top picture is the edge between day and night, and it sweeps over your town twice a day: once at sunrise, once at sunset.</p>
+      <h3>Try this</h3><p>Tap <b>Sunrise</b>, then <b>Noon</b>, then <b>Sunset</b>. Watch the orange dot travel around the globe while the sky below changes. Or drag the globe with your finger.</p>
+      <h3>Remember</h3><p><b>Rotation</b> = Earth spinning on itself = day and night, once every 24 hours. Earth <i>also</i> goes around the Sun once a year — that journey gives us the seasons, not day and night.</p>`,
+    zones: `<h3>Why is it not the same time everywhere?</h3><p>Noon means "the Sun is highest here". That happens at different moments for different places, because Earth turns them towards the Sun one after another.</p>
+      <h3>15° every hour</h3><p>Earth turns all the way round (360°) in 24 hours — that is 15° each hour. So a place 15° to the east sees the Sun about one hour earlier, and keeps its clock one hour ahead.</p>
+      <h3>Why does India have one clock?</h3><p>India is wide enough that the Sun rises in Arunachal Pradesh long before Gujarat. To keep life simple the whole country uses one time, IST, set by a line of longitude at 82.5° E near Mirzapur.</p>
+      <h3>Try this</h3><p>Tap <b>Noon in Delhi</b> and look at New York — deep night. Then tap <b>Noon in New York</b>. Nothing about Earth changed; you only turned it.</p>
+      <h3>Remember</h3><p>One Earth, one spin, many clocks. When it is lunch time for you, it is bedtime for someone else — at the very same moment.</p>`,
+  };
+  const veil = $('veil'), sheet = $('sheet');
+  function openWhy(){
+    $('sheetTitle').textContent = mode === 'day' ? 'Why? · Day and night' : 'Why? · Time zones';
+    $('sheetBody').innerHTML = WHY[mode];
+    $('sheetBody').scrollTop = 0;
+    veil.classList.add('open'); sheet.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false'); $('whyBtn').setAttribute('aria-expanded', 'true');
+  }
+  function closeWhy(){
+    veil.classList.remove('open'); sheet.classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true'); $('whyBtn').setAttribute('aria-expanded', 'false');
+  }
+  $('whyBtn').onclick = () => sheet.classList.contains('open') ? closeWhy() : openWhy();
+  veil.onclick = closeWhy;
+  $('sheetClose').onclick = closeWhy;
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeWhy(); });
+  let sy = null;
+  $('grab').addEventListener('pointerdown', e => { sy = e.clientY; $('grab').setPointerCapture(e.pointerId); });
+  $('grab').addEventListener('pointermove', e => { if (sy !== null) sheet.style.transform = `translateY(${Math.max(0, e.clientY - sy)}px)`; });
+  $('grab').addEventListener('pointerup', e => { const dy = e.clientY - (sy ?? e.clientY); sy = null; sheet.style.transform = ''; if (dy > 60) closeWhy(); });
+
+  addEventListener('resize', resize);
+  addEventListener('orientationchange', () => setTimeout(resize, 150));
+  if ('ResizeObserver' in window){
+    let last = '';
+    new ResizeObserver(() => {
+      const k = [space.clientWidth, space.clientHeight, sky.clientWidth, sky.clientHeight].join();
+      if (k !== last){ last = k; resize(); }
+    }).observe(document.querySelector('.app'));
+  }
+  setMode('day');
+  if (document.fonts) document.fonts.ready.then(resize);
+})();
+</script>
+</body>
+</html>
