@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Ganga River Life Simulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFBFC; --panel:#FFFFFF; --ink:#1B2733; --ink-2:#526170; --line:#E3E8EE;
+  --river:#2E7FB8; --leaf:#3E8E5A; --turmeric:#E3A12F; --warn:#C0532B;
+  --map-land:#EEF3EA; --map-sea:#CFE5F2; --chip:#F1F4F7;
+  --shadow:0 1px 2px rgba(27,39,51,.06),0 4px 16px rgba(27,39,51,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#10161C; --panel:#18212A; --ink:#E8EEF3; --ink-2:#9FB0BF; --line:#2A3642;
+    --river:#5AA8DE; --leaf:#6BBF86; --turmeric:#F0B64E; --warn:#E78461;
+    --map-land:#1C2A24; --map-sea:#173247; --chip:#212C37;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10161C; --panel:#18212A; --ink:#E8EEF3; --ink-2:#9FB0BF; --line:#2A3642;
+  --river:#5AA8DE; --leaf:#6BBF86; --turmeric:#F0B64E; --warn:#E78461;
+  --map-land:#1C2A24; --map-sea:#173247; --chip:#212C37;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Hind",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow:hidden}
+h1,h2,h3{font-family:"Baloo 2","Hind",system-ui,sans-serif}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--turmeric);outline-offset:2px;border-radius:6px}
+
+.wrap{height:100dvh;max-width:1080px;margin:0 auto;padding:10px 12px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;min-height:0}
+@media (min-width:961px){.wrap{padding:14px 16px 16px;gap:12px}}
+
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex:0 0 auto;padding:0 4px}
+header h1{margin:0;font-size:clamp(19px,3.2vw,27px);line-height:1.1;font-weight:700}
+.here{font-size:14px;font-weight:600;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hint-sm{font-size:12px;color:var(--ink-2)}
+.brand{display:flex;align-items:center;gap:7px;font-family:"Baloo 2",sans-serif;font-weight:700;font-size:17px;color:var(--river)}
+.brand svg{width:22px;height:22px}
+.titles{border-left:1px solid var(--line);padding-left:10px;min-width:0}
+.titles h1{margin:0;font-size:clamp(17px,3vw,25px);line-height:1.1;font-weight:700}
+.titles p{margin:0;color:var(--ink-2);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px 0;flex:0 0 auto}
+.panel-h h2{margin:0;font-size:14px;font-weight:600;color:var(--ink-2);font-family:"Hind",sans-serif}
+
+/* 1 — what you see, top aligned inside its card */
+.view{flex:0 0 auto;display:flex;flex-direction:column;overflow:hidden;justify-content:flex-start}
+.scene-host{flex:0 0 auto;display:flex;justify-content:center;align-items:flex-start;padding:8px 10px 0}
+.scene{position:relative;border-radius:12px;overflow:hidden;container-type:inline-size;background:#DDEBF3;aspect-ratio:16/9;width:100%;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.scene.grabbing{cursor:grabbing}
+.scene svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.place{position:absolute;left:8px;top:7px;z-index:3;background:rgba(255,255,255,.92);color:#1B2733;border-radius:8px;padding:2px 9px 3px;font-size:12px;line-height:1.3;max-width:60%}
+.place b{display:block;font-family:"Baloo 2",sans-serif;font-size:16px;line-height:1.15}
+.hud{position:absolute;right:8px;top:7px;z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.badge,.hudchip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.badge{background:#E5F2E9;color:#256B3E}
+.badge.mid{background:#FBEFD6;color:#8A5A0B}
+.badge.bad{background:#F8E0D6;color:#9A3A17}
+.hudchip{background:rgba(255,255,255,.92);color:#256B3E}
+.hudchip.low{color:#9A3A17}
+.swipe-hint{position:absolute;left:50%;bottom:6px;white-space:nowrap;transform:translateX(-50%);z-index:4;background:rgba(27,39,51,.72);color:#fff;font-size:12px;font-weight:600;padding:4px 12px;border-radius:999px;pointer-events:none;transition:opacity .4s}
+.swipe-hint[hidden]{display:none}
+.creatures{position:absolute;inset:0;z-index:2}
+.cr{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;padding:2px;cursor:pointer;line-height:1;display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:12px;transition:opacity .5s,filter .5s,transform .2s}
+.cr .e{font-size:clamp(20px,5.4cqw,46px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));display:block}
+.cr .n{font-size:clamp(9px,1.7cqw,14px);font-weight:600;background:rgba(255,255,255,.92);color:#1B2733;padding:0 5px;border-radius:6px;white-space:nowrap;display:none}
+.cr.seen .n{display:block}
+.cr:hover{transform:translate(-50%,-50%) scale(1.12)}
+.cr.gone{opacity:.18;filter:grayscale(1)}
+.cr.sel .e{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px var(--turmeric))}
+.cr.hint:not(.seen) .e{animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{0%,80%,100%{transform:none}88%{transform:translateY(-5px)}}
+
+.info{flex:0 0 auto;margin:8px 10px 10px;padding:9px 12px;border-radius:12px;background:var(--chip);display:flex;gap:10px;align-items:flex-start;max-height:28dvh;overflow:auto}
+.info .big{font-size:30px;line-height:1;flex:0 0 auto}
+.itxt{flex:1 1 auto;min-width:0}
+.ihead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.livechip{flex:0 0 auto;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:color-mix(in srgb,var(--leaf) 16%,var(--panel));color:#256B3E;white-space:nowrap}
+.livechip.low{background:color-mix(in srgb,var(--warn) 16%,var(--panel));color:#9A3A17}
+.info h3{margin:0;font-size:17px;line-height:1.2}
+.info p{margin:2px 0 0;max-width:68ch;font-size:15px}
+.info p:empty{display:none}
+.info .status{font-size:14px;color:var(--ink-2);margin-top:3px}
+.info .status.gone{color:var(--warn);font-weight:600}
+.grow{flex:1 1 auto;min-height:10px}
+
+/* 2 — the river trajectory sits under the scene card */
+.stack{flex:1 1 auto;display:flex;flex-direction:column;gap:10px;min-height:0}
+.map{flex:1 1 auto;min-height:150px;padding-bottom:8px;display:flex;flex-direction:column;overflow:hidden}
+#map{display:block;width:100%;flex:1 1 auto;min-height:0;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
+#map.grabbing{cursor:grabbing}
+.stop{cursor:pointer}
+.stop circle.dot{fill:var(--panel);stroke:var(--river);stroke-width:3}
+.stop.on circle.dot{fill:var(--river)}
+.stop text{font-family:"Hind",sans-serif;fill:var(--ink-2)}
+.stop.on text{fill:var(--ink);font-weight:600}
+.stop:focus{outline:none}
+.stop:focus-visible circle.dot{stroke:var(--turmeric);stroke-width:5}
+/* on a phone only the place you are at is named, at a readable size */
+@media (max-width:760px){
+  #map .trib,#map .sea{display:none}
+}
+
+.riverctl{flex:0 0 auto;padding:4px 14px 0}
+.play{flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:0;background:var(--river);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.play svg{width:20px;height:20px}
+.slot{flex:1;min-width:0}
+#boat{--p:0%;-webkit-appearance:none;appearance:none;width:100%;background:transparent;height:28px;margin:0;cursor:grab;display:block}
+#boat::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--river) var(--p),var(--chip) var(--p))}
+#boat::-moz-range-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--river) var(--p),var(--chip) var(--p))}
+#boat::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:50%;background:var(--river);border:3px solid var(--panel);box-shadow:0 1px 4px rgba(27,39,51,.35)}
+#boat::-moz-range-thumb{width:22px;height:22px;border:3px solid var(--panel);border-radius:50%;background:var(--river);box-shadow:0 1px 4px rgba(27,39,51,.35)}
+.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-top:-3px}
+
+/* 3 — every control lives in the bar at the bottom */
+.actions{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;padding:10px 14px}
+.actions .ctl{flex:1 1 200px;min-width:150px}
+.ctl .legend,.ctl label{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:14px;margin-bottom:4px}
+.ctl label span,.ctl .legend span{font-weight:400;color:var(--ink-2)}
+.seg.water button[aria-pressed="true"][data-dirt="0"]{color:#256B3E;background:#E5F2E9}
+.seg.water button[aria-pressed="true"][data-dirt="45"]{color:#8A5A0B;background:#FBEFD6}
+.seg.water button[aria-pressed="true"][data-dirt="70"]{color:#9A3A17;background:#F8E0D6}
+.btnrow{display:flex;gap:10px;flex:0 0 auto;align-items:flex-end}
+.btn.primary{background:var(--river);color:#fff;display:inline-flex;align-items:center;gap:8px}
+.btn.primary svg{width:17px;height:17px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--chip);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:6px 2px;cursor:pointer;font-size:14px;overflow:hidden;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.seg button .i{font-size:18px}
+.seg button[aria-pressed="true"]{background:var(--panel);box-shadow:var(--shadow);font-weight:700;outline:1px solid var(--line)}
+.readout{flex:0 0 auto;min-width:118px}
+.readout .lbl{color:var(--ink-2);font-size:13px}
+.readout .num{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:26px;line-height:1.1;color:var(--leaf)}
+.readout .num small{font-size:16px;color:var(--ink-2);font-weight:600}
+.readout .num.low{color:var(--warn)}
+.bar{height:6px;border-radius:99px;background:var(--chip);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--leaf);border-radius:99px;transition:width .4s}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:600;font-size:16px;cursor:pointer;background:var(--chip)}
+.spotted-btn{border:0;background:var(--chip);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer}
+@media (max-width:600px){
+  .actions .ctl.season{flex:1 1 100%}
+  .readout{display:none}
+}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 6px;border-radius:999px;background:var(--chip);font-size:14px;border:1px dashed var(--line);color:var(--ink-2)}
+.chip.seen{border-style:solid;border-color:transparent;color:var(--ink);background:color-mix(in srgb,var(--leaf) 16%,var(--panel))}
+.chip .ce{font-size:17px;width:22px;text-align:center}
+.linkbtn{background:none;border:0;padding:0;color:var(--river);font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* 4 — small and short screens */
+@media (max-height:760px){
+  .wrap{gap:8px;padding:8px 10px calc(10px + env(safe-area-inset-bottom))}
+  .titles p{display:none}
+  .info{padding:8px 10px}
+  .info .big{font-size:26px}
+  .info h3{font-size:16px}
+  .info p{font-size:14px}
+  .seg button{font-size:13px;padding:5px 2px}
+  .play{width:42px;height:42px}
+  .ends{display:none}
+  .actions{gap:8px 12px;padding:8px 12px}
+}
+@media (max-width:600px){ .place .sub{display:none} }
+@media (max-width:760px){ .hint-sm{display:none} }
+@media (max-width:430px){
+  .place b{font-size:15px}
+  .place{font-size:11px;max-width:64%}
+}
+/* phone held sideways: the scene takes the left, everything else stacks on the right */
+@media (orientation:landscape) and (max-height:560px){
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);grid-template-rows:auto minmax(0,1fr);gap:8px}
+  header{grid-column:1/-1}
+  .titles p{display:none}
+  .view{grid-column:1;grid-row:2;min-height:0}
+  .stack{grid-column:2;grid-row:2;min-height:0;overflow:auto}
+  .stack .map{min-height:104px}
+  .stack .map .panel-h{display:none}
+  .stack .map{padding:6px 0}
+  .actions{padding:8px 10px;gap:6px 10px}
+  .actions .ctl{flex:1 1 100%}
+  .actions .readout{display:none}
+  .seg button{flex-direction:row;gap:6px;padding:6px 4px}
+  .info{max-height:24dvh}
+  .riverctl{padding-top:0}
+}
+@media (orientation:landscape) and (max-height:420px){
+  header{margin-bottom:-2px}
+  .brand{font-size:15px}
+  .titles h1{font-size:17px}
+  .info{max-height:19dvh}
+  .seg button{padding:5px 4px;font-size:13px}
+  .actions .btn{padding:8px 14px;font-size:15px}
+}
+
+@media (min-width:961px){
+  .stack{flex-direction:row;align-items:stretch;gap:12px}
+  .stack .map{flex:1 1 58%;min-width:0;display:flex;flex-direction:column}
+  .stack .map svg{flex:1 1 auto;min-height:0}
+  .stack .actions{flex:1 1 42%;align-content:flex-start}
+  .stack .actions .ctl{flex:1 1 150px;min-width:140px}
+  .stack .actions .readout{flex:0 0 auto}
+}
+/* compact controls for phones */
+@media (max-width:600px){
+  header h1{white-space:nowrap;font-size:20px}
+  .here{display:none}
+  .seg button{letter-spacing:-.01em}
+  .actions{gap:8px 10px;padding:10px 12px}
+  .actions .ctl{flex:1 1 calc(50% - 6px);min-width:0}
+  .actions .ctl.season,.actions .ctl.water{flex:1 1 calc(50% - 6px)}
+  .seg{padding:3px;gap:3px}
+  .seg button{flex-direction:column;gap:1px;padding:5px 1px;font-size:11px;line-height:1.15}
+  .seg button .i{font-size:15px}
+  .ctl .legend,.ctl label{font-size:12.5px;margin-bottom:3px}
+  .btnrow{flex:1 1 100%}
+  .btnrow .btn{flex:1 1 auto;justify-content:center;padding:10px 12px;font-size:15px}
+}
+@media (max-height:700px){ .map{min-height:118px} }
+dialog{border:0;border-radius:18px;padding:0;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(16,22,28,.5)}
+.dlg{padding:18px 20px 20px;max-height:82dvh;overflow:auto}
+.dlg-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
+.dlg h2{margin:0;font-size:24px}
+.dlg h3{margin:16px 0 4px;font-size:18px;line-height:1.25}
+.dlg p{margin:0 0 6px;max-width:62ch}
+.dlg .try{margin-top:16px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--turmeric) 16%,var(--panel))}
+.x{border:0;background:var(--chip);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;flex:0 0 auto}
+
+.flow{stroke-dasharray:18 34;animation:flow var(--flow,4s) linear infinite}
+@keyframes flow{to{stroke-dashoffset:-52}}
+.rain line{animation:rain .7s linear infinite}
+@keyframes rain{from{transform:translate(0,-40px)}to{transform:translate(-12px,40px)}}
+@media (prefers-reduced-motion:reduce){.flow,.rain line,.cr.hint .e{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>River Life Simulation</h1>
+    <span class="here" id="hereName"></span>
+  </header>
+
+  <section class="panel view" id="viewCard" aria-label="What you see here">
+    <div class="panel-h">
+      <h2>What you see here</h2>
+      <button class="spotted-btn" id="spottedBtn">Spotted 0 of 33</button>
+    </div>
+    <div class="scene-host" id="sceneHost">
+      <div class="scene" id="scene">
+        <svg id="sceneSvg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+        <div class="place" id="place"></div>
+        <div class="hud"><span id="waterBadge" class="badge">Clean water</span></div>
+        <div class="creatures" id="creatures"></div>
+        <div class="swipe-hint" id="swipeHint">Swipe to travel →</div>
+      </div>
+    </div>
+    <div class="info" id="info" aria-live="polite">
+      <div class="big" id="infoBig" aria-hidden="true">🔍</div>
+      <div class="itxt">
+        <div class="ihead"><h3 id="infoTitle">Tap the lives you can find</h3><span id="aliveChip" class="livechip">6 of 6 lives</span></div>
+        <p id="infoBody"></p>
+        <div class="status" id="infoStatus" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stack">
+    <section class="panel map" aria-label="Where you are on the river">
+      <div class="panel-h"><h2>Along the Ganga</h2><span class="hint-sm">Drag the boat, or tap a place</span></div>
+      <svg id="map" viewBox="0 0 1000 170" role="group" aria-label="Ganga river from the Gangotri glacier to the Bay of Bengal"></svg>
+      <div class="riverctl">
+        <input id="boat" type="range" min="0" max="100" step="0.5" value="0" aria-label="Where the boat is on the river">
+        <div class="ends"><span>Hills</span><span>Sea</span></div>
+      </div>
+    </section>
+
+    <section class="panel actions" aria-label="Controls">
+      <div class="ctl season">
+        <div class="legend" id="seasonLbl">Season</div>
+        <div class="seg" role="group" aria-labelledby="seasonLbl">
+          <button data-season="summer" aria-pressed="false"><span class="i">☀️</span>Summer</button>
+          <button data-season="monsoon" aria-pressed="false"><span class="i">🌧️</span>Monsoon</button>
+          <button data-season="winter" aria-pressed="true"><span class="i">🌬️</span>Winter</button>
+        </div>
+      </div>
+      <div class="ctl water">
+        <div class="legend" id="waterLbl">River water</div>
+        <div class="seg water" role="group" aria-labelledby="waterLbl">
+          <button data-dirt="0" aria-pressed="true"><span class="i">💧</span>Clean</button>
+          <button data-dirt="45" aria-pressed="false"><span class="i">🫧</span>Dirty</button>
+          <button data-dirt="70" aria-pressed="false"><span class="i">🛢️</span>Very dirty</button>
+        </div>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="playBtn" aria-label="Play the journey down the river"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3l12 7-12 7z"/></svg><span>Play</span></button>
+        <button class="btn" id="whyBtn">Why?</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<dialog id="journalDlg" aria-labelledby="journalTitleM">
+  <div class="dlg">
+    <div class="dlg-h"><h2 id="journalTitleM">Spotted here</h2><button class="x" id="closeJournal" aria-label="Close">×</button></div>
+    <div class="chips" id="chipsM" style="margin-top:8px"></div>
+    <p style="margin-top:14px"><button class="linkbtn" id="resetBtnM">Start spotting again</button></p>
+  </div>
+</dialog>
+
+<dialog id="why" aria-labelledby="whyTitle">
+  <div class="dlg">
+    <div class="dlg-h"><h2 id="whyTitle">Why?</h2><button class="x" id="closeWhy" aria-label="Close">×</button></div>
+    <h3>Why do different lives live in different parts of the river?</h3>
+    <p>A river is not the same all the way. At Gaumukh it is ice melt: freezing, grey with rock dust and very fast. In the gorge it is cold and clear. On the plains it is warm, wide and slow. At the sea it turns salty. Each kind of water, and each kind of bank, suits different plants and animals.</p>
+    <h3>Why do people live near rivers?</h3>
+    <p>People need water to drink, to grow crops, to wash and to catch fish. Nearly half of all Indians live in the Ganga\'s basin, and for millions the river is also holy. People are one of the lives the river supports.</p>
+    <h3>Why do animals go away when the water gets dirty?</h3>
+    <p>Dirty water holds less air and blocks sunlight, so fish, otters and dolphins cannot live in it. When they go, the kingfisher, the crane and the fisherman lose their food too. Every life on the river is linked to the others. The dolphin is the best test of all: where it still swims, the river is still healthy.</p>
+    <h3>Why do you see different lives in different seasons?</h3>
+    <p>In summer the glacier melts fastest and the plains dry out, leaving sand banks where families grow melons. In the monsoon the river swells, floods the fields and leaves behind fine silt that makes them rich. In winter, gulls and other birds fly in from cold lands far to the north.</p>
+    <h3>What do dams and barrages change?</h3>
+    <p>Dams and barrages on the Ganga, like Tehri and Farakka, store water for farms, towns and electricity. But they also hold back the water and the silt, and a wall is very hard for a mahseer or a dolphin to get past.</p>
+    <div class="try"><b>Try this.</b> Go to the Varanasi ghats and make the water dirty. Who disappears first, and who stays? Watch the dolphin. Now make it clean again and see who comes back.</div>
+  </div>
+</dialog>
+
+<script>
+
+
+(function(){
+"use strict";
+
+var STRETCHES = [
+  {name:"Glacier snout", place:"Gaumukh, Uttarakhand", boat:"At the source",
+   caption:"The Ganga is born here, pouring out of an ice cave at the end of the Gangotri glacier. The water is grey with rock dust, freezing cold and very fast.",
+   water:[302,340], base:"#8FC4D9", flow:1.2},
+  {name:"Mountain gorge", place:"Rishikesh and Haridwar, Uttarakhand", boat:"In the mountains",
+   caption:"The river rushes out of the hills through a forested gorge. It is clear, cold and full of air, and the forest comes right down to the water.",
+   water:[285,370], base:"#4FA3C7", flow:2.2},
+  {name:"Farms of the plains", place:"Kanpur to Prayagraj, Uttar Pradesh", boat:"On the plains",
+   caption:"The river slows down and spreads wide across flat land. Canals carry its water to fields of rice, wheat and sugarcane, and sand banks appear in summer.",
+   water:[250,360], base:"#4E9CC8", flow:4},
+  {name:"City ghats", place:"Varanasi, Uttar Pradesh", boat:"At the city",
+   caption:"Stone steps run down to the water along the whole city. The river is deep and calm here, which is why the dolphin can live in it, and why the city\'s waste is such a problem.",
+   water:[255,370], base:"#4489B5", flow:5},
+  {name:"Sundarbans delta", place:"Sundarbans, West Bengal", boat:"Near the sea",
+   caption:"Near the sea the river splits into hundreds of creeks. Fresh water mixes with salty sea water, and the world\'s largest mangrove forest grows in the mud.",
+   water:[250,360], base:"#4C9C9A", flow:6}
+];
+
+// tol = how clean the water must be (0 to 100) for it to stay
+var LIVES = [
+  // Glacier snout, Gaumukh
+  {s:0,id:"bharal",e:"🐐",n:"Blue sheep (bharal)",x:13,y:30,tol:10,why:"It climbs the bare rocky slopes above the ice and eats the tough mountain grass no one else can reach."},
+  {s:0,id:"snowtrout",e:"🐟",n:"Snow trout",x:36,y:72,tol:80,why:"It lives in water just above freezing. Very few fish can survive meltwater this cold and this clean."},
+  {s:0,id:"griffon",e:"🦅",n:"Himalayan griffon",x:56,y:16,tol:20,why:"A huge vulture that circles the peaks on rising air, looking for dead animals far below."},
+  {s:0,id:"moss",e:"🌿",n:"Moss and lichen",x:28,y:44,tol:30,why:"The first tiny plants to grow on cold bare rock beside the ice. Everything else here begins with them."},
+  {s:0,id:"yak",e:"🐂",n:"Yaks",x:70,y:36,tol:5,seasons:["summer","monsoon"],hide:"Herders take the yaks down to warmer valleys in winter. Try summer.",why:"Herders bring yaks up to the high meadows to graze in the short warm months."},
+  {s:0,id:"pilgrims",e:"🛕",n:"Pilgrims at Gangotri",x:88,y:32,tol:0,why:"People trek up to Gaumukh, the cow\'s mouth, to see the place where the Ganga leaves the ice."},
+  // Mountain gorge, Rishikesh and Haridwar
+  {s:1,id:"macaque",e:"🐒",n:"Rhesus macaque",x:12,y:36,tol:10,why:"Troops live in the forest along the banks and around the temples and bridges."},
+  {s:1,id:"mahseer",e:"🐟",n:"Golden mahseer",x:33,y:70,tol:70,why:"A big, strong fish that swims up against the rapids. It needs cold water with plenty of air in it."},
+  {s:1,id:"otter",e:"🦦",n:"Smooth-coated otter",x:55,y:67,tol:70,why:"It fishes the clear pools and rests on warm boulders. Otters leave as soon as water turns dirty."},
+  {s:1,id:"elephant",e:"🐘",n:"Wild elephant",x:76,y:36,tol:15,why:"Herds come down from the Rajaji forest to drink, bathe and cross the river."},
+  {s:1,id:"pkingfisher",e:"🐦",n:"Pied kingfisher",x:46,y:20,tol:55,why:"It hovers above the water like a helicopter, then drops in to catch a small fish."},
+  {s:1,id:"rafts",e:"🛶",n:"Rafters",x:66,y:62,tol:30,why:"People raft the rapids at Rishikesh. The river brings work to the whole town."},
+  // Farms of the plains
+  {s:2,id:"buffalo",e:"🐃",n:"Water buffalo",x:18,y:60,tol:5,why:"On hot days it lies in the river with only its nose above water."},
+  {s:2,id:"crops",e:"🌾",n:"Wheat and rice",x:60,y:35,tol:15,why:"Canals carry river water far from the bank, which is why the Ganga plain grows so much of India\'s food."},
+  {s:2,id:"farmer",e:"🧑‍🌾",n:"Farmer",x:79,y:33,tol:0,why:"His fields depend on the river and on the fine silt the floods leave behind."},
+  {s:2,id:"sarus",e:"🐦",n:"Sarus crane",x:47,y:20,tol:40,why:"The tallest flying bird in the world. Pairs stay together for life and feed in wet fields beside the river."},
+  {s:2,id:"softturtle",e:"🐢",n:"Softshell turtle",x:70,y:67,tol:50,why:"It buries itself in the sandy bottom and eats snails and dead fish, which helps keep the water clean."},
+  {s:2,id:"snake",e:"🐍",n:"Water snake",x:30,y:73,tol:40,why:"It swims among the reeds at the edge, hunting frogs and small fish."},
+  {s:2,id:"fisher",e:"🎣",n:"Fisherman",x:43,y:87,tol:35,why:"He catches fish to eat and to sell. If the fish go, his work goes with them."},
+  {s:2,id:"melons",e:"🍉",n:"Melons on the sand",x:9,y:88,tol:10,seasons:["summer","winter"],hide:"The monsoon river covers the sand banks completely. Try summer.",why:"When the water drops, families grow melons and cucumbers right on the sandy riverbed."},
+  // City ghats, Varanasi
+  {s:3,id:"dolphin",e:"🐬",n:"Ganges river dolphin",x:38,y:64,tol:65,why:"India\'s national aquatic animal. It is almost blind and finds fish by sound, so it needs deep, clean, quiet water."},
+  {s:3,id:"ghatpeople",e:"🙏",n:"People at the ghats",x:15,y:52,tol:0,why:"Every morning thousands come down the steps to bathe, wash and pray."},
+  {s:3,id:"boatman",e:"🛶",n:"Boatmen",x:70,y:60,tol:25,why:"They row visitors along the ghats at sunrise, as families here have done for generations."},
+  {s:3,id:"cityfish",e:"🐟",n:"Rohu and catfish",x:30,y:74,tol:45,why:"Fish still live here, but city sewage takes the air out of the water and the catch keeps shrinking."},
+  {s:3,id:"kite",e:"🦅",n:"Black kite",x:52,y:16,tol:20,why:"Kites circle above the ghats all day, watching for scraps."},
+  {s:3,id:"gulls",e:"🕊️",n:"Winter gulls",x:64,y:24,tol:35,seasons:["winter"],hide:"These gulls only visit in winter. Try winter.",why:"Every winter gulls arrive from cold lands far to the north and follow the boats for food."},
+  {s:3,id:"citturtle",e:"🐢",n:"Softshell turtle",x:58,y:73,tol:45,why:"Turtles at the ghats eat waste and leftovers, doing quiet cleaning work for the city."},
+  {s:3,id:"aarti",e:"🪔",n:"Evening aarti",x:86,y:52,tol:0,why:"At dusk, lamps are floated on the water and the river is worshipped with fire and song."},
+  // Sundarbans delta
+  {s:4,id:"mangrove",e:"🌳",n:"Sundari tree",x:12,y:40,tol:30,why:"Its roots poke out of the salty mud like pencils so the tree can breathe. The Sundarbans is named after it."},
+  {s:4,id:"prawn",e:"🦐",n:"Prawns",x:22,y:68,tol:45,why:"Baby prawns and fish grow up safely among the tangled roots before they swim out to sea."},
+  {s:4,id:"fiddler",e:"🦀",n:"Fiddler crab",x:33,y:84,tol:40,why:"It digs holes in the mud. The male waves one giant claw to signal to others."},
+  {s:4,id:"mudskipper",e:"🐟",n:"Mudskipper",x:49,y:88,tol:40,why:"A fish that walks on mud with its fins and can stay out of water for a while."},
+  {s:4,id:"saltycroc",e:"🐊",n:"Saltwater crocodile",x:50,y:71,tol:30,why:"It lies on the mudbanks and hunts in the creeks where the river meets the sea."},
+  {s:4,id:"boats",e:"⛵",n:"Fishers and honey collectors",x:80,y:60,tol:25,why:"Villagers fish the creeks and gather wild honey from the forest, always watching for the tiger."},
+  {s:4,id:"tiger",e:"🐅",n:"Royal Bengal tiger",x:60,y:41,tol:25,why:"The only tigers in the world that swim between islands and hunt in a mangrove forest."}
+];
+
+var state = {v:0, season:"winter", dirt:0, sel:null, playing:false};
+var seen = {};
+try { seen = JSON.parse(localStorage.getItem("petrilab-ganga-seen") || "{}") || {}; } catch(e){ seen = {}; }
+function saveSeen(){ try { localStorage.setItem("petrilab-ganga-seen", JSON.stringify(seen)); } catch(e){} }
+
+var $ = function(id){ return document.getElementById(id); };
+var boat=$("boat");
+
+function stretchOf(v){ return Math.min(4, Math.round(v/25)); }
+function seasonOK(l){ return !l.seasons || l.seasons.indexOf(state.season) > -1; }
+function alive(l){ return (100 - state.dirt) >= l.tol; }
+
+// ---------- colour helpers ----------
+function hex2rgb(h){ h=h.replace("#",""); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; }
+function mix(a,b,t){ var A=hex2rgb(a),B=hex2rgb(b); return "rgb("+A.map(function(x,i){return Math.round(x+(B[i]-x)*t);}).join(",")+")"; }
+function mixHex(a,b,t){ var A=hex2rgb(a),B=hex2rgb(b); return "#"+A.map(function(x,i){var c=Math.round(x+(B[i]-x)*t).toString(16);return c.length<2?"0"+c:c;}).join(""); }
+
+// ---------- map ----------
+var mapSvg = $("map"), riverPath, pathLen, boatG, stopEls=[];
+var NS="http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){ var e=document.createElementNS(NS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function frac(v){ return 0.03 + 0.93*v/100; }
+
+var mapH=170, mapScale=1;
+function buildMap(){
+  var box=mapSvg.getBoundingClientRect();
+  var w=box.width||mapSvg.clientWidth||600;
+  mapScale=w/1000;
+  mapH=Math.max(150,Math.min(520, (box.height||120)/mapScale));
+  var k=Math.max(1,1/mapScale);           // keep label text at a readable size on any screen
+  var fLbl=Math.round(13*k), fTrib=Math.round(11*k);
+  mapSvg.setAttribute("viewBox","0 0 1000 "+Math.round(mapH));
+  mapSvg.innerHTML="";
+  el("rect",{x:0,y:0,width:1000,height:mapH,fill:"var(--map-land)"},mapSvg);
+  el("path",{d:"M935 0 C 920 "+(mapH*0.35)+", 950 "+(mapH*0.65)+", 925 "+mapH+" L1000 "+mapH+" L1000 0Z",fill:"var(--map-sea)"},mapSvg);
+  var sea=el("text",{"class":"sea",x:992,y:Math.round(fLbl*1.4),"text-anchor":"end","font-size":fLbl,fill:"var(--ink-2)","font-family":"Hind, sans-serif"},mapSvg); sea.textContent="Bay of";
+  var sea2=el("text",{"class":"sea",x:992,y:Math.round(fLbl*2.6),"text-anchor":"end","font-size":fLbl,fill:"var(--ink-2)","font-family":"Hind, sans-serif"},mapSvg); sea2.textContent="Bengal";
+
+  var g0=el("g",{transform:"translate(0,"+((mapH-170)/2)+")"},mapSvg);   // the river itself, centred in the band
+  var d="M40 62 C 140 40, 200 100, 290 92 S 450 56, 540 88 S 690 132, 770 104 S 880 76, 948 108";
+  var tribs=[["M436 158 C 456 134, 472 110, 488 86","Yamuna",398,162],["M588 8 C 596 36, 604 64, 610 92","Ghaghara",540,14],["M664 158 C 670 136, 676 114, 684 98","Son",636,162]];
+  tribs.forEach(function(t){
+    el("path",{"class":"trib",d:t[0],fill:"none",stroke:"var(--river)","stroke-width":2.5,"stroke-linecap":"round",opacity:.5},g0);
+    var tx=el("text",{"class":"trib",x:t[2],y:t[3],"font-size":fTrib,fill:"var(--ink-2)","font-style":"italic","font-family":"Hind, sans-serif"},g0); tx.textContent=t[1];
+  });
+  el("path",{d:d,fill:"none",stroke:"var(--river)","stroke-width":9,"stroke-linecap":"round",opacity:.25},g0);
+  riverPath=el("path",{d:d,fill:"none",stroke:"var(--river)","stroke-width":4,"stroke-linecap":"round"},g0);
+  pathLen=riverPath.getTotalLength();
+  var labels = (w<620)
+    ? ["Gaumukh","Haridwar","Kanpur","Varanasi","Sundarbans"]
+    : ["Gaumukh glacier","Rishikesh & Haridwar","Kanpur farms","Varanasi ghats","Sundarbans delta"];
+  stopEls=[];
+  labels.forEach(function(lb,i){
+    var p=riverPath.getPointAtLength(pathLen*frac(i*25));
+    var g=el("g",{"class":"stop",tabindex:0,role:"button","aria-label":"Go to "+lb},g0);
+    el("circle",{cx:p.x,cy:p.y,r:Math.max(14,10*k),fill:"transparent"},g);
+    el("circle",{"class":"dot",cx:p.x,cy:p.y,r:8},g);
+    var below = i%2===0;
+    var t=el("text",{x:p.x,y:below?p.y+Math.round(fLbl*1.7):p.y-Math.round(fLbl*0.9),"font-size":fLbl,"text-anchor":i===0?"start":(i===4?"end":"middle")},g);
+    if(i===0) t.setAttribute("x",p.x-10);
+    if(i===4) t.setAttribute("x",p.x+10);
+    t.textContent=lb;
+    var bb=g.getBBox();
+    var hit=el("rect",{x:bb.x-6,y:bb.y-6,width:bb.width+12,height:bb.height+12,fill:"transparent"});
+    g.insertBefore(hit,g.firstChild);
+    var go=function(){ stop(); setV(i*25); };
+    g.addEventListener("click",go);
+    g.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(); }});
+    stopEls.push(g);
+  });
+  boatG=el("g",{"aria-hidden":"true"},g0);
+  var bs=Math.max(1,k*0.9);
+  el("path",{d:"M-13 -2 L13 -2 L8 6 L-8 6Z",fill:"#E3A12F",stroke:"#8A5A0B","stroke-width":1.2,transform:"scale("+bs+")"},boatG);
+  el("path",{d:"M0 -2 L0 -20 L10 -5Z",fill:"#fff",stroke:"#8A5A0B","stroke-width":1.2,transform:"scale("+bs+")"},boatG);
+  markActiveStop();
+  placeBoat();
+}
+function markActiveStop(){
+  var si=stretchOf(state.v);
+  stopEls.forEach(function(g,i){ g.classList.toggle("on",i===si); });
+}
+// rebuild when the band's shape changes enough to matter
+var lastMapBox="";
+function syncMap(){
+  var box=mapSvg.getBoundingClientRect();
+  if(box.width<40||box.height<40) return;
+  var key=Math.round(box.width/8)+"x"+Math.round(box.height/8);
+  if(key===lastMapBox) return;
+  lastMapBox=key; buildMap();
+}
+function placeBoat(){
+  boat.style.setProperty("--p", state.v+"%");
+  var p=riverPath.getPointAtLength(pathLen*frac(state.v));
+  var p2=riverPath.getPointAtLength(Math.min(pathLen,pathLen*frac(state.v)+2));
+  var ang=Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI;
+  boatG.setAttribute("transform","translate("+p.x+","+(p.y-2)+") rotate("+(ang*0.5)+")");
+}
+
+// ---------- scene ----------
+var LITTER=[[120,0.3,"🧴"],[520,0.7,"🛍️"],[300,0.55,"🧴"],[660,0.25,"🥤"],[210,0.8,"🛍️"],[420,0.4,"🥤"],[740,0.6,"🧴"],[60,0.65,"🛍️"]];
+
+function waterBand(st){
+  var t=st.water[0], b=st.water[1], mid=(t+b)/2, h=b-t;
+  if(state.season==="summer") h*=0.8;
+  if(state.season==="monsoon") h*=1.18;
+  return [mid-h/2, mid+h/2];
+}
+
+function sceneSVG(si){
+  var st=STRETCHES[si], s="", season=state.season;
+  var sky = season==="summer" ? ["#F8DDA8","#FFF5E2"] : season==="monsoon" ? ["#A9B6BF","#DCE2E5"] : ["#BFDDF1","#EEF6FB"];
+  s+='<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky[0]+'"/><stop offset="1" stop-color="'+sky[1]+'"/></linearGradient></defs>';
+  s+='<rect width="800" height="450" fill="url(#sky)"/>';
+  if(season!=="monsoon") s+='<circle cx="640" cy="70" r="'+(season==="summer"?38:26)+'" fill="'+(season==="summer"?"#FFD35A":"#FFF1B8")+'" opacity=".95"/>';
+  else s+='<g fill="#8E9AA3" opacity=".85"><ellipse cx="200" cy="60" rx="120" ry="34"/><ellipse cx="300" cy="50" rx="90" ry="30"/><ellipse cx="600" cy="70" rx="140" ry="36"/><ellipse cx="480" cy="44" rx="80" ry="24"/></g>';
+
+  var w=waterBand(st), wt=w[0], wb=w[1];
+  var grass = season==="summer" ? "#A9B26A" : season==="monsoon" ? "#5E9E58" : "#7FAE6A";
+  var grassDark = mixHex(grass,"#1E3A22",0.3);
+
+  if(si===0){
+    // snow peaks, then the glacier snout with its ice cave
+    s+='<path d="M0 230 L90 90 L160 170 L250 60 L360 200 L470 110 L560 190 L660 100 L800 220 L800 340 L0 340Z" fill="#E9F1F6"/>';
+    s+='<path d="M250 60 L300 130 L200 130Z" fill="#CFDDE6"/><path d="M660 100 L710 165 L610 165Z" fill="#CFDDE6"/>';
+    s+='<path d="M330 262 Q480 228 620 248 T800 252 L800 340 L330 340Z" fill="#B9AFA2"/>';
+    var iceR=300, lip=wt+6;
+    s+='<g><path d="M0 172 L120 190 L230 232 L'+iceR+' '+(lip-70)+' L'+iceR+' '+lip+' L0 '+lip+'Z" fill="#C8DEEB" stroke="#9FBCCD" stroke-width="3"/>';
+    s+='<path d="M0 224 L110 240 L212 276 L'+(iceR-26)+' '+(lip-40)+' L'+(iceR-26)+' '+lip+' L0 '+lip+'Z" fill="#AECBDE"/>';
+    s+='<path d="M120 '+lip+' q78 -104 156 0Z" fill="#41687C"/>';
+    s+='<path d="M140 '+lip+' q58 -82 116 0Z" fill="#17323F"/>';
+    s+='<path d="M170 '+lip+' q28 -40 56 0Z" fill="#8FC4D9"/></g>';
+    s+='<g stroke="#B9D2E0" stroke-width="3" fill="none"><path d="M20 236 L140 250"/><path d="M40 264 L180 276"/></g>';
+    for(var i=0;i<10;i++){ var rx=40+i*78, ry=278+((i*47)%26); s+='<ellipse cx="'+rx+'" cy="'+ry+'" rx="'+(12+(i%3)*6)+'" ry="8" fill="#9A9186"/>'; }
+  } else if(si===1){
+    s+='<path d="M0 150 Q200 90 400 150 T800 120 L800 300 L0 300Z" fill="'+mixHex(grass,"#264A33",0.45)+'"/>';
+    s+='<path d="M0 120 L120 150 L230 240 L290 300 L300 420 L0 420Z" fill="#35704A"/>';
+    s+='<path d="M800 110 L690 150 L590 250 L530 300 L520 420 L800 420Z" fill="#35704A"/>';
+    for(var k=0;k<6;k++){ s+='<circle cx="'+(30+k*38)+'" cy="'+(150+k*22)+'" r="20" fill="#2B5E3D"/>'; s+='<circle cx="'+(770-k*40)+'" cy="'+(140+k*24)+'" r="20" fill="#2B5E3D"/>'; }
+    for(var b=0;b<3;b++){ s+='<rect x="'+(60+b*40)+'" y="'+(wb+4+b*12)+'" width="'+(210-b*30)+'" height="9" fill="#D9CDB4"/>'; }
+  } else if(si===2){
+    var cols=["#A9C77A","#D9C56A","#8DB86A","#C9D37E"];
+    if(season==="summer") cols=["#C9B774","#D9C56A","#B7A963","#D8C98A"];
+    for(var j=0;j<4;j++) s+='<rect x="0" y="'+(170+j*20)+'" width="800" height="20" fill="'+cols[j]+'"/>';
+    s+='<rect x="0" y="150" width="800" height="22" fill="'+grassDark+'" opacity=".5"/>';
+    [[120,160],[180,165],[520,158]].forEach(function(hh){ s+='<g transform="translate('+hh[0]+' '+hh[1]+')"><rect x="-14" y="-10" width="28" height="18" fill="#E7D2AE"/><path d="M-18 -10 L0 -24 L18 -10Z" fill="#B5733C"/></g>'; });
+    [[300,160],[680,150]].forEach(function(p){ s+='<g transform="translate('+p[0]+' '+p[1]+')"><line x1="0" y1="0" x2="4" y2="-60" stroke="#7A5A2A" stroke-width="4"/><path d="M4 -60 q-26 4 -30 16 M4 -60 q26 4 30 16 M4 -60 q-18 -12 -26 -6 M4 -60 q18 -12 26 -6" stroke="#3E8E5A" stroke-width="5" fill="none" stroke-linecap="round"/></g>'; });
+    if(season!=="monsoon") s+='<ellipse cx="150" cy="'+(wb+18)+'" rx="150" ry="22" fill="#E3D5B0"/>';
+  } else if(si===3){
+    // the far bank is the city: stepped ghats under temples and old houses
+    s+='<rect x="0" y="110" width="800" height="'+(wt-110)+'" fill="#E7DCC8"/>';
+    for(var c=0;c<7;c++){
+      var bx=10+c*115, bh=46+((c*29)%40), by=182-bh;
+      s+='<rect x="'+bx+'" y="'+by+'" width="'+(84+(c%2)*14)+'" height="'+(bh+26)+'" fill="'+(c%2?"#D8C6A6":"#E3D3B4")+'"/>';
+      s+='<rect x="'+(bx+18)+'" y="'+(by+14)+'" width="14" height="20" fill="#B79E76"/><rect x="'+(bx+48)+'" y="'+(by+14)+'" width="14" height="20" fill="#B79E76"/>';
+    }
+    s+='<g transform="translate(560 150)"><path d="M-26 32 L-16 -24 Q0 -52 16 -24 L26 32Z" fill="#C97A54"/><circle cx="0" cy="-40" r="7" fill="#E3A12F"/></g>';
+    s+='<g transform="translate(180 158)"><path d="M-20 24 L-12 -18 Q0 -40 12 -18 L20 24Z" fill="#B8613F"/><circle cx="0" cy="-30" r="6" fill="#E3A12F"/></g>';
+    for(var st3=0;st3<7;st3++){ s+='<rect x="0" y="'+(wt-56+st3*8)+'" width="800" height="8" fill="'+(st3%2?"#CDBEA2":"#DCCFB4")+'"/>'; }
+  } else {
+    s+='<rect x="0" y="200" width="620" height="60" fill="'+grassDark+'"/>';
+    s+='<path d="M600 200 C 640 200, 700 205, 800 200 L800 260 L600 260Z" fill="#7FB6D1"/>';
+    for(var m=0;m<10;m++){ var mx=20+m*62; s+='<ellipse cx="'+mx+'" cy="205" rx="40" ry="24" fill="#3F7A4E"/>'; s+='<g stroke="#6B5A3E" stroke-width="2"><line x1="'+(mx-10)+'" y1="225" x2="'+(mx-18)+'" y2="252"/><line x1="'+mx+'" y1="225" x2="'+mx+'" y2="254"/><line x1="'+(mx+10)+'" y1="225" x2="'+(mx+18)+'" y2="252"/></g>'; }
+  }
+
+  // water
+  var dirtT = state.dirt/100;
+  var wc = st.base;
+  if(season==="monsoon") wc = mixHex(wc,"#A08256",0.45);
+  wc = mixHex(wc,"#6E6B3A",dirtT*0.85);
+  s+='<rect x="0" y="'+wt+'" width="800" height="'+(wb-wt)+'" fill="'+wc+'"/>';
+  s+='<rect x="0" y="'+wt+'" width="800" height="6" fill="#fff" opacity=".18"/>';
+  if(si===1) s+='<ellipse cx="210" cy="'+(wt+(wb-wt)*0.5)+'" rx="95" ry="16" fill="#E3CF9E"/>';
+  var lanes=4;
+  for(var l=0;l<lanes;l++){
+    var ly = wt + (wb-wt)*(l+1)/(lanes+1);
+    s+='<path class="flow" style="--flow:'+(st.flow*(season==="monsoon"?0.6:1))+'s;animation-delay:-'+(l*0.7)+'s" d="M-40 '+ly+' Q200 '+(ly-4)+' 400 '+ly+' T840 '+ly+'" stroke="#fff" stroke-width="2" fill="none" opacity="'+(0.35-dirtT*0.25)+'"/>';
+  }
+  // near bank
+  var nb = si===4 ? (season==="monsoon"?"#8A7556":"#9C8465") : (si===0 ? "#A79C8E" : (si===3 ? "#E0D3B4" : grass));
+  s+='<path d="M0 '+wb+' Q200 '+(wb-6)+' 400 '+(wb+4)+' T800 '+wb+' L800 450 L0 450Z" fill="'+nb+'"/>';
+  if(si===1){ for(var st2=0;st2<4;st2++) s+='<rect x="0" y="'+(wb+6+st2*14)+'" width="'+(150-st2*20)+'" height="10" fill="#C9BFA9" opacity=".9"/>'; }
+  if(si===0){ [[90,wb+2,18],[480,wb+6,24],[610,wb+3,14]].forEach(function(r){ s+='<ellipse cx="'+r[0]+'" cy="'+r[1]+'" rx="'+r[2]*1.6+'" ry="'+r[2]*0.7+'" fill="#8C8C84"/>'; }); }
+
+  // litter
+  var nLit = Math.round(state.dirt/12);
+  for(var q=0;q<nLit && q<LITTER.length;q++){
+    var L=LITTER[q]; s+='<text x="'+L[0]+'" y="'+(wt+(wb-wt)*L[1])+'" font-size="22" text-anchor="middle">'+L[2]+'</text>';
+  }
+  if(state.dirt>45) s+='<rect x="0" y="'+wt+'" width="800" height="'+(wb-wt)+'" fill="#4E5A20" opacity="'+((state.dirt-45)/100*0.5)+'"/>';
+
+  if(season==="monsoon"){
+    s+='<g class="rain" stroke="#EAF2F7" stroke-width="1.6" opacity=".7">';
+    for(var r=0;r<46;r++){ var rx=(r*97)%820, ry=(r*53)%420; s+='<line x1="'+rx+'" y1="'+ry+'" x2="'+(rx-6)+'" y2="'+(ry+18)+'" style="animation-delay:-'+((r%7)*0.1)+'s"/>'; }
+    s+='</g>';
+  }
+  return s;
+}
+
+// ---------- render ----------
+var lastStretch=-1, hinted=false;
+
+function render(){
+  var si=stretchOf(state.v), st=STRETCHES[si];
+  placeBoat();
+  markActiveStop();
+  $("sceneSvg").innerHTML=sceneSVG(si);
+  $("place").innerHTML="<b>"+st.name+"</b><span class=\"sub\">"+st.place+"</span>";
+  if($("hereName")) $("hereName").textContent=st.place;
+
+  var here=LIVES.filter(function(l){return l.s===si;});
+  var visible=here.filter(seasonOK);
+  var living=visible.filter(alive);
+
+  // creatures layer (rebuild only when stretch or season changes)
+  var key=si+"|"+state.season;
+  var layer=$("creatures");
+  if(layer.dataset.key!==key){
+    layer.innerHTML="";
+    visible.forEach(function(l){
+      var b=document.createElement("button");
+      b.className="cr"; b.dataset.id=l.id;
+      b.style.left=l.x+"%"; b.style.top=l.y+"%";
+      b.innerHTML='<span class="e" aria-hidden="true">'+l.e+'</span><span class="n">'+l.n+'</span>';
+      b.addEventListener("click",function(){ pick(l); });
+      layer.appendChild(b);
+    });
+    layer.dataset.key=key;
+    if(si!==lastStretch){ state.sel=null; }
+  }
+  Array.prototype.forEach.call(layer.children,function(b){
+    var l=LIVES.filter(function(x){return x.id===b.dataset.id;})[0];
+    var a=alive(l);
+    b.classList.toggle("gone",!a);
+    b.classList.toggle("seen",!!seen[l.id]);
+    b.classList.toggle("sel",state.sel===l.id);
+    b.classList.toggle("hint",!hinted);
+    b.setAttribute("aria-label",l.n+(a?"":", gone because the water is too dirty")+(seen[l.id]?", spotted":""));
+  });
+  lastStretch=si;
+
+  // readout
+  var total=visible.length, n=living.length;
+  var num=$("aliveNum");
+  if(num){
+    num.innerHTML=n+' <small>of '+total+'</small>';
+    num.classList.toggle("low", total>0 && n/total<0.5);
+    $("aliveBar").style.width=(total? n/total*100 : 0)+"%";
+    $("aliveBar").style.background= (total && n/total<0.5) ? "var(--warn)" : "var(--leaf)";
+  }
+  var seenCount=LIVES.filter(function(l){return seen[l.id];}).length;
+  if($("spottedLine")) $("spottedLine").innerHTML='';
+  $("aliveChip").textContent=n+" of "+total+" lives";
+  $("aliveChip").className="livechip"+((total && n/total<0.5)?" low":"");
+  $("spottedBtn").textContent="Spotted "+seenCount+" of "+LIVES.length;
+
+  // badge
+  var badge=$("waterBadge");
+  badge.className="badge"+(state.dirt>=60?" bad":state.dirt>=25?" mid":"");
+  badge.textContent= state.dirt>=60?"Very dirty water":state.dirt>=25?"Getting dirty":"Clean water";
+
+  // info
+  renderInfo(si);
+
+  // journal
+  var jt="Spotted at the "+st.name.toLowerCase();
+  ["journalTitle","journalTitleM"].forEach(function(t){ if($(t)) $(t).textContent=jt; });
+  ["chips","chipsM"].forEach(function(cid){
+    var chips=$(cid); if(!chips) return; chips.innerHTML="";
+    here.forEach(function(l){
+      var c=document.createElement("span");
+      var sOK=seasonOK(l);
+      c.className="chip"+(seen[l.id]?" seen":"");
+      if(seen[l.id]) c.innerHTML='<span class="ce">'+l.e+'</span>'+l.n;
+      else c.innerHTML='<span class="ce">?</span>'+(sOK?"Not found yet":"Visits in "+l.seasons.join(" or "));
+      chips.appendChild(c);
+    });
+  });
+  fitScene();
+}
+
+// keep the 16:9 scene as large as it can be without ever pushing the page into a scroll
+// the tallest caption any stretch or creature can produce, so the layout never jumps
+var infoH=0, infoKey="";
+function measureInfo(){
+  var info=$("info"), key=info.clientWidth+"|"+getComputedStyle(info).fontSize;
+  if(key===infoKey && infoH) return infoH;
+  var body=$("infoBody"), title=$("infoTitle");
+  var keepT=title.textContent, keepB=body.textContent, keepS=$("infoStatus").hidden;
+  info.style.height="";
+  var max=0;
+  var texts=STRETCHES.map(function(s){ return ["Tap the lives you can find",s.caption]; })
+    .concat(LIVES.map(function(l){ return [l.n,l.why]; }));
+  $("infoStatus").hidden=false;
+  var keepStatus=$("infoStatus").textContent;
+  $("infoStatus").textContent="Gone — the water here is too dirty for it.";
+  texts.forEach(function(t){
+    title.textContent=t[0]; body.textContent=t[1];
+    var hh=info.scrollHeight;
+    if(hh>max) max=hh;
+  });
+  title.textContent=keepT; body.textContent=keepB;
+  $("infoStatus").textContent=keepStatus; $("infoStatus").hidden=keepS;
+  max=Math.min(max, Math.max(72, Math.round(window.innerHeight*0.21)));
+  infoKey=key; infoH=max;
+  return max;
+}
+
+function fitScene(){
+  var host=$("sceneHost"), sc=$("scene"), info=$("info");
+  var wrap=document.querySelector(".wrap"), stack=document.querySelector(".stack");
+  if(!host||!sc||!wrap||!stack) return;
+  var w=host.clientWidth;
+  if(!w) return;
+  var padB=parseFloat(getComputedStyle(wrap).paddingBottom)||0;
+  var tail=document.querySelector(".actions");
+  function overflow(){
+    var limit=wrap.getBoundingClientRect().bottom - padB;
+    var a=tail.getBoundingClientRect().bottom, b=stack.getBoundingClientRect().bottom;
+    var doc=document.documentElement.scrollHeight - window.innerHeight;
+    return Math.max(Math.max(a,b) - limit, doc);
+  }
+  function apply(hgt){
+    hgt=Math.max(88,hgt);
+    var wd=Math.min(w,hgt*16/9);
+    sc.style.width=Math.floor(wd)+"px";
+    sc.style.height=Math.floor(wd*9/16)+"px";
+    return wd*9/16;
+  }
+  if(info){ info.style.maxHeight=""; info.style.height=measureInfo()+"px"; }
+  var hgt=apply(w*9/16);                       // start as big as the width allows
+  for(var i=0;i<6;i++){
+    var over=overflow();
+    if(over<=1) break;
+    hgt=apply(hgt-over-1);
+  }
+  // if the picture had to get small, the caption gives up its height instead
+  var floor=Math.min(w*9/16,168);
+  if(info && hgt<floor-1){
+    var want=floor-hgt, give=Math.min(Math.max(0,info.offsetHeight-46),want);
+    if(give>1){
+      info.style.height=(info.offsetHeight-give)+"px";
+      hgt=apply(hgt+give);
+      for(var j=0;j<4;j++){ var o2=overflow(); if(o2<=1) break; hgt=apply(hgt-o2-1); }
+    }
+  }
+  syncMap();
+}
+window.addEventListener("resize",fitScene);
+window.addEventListener("load",function(){ requestAnimationFrame(function(){ requestAnimationFrame(fitScene); }); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitScene);
+window.addEventListener("orientationchange",function(){ setTimeout(fitScene,150); });
+
+function renderInfo(si){
+  var st=STRETCHES[si];
+  var l = state.sel ? LIVES.filter(function(x){return x.id===state.sel;})[0] : null;
+  var big=$("infoBig"), title=$("infoTitle"), body=$("infoBody"), status=$("infoStatus");
+  if(!l || l.s!==si || !seasonOK(l)){
+    var hidden=LIVES.filter(function(x){return x.s===si && !seasonOK(x);});
+    big.textContent="🔍";
+    title.textContent="Tap the lives you can find";
+    body.textContent=st.caption;
+    status.textContent=hidden.length?hidden[0].hide:"";
+    status.hidden=!hidden.length;
+    status.className="status";
+    return;
+  }
+  var a=alive(l);
+  big.textContent=l.e;
+  title.textContent=l.n;
+  body.textContent=l.why;
+  status.textContent=a?"":"Gone — the water here is too dirty for it.";
+  status.hidden=a;
+  status.className="status gone";
+}
+
+function pick(l){
+  hinted=true;
+  state.sel=l.id;
+  if(!seen[l.id] && alive(l)){ seen[l.id]=true; saveSeen(); }
+  render();
+}
+
+function setV(v){ state.v=Math.max(0,Math.min(100,v)); boat.value=state.v; render(); }
+
+// move the boat without rebuilding the scene unless the stretch actually changes
+function setVFast(v){
+  v=Math.max(0,Math.min(100,v));
+  var before=stretchOf(state.v);
+  state.v=v; boat.value=v;
+  if(stretchOf(v)!==before) render(); else placeBoat();
+}
+
+var glide=null;
+function glideTo(target){
+  if(glide) cancelAnimationFrame(glide);
+  var from=state.v, dist=target-from, t0=null, dur=Math.min(500,120+Math.abs(dist)*10);
+  if(Math.abs(dist)<0.4){ setV(target); return; }
+  function step(ts){
+    if(t0===null) t0=ts;
+    var k=Math.min(1,(ts-t0)/dur), e=1-Math.pow(1-k,3);
+    setVFast(from+dist*e);
+    if(k<1) glide=requestAnimationFrame(step); else { glide=null; setV(target); }
+  }
+  glide=requestAnimationFrame(step);
+}
+function snapToNearestPlace(){ glideTo(Math.round(state.v/25)*25); }
+
+// --- dragging the boat along the map ---
+var mapDrag=false;
+function vFromPoint(clientX,clientY){
+  var pt=mapSvg.createSVGPoint(); pt.x=clientX; pt.y=clientY;
+  var loc=pt.matrixTransform(mapSvg.getScreenCTM().inverse());
+  loc.y-=(mapH-170)/2;
+  var best=0, bestD=Infinity, steps=240;
+  for(var i=0;i<=steps;i++){
+    var p=riverPath.getPointAtLength(pathLen*i/steps);
+    var d=(p.x-loc.x)*(p.x-loc.x)+(p.y-loc.y)*(p.y-loc.y);
+    if(d<bestD){ bestD=d; best=i/steps; }
+  }
+  return Math.max(0,Math.min(100,(best-0.03)/0.93*100));
+}
+mapSvg.addEventListener("pointerdown",function(e){
+  if(e.button && e.button!==0) return;
+  mapDrag=true; hideHint(); stop(); if(glide) cancelAnimationFrame(glide);
+  mapSvg.classList.add("grabbing");
+  setVFast(vFromPoint(e.clientX,e.clientY));
+});
+window.addEventListener("pointermove",function(e){
+  if(!mapDrag) return;
+  e.preventDefault();
+  setVFast(vFromPoint(e.clientX,e.clientY));
+},{passive:false});
+function endMapDrag(){ if(!mapDrag) return; mapDrag=false; mapSvg.classList.remove("grabbing"); snapToNearestPlace(); }
+window.addEventListener("pointerup",endMapDrag);
+window.addEventListener("pointercancel",endMapDrag);
+
+// --- swiping the scene itself to travel ---
+var sc=$("scene"), sw=null, swiped=false;
+sc.addEventListener("pointerdown",function(e){
+  if(e.button && e.button!==0) return;
+  sw={x:e.clientX,y:e.clientY,v:state.v,id:e.pointerId};
+  swiped=false;
+  if(glide) cancelAnimationFrame(glide);
+});
+window.addEventListener("pointermove",function(e){
+  if(!sw || e.pointerId!==sw.id) return;
+  var dx=e.clientX-sw.x, dy=e.clientY-sw.y;
+  if(!swiped){
+    if(Math.abs(dx)<10 || Math.abs(dx)<Math.abs(dy)) return;
+    swiped=true; hideHint(); stop(); sc.classList.add("grabbing");
+  }
+  e.preventDefault();
+  setVFast(sw.v - dx/sc.clientWidth*30);
+},{passive:false});
+function endSwipe(){
+  if(!sw) return;
+  var was=swiped; sw=null; sc.classList.remove("grabbing");
+  if(was) snapToNearestPlace();
+}
+window.addEventListener("pointerup",endSwipe);
+window.addEventListener("pointercancel",endSwipe);
+// a swipe must never count as tapping the animal it started on
+sc.addEventListener("click",function(e){
+  if(swiped){ e.stopPropagation(); e.preventDefault(); swiped=false; }
+},true);
+
+sc.addEventListener("dragstart",function(e){ e.preventDefault(); });
+mapSvg.addEventListener("dragstart",function(e){ e.preventDefault(); });
+
+function hideHint(){
+  var hint=$("swipeHint");
+  if(!hint || hint.hidden) return;
+  hint.style.opacity="0";
+  setTimeout(function(){ hint.hidden=true; },400);
+  try{ localStorage.setItem("petrilab-ganga-hint","1"); }catch(err){}
+}
+try{ if(localStorage.getItem("petrilab-ganga-hint")) $("swipeHint").hidden=true; }catch(err){}
+
+// ---------- play ----------
+var raf=null, last=0;
+function tick(t){
+  if(!state.playing) return;
+  var dt = last ? (t-last)/1000 : 0; last=t;
+  var nv = state.v + dt*100/40; // whole river in about 40 seconds
+  if(nv>=100){ setV(100); stop(); return; }
+  var before=stretchOf(state.v);
+  state.v=nv; boat.value=nv;
+  if(stretchOf(nv)!==before) render(); else placeBoat();
+  raf=requestAnimationFrame(tick);
+}
+function play(){
+  if(state.v>=100) setV(0);
+  state.playing=true; last=0;
+  $("playBtn").innerHTML='<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg><span>Pause</span>';
+  $("playBtn").setAttribute("aria-label","Pause the journey");
+  raf=requestAnimationFrame(tick);
+}
+function stop(){
+  state.playing=false; if(raf) cancelAnimationFrame(raf);
+  $("playBtn").innerHTML='<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M5 3l12 7-12 7z"/></svg><span>Play</span>';
+  $("playBtn").setAttribute("aria-label","Play the journey down the river");
+  render();
+}
+
+// ---------- wiring ----------
+boat.addEventListener("input",function(){ if(state.playing) stop(); if(glide) cancelAnimationFrame(glide); hideHint(); setV(parseFloat(boat.value)); });
+Array.prototype.forEach.call(document.querySelectorAll(".seg.water button"),function(b){
+  b.addEventListener("click",function(){
+    state.dirt=parseFloat(b.dataset.dirt);
+    Array.prototype.forEach.call(document.querySelectorAll(".seg.water button"),function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    render();
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll(".seg button"),function(b){
+  b.addEventListener("click",function(){
+    state.season=b.dataset.season;
+    Array.prototype.forEach.call(document.querySelectorAll(".seg button"),function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    render();
+  });
+});
+$("playBtn").addEventListener("click",function(){ state.playing?stop():play(); });
+var dlg=$("why");
+$("whyBtn").addEventListener("click",function(){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open",""); });
+$("closeWhy").addEventListener("click",function(){ dlg.close ? dlg.close() : dlg.removeAttribute("open"); });
+dlg.addEventListener("click",function(e){ if(e.target===dlg) dlg.close(); });
+function resetSpotting(){ seen={}; saveSeen(); state.sel=null; hinted=false; $("creatures").dataset.key=""; render(); }
+$("resetBtnM").addEventListener("click",resetSpotting);
+var jdlg=$("journalDlg");
+$("spottedBtn").addEventListener("click",function(){ jdlg.showModal ? jdlg.showModal() : jdlg.setAttribute("open",""); });
+$("closeJournal").addEventListener("click",function(){ jdlg.close ? jdlg.close() : jdlg.removeAttribute("open"); });
+jdlg.addEventListener("click",function(e){ if(e.target===jdlg) jdlg.close(); });
+
+buildMap();
+render();
+})();
+</script>
+</body>
+</html>
