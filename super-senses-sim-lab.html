@@ -1,0 +1,1408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Virtual Lab · Super Senses</title>
+<style>
+:root{
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE; --gdeep:#1F7A43;
+  --amber:#B07A1E; --atint:#FDF4E6;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --sheet:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,33,61,.04);
+  --sight:#2F7DD1; --sitint:#E8F1FB;
+  --smell:#2E9E5B; --smtint:#E9F6EE;
+  --hear:#7B5BC4; --htint:#F0EBFA;
+  --accent:var(--sight); --atone:var(--sitint);
+  --scene:#0B1020;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+    --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+    --amber:#D9A44E; --atint:#2A2416;
+    --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+    --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --sight:#6BA8EC; --sitint:#16263C; --smell:#4FBE81; --smtint:#16301F; --hear:#A88CE6; --htint:#241D3B;
+  }
+}
+[data-theme="dark"]{
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+  --amber:#D9A44E; --atint:#2A2416;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --sight:#6BA8EC; --sitint:#16263C; --smell:#4FBE81; --smtint:#16301F; --hear:#A88CE6; --htint:#241D3B;
+}
+body[data-sense="sight"]{--accent:var(--sight); --atone:var(--sitint)}
+body[data-sense="smell"]{--accent:var(--smell); --atone:var(--smtint)}
+body[data-sense="hearing"]{--accent:var(--hear); --atone:var(--htint)}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg{display:block}
+
+.app{position:relative;height:100vh;height:100dvh;width:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+     padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px)}
+
+/* segmented sense control */
+/* the tab deck: senses on top, their controls attached below */
+.deck{flex:none;display:flex;flex-direction:column;min-width:0}
+.seg{display:flex;background:var(--icbg);border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;padding:4px 4px 0;gap:2px;flex:none}
+.sgi{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0 8px;border-radius:10px 10px 0 0;border:0;border-top:3px solid transparent;background:transparent;
+     font-size:13.5px;font-weight:700;color:var(--body);line-height:1.15}
+.sgi svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.sgi.here{background:var(--card);color:var(--ink);border-top-color:var(--accent);margin-bottom:-1px;padding-bottom:9px}
+.sgi.here svg{opacity:1}
+.sgi.here[data-sense="sight"] svg{color:var(--sight)}
+.sgi.here[data-sense="smell"] svg{color:var(--smell)}
+.sgi.here[data-sense="hearing"] svg{color:var(--hear)}
+
+/* the controls card, driven by the sense switch */
+.panel{flex:none;background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;
+       padding:11px 11px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;min-width:0}
+.panel>*{min-width:0;max-width:100%}
+
+/* the score dial */
+.gauge{flex:none;width:62px;height:62px;position:relative}
+.gauge svg{width:62px;height:62px;transform:rotate(-90deg)}
+.gauge .trk{fill:none;stroke:var(--icbg);stroke-width:4.2}
+.gauge .prg{fill:none;stroke:var(--gg,var(--muted));stroke-width:4.2;stroke-linecap:round;
+            stroke-dasharray:0 113.1;transition:stroke-dasharray .14s linear,stroke .2s}
+.gauge .youmk{stroke:var(--muted);stroke-width:2;stroke-linecap:round;transform-origin:22px 22px}
+.gauge .gval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+             font-size:12.5px;letter-spacing:-.4px;font-weight:800;color:var(--gg,var(--ink));font-variant-numeric:tabular-nums}
+
+.scenes{display:flex;flex-direction:column;gap:8px;flex:1 1 0;min-height:0;min-width:0}
+.controls{display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+
+/* scenes */
+.scene{position:relative;background:var(--scene);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+.field{flex:1.1 1 0}
+.view{flex:1 1 0}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.t-short{display:none}
+.legend{position:absolute;left:11px;right:11px;bottom:21px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.78);pointer-events:none}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.scene.lit .tag,.scene.lit .legend{color:rgba(20,48,24,.82);text-shadow:0 1px 2px rgba(255,255,255,.55)}
+.badge{position:absolute;top:6px;right:7px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;pointer-events:none;white-space:nowrap;
+       background:rgba(15,20,32,.72);color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.badge.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+.badge.warm{color:#E2B865;border-color:rgba(226,184,101,.55)}
+
+/* explanation card */
+.card{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 13px 10px 10px;box-shadow:var(--shadow);
+      display:flex;flex-direction:row;align-items:center;gap:11px;height:94px}
+.cbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.chead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.quest{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:-.1px}
+.ytag{flex:none;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.1px;
+      color:var(--yc,var(--muted));background:var(--yb,var(--icbg));transition:color .2s,background .2s}
+.card p{margin:0;font-size:14px;font-weight:600;line-height:1.3;color:var(--ink);
+        max-height:3.9em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+
+/* controls */
+.slider{flex:none;display:flex;align-items:center;gap:10px}
+.slider .lab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.slider .val{font-size:12px;font-weight:700;color:var(--ink);min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+.chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0}
+.chips.scroll{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips.scroll::-webkit-scrollbar{display:none}
+.clab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-right:1px;flex:none}
+.whorow{display:flex;flex-direction:column;gap:5px;min-width:0}
+.who{font-size:11.5px;font-weight:800;color:var(--accent);letter-spacing:-.1px;line-height:1.1}
+.whoR{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.whoR .val{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.chips button{flex:1 1 auto;min-height:34px;padding:0 9px;border-radius:999px;border:1px solid var(--line);background:var(--chip);
+              font-size:12.5px;font-weight:600;color:var(--body)}
+.chips button[aria-pressed="true"]{background:var(--atone);border-color:var(--accent);color:var(--accent);font-weight:700}
+.chips .sep{flex:none;width:1px;height:20px;background:var(--line);margin:0 2px}
+.actions{flex:none;display:flex;gap:8px}
+.btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;gap:7px;
+     font-size:14.5px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.45;box-shadow:none}
+.iconbtn{width:46px;flex:none!important;padding:0}
+#nextBtn{flex:1.7 1 0;position:relative;overflow:hidden;flex-direction:column;gap:0;line-height:1.1}
+#nextBtn .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.24);transition:width .3s}
+#nextBtn span.lbl,#nextBtn small{position:relative;z-index:1}
+#nextBtn small{font-size:10.5px;font-weight:700;opacity:.85;letter-spacing:.3px}
+#play{flex:1 1 0;border:1.8px solid var(--accent);background:var(--atone);color:var(--accent)}
+
+/* bottom sheet */
+.veil{position:fixed;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.veil.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;max-height:78%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,33,61,.18);
+       translate:0 105%;transition:translate .32s cubic-bezier(.3,.9,.3,1)}
+.sheet.open{translate:0 0}
+.sheet.fixed{height:78%}   /* every question sheet is exactly as tall as every other */
+.grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+.grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 20px 6px}
+.shead h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
+.x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--chip);color:var(--body);display:flex;align-items:center;justify-content:center;flex:none}
+.sbody{flex:1 1 auto;min-height:0;overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sbody h3{margin:16px 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px;line-height:1.3;color:var(--blue)}
+.sbody p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.sbody .pcard p{background:none;border:0;padding:0;box-shadow:none}
+.sbody .pcard{margin-top:12px}
+.sbody .pcard.good{background:var(--gtint);border-color:transparent}
+.sbody .pcard.good h3{color:var(--gdeep)}
+.sbody .pcard.warn{background:var(--atint);border-color:transparent}
+.sbody .pcard.warn h3{color:var(--amber)}
+.sfoot{flex:none;padding:10px 20px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--sheet)}
+.sfoot .btn{width:100%}
+body.qmodal #sheetClose,body.qmodal .grab{visibility:hidden;pointer-events:none}
+
+/* MCQ */
+.qtag{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+.sbody .qtag,.sbody .qtext{background:none;border:0;padding:0;box-shadow:none}
+.sbody .qtext{font-size:16.5px;font-weight:700;line-height:1.35;margin:6px 0 10px;min-height:2.7em}
+.mcq{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.mcq button{display:flex;align-items:center;gap:10px;text-align:left;min-height:46px;padding:8px 12px;border-radius:12px;
+            border:1px solid var(--line);background:var(--chip);font-size:14.5px;font-weight:600;color:var(--ink)}
+.mcq button i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line)}
+.mcq button[aria-pressed="true"]{border-color:var(--blue);background:var(--btint);color:var(--blue-dk)}
+.mcq button[aria-pressed="true"] i{border-color:var(--blue);background:var(--blue);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button.right{border-color:var(--green);background:var(--gtint);color:var(--gdeep)}
+.mcq button.right i{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button.wrong{border-color:var(--amber);background:var(--atint);color:var(--amber)}
+.mcq button.wrong i{border-color:var(--amber);background:var(--amber);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button[disabled]{opacity:1}
+.sheetfoot{display:flex;gap:8px;margin:14px 0 4px}
+.sheetfoot .btn{flex:1;min-height:46px}
+/* laid out, but not shown — this is what keeps the question sheet one fixed height */
+.held{visibility:hidden}
+.gone{visibility:hidden;pointer-events:none}
+.slot{position:relative}
+.ghost{position:absolute;inset:12px 0 0;display:flex;align-items:center;justify-content:center;text-align:center;
+       border:1px dashed var(--line);border-radius:16px;padding:10px 16px;
+       font-size:13px;font-weight:600;color:var(--muted)}
+
+/* comparison table in the summary */
+.rank{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.rrow{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600}
+.rrow .nm{flex:none;width:76px;color:var(--ink)}
+.rrow .tr{flex:1;height:10px;border-radius:5px;background:var(--icbg);overflow:hidden}
+.rrow .tr b{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.rrow .nu{flex:none;width:58px;text-align:right;color:var(--body);font-variant-numeric:tabular-nums}
+
+/* virtual lab shell */
+.screen{position:fixed;inset:0;display:none;flex-direction:column}
+body[data-screen="intro"] #scIntro, body[data-screen="lab"] #scLab{display:flex}
+body:not(.teacher) .t-only{display:none!important}
+body.teacher .s-only{display:none!important}
+
+.page{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+      padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 18px);
+      max-width:520px;margin:0 auto;width:100%}
+.pagefoot{flex:none;display:flex;gap:8px;max-width:520px;width:100%;margin:0 auto;
+          padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 14px);background:var(--bg);
+          box-shadow:0 -10px 20px -14px rgba(20,33,61,.25)}
+.pagefoot .btn{flex:1}
+.kicker{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--smell)}
+.h1{font-size:25px;font-weight:800;letter-spacing:-.5px;line-height:1.15;margin:6px 0 0}
+.lede{font-size:15px;font-weight:600;line-height:1.45;color:var(--body);margin:10px 0 0}
+.hero{margin:16px 0 4px;border-radius:16px;overflow:hidden;background:#0E1A12;height:140px;position:relative}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-top:12px;box-shadow:var(--shadow)}
+.pcard h3{margin:0 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px}
+.pcard h3.blue{color:var(--blue)}
+.pcard p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.pcard p + p{margin-top:8px}
+.pcard.warn{background:var(--atint);border-color:transparent}
+.pcard.warn h3{color:var(--amber)}
+.steps{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.steps li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;font-weight:600;line-height:1.4}
+.steps b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--btint);color:var(--blue-dk);
+         font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.meta span{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--icbg);color:var(--body)}
+.roleswitch{display:flex;background:var(--icbg);border-radius:12px;padding:3px;margin-top:16px}
+.roleswitch button{flex:1;min-height:34px;border:0;border-radius:9px;background:transparent;font-size:13px;font-weight:700;color:var(--body)}
+.roleswitch button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+#scLab .app{height:100%;padding-top:calc(env(safe-area-inset-top,0px) + 8px)}
+
+/* answer rows */
+.ansrow{display:flex;gap:10px;align-items:flex-start;padding:9px 0;font-size:14px;font-weight:600;line-height:1.4}
+.ansrow + .ansrow{border-top:1px solid var(--line)}
+.ansrow i{flex:none;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+          font-size:12px;font-weight:800;color:#fff;background:var(--green);margin-top:1px;font-style:normal}
+.ansrow i.no{background:var(--amber)}
+.ansrow small{display:block;font-weight:600;color:var(--body);font-size:13px;margin-top:2px}
+
+/* tight screens */
+@media (max-height:680px){
+  .app{gap:6px} .btn{min-height:42px} .card{height:86px} .card p{font-size:13px} .legend{display:none}
+  .sgi{padding:7px 0 6px;font-size:12.5px} .sgi.here{padding-bottom:7px} .sgi svg{width:15px;height:15px}
+  .gauge,.gauge svg{width:54px;height:54px} .gauge .gval{font-size:12px}
+  .panel{padding:9px 10px 10px;gap:7px}
+  .whorow{gap:4px} .who{font-size:11px} .chips button{min-height:32px} input[type=range]{height:26px}
+  .card{height:80px}
+  .whorow.dist{flex-direction:row;align-items:center;gap:10px}
+  .whorow.dist .whoR{flex:none;flex-direction:column;align-items:flex-start;gap:0;line-height:1.25}
+  .whorow.dist .whoR .val{font-size:11.5px}
+  .whorow.dist input[type=range]{flex:1;min-width:0}
+}
+@media (max-height:600px){ .card{height:78px} .card p{-webkit-line-clamp:2} .chips button{min-height:30px} }
+@media (max-width:370px){ .sgi{font-size:12px;gap:4px} }
+
+/* landscape / projector */
+.app.side .scenes{flex-direction:row;gap:10px}
+.app.side .scene{flex:1 1 0}
+.app.side .card{height:auto;min-height:84px;flex:0 1 auto}
+.app.side .card p{max-height:6.6em;-webkit-line-clamp:5}
+.app.side .t-long{display:none}
+.app.side .t-short{display:inline}
+.app.side .legend{font-size:10px;gap:2px 8px}
+.app.side .badge{font-size:10px;padding:4px 8px}
+.app.side .btn{min-height:42px}
+.app.side .sheet{max-height:92%}
+@media (min-width:640px){
+  .app.side{display:grid;width:100%;max-width:none;margin:0;grid-template-columns:minmax(0,1fr) minmax(250px,310px);grid-template-rows:minmax(0,1fr);gap:10px;
+            padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px, env(safe-area-inset-left,0px))}
+  .app.side .scenes{grid-column:1;grid-row:1;flex-direction:column;gap:10px}
+  .app.side .controls{grid-column:2;grid-row:1;justify-content:flex-start;overflow-y:auto}
+  .app.side .chips{flex-wrap:wrap;white-space:normal;overflow:visible}
+}
+@media (prefers-reduced-motion: reduce){ .sheet,.veil{transition:none} }
+</style>
+</head>
+<body data-sense="sight" data-screen="intro">
+
+<!-- ================= INTRO ================= -->
+<section class="screen" id="scIntro">
+  <div class="page">
+    <p class="kicker">Virtual Lab · EVS · Class 5 · Super Senses</p>
+    <h1 class="h1">Who notices the rabbit first?</h1>
+    <p class="lede">A rabbit is sitting still in the grass. An eagle, a dog and a bat are all nearby — and so are you. In this lab you move the rabbit closer and farther, change the light and the wind, and find out whose senses win.</p>
+
+    <div class="hero">
+      <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#16243A"/><stop offset="1" stop-color="#1D3A2A"/>
+          </linearGradient>
+          <radialGradient id="hsm"><stop offset="0" stop-color="rgba(79,190,129,.85)"/><stop offset="1" stop-color="rgba(79,190,129,0)"/></radialGradient>
+        </defs>
+        <rect width="320" height="140" fill="url(#hsky)"/>
+        <g fill="#fff" opacity=".5"><circle cx="30" cy="20" r="1"/><circle cx="92" cy="14" r="1.1"/><circle cx="250" cy="24" r="1"/><circle cx="296" cy="12" r="1.2"/></g>
+        <path d="M0 96 C60 84 120 104 180 94 C240 84 290 98 320 92 L320 140 L0 140Z" fill="#1E4632"/>
+        <path d="M0 112 C70 104 130 120 200 110 C255 102 300 114 320 108 L320 140 L0 140Z" fill="#17351F"/>
+        <!-- vision cone -->
+        <path d="M54 34 L206 86 L206 104 L54 44 Z" fill="rgba(107,168,236,.22)"/>
+        <!-- eagle -->
+        <path d="M34 30 q14 -12 22 2 q10 -12 22 0 q-16 6 -22 4 q-8 4 -22 -6Z" fill="#DCE6F4"/>
+        <!-- sound rings from the right -->
+        <g fill="none" stroke="rgba(168,140,230,.75)" stroke-width="1.6">
+          <path d="M268 74 a16 16 0 0 1 0 28" opacity=".8"/>
+          <path d="M268 66 a25 25 0 0 1 0 44" opacity=".55"/>
+          <path d="M268 58 a34 34 0 0 1 0 60" opacity=".3"/>
+        </g>
+        <!-- smell plume -->
+        <ellipse cx="196" cy="100" rx="46" ry="18" fill="url(#hsm)" opacity=".8"/>
+        <!-- rabbit -->
+        <g transform="translate(244,86)">
+          <ellipse cx="0" cy="8" rx="13" ry="9" fill="#C9B79C"/>
+          <circle cx="-11" cy="1" r="6" fill="#D8C7AC"/>
+          <path d="M-14 -3 q-2 -10 2 -11 q3 1 2 11Z" fill="#D8C7AC"/>
+          <path d="M-9 -3 q-1 -10 3 -11 q3 2 1 11Z" fill="#D8C7AC"/>
+          <circle cx="-13" cy="0" r="1.2" fill="#2A2018"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">What you will find out</h3>
+      <p>Why every animal is a champion at one sense and ordinary at the others — and why that one sense is exactly the one it needs to stay alive.</p>
+    </div>
+
+    <div class="pcard">
+      <h3>How this lab works</h3>
+      <ul class="steps">
+        <li><b>1</b><span>Pick a sense at the top, pick an animal, then slide the rabbit closer or farther.</span></li>
+        <li><b>2</b><span>Watch both pictures — the field from above, and what that animal actually notices.</span></li>
+        <li><b>3</b><span>Answer three questions as you go. Each answer takes you to that exact situation.</span></li>
+        <li><b>4</b><span>Finish with a summary you can keep.</span></li>
+      </ul>
+      <div class="meta"><span>8 animals</span><span>3 senses</span></div>
+    </div>
+
+    <div class="pcard t-only" id="introNote" hidden>
+      <h3 class="blue">For the teacher</h3>
+      <p>Project this on the board. The grey <b>you</b> mark on the detection bar is always the human score, so every reading is a direct comparison with the class's own senses.</p>
+      <p>Ask for a prediction before each slide: <i>“How far away can a dog still smell the rabbit — the length of our classroom, or the length of the playground?”</i> Then move the slider. The gap between the guess and 250 m is the lesson.</p>
+      <p>The screen button on the left of the lab switches between the tall (phone) and wide (projector) layout. The <b>Why?</b> button opens the teaching notes for the sense you are on.</p>
+    </div>
+
+    <div class="roleswitch" role="tablist" aria-label="Open as">
+      <button data-role="student" aria-selected="true">Student view</button>
+      <button data-role="teacher" aria-selected="false">Teacher view</button>
+    </div>
+  </div>
+  <div class="pagefoot"><button class="btn primary" id="startBtn">Start the experiment</button></div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="screen" id="scLab">
+  <div class="app">
+    <div class="scenes">
+      <section class="scene field">
+        <canvas id="cField" aria-label="The field seen from above"></canvas>
+        <span class="tag"><span class="t-long">The field from above</span><span class="t-short">The field</span></span>
+        <div class="legend" id="legend"></div>
+        <span class="badge" id="fieldBadge"></span>
+      </section>
+      <section class="scene view">
+        <canvas id="cView" aria-label="What the animal notices"></canvas>
+        <span class="tag" id="viewTag">What the eagle notices</span>
+        <span class="badge" id="viewBadge"></span>
+      </section>
+    </div>
+
+    <div class="controls">
+      <div class="card">
+        <div class="gauge" role="img" id="gauge" aria-label="Can it tell? 0 per cent">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle class="trk" cx="22" cy="22" r="18"/>
+            <circle class="prg" id="ring" cx="22" cy="22" r="18"/>
+            <line class="youmk" id="youMk" x1="22" y1="1.8" x2="22" y2="7"/>
+          </svg>
+          <output class="gval" id="meterVal">0%</output>
+        </div>
+        <div class="cbody">
+          <div class="chead">
+            <span class="quest" id="quest">Can it notice?</span>
+            <span class="ytag" id="youSub">You 0%</span>
+          </div>
+          <p id="say"></p>
+        </div>
+      </div>
+
+      <div class="deck">
+      <div class="seg" role="tablist" aria-label="Choose a sense">
+        <button class="sgi here" data-sense="sight" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.6 12S5.4 5.4 12 5.4 22.4 12 22.4 12 18.6 18.6 12 18.6 1.6 12 1.6 12z"/><circle cx="12" cy="12" r="3"/></svg>Sight</button>
+        <button class="sgi" data-sense="smell" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7c2-2.2 4.3 2.2 6.5 0s4.5 2.2 6.5 0"/><path d="M3.5 12.5c2-2.2 4.3 2.2 6.5 0s4.5 2.2 6.5 0"/><path d="M3.5 18c2-2.2 4.3 2.2 6.5 0s4.5 2.2 6.5 0"/></svg>Smell</button>
+        <button class="sgi" data-sense="hearing" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9a5 5 0 0 1 10 0c0 4-4 4-4 6.5a3.2 3.2 0 0 1-6.2.7"/><path d="M10.4 9.3a2.2 2.2 0 0 1 3.4 1.8"/></svg>Hearing</button>
+      </div>
+
+      <div class="panel">
+        <div class="whorow dist">
+          <span class="who whoR">Rabbit's distance <b class="val" id="dVal">100 m</b></span>
+          <input id="dS" type="range" min="0" max="100" step="0.2" value="46" aria-label="How far away the rabbit is">
+        </div>
+
+        <div class="whorow">
+          <span class="who" id="whoLab">Who sees?</span>
+          <div class="chips scroll" id="chipsA"></div>
+        </div>
+
+        <div class="whorow">
+          <span class="who" id="condLab">How much light?</span>
+          <div class="chips" id="chipsB"></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="actions">
+        <button id="layoutBtn" class="btn iconbtn" aria-label="Switch layout"><svg id="layoutIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></svg></button>
+        <button id="play" class="btn"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+        <button id="whyBtn" class="btn t-only" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Why?</button>
+        <button id="nextBtn" class="btn primary s-only">
+          <span class="fill" id="nextFill"></span><span class="lbl" id="nextLbl">Next</span><small id="nextSub">Step 1 of 4</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<template id="sumTpl">
+  <div class="pcard">
+    <h3 class="blue">The big idea</h3>
+    <p>No animal is best at everything. Each one is a champion at the <b>one sense it needs most</b> to find food and stay safe — and quite ordinary at the rest. Our own senses are the ordinary ones in almost every row below.</p>
+  </div>
+
+  <div class="pcard">
+    <h3 class="blue">How far away the rabbit is still noticed</h3>
+    <div class="rank" id="rankSight"></div>
+  </div>
+
+  <div class="pcard">
+    <h3 class="blue">Sight needs light — smell and hearing do not</h3>
+    <p>Turn the light down and the eagle is helpless: eyes only work when there is light to catch. But the dog smells just as well at midnight, and the bat does not care at all — it makes its own sound and listens for the echo coming back. That is why so many animals hunt at night.</p>
+  </div>
+
+  <div class="pcard">
+    <h3 class="blue">Smell rides on the wind</h3>
+    <p>A smell is tiny bits of the rabbit floating in the air, so it can only travel where the air travels. With the wind blowing from the rabbit towards the dog, it tracks from 250 m away. Turn the wind around and the same dog, at the same distance, smells nothing. Hunters call this staying <i>downwind</i>.</p>
+  </div>
+
+  <div class="pcard">
+    <h3 class="blue">Champions and why</h3>
+    <p><b>Eagle</b> — sees about 5 times sharper than us, and spots a rabbit from 2 km. Its eyes are so big they nearly touch inside its skull.</p>
+    <p><b>Dog</b> — smells a trail we cannot notice at all; a tracker dog follows a person hours after they walked past.</p>
+    <p><b>Bat</b> — squeaks, then listens. The echo tells it where a moth is, in complete darkness. We cannot even hear the squeak: it is too high for our ears.</p>
+    <p><b>Owl</b> — the only one good at two senses. It sees in almost no light and hears a mouse moving under leaves, so it can hunt in the dark.</p>
+    <p><b>Snake</b> — flicks its tongue to taste smells in the air, and feels footsteps as shaking in the ground. It has no ears on the outside at all.</p>
+    <p><b>Ant</b> — follows a smell trail left by the ant in front. Break the trail and the line of ants gets lost.</p>
+    <p><b>Mosquito</b> — smells the breath and sweat of a person from about 50 m away, then follows the smell to you.</p>
+  </div>
+
+  <div class="pcard warn">
+    <h3>A common mix-up</h3>
+    <p>“Super senses” does not mean magic. Every one of these animals is using the same three senses you have — eyes, nose and ears. Theirs are simply built bigger, or tuned to things ours cannot pick up, like very high sounds or very faint smells.</p>
+  </div>
+
+  <div class="pcard" id="yourAnswers" hidden>
+    <h3 class="blue">Your answers</h3>
+    <div id="ansList"></div>
+  </div>
+</template>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="shead"><h2 id="sheetTitle">Why?</h2>
+    <button class="x" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+  <div class="sfoot" id="sfoot" hidden><button class="btn primary" id="backLabBtn">Back to the lab</button></div>
+</div>
+
+<script>
+/* ================= the simulator ================= */
+(() => {
+  const $ = id => document.getElementById(id);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const clamp = (a, b, x) => Math.min(b, Math.max(a, x));
+  const MAXD = 3000;                                  // metres at the far end of the slider
+  const LOGMAX = Math.log10(MAXD);
+
+  const CANFILTER = (() => {
+    const c = document.createElement('canvas').getContext('2d');
+    c.filter = 'blur(2px)'; return c.filter === 'blur(2px)';
+  })();
+
+  let seed = 21; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const tufts = Array.from({length: 130}, () => ({x: rnd(), y: rnd(), s: rnd(), a: rnd()}));
+  const specks = Array.from({length: 120}, () => ({x: rnd(), y: rnd(), s: rnd(), p: rnd()}));
+
+  /* ---------- the animals ---------- */
+  // reach = how far away this animal can still just notice the rabbit, in metres, in the best conditions
+  const ANIMALS = {
+    sight: [
+      {k: 'you',   n: 'You',   reach: 250,  night: .06, zoom: 1,   line: 'good eyes, but ordinary ones'},
+      {k: 'eagle', n: 'Eagle', reach: 2000, night: .04, zoom: 5,   line: 'about 5× sharper than yours'},
+      {k: 'owl',   n: 'Owl',   reach: 320,  night: .85, zoom: 1.3, line: 'built for almost no light'},
+    ],
+    smell: [
+      {k: 'you',   n: 'You',      reach: 8,   zoom: 1, line: 'a nose we hardly use'},
+      {k: 'dog',   n: 'Dog',      reach: 250, zoom: 1, line: 'the champion tracker'},
+      {k: 'mosq',  n: 'Mosquito', reach: 60,  zoom: 1, line: 'smells breath and sweat'},
+      {k: 'snake', n: 'Snake',    reach: 40,  zoom: 1, line: 'tastes the air with its tongue'},
+      {k: 'ant',   n: 'Ant',      reach: 3,   zoom: 1, line: 'follows a trail, step by step'},
+    ],
+    hearing: [
+      {k: 'you',   n: 'You',   reach: 25, zoom: 1, line: 'misses very high sounds'},
+      {k: 'owl',   n: 'Owl',   reach: 45, zoom: 1, line: 'pinpoints a rustle in the dark'},
+      {k: 'bat',   n: 'Bat',   reach: 12, zoom: 1, line: 'squeaks, then listens for the echo'},
+      {k: 'snake', n: 'Snake', reach: 7,  zoom: 1, line: 'feels footsteps through the ground'},
+    ],
+  };
+
+  const CONDS = {
+    sight:   {label: 'How much light?', key: 'light', opts: [['Day', 'day'], ['Dusk', 'dusk'], ['Night', 'night']]},
+    smell:   {label: 'Which way is the wind?', key: 'wind', opts: [['Towards', 'toward'], ['Across', 'across'], ['Away', 'away']]},
+    hearing: {label: 'Is the rabbit making a sound?', key: 'quiet', opts: [['Rustling', 'rustle'], ['Sitting still', 'still']]},
+  };
+
+  const WIND = {toward: 1, across: .28, away: .05};
+
+  /* ---------- state ---------- */
+  const st = {
+    sense: 'sight',
+    animal: {sight: 'eagle', smell: 'dog', hearing: 'bat'},
+    light: 'day',
+    wind: 'toward',
+    quiet: 'rustle',
+    t: 46,                                             // slider position
+    time: 0,
+  };
+  const dist = () => Math.pow(10, (st.t / 100) * LOGMAX);
+  const tFor = d => clamp(0, 100, Math.log10(clamp(1, MAXD, d)) / LOGMAX * 100);
+  const list = () => ANIMALS[st.sense];
+  const cur = () => list().find(a => a.k === st.animal[st.sense]) || list()[0];
+  const human = () => list().find(a => a.k === 'you');
+
+  function factor(a){
+    if (st.sense === 'smell') return WIND[st.wind];
+    // ears do not care about light at all — but a silent rabbit makes nothing to hear,
+    // unless the animal sends out its own sound, like a bat
+    if (st.sense === 'hearing') return st.quiet === 'still' ? (a.k === 'bat' ? 1 : 0) : 1;
+    return st.light === 'day' ? 1 : st.light === 'dusk' ? (a.k === 'owl' ? .95 : .35) : a.night;
+  }
+  const limitOf = a => a.reach * factor(a);
+  function scoreOf(a, d){
+    const lim = limitOf(a);
+    if (lim <= 0) return 0;
+    return clamp(0, 1, Math.log(lim / d) / Math.log(3));
+  }
+  const fmtD = d => d >= 1000 ? (d / 1000).toFixed(d >= 10000 ? 0 : 1) + ' km'
+                  : d >= 100  ? Math.round(d) + ' m'
+                  : d >= 10   ? d.toFixed(0) + ' m' : d.toFixed(1) + ' m';
+
+  /* ---------- canvases ---------- */
+  const cF = $('cField'), cV = $('cView');
+  const fx = cF.getContext('2d'), vx = cV.getContext('2d');
+  let FW = 0, FH = 0, VW = 0, VH = 0;
+  function resize(){
+    for (const [c, ctx] of [[cF, fx], [cV, vx]]){
+      const w = Math.max(1, c.clientWidth), h = Math.max(1, c.clientHeight);
+      c.width = Math.round(w * DPR); c.height = Math.round(h * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    FW = cF.clientWidth; FH = cF.clientHeight; VW = cV.clientWidth; VH = cV.clientHeight;
+    draw();
+  }
+
+  function blurred(ctx, px, fn){
+    if (px < .4) return fn();
+    if (CANFILTER){ ctx.save(); ctx.filter = `blur(${px}px)`; fn(); ctx.restore(); return; }
+    ctx.save(); ctx.globalAlpha = .17;
+    for (let i = 0; i < 7; i++){
+      const a = i / 7 * Math.PI * 2;
+      ctx.save(); ctx.translate(Math.cos(a) * px * .8, Math.sin(a) * px * .8); fn(); ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  /* ---------- little animals, drawn centred on 0,0 ---------- */
+  const ICON = {
+    you(c, s){
+      c.fillStyle = '#4C79B8';
+      c.beginPath(); c.arc(0, -s * .42, s * .2, 0, 7); c.fill();
+      c.beginPath(); c.moveTo(-s * .22, s * .5); c.lineTo(-s * .1, -s * .16);
+      c.lineTo(s * .1, -s * .16); c.lineTo(s * .22, s * .5); c.closePath(); c.fill();
+    },
+    eagle(c, s){
+      c.fillStyle = '#DCE6F4';
+      c.beginPath();
+      c.moveTo(-s * .62, -s * .3); c.quadraticCurveTo(-s * .2, -s * .42, 0, -s * .06);
+      c.quadraticCurveTo(s * .2, -s * .42, s * .62, -s * .3);
+      c.quadraticCurveTo(s * .22, s * .02, 0, s * .34);
+      c.quadraticCurveTo(-s * .22, s * .02, -s * .62, -s * .3); c.fill();
+      c.fillStyle = '#8E6F4A';
+      c.beginPath(); c.ellipse(0, s * .02, s * .1, s * .26, 0, 0, 7); c.fill();
+      c.beginPath(); c.moveTo(-s * .07, s * .22); c.lineTo(0, s * .42); c.lineTo(s * .07, s * .22); c.fill();
+      c.fillStyle = '#F2F5FA'; c.beginPath(); c.arc(0, -s * .24, s * .11, 0, 7); c.fill();
+      c.fillStyle = '#F6C64E';
+      c.beginPath(); c.moveTo(s * .08, -s * .26); c.lineTo(s * .2, -s * .21); c.lineTo(s * .08, -s * .17); c.fill();
+      c.fillStyle = '#1A1208'; c.beginPath(); c.arc(s * .04, -s * .27, s * .028, 0, 7); c.fill();
+    },
+    owl(c, s){
+      c.fillStyle = '#C2A276';
+      c.beginPath(); c.ellipse(0, s * .05, s * .34, s * .42, 0, 0, 7); c.fill();
+      c.beginPath(); c.moveTo(-s * .3, -s * .3); c.lineTo(-s * .16, -s * .56); c.lineTo(-s * .06, -s * .3); c.fill();
+      c.beginPath(); c.moveTo(s * .3, -s * .3); c.lineTo(s * .16, -s * .56); c.lineTo(s * .06, -s * .3); c.fill();
+      c.fillStyle = '#FFF3D0';
+      c.beginPath(); c.arc(-s * .14, -s * .12, s * .13, 0, 7); c.fill();
+      c.beginPath(); c.arc(s * .14, -s * .12, s * .13, 0, 7); c.fill();
+      c.fillStyle = '#1A1208';
+      c.beginPath(); c.arc(-s * .14, -s * .12, s * .06, 0, 7); c.fill();
+      c.beginPath(); c.arc(s * .14, -s * .12, s * .06, 0, 7); c.fill();
+      c.fillStyle = '#F6C64E';
+      c.beginPath(); c.moveTo(0, -s * .1); c.lineTo(s * .05, s * .03); c.lineTo(-s * .05, s * .03); c.fill();
+    },
+    dog(c, s){
+      c.fillStyle = '#C9A06A';
+      c.beginPath(); c.ellipse(s * .06, s * .12, s * .38, s * .22, 0, 0, 7); c.fill();
+      c.beginPath(); c.arc(-s * .34, -s * .1, s * .2, 0, 7); c.fill();
+      c.beginPath(); c.moveTo(-s * .5, -s * .1); c.lineTo(-s * .66, s * .04); c.lineTo(-s * .44, s * .06); c.fill();
+      c.beginPath(); c.moveTo(-s * .3, -s * .26); c.lineTo(-s * .38, -s * .56); c.lineTo(-s * .14, -s * .3); c.fill();
+      c.beginPath(); c.moveTo(s * .42, s * .02); c.quadraticCurveTo(s * .62, -s * .22, s * .5, -s * .34); c.lineTo(s * .42, -s * .2); c.fill();
+      c.fillStyle = '#231A11'; c.beginPath(); c.arc(-s * .63, s * .0, s * .05, 0, 7); c.fill();
+    },
+    bat(c, s){
+      c.fillStyle = '#5B4A70';
+      c.beginPath();
+      c.moveTo(0, -s * .1);
+      c.quadraticCurveTo(-s * .3, -s * .46, -s * .68, -s * .22);
+      c.quadraticCurveTo(-s * .44, -s * .12, -s * .5, s * .18);
+      c.quadraticCurveTo(-s * .26, s * .0, 0, s * .26);
+      c.quadraticCurveTo(s * .26, s * .0, s * .5, s * .18);
+      c.quadraticCurveTo(s * .44, -s * .12, s * .68, -s * .22);
+      c.quadraticCurveTo(s * .3, -s * .46, 0, -s * .1); c.fill();
+      c.beginPath(); c.moveTo(-s * .12, -s * .22); c.lineTo(-s * .18, -s * .48); c.lineTo(-s * .02, -s * .26); c.fill();
+      c.beginPath(); c.moveTo(s * .12, -s * .22); c.lineTo(s * .18, -s * .48); c.lineTo(s * .02, -s * .26); c.fill();
+    },
+    snake(c, s){
+      c.strokeStyle = '#6FA84B'; c.lineWidth = s * .17; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(-s * .55, s * .2);
+      c.bezierCurveTo(-s * .1, s * .34, -s * .2, -s * .18, s * .18, -s * .12);
+      c.bezierCurveTo(s * .44, -s * .08, s * .42, -s * .34, s * .56, -s * .34);
+      c.stroke();
+      c.fillStyle = '#D24B3A'; c.beginPath();
+      c.moveTo(s * .56, -s * .34); c.lineTo(s * .74, -s * .42); c.moveTo(s * .56, -s * .34); c.lineTo(s * .74, -s * .26);
+      c.strokeStyle = '#D24B3A'; c.lineWidth = s * .05; c.stroke();
+    },
+    ant(c, s){
+      c.fillStyle = '#4B3A2E';
+      c.beginPath(); c.ellipse(-s * .3, 0, s * .15, s * .13, 0, 0, 7); c.fill();
+      c.beginPath(); c.ellipse(0, 0, s * .12, s * .1, 0, 0, 7); c.fill();
+      c.beginPath(); c.ellipse(s * .34, 0, s * .2, s * .16, 0, 0, 7); c.fill();
+      c.strokeStyle = '#4B3A2E'; c.lineWidth = s * .05; c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(-s * .4, -s * .1); c.lineTo(-s * .56, -s * .34);
+      c.moveTo(-s * .4, -s * .1); c.lineTo(-s * .62, -s * .18);
+      c.moveTo(0, -s * .08); c.lineTo(-s * .06, -s * .3);
+      c.moveTo(0, s * .08); c.lineTo(-s * .06, s * .3);
+      c.moveTo(s * .1, s * .1); c.lineTo(s * .16, s * .32);
+      c.stroke();
+    },
+    mosq(c, s){
+      c.fillStyle = 'rgba(210,222,240,.55)';
+      c.beginPath(); c.ellipse(s * .04, -s * .22, s * .3, s * .1, -.5, 0, 7); c.fill();
+      c.beginPath(); c.ellipse(s * .1, -s * .1, s * .3, s * .09, -.2, 0, 7); c.fill();
+      c.fillStyle = '#3B3730';
+      c.beginPath(); c.ellipse(s * .12, s * .06, s * .26, s * .09, .25, 0, 7); c.fill();
+      c.beginPath(); c.arc(-s * .16, -s * .02, s * .1, 0, 7); c.fill();
+      c.strokeStyle = '#3B3730'; c.lineWidth = s * .04; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(-s * .24, s * .02); c.lineTo(-s * .58, s * .14);
+      c.moveTo(s * .04, s * .12); c.lineTo(-s * .06, s * .4);
+      c.moveTo(s * .2, s * .12); c.lineTo(s * .3, s * .4);
+      c.stroke();
+    },
+    rabbit(c, s){
+      c.fillStyle = '#C9B79C';
+      c.beginPath(); c.ellipse(s * .12, s * .1, s * .36, s * .25, 0, 0, 7); c.fill();
+      c.fillStyle = '#D8C7AC';
+      c.beginPath(); c.arc(-s * .24, -s * .06, s * .17, 0, 7); c.fill();
+      c.beginPath(); c.ellipse(-s * .3, -s * .38, s * .06, s * .17, .12, 0, 7); c.fill();
+      c.beginPath(); c.ellipse(-s * .14, -s * .4, s * .06, s * .17, .3, 0, 7); c.fill();
+      c.fillStyle = '#F2ECE2'; c.beginPath(); c.arc(s * .44, s * .06, s * .1, 0, 7); c.fill();
+      c.fillStyle = '#2A2018'; c.beginPath(); c.arc(-s * .3, -s * .09, s * .035, 0, 7); c.fill();
+    },
+  };
+  // these three are drawn in profile facing left, so they get mirrored to look
+  // towards the rabbit — the snake already faces that way, the rest are front-on
+  const FACE_LEFT = {dog: 1, mosq: 1, ant: 1};
+  const drawIcon = (ctx, k, x, y, s) => {
+    ctx.save(); ctx.translate(x, y);
+    if (FACE_LEFT[k]) ctx.scale(-1, 1);
+    (ICON[k] || ICON.you)(ctx, s);
+    ctx.restore();
+  };
+
+  /* ---------- scene 1: the field from above ---------- */
+  const xFor = d => .13 + .76 * (Math.log10(clamp(1, MAXD, d)) / LOGMAX);
+
+  function drawField(){
+    const w = FW, h = FH, a = cur(), d = dist(), sc = scoreOf(a, d);
+    // the hearing bench is always run in the dark — that is the whole point of it
+    const dark = st.sense === 'hearing' || (st.sense === 'sight' && st.light === 'night');
+    const dusk = st.sense === 'sight' && st.light === 'dusk';
+
+    const lit = !dark;                                 // light meadow, or a dark one
+    cF.parentElement.classList.toggle('lit', lit);
+    const g = fx.createLinearGradient(0, 0, 0, h);
+    if (dark){ g.addColorStop(0, '#14251C'); g.addColorStop(1, '#0D1A14'); }
+    else if (dusk){ g.addColorStop(0, '#7E8F68'); g.addColorStop(1, '#63764F'); }
+    else { g.addColorStop(0, '#A8D585'); g.addColorStop(1, '#80B865'); }
+    fx.fillStyle = g; fx.fillRect(0, 0, w, h);
+
+    const INK = lit ? 'rgba(22,52,26,' : 'rgba(255,255,255,';
+    const ink = a2 => INK + a2 + ')';
+
+    // grass texture
+    fx.strokeStyle = dark ? 'rgba(160,220,180,.07)' : 'rgba(40,90,42,.20)';
+    fx.lineWidth = 1;
+    fx.beginPath();
+    for (const t of tufts){
+      const x = t.x * w, y = 12 + t.y * (h - 34);
+      fx.moveTo(x, y); fx.lineTo(x + (t.a - .5) * 5, y - 4 - t.s * 5);
+    }
+    fx.stroke();
+
+    const midY = h * .52, ax = Math.max(48, w * .1), tx = w * xFor(d);
+
+    // ---- sense overlays ----
+    if (st.sense === 'sight'){
+      const lim = w * xFor(limitOf(a));
+      const cone = fx.createLinearGradient(ax, 0, lim, 0);
+      const cc = lit ? '38,104,196' : '107,168,236';
+      cone.addColorStop(0, `rgba(${cc},.32)`); cone.addColorStop(1, `rgba(${cc},0)`);
+      fx.fillStyle = cone;
+      fx.beginPath(); fx.moveTo(ax, midY);
+      fx.lineTo(lim, midY - h * .3); fx.lineTo(lim, midY + h * .3); fx.closePath(); fx.fill();
+    }
+    if (st.sense === 'smell'){
+      // the smell plume drifts with the wind
+      const dir = st.wind === 'toward' ? -1 : st.wind === 'away' ? 1 : 0;
+      const reach = w * .5 * (st.wind === 'across' ? .25 : 1);
+      for (let i = 0; i < 26; i++){
+        const p = ((i / 26) + (st.time * .06)) % 1;
+        const along = dir === 0 ? 0 : dir * p * reach;
+        const across = dir === 0 ? (p - .5) * h * .8 : Math.sin(p * 9 + i) * h * .1;
+        const r = 5 + p * 15;
+        const al = (1 - p) * (lit ? .3 : .26) * (dir === 0 ? .5 : 1);
+        fx.fillStyle = lit ? `rgba(20,110,60,${al})` : `rgba(110,225,160,${al})`;
+        fx.beginPath(); fx.arc(tx + along, midY + across, r, 0, 7); fx.fill();
+      }
+      // wind arrows
+      fx.strokeStyle = ink(.5); fx.lineWidth = 1.5; fx.lineCap = 'round';
+      const wy = Math.max(36, h * .15);
+      if (dir !== 0){
+        for (let i = 0; i < 4; i++){
+          const bx = w * (.2 + i * .18) + ((st.time * 26 * dir) % (w * .18));
+          fx.beginPath(); fx.moveTo(bx - 13 * dir, wy); fx.lineTo(bx + 13 * dir, wy);
+          fx.moveTo(bx + 13 * dir, wy); fx.lineTo(bx + 5 * dir, wy - 4);
+          fx.moveTo(bx + 13 * dir, wy); fx.lineTo(bx + 5 * dir, wy + 4);
+          fx.stroke();
+        }
+      }
+    }
+    if (st.sense === 'hearing'){
+      const bat = a.k === 'bat';
+      const makesSound = bat || st.quiet === 'rustle';
+      if (makesSound) for (let i = 0; i < 4; i++){
+        const p = ((st.time * .5) + i / 4) % 1;
+        const from = bat ? ax : tx, to = bat ? tx : ax;
+        const r = Math.abs(to - from) * p;
+        fx.strokeStyle = `rgba(168,140,230,${(1 - p) * .65})`;
+        fx.lineWidth = 1.6;
+        fx.beginPath();
+        if (bat) fx.arc(from, midY, r, -.85, .85);
+        else fx.arc(from, midY, r, Math.PI - .85, Math.PI + .85);
+        fx.stroke();
+      }
+      if (bat && sc > .05){                              // the echo coming home
+        for (let i = 0; i < 2; i++){
+          const p = ((st.time * .5) + i / 2 + .5) % 1;
+          const r = Math.abs(tx - ax) * (1 - p);
+          fx.strokeStyle = `rgba(120,225,180,${p * .5 * sc})`;
+          fx.lineWidth = 1.4;
+          fx.beginPath(); fx.arc(tx, midY, r, Math.PI - .7, Math.PI + .7); fx.stroke();
+        }
+      }
+    }
+
+    // ---- reach markers ----
+    const mark = (val, col, label, row) => {
+      if (!(val > 1)) return;
+      const x = w * xFor(val);
+      if (x > w - 4 || x < 6) return;
+      fx.save(); fx.setLineDash([3, 4]); fx.strokeStyle = col; fx.lineWidth = 1.2;
+      fx.beginPath(); fx.moveTo(x, 6); fx.lineTo(x, h - 18); fx.stroke(); fx.restore();
+      fx.fillStyle = col; fx.font = `700 9.5px ${FONT}`;
+      const ly = (st.sense === 'smell' ? Math.max(54, h * .27) : Math.max(38, h * .24)) + row * 13;
+      if (x > w * .62){ fx.textAlign = 'right'; fx.fillText(label, x - 5, ly); }
+      else { fx.textAlign = 'left'; fx.fillText(label, x + 5, ly); }
+    };
+    const hu = human();
+    const HI = lit ? 'rgba(138,74,0,.95)' : 'rgba(255,214,110,.95)';
+    if (hu !== a) mark(limitOf(hu), ink(.62), 'you: ' + fmtD(limitOf(hu)), 0);
+    mark(limitOf(a), HI, a.n.toLowerCase() + ': ' + fmtD(limitOf(a)), hu !== a ? 1 : 0);
+
+    // ---- the animals ----
+    drawIcon(fx, a.k, ax, midY, Math.min(46, h * .36));
+    const rs = Math.min(40, h * .33);
+    fx.save();
+    if (dark && st.sense !== 'smell') fx.globalAlpha = .45;
+    drawIcon(fx, 'rabbit', tx, midY, rs);
+    fx.restore();
+
+    // ---- distance ruler ----
+    fx.strokeStyle = ink(.28); fx.lineWidth = 1;
+    fx.beginPath(); fx.moveTo(0, h - 15); fx.lineTo(w, h - 15); fx.stroke();
+    fx.font = `700 9.5px ${FONT}`; fx.textAlign = 'center'; fx.fillStyle = ink(.6);
+    for (const v of [1, 10, 100, 1000]){
+      const x = w * xFor(v);
+      fx.beginPath(); fx.moveTo(x, h - 15); fx.lineTo(x, h - 11); fx.stroke();
+      fx.fillText(v >= 1000 ? '1 km' : v + ' m', x, h - 3);
+    }
+    // the rabbit's own distance
+    fx.fillStyle = HI; fx.font = `800 11.5px ${FONT}`;
+    fx.fillText(fmtD(d), clamp(24, w - 24, tx), midY + rs * 1.15);
+  }
+
+  /* ---------- scene 2: what the animal notices ---------- */
+  function caption(sc){
+    const a = cur();
+    if (st.sense === 'sight'){
+      if (sc > .75) return 'A rabbit. Clearly a rabbit.';
+      if (sc > .4)  return 'Something brown, and it moved.';
+      if (sc > .12) return 'A faint smudge — or is it a stone?';
+      return st.light === 'night' && a.k !== 'owl' ? 'Too dark. Nothing at all.' : 'Just grass.';
+    }
+    if (st.sense === 'smell'){
+      if (sc > .75) return 'Rabbit. Strong and clear.';
+      if (sc > .4)  return 'A steady smell of rabbit.';
+      if (sc > .12) return 'A trace, coming and going.';
+      return st.wind === 'away' ? 'The wind is carrying it away. Nothing.' : 'No smell at all.';
+    }
+    if (sc > .75) return a.k === 'bat' ? 'The echo comes straight back — got it.' : 'A rustle, and exactly where it is.';
+    if (sc > .4)  return a.k === 'bat' ? 'A clear echo from something small.' : 'Something rustled over there.';
+    if (sc > .12) return a.k === 'bat' ? 'A faint echo, hard to place.' : 'A tiny sound, somewhere.';
+    if (a.k === 'bat') return 'Too far. No echo comes back.';
+    return st.quiet === 'still' ? 'The rabbit makes no sound. Silence.' : 'Silence.';
+  }
+
+  function drawView(){
+    const w = VW, h = VH, a = cur(), d = dist(), sc = scoreOf(a, d);
+    vx.clearRect(0, 0, w, h);
+
+    if (st.sense === 'sight'){
+      const seen = st.light === 'day' ? 1 : st.light === 'dusk' ? (a.k === 'owl' ? .92 : .4) : a.night * 1.05;
+      const bright = Math.pow(clamp(0, 1, seen), .55);
+      const g = vx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, `rgb(${16 + 152 * bright},${26 + 187 * bright},${20 + 113 * bright})`);
+      g.addColorStop(1, `rgb(${12 + 116 * bright},${20 + 164 * bright},${15 + 86 * bright})`);
+      vx.fillStyle = g; vx.fillRect(0, 0, w, h);
+      cV.parentElement.classList.toggle('lit', bright > .45);
+      vx.strokeStyle = bright > .45 ? `rgba(40,90,42,${.08 + .14 * bright})` : `rgba(255,255,255,${.05 + .1 * bright})`;
+      vx.lineWidth = 1;
+      vx.beginPath();
+      for (const t of tufts){
+        const x = t.x * w, y = h * .35 + t.y * h * .6;
+        vx.moveTo(x, y); vx.lineTo(x + (t.a - .5) * 6, y - 5 - t.s * 9);
+      }
+      vx.stroke();
+      const sz = clamp(10, Math.min(w, h) * .62, 620 * a.zoom / d);
+      const blur = (1 - sc) * 14 + (1 - bright) * 3;
+      vx.save(); vx.globalAlpha = clamp(0, 1, .25 + sc * .75) * clamp(.1, 1, bright + .1);
+      blurred(vx, blur, () => drawIcon(vx, 'rabbit', w * .58, h * .56, sz));
+      vx.restore();
+      if (bright < .5){
+        vx.fillStyle = `rgba(6,10,20,${(.5 - bright) * 1.1})`; vx.fillRect(0, 0, w, h);
+      }
+    }
+
+    if (st.sense === 'smell'){
+      const g = vx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, '#CFE6C4'); g.addColorStop(1, '#AFD3A7');
+      vx.fillStyle = g; vx.fillRect(0, 0, w, h);
+      cV.parentElement.classList.add('lit');
+      const dir = st.wind === 'toward' ? 1 : st.wind === 'away' ? -1 : 0;
+      const cx = w * .55, cy = h * .54;
+      const n = Math.round(3 + sc * 34);
+      for (let i = 0; i < n; i++){
+        const s = specks[i % specks.length];
+        const p = (s.p + st.time * (.08 + .1 * sc) * (dir || .3)) % 1;
+        const x = dir >= 0 ? w - p * w : p * w;
+        const y = (s.y * .74 + .12) * h + Math.sin(p * 7 + i) * h * .05;
+        const r = 2 + s.s * (4 + sc * 7);
+        vx.fillStyle = `rgba(22,120,64,${(.08 + sc * .34) * (1 - Math.abs(p - .5) * .8)})`;
+        vx.beginPath(); vx.arc(x, y, r, 0, 7); vx.fill();
+      }
+      // the rabbit, built up out of the smell — it fades as the trace weakens
+      const glow = vx.createRadialGradient(cx, cy, 4, cx, cy, 24 + sc * 52);
+      glow.addColorStop(0, `rgba(22,120,64,${.10 + sc * .30})`);
+      glow.addColorStop(1, 'rgba(22,120,64,0)');
+      vx.fillStyle = glow;
+      vx.beginPath(); vx.arc(cx, cy, 24 + sc * 52, 0, 7); vx.fill();
+      vx.save();
+      vx.globalAlpha = clamp(0, 1, sc);
+      blurred(vx, (1 - sc) * 13, () => drawIcon(vx, 'rabbit', cx, cy, Math.min(88, h * .52)));
+      vx.restore();
+    }
+
+    if (st.sense === 'hearing'){
+      vx.fillStyle = '#0B0F1A'; vx.fillRect(0, 0, w, h);
+      cV.parentElement.classList.remove('lit');
+      const bat = a.k === 'bat';
+      const cx = w * .5, cy = h * .55;
+      for (let i = 0; i < 5; i++){
+        const p = ((st.time * .55) + i / 5) % 1;
+        vx.strokeStyle = `rgba(168,140,230,${(1 - p) * (.12 + sc * .6)})`;
+        vx.lineWidth = 1.6;
+        vx.beginPath(); vx.arc(cx, cy, 8 + p * Math.min(w, h) * .55, 0, 7); vx.stroke();
+      }
+      // the rabbit, drawn only by sound
+      vx.save();
+      vx.globalAlpha = clamp(0, 1, sc);
+      vx.shadowColor = 'rgba(168,140,230,.9)'; vx.shadowBlur = 18;
+      blurred(vx, (1 - sc) * 10, () => drawIcon(vx, 'rabbit', cx, cy, Math.min(80, h * .5)));
+      vx.restore();
+      // loudness trace along the bottom
+      vx.strokeStyle = `rgba(168,140,230,${.35 + sc * .5})`; vx.lineWidth = 1.5;
+      vx.beginPath();
+      for (let x = 0; x <= w; x += 3){
+        const k = x / w;
+        const amp = h * .09 * sc * (bat ? (Math.abs(((k * 4 + st.time) % 1) - .5) < .12 ? 1.6 : .14) : (.5 + .5 * Math.sin(k * 40 + st.time * 6)));
+        const y = h - 14 + Math.sin(x * .6 + st.time * 9) * amp;
+        x ? vx.lineTo(x, y) : vx.moveTo(x, y);
+      }
+      vx.stroke();
+    }
+
+    // caption
+    const cap = caption(sc);
+    vx.font = `700 12.5px ${FONT}`; vx.textAlign = 'center';
+    const tw = vx.measureText(cap).width;
+    vx.fillStyle = 'rgba(8,12,22,.6)';
+    vx.beginPath();
+    const bw = Math.min(w - 16, tw + 20);
+    vx.roundRect ? vx.roundRect(w / 2 - bw / 2, h - 34, bw, 22, 11) : vx.rect(w / 2 - bw / 2, h - 34, bw, 22);
+    vx.fill();
+    vx.fillStyle = 'rgba(238,242,250,.95)';
+    vx.fillText(cap, w / 2, h - 19);
+  }
+
+  /* ---------- readouts ---------- */
+  // 0% red → 50% orange → 100% green, with a lift in lightness for dark mode
+  const darkUI = matchMedia('(prefers-color-scheme: dark)').matches;
+  function dialColour(sc, alpha){
+    const t = clamp(0, 1, sc);
+    const hue = t < .5 ? 4 + t * 2 * 28 : 32 + (t - .5) * 2 * 110;
+    const sat = t < .5 ? 74 - t * 2 * 4 : 70 - (t - .5) * 2 * 16;
+    const li = alpha ? (darkUI ? 62 : 46) : (darkUI ? 58 : 44);
+    return `hsla(${hue.toFixed(0)},${sat.toFixed(0)}%,${li}%,${alpha || 1})`;
+  }
+  function words(sc){
+    return sc > .75 ? ['Found it', 'on'] : sc > .4 ? ['Noticed', 'on'] : sc > .12 ? ['A faint trace', 'warm'] : ['No idea', ''];
+  }
+  function sentence(){
+    const a = cur(), d = dist(), sc = scoreOf(a, d), hs = scoreOf(human(), d);
+    const D = fmtD(d), nm = a.n.toLowerCase();
+    const gap = v => (a.k !== 'you' && hs < .12) ? ' ' + v : '';
+    if (st.sense === 'sight'){
+      const L = st.light === 'day' ? 'in daylight' : st.light === 'dusk' ? 'at dusk' : 'in the dark';
+      if (a.k === 'you') return sc > .75 ? `At ${D} ${L} you see the rabbit easily.` : sc > .4 ? `At ${D} ${L} you can see the rabbit.` : sc > .12 ? `At ${D} ${L} you can just about make out something.` : `At ${D} ${L} you cannot see the rabbit at all.`;
+      const you = gap('You would see nothing there.');
+      if (sc > .75) return `At ${D} ${L} the ${nm} sees the rabbit clearly.${you}`;
+      if (sc > .4)  return `At ${D} ${L} the ${nm} can see the rabbit.${you}`;
+      if (sc > .12) return `At ${D} ${L} the ${nm} can only just pick it out.${you}`;
+      return `Even the ${nm} loses the rabbit at ${D} ${L}.`;
+    }
+    if (st.sense === 'smell'){
+      const W = st.wind === 'toward' ? 'with the wind blowing from the rabbit' : st.wind === 'away' ? 'with the wind blowing the other way' : 'with the wind blowing across';
+      if (a.k === 'you') return sc > .4 ? `At ${D} ${W}, even you can smell it.` : `At ${D} ${W}, you smell nothing — noses like ours need to be very close.`;
+      const you = gap('You would smell nothing.');
+      if (sc > .75) return `At ${D} ${W}, the ${nm} smells the rabbit clearly.${you}`;
+      if (sc > .4)  return `At ${D} ${W}, the ${nm} has the smell and can follow it.${you}`;
+      if (sc > .12) return `At ${D} ${W}, the ${nm} catches the smell now and then.${you}`;
+      return st.wind === 'away' ? `The wind is carrying the smell away, so the ${nm} gets nothing at ${D}.` : `At ${D} the smell is too weak, even for the ${nm}.`;
+    }
+    const still = st.quiet === 'still';
+    if (a.k === 'bat') return sc > .4
+      ? `Pitch dark, ${still ? 'and the rabbit is silent' : 'and the rabbit is rustling'} — but the bat's squeak bounces off it and comes back from ${D}.`
+      : `${D} is too far for a bat: its squeak fades before the echo can return.`;
+    if (still) return `The rabbit is sitting perfectly still, so there is nothing for ${a.k === 'you' ? 'you' : 'the ' + nm} to hear. Only the bat, which makes its own sound, still knows it is there.`;
+    if (a.k === 'you') return sc > .4 ? `In the dark at ${D} you hear the rabbit rustling — ears never needed light.` : `At ${D} the rustle is too faint for you.`;
+    const you = gap('You hear nothing.');
+    if (sc > .75) return `In complete darkness at ${D} the ${nm} hears the rustle and knows just where it is.${you}`;
+    if (sc > .4)  return `At ${D} the ${nm} hears the rabbit in complete darkness.${you}`;
+    if (sc > .12) return `At ${D} the ${nm} catches a faint sound.${you}`;
+    return `At ${D} it is too far, even for the ${nm}.`;
+  }
+
+  function paint(){
+    const a = cur(), d = dist(), sc = scoreOf(a, d), hs = scoreOf(human(), d);
+    $('dVal').textContent = fmtD(d);
+
+    // the dial: red at 0, orange in the middle, green at 100
+    const pct = Math.round(sc * 100);
+    const C = 2 * Math.PI * 18;
+    $('ring').style.strokeDasharray = `${(sc * C).toFixed(1)} ${C.toFixed(1)}`;
+    $('ring').style.strokeLinecap = sc > .02 ? 'round' : 'butt';
+    $('gauge').style.setProperty('--gg', dialColour(sc));
+    $('meterVal').textContent = pct + '%';
+    const ask = a.k === 'you' ? 'Can you notice?' : `Can the ${a.n.toLowerCase()} notice?`;
+    $('quest').textContent = ask;
+    $('gauge').setAttribute('aria-label', `${ask} ${pct} per cent`);
+    $('youMk').style.transform = `rotate(${(90 + hs * 360).toFixed(1)}deg)`;
+    $('youMk').style.display = a.k === 'you' ? 'none' : '';
+    const tag = $('youSub');
+    tag.hidden = a.k === 'you';
+    tag.textContent = `You ${Math.round(hs * 100)}%`;
+    tag.style.setProperty('--yc', dialColour(hs));
+    tag.style.setProperty('--yb', dialColour(hs, .15));
+    $('say').textContent = sentence();
+    const [w1, cls] = words(sc);
+    const fb = $('fieldBadge'); fb.textContent = w1; fb.className = 'badge ' + cls;
+    const vb = $('viewBadge');
+    vb.textContent = st.sense === 'sight' ? (st.light === 'day' ? 'Daylight' : st.light === 'dusk' ? 'Dusk' : 'Night')
+                   : st.sense === 'smell' ? (st.wind === 'toward' ? 'Wind from the rabbit' : st.wind === 'away' ? 'Wind the other way' : 'Wind across') : 'Pitch dark';
+    vb.className = 'badge';
+    $('viewTag').textContent = `What the ${a.n === 'You' ? 'you' : a.n.toLowerCase()} notices`.replace('the you', 'you');
+    const litField = st.sense !== 'hearing' && !(st.sense === 'sight' && st.light === 'night');
+    $('legend').innerHTML = st.sense === 'sight'
+      ? `<span><i style="background:${litField ? '#2668C4' : '#6BA8EC'}"></i>how far it can see</span><span><i style="background:${litField ? '#8A4A00' : '#FFD66E'}"></i>the rabbit</span>`
+      : st.sense === 'smell'
+      ? '<span><i style="background:#167840"></i>the smell in the air</span><span><i style="background:#14361A"></i>wind</span>'
+      : '<span><i style="background:#A88CE6"></i>sound going out</span><span><i style="background:#78E1B4"></i>echo coming back</span>';
+  }
+
+  function draw(){ drawField(); drawView(); paint(); }
+
+  /* ---------- chips ---------- */
+  function buildChips(){
+    $('whoLab').textContent = st.sense === 'sight' ? 'Who sees?' : st.sense === 'smell' ? 'Who smells?' : 'Who hears?';
+    const A = $('chipsA'); A.innerHTML = '';
+    for (const a of list()){
+      const b = document.createElement('button'); b.textContent = a.n; b.dataset.a = a.k;
+      b.onclick = () => { st.animal[st.sense] = a.k; sync(); draw(); };
+      A.appendChild(b);
+    }
+    const C = CONDS[st.sense], B = $('chipsB');
+    $('condLab').textContent = C.label;
+    B.innerHTML = '';
+    for (const [name, val] of C.opts){
+      const b = document.createElement('button'); b.textContent = name; b.dataset.c = val;
+      b.onclick = () => { st[C.key] = val; sync(); draw(); };
+      B.appendChild(b);
+    }
+  }
+  function sync(){
+    const C = CONDS[st.sense];
+    for (const b of $('chipsA').querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.a === st.animal[st.sense]);
+    for (const b of $('chipsB').querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.c === st[C.key]);
+    for (const b of document.querySelectorAll('.sgi')){
+      const on = b.dataset.sense === st.sense;
+      b.classList.toggle('here', on); b.setAttribute('aria-selected', on);
+    }
+    document.body.dataset.sense = st.sense;
+    if (document.activeElement !== $('dS')) $('dS').value = st.t;
+  }
+
+  function setSense(s){ st.sense = s; buildChips(); sync(); draw(); }
+  document.querySelector('.seg').addEventListener('click', e => {
+    const b = e.target.closest('.sgi'); if (b) setSense(b.dataset.sense);
+  });
+  $('dS').addEventListener('input', () => { stop(); st.t = +$('dS').value; draw(); });
+
+  // dragging the rabbit on the field
+  let drag = false;
+  const toT = ev => {
+    const r = cF.getBoundingClientRect();
+    const f = clamp(0, 1, ((ev.clientX - r.left) / r.width - .13) / .76);
+    return f * 100;
+  };
+  cF.addEventListener('pointerdown', e => { drag = true; stop(); cF.setPointerCapture(e.pointerId); st.t = toT(e); sync(); draw(); });
+  cF.addEventListener('pointermove', e => { if (drag){ st.t = toT(e); sync(); draw(); } });
+  const endDrag = () => { drag = false; };
+  addEventListener('pointerup', endDrag); addEventListener('pointercancel', endDrag);
+
+  /* ---------- play ---------- */
+  const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play';
+  const PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  let anim = null; const playBtn = $('play');
+  function stop(){ if (anim){ cancelAnimationFrame(anim); anim = null; playBtn.innerHTML = PLAY; } }
+  playBtn.onclick = () => {
+    if (anim) return stop();
+    if (reduce){ st.t = tFor(limitOf(cur()) / 3); sync(); draw(); return; }
+    let t = st.t > 96 ? 100 : 100;
+    playBtn.innerHTML = PAUSE;
+    let last = performance.now();
+    const step = now => {
+      t -= (now - last) / 1000 * 17; last = now;
+      st.t = Math.max(0, t); sync(); draw();
+      if (t <= 0){ anim = null; playBtn.innerHTML = PLAY; return; }
+      anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  };
+
+  /* ---------- the gentle background animation ---------- */
+  let raf = null, last = performance.now();
+  function tick(now){
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    st.time += dt;
+    if (document.body.dataset.screen === 'lab' && !reduce) draw();
+    raf = requestAnimationFrame(tick);
+  }
+  if (!reduce) raf = requestAnimationFrame(tick);
+
+  addEventListener('resize', () => { if (window.__layout) window.__layout(); resize(); });
+  addEventListener('orientationchange', () => setTimeout(resize, 150));
+  if ('ResizeObserver' in window){
+    let key = '';
+    new ResizeObserver(() => {
+      const k = [cF.clientWidth, cF.clientHeight, cV.clientWidth, cV.clientHeight].join();
+      if (k !== key){ key = k; resize(); }
+    }).observe(document.querySelector('#scLab .app'));
+  }
+
+  buildChips(); sync(); resize();
+
+  window.__sim = {
+    setSense, stop, draw, resize,
+    setAnimal: k => { st.animal[st.sense] = k; sync(); draw(); },
+    setLight: v => { st.light = v; sync(); draw(); },
+    setWind: v => { st.wind = v; sync(); draw(); },
+    setDist: m => { st.t = tFor(m); sync(); draw(); },
+    scene: o => {
+      if (o.sense) setSense(o.sense);
+      if (o.animal) st.animal[st.sense] = o.animal;
+      if (o.light) st.light = o.light;
+      if (o.wind) st.wind = o.wind;
+      if (o.quiet) st.quiet = o.quiet;
+      if (o.dist) st.t = tFor(o.dist);
+      sync(); draw();
+    },
+    reachTable: sense => ANIMALS[sense].map(a => ({n: a.n, r: a.reach})),
+  };
+  if (document.fonts) document.fonts.ready.then(resize);
+})();
+</script>
+
+<script>
+/* ========== Virtual Lab shell: intro → lab → questions → summary ========== */
+(() => {
+  const $ = id => document.getElementById(id);
+  const sim = window.__sim;
+
+  /* ---------- role ---------- */
+  const params = new URLSearchParams(location.search);
+  let role = params.get('role') === 'teacher' ? 'teacher' : 'student';
+  function setRole(r){
+    role = r;
+    document.body.classList.toggle('teacher', r === 'teacher');
+    for (const b of document.querySelectorAll('.roleswitch button')) b.setAttribute('aria-selected', b.dataset.role === r);
+    $('introNote').hidden = r !== 'teacher';
+  }
+  document.querySelector('.roleswitch').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (b) setRole(b.dataset.role);
+  });
+
+  /* ---------- screens ---------- */
+  function show(screen){
+    document.body.dataset.screen = screen;
+    if (screen === 'lab') requestAnimationFrame(() => { layout(); sim.resize(); });
+  }
+  $('startBtn').onclick = () => show('lab');
+  $('backLabBtn').onclick = closeSheet;
+
+  /* ---------- layout ---------- */
+  let force = null;
+  function layout(){
+    const side = force === null ? innerWidth > innerHeight : force === 'side';
+    document.querySelector('#scLab .app').classList.toggle('side', side);
+    $('layoutBtn').setAttribute('aria-label', side ? 'Switch to portrait view' : 'Switch to landscape view');
+    // the icon shows what you will switch to, not where you are
+    $('layoutIcon').innerHTML = side
+      ? '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>'
+      : '<rect x="3" y="5" width="18" height="13" rx="2"/><path d="M9 21h6"/>';
+  }
+  window.__layout = layout;
+  $('layoutBtn').onclick = () => {
+    force = document.querySelector('#scLab .app').classList.contains('side') ? 'port' : 'side';
+    layout(); sim.resize();
+  };
+
+  /* ---------- the three questions ---------- */
+  const Q = [
+    {q: 'A rabbit is sitting still in a field, one kilometre away, in bright daylight. Who can see it?',
+     opts: [['eagle', 'The eagle, and only the eagle'],
+            ['both', 'The eagle and you — a rabbit is big enough'],
+            ['owl', 'The owl, because owls see best'],
+            ['none', 'Nobody can see that far']],
+     a: 'eagle',
+     scene: {sense: 'sight', animal: 'eagle', light: 'day', dist: 1000},
+     title: 'The eagle, and only the eagle',
+     why: 'An eagle sees about five times sharper than we do, so it still picks out a rabbit at 1 km. Our own limit is around 250 m — look at the grey <b>you</b> mark on the bar: it has dropped to nothing.'},
+
+    {q: 'A dog is tracking a rabbit 100 m away and smells it clearly. Then the wind turns, and now blows from the dog towards the rabbit. What happens?',
+     opts: [['lose', 'The dog loses the smell almost completely'],
+            ['better', 'The dog smells it even better'],
+            ['same', 'Nothing changes — smell does not need wind'],
+            ['see', 'The dog starts to see the rabbit instead']],
+     a: 'lose',
+     scene: {sense: 'smell', animal: 'dog', wind: 'away', dist: 100},
+     title: 'The smell blows away',
+     why: 'A smell is made of tiny bits of the rabbit floating in the air, so it can only go where the air goes. With the wind blowing the wrong way, those bits never reach the dog. That is why a hunting animal creeps up from <i>downwind</i>.'},
+
+    {q: 'It is pitch dark. A rabbit sits perfectly still, making no sound at all, six metres from a bat and six metres from you. Who can still tell it is there?',
+     opts: [['bat', 'The bat — it makes its own squeaks and listens for the echo'],
+            ['you', 'You — human ears are bigger than a bat’s'],
+            ['neither', 'Neither, because you cannot hear in the dark'],
+            ['both', 'Both, equally well']],
+     a: 'bat',
+     scene: {sense: 'hearing', animal: 'bat', quiet: 'still', dist: 6},
+     title: 'The bat sends out its own sound',
+     why: 'Everybody else is waiting for the rabbit to make a noise. The bat does not wait — it squeaks, and the echo bouncing back tells it exactly where the rabbit is. Darkness changes nothing, because ears never needed light in the first place.'},
+  ];
+
+  let step = 0;
+  const answers = [];
+  let played = false;
+
+  function paintNext(){
+    const last = step >= Q.length;
+    $('nextLbl').textContent = last ? 'See summary' : 'Next';
+    $('nextSub').textContent = played ? `Step ${Math.min(step + 1, 4)} of 4` : 'Try the simulator first';
+    $('nextFill').style.width = (step / 4 * 100) + '%';
+    $('nextBtn').disabled = !played;
+  }
+  function firstTouch(){ if (!played){ played = true; paintNext(); } }
+  for (const el of [$('cField'), $('cView'), $('dS'), $('chipsA'), $('chipsB'), $('play'), document.querySelector('.seg')])
+    el.addEventListener('pointerdown', firstTouch);
+  $('dS').addEventListener('input', firstTouch);
+  $('nextBtn').onclick = () => { if (step >= Q.length) buildSummary(); else askQuestion(step); };
+
+  /* ---------- sheet ---------- */
+  function openSheet(modal){
+    document.body.classList.toggle('qmodal', !!modal);
+    $('veil').classList.add('open'); $('sheet').classList.add('open'); $('sheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeSheet(){
+    document.body.classList.remove('qmodal');
+    $('sheet').classList.remove('fixed');
+    $('sfoot').hidden = true; $('sfoot').classList.remove('held');
+    $('backLabBtn').disabled = false; $('backLabBtn').onclick = closeSheet;
+    $('veil').classList.remove('open'); $('sheet').classList.remove('open'); $('sheet').setAttribute('aria-hidden', 'true');
+    $('whyBtn').setAttribute('aria-expanded', 'false');
+  }
+  const block = e => { if (document.body.classList.contains('qmodal')){ e.stopPropagation(); e.preventDefault(); } };
+  for (const id of ['veil', 'sheetClose', 'grab'])
+    for (const ev of ['pointerdown', 'pointerup', 'click', 'pointermove'])
+      $(id).addEventListener(ev, block, true);
+  addEventListener('keydown', e => { if (e.key === 'Escape'){ block(e); if (!document.body.classList.contains('qmodal')) closeSheet(); } }, true);
+  $('veil').addEventListener('click', () => { if (!document.body.classList.contains('qmodal')) closeSheet(); });
+  $('sheetClose').addEventListener('click', () => { if (!document.body.classList.contains('qmodal')) closeSheet(); });
+
+  // swipe the sheet down to close
+  let sy = null;
+  $('grab').addEventListener('pointerdown', e => { sy = e.clientY; $('grab').setPointerCapture(e.pointerId); });
+  $('grab').addEventListener('pointermove', e => { if (sy !== null) $('sheet').style.transform = `translateY(${Math.max(0, e.clientY - sy)}px)`; });
+  $('grab').addEventListener('pointerup', e => {
+    const dy = e.clientY - (sy ?? e.clientY); sy = null; $('sheet').style.transform = '';
+    if (dy > 60 && !document.body.classList.contains('qmodal')) closeSheet();
+  });
+
+  function askQuestion(i){
+    const q = Q[i];
+    sim.stop();
+    // the answer card and the footer are laid out from the start, only hidden,
+    // so the sheet is exactly as tall before the answer as after it
+    $('sheetTitle').textContent = `Question ${i + 1} of 3`;
+    $('sheetBody').innerHTML =
+      `<p class="qtext">${q.q}</p>
+       <div class="mcq" id="mcq">${q.opts.map(([k, t]) => `<button data-k="${k}"><i></i><span>${t}</span></button>`).join('')}</div>
+       <div class="slot">
+         <div class="pcard warn held" id="result"><h3>Not quite · ${q.title}</h3><p>${q.why}</p></div>
+         <div class="ghost" id="ghost">Pick an answer — the explanation appears here</div>
+       </div>`;
+
+    $('sheet').classList.add('fixed');
+    // one button at the bottom of the sheet: submit, then on to the simulator
+    const foot = $('backLabBtn');
+    $('sfoot').hidden = false;
+    $('sfoot').classList.remove('held');
+    foot.textContent = 'Submit answer';
+    foot.disabled = true;
+
+    let picked = null;
+    $('mcq').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.disabled) return;
+      $('mcq').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+      picked = b.dataset.k; foot.disabled = false;
+    });
+    foot.onclick = () => {
+      const right = picked === q.a;
+      answers[i] = {right, label: q.opts.find(o => o[0] === picked)[1], title: q.title};
+      for (const b of $('mcq').querySelectorAll('button')){
+        b.disabled = true;
+        if (b.dataset.k === q.a) b.classList.add('right');
+        else if (b.dataset.k === picked) b.classList.add('wrong');
+      }
+      $('ghost').remove();
+      const r = $('result');
+      r.className = 'pcard ' + (right ? 'good' : 'warn');
+      r.querySelector('h3').textContent = `${right ? 'Correct' : 'Not quite'} · ${q.title}`;
+      foot.textContent = 'See it in the simulator';
+      foot.onclick = closeSheet;
+      sim.scene(q.scene);
+      step = i + 1; paintNext();
+      requestAnimationFrame(() => r.scrollIntoView({behavior: 'smooth', block: 'nearest'}));
+    };
+    openSheet(true);
+  }
+
+  /* ---------- teacher notes ---------- */
+  const WHY = {
+    sight: `<h3>Why is an eagle's sight so much better?</h3><p>Its eyes are huge for its head — so big they almost touch inside the skull — and the light-catching layer at the back is packed far more tightly than ours. More detectors in the same picture means a sharper picture, about five times sharper.</p>
+      <h3>Why does night beat every eye?</h3><p>Eyes do not make light, they only catch it. Take the light away and even an eagle is helpless. Slide <b>Light</b> to <b>Night</b> and watch the eagle's bar collapse — then switch to the owl, whose enormous pupils and mirror-like eye layer squeeze a picture out of almost nothing.</p>
+      <h3>Ask the class</h3><p>“If an eagle can see a rabbit from 2 km, why does it still come down close to catch it?” (Seeing is only the first step — it still has to reach the rabbit before the rabbit reaches its burrow.)</p>
+      <h3>Remember</h3><p><b>Sight</b> is sharp and instant, but it needs light and a clear line of sight.</p>`,
+    smell: `<h3>What is a smell, really?</h3><p>Tiny bits of the rabbit break away and float in the air. A nose is a trap for those bits. A dog's nose has roughly 50 times more smell detectors than ours, and a far bigger part of its brain is given to sorting them out.</p>
+      <h3>Why does the wind decide everything?</h3><p>Those bits can only travel where the air travels. Set <b>Wind</b> to <b>Away</b> and the dog's reach drops from 250 m to almost nothing, without the dog changing at all. This is the single most surprising result in the lab for most classes.</p>
+      <h3>The other three</h3><p>A snake has no nose as we know it: it flicks its tongue out, catches the floating bits, and pushes them into two pits in the roof of its mouth. An ant lays a smell trail for the ants behind it — break the trail with your finger and the line falls apart. A mosquito finds you by smelling the breath and sweat you give off.</p>
+      <h3>Remember</h3><p><b>Smell</b> works in the dark and around corners, and it leaves a trail that lasts — but it is at the mercy of the wind.</p>`,
+    hearing: `<h3>Listening versus asking</h3><p>Everyone except the bat is <i>waiting</i> for the rabbit to make a sound. Set <b>Rabbit</b> to <b>Sitting still</b> and every animal except the bat drops to zero. The bat is not waiting — it sends out a squeak and listens for the echo. That is called echolocation.</p>
+      <h3>Why can we not hear the bat?</h3><p>The squeaks are far too high for us. Our ears stop at about 20,000 vibrations a second; a bat's calls go three or four times higher. The sky above a field at dusk is full of shouting we simply cannot hear.</p>
+      <h3>Owls and snakes</h3><p>An owl's ears sit at slightly different heights on its head, so a sound reaches one ear a whisker before the other — that difference tells it exactly where the mouse is, even under leaves. A snake has no outer ears at all; it picks up footsteps as shaking passing through its jawbone from the ground.</p>
+      <h3>Remember</h3><p><b>Hearing</b> never needed light, so it keeps working all night — and a bat that makes its own sound does not even need its prey to be noisy.</p>`,
+  };
+  $('whyBtn').onclick = () => {
+    if ($('sheet').classList.contains('open')) return closeSheet();
+    const s = document.body.dataset.sense;
+    $('sheetTitle').textContent = 'Why? · ' + (s === 'sight' ? 'Sight' : s === 'smell' ? 'Smell' : 'Hearing');
+    $('sheetBody').innerHTML = WHY[s];
+    $('sheetBody').scrollTop = 0;
+    $('sfoot').hidden = true;
+    openSheet(false);
+    $('whyBtn').setAttribute('aria-expanded', 'true');
+  };
+
+  /* ---------- summary ---------- */
+  const BEST = [
+    ['Eagle', 'sight', 2000, 'sight'], ['Owl', 'sight', 320, 'sight'], ['Dog', 'smell', 250, 'smell'],
+    ['You', 'sight', 250, 'you'], ['Mosquito', 'smell', 60, 'smell'], ['Snake', 'smell', 40, 'smell'],
+    ['Bat', 'hearing · echo', 12, 'hear'], ['Ant', 'smell', 3, 'smell'],
+  ];
+  function buildSummary(){
+    step = 4; paintNext();
+    $('sheet').classList.remove('fixed');
+    $('sheetTitle').textContent = 'What you found out';
+    $('sheetBody').innerHTML = $('sumTpl').innerHTML;
+
+    const fmt = r => r >= 1000 ? (r / 1000) + ' km' : r + ' m';
+    const COL = {sight: 'var(--sight)', smell: 'var(--smell)', hear: 'var(--hear)', you: 'var(--muted)'};
+    $('sheetBody').querySelector('#rankSight').innerHTML = BEST.map(([n, s, r, c]) =>
+      `<div class="rrow"><span class="nm">${n}<br><small style="color:var(--muted);font-size:11px">${s}</small></span>
+       <span class="tr"><b style="width:${Math.max(6, Math.log10(r) / Math.log10(2000) * 100).toFixed(0)}%;background:${COL[c]}"></b></span>
+       <span class="nu">${fmt(r)}</span></div>`).join('');
+
+    if (answers.filter(Boolean).length){
+      const box = $('sheetBody').querySelector('#yourAnswers'); box.hidden = false;
+      box.querySelector('#ansList').innerHTML = answers.map((a, i) => a
+        ? `<div class="ansrow"><i class="${a.right ? '' : 'no'}">${a.right ? '✓' : '!'}</i>
+             <span>Question ${i + 1} · ${a.title}<small>You chose: ${a.label}</small></span></div>` : '').join('');
+    }
+    $('sheetBody').scrollTop = 0;
+    $('sfoot').hidden = false; $('sfoot').classList.remove('held');
+    $('backLabBtn').textContent = 'Back to the lab';
+    $('backLabBtn').disabled = false;
+    $('backLabBtn').onclick = closeSheet;
+    openSheet(true);
+  }
+
+  /* ---------- go ---------- */
+  setRole(role);
+  paintNext();
+  layout();
+})();
+</script>
+
+</body>
+</html>
