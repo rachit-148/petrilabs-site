@@ -1,0 +1,1663 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Virtual Lab · The Solar System</title>
+<style>
+:root{
+  --blue:#2680EB; --blue-dk:#1B5FBF; --btint:#EDF3FC;
+  --green:#2E9E5B; --gtint:#E9F6EE; --gdeep:#1F7A43;
+  --amber:#B07A1E; --atint:#FDF4E6;
+  --bg:#FAFBFC; --card:#FFFFFF; --line:#E9ECF1; --ink:#1A2333; --body:#5A6577; --muted:#98A1B0;
+  --chip:#FFFFFF; --icbg:#F2F4F7; --sheet:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,33,61,.04);
+  --sight:#2F7DD1; --sitint:#E8F1FB;
+  --smell:#2E9E5B; --smtint:#E9F6EE;
+  --hear:#7B5BC4; --htint:#F0EBFA;
+  --accent:var(--sight); --atone:var(--sitint);
+  --scene:#0B1020;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+    --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+    --amber:#D9A44E; --atint:#2A2416;
+    --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+    --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --sight:#6BA8EC; --sitint:#16263C; --smell:#4FBE81; --smtint:#16301F; --hear:#A88CE6; --htint:#241D3B;
+  }
+}
+[data-theme="dark"]{
+  --blue:#4E9BF5; --blue-dk:#7FB6FA; --btint:#1B2A44;
+  --green:#4FBE81; --gtint:#16301F; --gdeep:#79D6A2;
+  --amber:#D9A44E; --atint:#2A2416;
+  --bg:#0F1420; --card:#171D2B; --line:#252C3C; --ink:#EAEEF6; --body:#9BA6BA; --muted:#6E7A90;
+  --chip:#1A2130; --icbg:#212938; --sheet:#171D2B;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --sight:#6BA8EC; --sitint:#16263C; --smell:#4FBE81; --smtint:#16301F; --hear:#A88CE6; --htint:#241D3B;
+}
+/* one accent for the whole interface — the senses are told apart by icon and by scene,
+   not by repainting every control */
+body{--accent:var(--blue); --atone:var(--btint)}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+     font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+svg{display:block}
+
+.app{position:relative;height:100vh;height:100dvh;width:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+     padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px)}
+
+/* segmented sense control */
+/* the tab deck: senses on top, their controls attached below */
+.deck{flex:none;display:flex;flex-direction:column;min-width:0}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:14px 14px 0 0;padding:2px 8px 0;gap:4px;flex:none}
+.sgi{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 0 9px;border-radius:0;border:0;border-bottom:3px solid transparent;background:transparent;
+     font-size:13.5px;font-weight:700;color:var(--muted);line-height:1.15}
+.sgi svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.sgi.here{background:transparent;color:var(--blue);border-bottom-color:var(--blue);margin-bottom:-1px}
+.sgi.here svg{opacity:1}
+.sgi.here svg{color:var(--blue)}
+
+/* the controls card, driven by the sense switch */
+.panel{flex:none;background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;
+       padding:11px 11px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;min-width:0}
+.panel>*{min-width:0;max-width:100%}
+
+/* the score dial */
+.gauge{flex:none;width:62px;height:62px;position:relative}
+.gauge svg{width:62px;height:62px;transform:rotate(-90deg)}
+.gauge .trk{fill:none;stroke:var(--icbg);stroke-width:4.2}
+.gauge .prg{fill:none;stroke:var(--gg,var(--muted));stroke-width:4.2;stroke-linecap:round;
+            stroke-dasharray:0 113.1;transition:stroke-dasharray .14s linear,stroke .2s}
+.gauge .youmk{stroke:var(--muted);stroke-width:2;stroke-linecap:round;transform-origin:22px 22px}
+.gauge .gval{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+             font-size:12.5px;letter-spacing:-.4px;font-weight:800;color:var(--gg,var(--ink));font-variant-numeric:tabular-nums}
+
+.scenes{display:flex;flex-direction:column;gap:8px;flex:1 1 0;min-height:0;min-width:0}
+.controls{display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+
+/* scenes */
+.scene{position:relative;background:var(--scene);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:0;box-shadow:var(--shadow)}
+.field{flex:1.1 1 0}
+.view{flex:1 1 0}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.tag{position:absolute;top:9px;left:11px;font-size:10px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(234,238,246,.72);pointer-events:none;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.t-short{display:none}
+.legend{position:absolute;left:11px;right:11px;bottom:21px;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;color:rgba(234,238,246,.78);pointer-events:none}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
+.scene.lit .tag,.scene.lit .legend{color:rgba(20,48,24,.82);text-shadow:0 1px 2px rgba(255,255,255,.55)}
+.badge{position:absolute;top:6px;right:7px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;pointer-events:none;white-space:nowrap;
+       background:rgba(15,20,32,.72);color:rgba(234,238,246,.85);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.badge.on{color:#79D6A2;border-color:rgba(79,190,129,.55)}
+.badge.warm{color:#E2B865;border-color:rgba(226,184,101,.55)}
+
+/* explanation card */
+.card{flex:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 13px 10px 10px;box-shadow:var(--shadow);
+      display:flex;flex-direction:row;align-items:center;gap:11px;height:94px}
+.cbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.chead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.quest{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:-.1px}
+.ytag{flex:none;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.1px;
+      color:var(--yc,var(--muted));background:var(--yb,var(--icbg));transition:color .2s,background .2s}
+.card p{margin:0;font-size:14px;font-weight:600;line-height:1.3;color:var(--ink);
+        max-height:3.9em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+
+/* controls */
+.slider{flex:none;display:flex;align-items:center;gap:10px}
+.slider .lab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.slider .val{font-size:12px;font-weight:700;color:var(--ink);min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;min-width:0;margin:0;height:30px;accent-color:var(--blue)}
+.chips{flex:none;display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0}
+.chips.scroll{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips.scroll::-webkit-scrollbar{display:none}
+.clab{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--muted);text-transform:uppercase;margin-right:1px;flex:none}
+.whorow{display:flex;flex-direction:column;gap:5px;min-width:0}
+.who{font-size:11.5px;font-weight:800;color:var(--accent);letter-spacing:-.1px;line-height:1.1}
+.whoR{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.whoR .val{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+/* chips size to their own label and pack to the left — stretching them to fill
+   the row made short words like "Day" look like buttons for something else */
+.chips button{flex:0 0 auto;min-height:34px;min-width:58px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--chip);
+              font-size:12.5px;font-weight:600;color:var(--body)}
+.chips button[aria-pressed="true"]{background:var(--atone);border-color:var(--accent);color:var(--accent);font-weight:700}
+.chips .sep{flex:none;width:1px;height:20px;background:var(--line);margin:0 2px}
+.actions{flex:none;display:flex;gap:8px}
+.btn{min-height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;gap:7px;
+     font-size:14.5px;font-weight:700;color:var(--ink);box-shadow:var(--shadow)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.45;box-shadow:none}
+.iconbtn{width:46px;flex:none!important;padding:0}
+#nextBtn{flex:1.7 1 0;position:relative;overflow:hidden;flex-direction:column;gap:0;line-height:1.1}
+#nextBtn .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(9,42,88,.38);transition:width .3s}
+#nextBtn span.lbl,#nextBtn small{position:relative;z-index:1}
+#nextBtn small{font-size:10.5px;font-weight:700;opacity:.85;letter-spacing:.3px}
+#play{flex:1 1 0;border:1.8px solid var(--accent);background:var(--atone);color:var(--accent)}
+#whyBtn{flex:1.7 1 0}
+
+/* bottom sheet */
+.veil{position:fixed;inset:0;background:rgba(16,24,43,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.veil.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;max-height:78%;background:var(--sheet);border-radius:24px 24px 0 0;z-index:41;
+       display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,33,61,.18);
+       translate:0 105%;transition:translate .32s cubic-bezier(.3,.9,.3,1)}
+.sheet.open{translate:0 0}
+.sheet.fixed{height:78%}   /* every question sheet is exactly as tall as every other */
+.grab{flex:none;padding:12px 0 6px;touch-action:none;cursor:grab}
+.grab i{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto}
+.shead{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 20px 6px}
+.shead h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.2px}
+.x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--chip);color:var(--body);display:flex;align-items:center;justify-content:center;flex:none}
+.sbody{flex:1 1 auto;min-height:0;overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sbody h3{margin:16px 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px;line-height:1.3;color:var(--blue)}
+.sbody p{margin:0;font-size:14.5px;line-height:1.45;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.sbody .pcard p{background:none;border:0;padding:0;box-shadow:none}
+.sbody .pcard{margin-top:12px}
+.sbody .pcard.good{background:var(--gtint);border-color:transparent}
+.sbody .pcard.good h3{color:var(--gdeep)}
+.sbody .pcard.warn{background:var(--atint);border-color:transparent}
+.sbody .pcard.warn h3{color:var(--amber)}
+.sfoot{flex:none;padding:10px 20px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--sheet)}
+.sfoot .btn{width:100%}
+body.qmodal #sheetClose,body.qmodal .grab{visibility:hidden;pointer-events:none}
+
+/* MCQ */
+.qtag{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+.sbody .qtag,.sbody .qtext{background:none;border:0;padding:0;box-shadow:none}
+.sbody .qtext{font-size:16.5px;font-weight:700;line-height:1.35;margin:6px 0 10px;min-height:2.7em}
+.mcq{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.mcq button{display:flex;align-items:center;gap:10px;text-align:left;min-height:46px;padding:8px 12px;border-radius:12px;
+            border:1px solid var(--line);background:var(--chip);font-size:14.5px;font-weight:600;color:var(--ink)}
+.mcq button i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line)}
+.mcq button[aria-pressed="true"]{border-color:var(--blue);background:var(--btint);color:var(--blue-dk)}
+.mcq button[aria-pressed="true"] i{border-color:var(--blue);background:var(--blue);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button.right{border-color:var(--green);background:var(--gtint);color:var(--gdeep)}
+.mcq button.right i{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button.wrong{border-color:var(--amber);background:var(--atint);color:var(--amber)}
+.mcq button.wrong i{border-color:var(--amber);background:var(--amber);box-shadow:inset 0 0 0 2px var(--card)}
+.mcq button[disabled]{opacity:1}
+.sheetfoot{display:flex;gap:8px;margin:14px 0 4px}
+.sheetfoot .btn{flex:1;min-height:46px}
+/* laid out, but not shown — this is what keeps the question sheet one fixed height */
+.held{visibility:hidden}
+.gone{visibility:hidden;pointer-events:none}
+.slot{position:relative}
+.ghost{position:absolute;inset:12px 0 0;display:flex;align-items:center;justify-content:center;text-align:center;
+       border:1px dashed var(--line);border-radius:16px;padding:10px 16px;
+       font-size:13px;font-weight:600;color:var(--muted)}
+
+/* comparison table in the summary */
+.rank{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.rrow{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600}
+.rrow .nm{flex:none;width:76px;color:var(--ink)}
+.rrow .tr{flex:1;height:10px;border-radius:5px;background:var(--icbg);overflow:hidden}
+.rrow .tr b{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.rrow .nu{flex:none;width:58px;text-align:right;color:var(--body);font-variant-numeric:tabular-nums}
+
+/* virtual lab shell */
+.screen{position:fixed;inset:0;display:none;flex-direction:column}
+body[data-screen="intro"] #scIntro, body[data-screen="lab"] #scLab{display:flex}
+body:not(.teacher) .t-only{display:none!important}
+body.teacher .s-only{display:none!important}
+
+.page{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+      padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 18px);
+      max-width:520px;margin:0 auto;width:100%}
+.pagefoot{flex:none;display:flex;gap:8px;max-width:520px;width:100%;margin:0 auto;
+          padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 14px);background:var(--bg);
+          box-shadow:0 -10px 20px -14px rgba(20,33,61,.25)}
+.pagefoot .btn{flex:1}
+.kicker{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--smell)}
+.h1{font-size:25px;font-weight:800;letter-spacing:-.5px;line-height:1.15;margin:6px 0 0}
+.lede{font-size:15px;font-weight:600;line-height:1.45;color:var(--body);margin:10px 0 0}
+.hero{margin:16px 0 4px;border-radius:16px;overflow:hidden;background:#0E1A12;height:140px;position:relative}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-top:12px;box-shadow:var(--shadow)}
+.pcard h3{margin:0 0 6px;font-size:15.5px;font-weight:700;letter-spacing:-.1px}
+.pcard h3.blue{color:var(--blue)}
+.pcard p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.pcard p + p{margin-top:8px}
+.pcard.warn{background:var(--atint);border-color:transparent}
+.pcard.warn h3{color:var(--amber)}
+.steps{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.steps li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;font-weight:600;line-height:1.4}
+.steps b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--btint);color:var(--blue-dk);
+         font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.meta span{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--icbg);color:var(--body)}
+.roleswitch{display:flex;background:var(--icbg);border-radius:12px;padding:3px;margin-top:16px}
+.roleswitch button{flex:1;min-height:34px;border:0;border-radius:9px;background:transparent;font-size:13px;font-weight:700;color:var(--body)}
+.roleswitch button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.14)}
+#scLab .app{height:100%;padding-top:calc(env(safe-area-inset-top,0px) + 8px)}
+
+/* answer rows */
+/* dash stepper — three questions, then the summary */
+.stepper{display:flex;gap:7px;margin:2px 0 14px}
+.stepdot{flex:1;padding:8px 0;border:0;background:none;display:flex;align-items:center}
+.stepdot i{display:block;width:100%;height:5px;border-radius:3px;background:var(--line);transition:background .2s,height .2s}
+.stepdot.ok i{background:var(--green)}
+.stepdot.no i{background:var(--amber)}
+.stepdot.now i{height:7px;background:var(--ink)}
+.stepdot.now.ok i{background:var(--green)}
+.stepdot.now.no i{background:var(--amber)}
+.stepdot.shut{cursor:default}
+.stepdot.shut i{background:var(--line);opacity:.6}
+.stepdot:not([disabled]):active i{opacity:.7}
+
+/* tight screens */
+@media (max-height:680px){
+  .app{gap:6px} .btn{min-height:42px} .card{height:86px} .card p{font-size:13px} .legend{display:none}
+  .sgi{padding:9px 0 7px;font-size:12.5px} .sgi svg{width:15px;height:15px}
+  .gauge,.gauge svg{width:54px;height:54px} .gauge .gval{font-size:12px}
+  .panel{padding:9px 10px 10px;gap:7px}
+  .whorow{gap:4px} .who{font-size:11px} .chips button{min-height:32px} input[type=range]{height:26px}
+  .card{height:80px}
+  .whorow.dist{flex-direction:row;align-items:center;gap:10px}
+  .whorow.dist .whoR{flex:none;flex-direction:column;align-items:flex-start;gap:0;line-height:1.25}
+  .whorow.dist .whoR .val{font-size:11.5px}
+  .whorow.dist input[type=range]{flex:1;min-width:0}
+}
+@media (max-height:600px){ .card{height:78px} .card p{-webkit-line-clamp:2} .chips button{min-height:30px} }
+@media (max-width:370px){ .sgi{font-size:12px;gap:4px} }
+
+/* landscape / projector */
+.app.side .scenes{flex-direction:row;gap:10px}
+.app.side .scene{flex:1 1 0}
+.app.side .card{height:auto;min-height:84px;flex:0 1 auto}
+.app.side .card p{max-height:6.6em;-webkit-line-clamp:5}
+.app.side .t-long{display:none}
+.app.side .t-short{display:inline}
+.app.side .legend{font-size:10px;gap:2px 8px}
+.app.side .badge{font-size:10px;padding:4px 8px}
+.app.side .btn{min-height:42px}
+.app.side .sheet{max-height:92%}
+@media (min-width:640px){
+  .app.side{display:grid;width:100%;max-width:none;margin:0;grid-template-columns:minmax(0,1fr) minmax(250px,310px);grid-template-rows:minmax(0,1fr);gap:10px;
+            padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px, env(safe-area-inset-left,0px))}
+  .app.side .scenes{grid-column:1;grid-row:1;flex-direction:column;gap:10px}
+  .app.side .controls{grid-column:2;grid-row:1;justify-content:flex-start;overflow-y:auto}
+  .app.side .chips{flex-wrap:wrap;white-space:normal;overflow:visible}
+}
+@media (prefers-reduced-motion: reduce){ .sheet,.veil{transition:none} }
+
+/* day & night additions */
+:root{--zone:#5461C8}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--zone:#8E97F2} }
+[data-theme="dark"]{--zone:#8E97F2}
+#gauge{--gg:var(--amber)}
+.gauge .gval{flex-direction:column;line-height:1;font-size:12px;letter-spacing:-.5px}
+.gauge .gval small{font-size:8.5px;font-weight:700;letter-spacing:.2px;margin-top:1px;opacity:.85}
+.badge.hot{background:#E2B865;border-color:#E2B865;color:#1A1206}
+.rrow .nm{width:84px}
+.rrow .nu{width:64px}
+.rrow .tr.clk{position:relative;overflow:visible;background:#F6DE9C}
+.rrow .tr.clk .nt{position:absolute;top:0;bottom:0;background:#2B3656}
+.rrow .tr.clk .nt:first-child{border-radius:5px 0 0 5px} .rrow .tr.clk .nt:nth-child(2){border-radius:0 5px 5px 0}
+.rrow .tr.clk b{position:absolute;top:-4px;width:18px;height:18px;margin-left:-9px;border-radius:50%;border:2.5px solid var(--card);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.rrow .tr.clk b.d{background:#E0A021} .rrow .tr.clk b.n{background:#5461C8}
+.rrow.ax .tr.ticks{position:relative;background:none;height:14px;overflow:visible}
+.rrow.ax .tr.ticks i{position:absolute;top:0;font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted);transform:translateX(-50%);white-space:nowrap}
+.sbody .pcard p.rsub{font-size:12.5px;color:var(--muted);font-weight:600;margin:0 0 4px}
+.sbody .pcard p.rnote{margin-top:10px;font-size:13.5px;color:var(--body)}
+
+/* ---------- Solar System additions ---------- */
+.kicker{color:#E0822C}
+.hero{background:#070B18}
+.field{flex:1.12 1 0}
+.scene.field{background:#070B18}
+.scaleSeg{position:absolute;left:8px;bottom:8px;display:flex;background:rgba(15,20,32,.72);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:2px;gap:2px;backdrop-filter:blur(4px)}
+.scaleSeg button{border:0;background:transparent;border-radius:8px;min-height:26px;padding:0 9px;font-size:11px;font-weight:700;color:rgba(234,238,246,.7)}
+.scaleSeg button[aria-pressed="true"]{background:rgba(255,255,255,.92);color:#1A2333}
+
+/* planet facts, compared with Earth, along the foot of the view */
+.stats{position:absolute;left:6px;right:6px;bottom:6px;display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:5px 3px 4px;border-radius:12px;
+       background:rgba(9,13,28,.74);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(4px);pointer-events:none}
+.stats div{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0}
+.stats b{font-size:12px;font-weight:800;color:#fff;white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.stats span{font-size:8.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:rgba(214,224,242,.7)}
+.stats small{font-size:8.5px;font-weight:700;color:rgba(160,196,255,.85);white-space:nowrap}
+
+/* experiment read-outs laid over the view */
+.v2card{position:absolute;left:8px;right:8px;top:30px;bottom:8px;overflow-y:auto;overscroll-behavior:contain;border-radius:12px;
+        background:rgba(250,251,252,.97);color:#1A2333;padding:8px 10px;font-size:12.5px;line-height:1.35}
+.v2card h4{margin:0 0 4px;font-size:13px;font-weight:800}
+.v2card p{margin:4px 0 0}
+.v2card small{display:block;font-size:11px;font-weight:700;color:#1B5FBF}
+.ttable{width:100%;border-collapse:collapse;font-size:12px}
+.ttable td,.ttable th{padding:3px 3px;border-bottom:1px solid #E9ECF1;text-align:left;font-variant-numeric:tabular-nums}
+.ttable th{font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:#98A1B0}
+.ttable td:first-child{font-weight:700}
+.ttable tr.hl td{background:#EDF3FC}
+.logrow{display:flex;gap:6px;align-items:baseline;padding:3px 0;border-bottom:1px solid #E9ECF1;font-weight:600}
+.logrow b{flex:none}
+
+/* planet chips: all eight always in view */
+#chipsA.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+#chipsA.grid4 button{min-width:0;padding:0 6px;display:flex;align-items:center;gap:5px;justify-content:flex-start}
+#chipsA.grid4 button i{flex:none;width:9px;height:9px;border-radius:50%}
+#chipsA.grid4 button span{overflow:hidden;text-overflow:ellipsis}
+.chips.wrap{flex-wrap:wrap;white-space:normal}
+.chips button.go{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.chips button.go[aria-pressed="true"]{background:var(--blue);color:#fff}
+.stepr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.stepr span{font-size:12px;font-weight:700;color:var(--body)}
+.stepr button{width:32px;min-width:32px!important;padding:0!important;font-size:16px!important;font-weight:800!important}
+.stepr output{min-width:48px;text-align:center;font-weight:800;font-size:13px;font-variant-numeric:tabular-nums}
+body[data-view="lab"] .panel{min-height:0}
+.app.side #chipsA.grid4 button{font-size:11.5px;padding:0 4px}
+.app.side .stats b{font-size:11px}
+
+/* summary: think-about-it questions */
+details.think{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:10px;padding:0}
+details.think summary{list-style:none;cursor:pointer;padding:11px 13px;font-size:14.5px;font-weight:700;line-height:1.35;display:flex;gap:9px;align-items:flex-start}
+details.think summary::-webkit-details-marker{display:none}
+details.think summary i{flex:none;font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--btint);color:var(--blue-dk);font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+details.think summary em{margin-left:auto;font-style:normal;font-size:11.5px;font-weight:700;color:var(--blue);white-space:nowrap;padding-top:2px}
+details.think[open] summary em{display:none}
+details.think .ans{padding:0 13px 12px 44px}
+.sbody details.think .ans p{background:none;border:0;padding:0;font-size:14px;margin-top:4px}
+.sbody details.think svg{width:100%;height:auto;margin-top:6px}
+.stable{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+.stable td,.stable th{padding:6px 4px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+.stable th{border-top:0;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.stable td:first-child{white-space:nowrap;font-weight:700}
+.stable i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+#chipsA.exps{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+#chipsA.exps button{min-width:0;padding:4px 2px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:11px;line-height:1.1;border-radius:12px}
+#chipsA.exps button i{font-style:normal;font-size:16px}
+#chipsB.wrap{gap:5px}
+#chipsB.wrap button{min-width:0;padding:0 10px}
+#chipsB.grid4s{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+#chipsB.grid4s button{min-width:0;padding:0 4px}
+#chipsB.dgrid{display:grid;grid-template-columns:repeat(3,1fr) 1fr;grid-template-rows:auto auto;gap:5px}
+#chipsB.dgrid button{min-width:0;padding:0 4px}
+#chipsB.dgrid #launchBtn{grid-column:4;grid-row:1 / span 2;line-height:1.2}
+@media (max-width:400px){ #chipsA.grid4 button i{display:none} #chipsA.grid4 button{justify-content:center;font-size:12px;padding:0 2px} }
+/* weight: one card that fits, no scrolling */
+.v2card{overflow:hidden}
+.v2card.wcard{display:flex;flex-direction:column;justify-content:center;padding:6px 8px}
+.wgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.wgrid div{background:#F2F4F7;border-radius:9px;padding:4px 5px 5px;min-width:0}
+.wgrid div.me{background:#EDF3FC;box-shadow:inset 0 0 0 1.5px #2680EB}
+.wgrid span{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#5A6577;white-space:nowrap;overflow:hidden}
+.wgrid span i{flex:none;width:7px;height:7px;border-radius:50%}
+.wgrid b{display:block;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;color:#1A2333}
+.wgrid em{display:block;height:4px;border-radius:2px;background:#E2E6EC;margin-top:2px;overflow:hidden}
+.wgrid em s{display:block;height:100%;border-radius:2px}
+#chipsB.wbar{display:flex;align-items:center;gap:10px}
+#chipsB.wbar input{flex:1;height:30px;-webkit-appearance:none;appearance:none;background:transparent}
+#chipsB.wbar input::-webkit-slider-runnable-track{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--blue) var(--p,30%),var(--icbg) var(--p,30%))}
+#chipsB.wbar input::-moz-range-track{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--blue) var(--p,30%),var(--icbg) var(--p,30%))}
+#chipsB.wbar input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-6px;border-radius:50%;background:#fff;border:2px solid var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+#chipsB.wbar input::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--blue)}
+#chipsB.wbar output{min-width:52px;text-align:right;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink)}
+@media (max-height:700px){
+  .v2card{top:26px;bottom:6px;padding:5px 7px}
+  .v2card h4{font-size:12px;margin-bottom:2px}
+  .wgrid{gap:3px} .wgrid div{padding:2px 4px 3px} .wgrid b{font-size:12px} .wgrid em{display:none}
+  .v2card .dart{display:none}
+  .logrow + .logrow{display:none}
+}
+</style>
+</head>
+<body data-view="planets" data-screen="intro">
+
+<!-- ================= INTRO ================= -->
+<section class="screen" id="scIntro">
+  <div class="page">
+    <p class="kicker">Virtual Lab · Science · Middle stage · Beyond Earth</p>
+    <h1 class="h1">Mission Control: tour the Solar System</h1>
+    <p class="lede">You are a mission planner. Watch the planets race round the Sun, then land on each one and look up at its sky. Switch off the Sun, test which planet floats, and try to save the Earth from an asteroid.</p>
+
+    <div class="hero" style="background:#070B18"><svg viewBox="0 0 320 132" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><radialGradient id="hs"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".55" stop-color="#FFC23A"/><stop offset="1" stop-color="#FF8A1E"/></radialGradient>
+        <radialGradient id="hg"><stop offset="0" stop-color="rgba(255,190,80,.45)"/><stop offset="1" stop-color="rgba(255,190,80,0)"/></radialGradient></defs>
+      <g fill="#fff" opacity=".6"><circle cx="30" cy="14" r=".8"/><circle cx="90" cy="120" r=".7"/><circle cx="150" cy="10" r=".9"/><circle cx="210" cy="24" r=".7"/><circle cx="260" cy="112" r=".8"/><circle cx="300" cy="16" r=".7"/><circle cx="120" cy="70" r=".6"/><circle cx="235" cy="70" r=".6"/><circle cx="185" cy="118" r=".7"/></g>
+      <g fill="none" stroke="rgba(255,255,255,.14)"><ellipse cx="-10" cy="66" rx="62" ry="40"/><ellipse cx="-10" cy="66" rx="82" ry="52"/><ellipse cx="-10" cy="66" rx="104" ry="66"/><ellipse cx="-10" cy="66" rx="128" ry="80"/><ellipse cx="-10" cy="66" rx="178" ry="108"/><ellipse cx="-10" cy="66" rx="232" ry="138"/><ellipse cx="-10" cy="66" rx="282" ry="168"/><ellipse cx="-10" cy="66" rx="326" ry="196"/></g>
+      <g fill="#9A9EA8" opacity=".55"><circle cx="140" cy="40" r=".9"/><circle cx="145" cy="70" r=".9"/><circle cx="138" cy="95" r=".9"/><circle cx="150" cy="55" r=".8"/><circle cx="143" cy="84" r=".8"/><circle cx="152" cy="30" r=".8"/><circle cx="136" cy="108" r=".8"/></g>
+      <circle cx="-10" cy="66" r="70" fill="url(#hg)"/><circle cx="-10" cy="66" r="42" fill="url(#hs)"/>
+      <circle cx="50" cy="60" r="3" fill="#A9A39A"/><circle cx="70" cy="80" r="5" fill="#E8C27A"/><circle cx="93" cy="58" r="5.3" fill="#3C83D8"/><circle cx="116" cy="84" r="4" fill="#D0633C"/>
+      <circle cx="166" cy="52" r="13" fill="#D9A877"/><path d="M154 49 h24 M155 55 h22" stroke="#B9794A" stroke-width="2"/>
+      <ellipse cx="219" cy="84" rx="21" ry="5" fill="none" stroke="#E6D3A3" stroke-width="2.5"/><circle cx="219" cy="84" r="11" fill="#E6CC8F"/>
+      <circle cx="268" cy="48" r="8" fill="#9ED6DD"/><circle cx="306" cy="88" r="8" fill="#4C6FE0"/>
+      <path d="M232 22 l-38 12" stroke="rgba(190,220,255,.6)" stroke-width="3" stroke-linecap="round"/><circle cx="232" cy="22" r="2.4" fill="#fff"/>
+    </svg></div>
+
+    <div class="pcard">
+      <h3 class="blue">What you will find out</h3>
+      <p>How the planets move round the Sun, why far planets take so long, how every planet compares with Earth — and what the sky looks like from each of them.</p>
+    </div>
+
+    <div class="pcard">
+      <h3>How this lab works</h3>
+      <ul class="steps">
+        <li><b>1</b><span>In <b>Planets</b>, pick a planet and a speed — or move your finger round the Sun to turn time forwards yourself. The top picture shows the Solar System from above; the bottom one shows the sky from that planet.</span></li>
+        <li><b>2</b><span>Switch the top picture between <b>Textbook view</b> and <b>True distances</b>.</span></li>
+        <li><b>3</b><span>In <b>Experiments</b>, find your weight on other planets, switch off the Sun, fill a giant bathtub and save the Earth.</span></li>
+        <li><b>4</b><span>Answer three questions as you go, then finish with a summary.</span></li>
+      </ul>
+      <div class="meta"><span>8 planets</span><span>5 experiments</span><span>Compared with Earth</span></div>
+    </div>
+
+    <div class="pcard t-only" id="introNote" hidden>
+      <h3 class="blue">For the teacher</h3>
+      <p>Links to NCERT Class 6 <i>Curiosity</i>, Chapter 12 <i>Beyond Earth</i> (the Sun and planets, inner and outer planets, dwarf planets, asteroids, comets) and prepares for Class 7's <i>Earth, Moon and the Sun</i>. Every number in the lab is given compared with Earth, so students always have a reference.</p>
+      <p>In the <b>Textbook view</b> distances are squeezed and planets enlarged to fit the screen — switch to <b>True distances</b> and ask “why are the pictures in our books wrong?”. Save the Earth uses a simplified model to show one idea: a small push years early beats a big push at the last minute. Planet data from NASA fact sheets; moon counts as of March 2026.</p>
+      <p>The screen button on the left of the lab switches between the tall (phone) and wide (projector) layout. The <b>Summary</b> button opens the same write-up the class sees at the end.</p>
+    </div>
+
+    <div class="roleswitch" role="tablist" aria-label="Open as">
+      <button data-role="student" aria-selected="true">Student view</button>
+      <button data-role="teacher" aria-selected="false">Teacher view</button>
+    </div>
+  </div>
+  <div class="pagefoot"><button class="btn primary" id="startBtn">Start the mission</button></div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="screen" id="scLab">
+  <div class="app">
+    <div class="scenes">
+      <section class="scene field">
+        <canvas id="cField" aria-label="The Solar System seen from above"></canvas>
+        <span class="tag" id="fieldTag">Solar System · from above</span>
+        <span class="badge" id="fieldBadge">21 Sep 2026</span>
+        <div class="scaleSeg" id="scaleSeg" role="group" aria-label="Distance scale"><button data-s="book" aria-pressed="true">Textbook view</button><button data-s="true" aria-pressed="false">True distances</button></div>
+      </section>
+      <section class="scene view">
+        <canvas id="cView" aria-label="The sky seen from the chosen planet"></canvas>
+        <span class="tag" id="viewTag">Standing on Earth</span>
+        <span class="badge" id="viewBadge">Rocky planet</span>
+        <div class="stats" id="stats"></div>
+        <div class="v2card" id="v2card" hidden></div>
+      </section>
+    </div>
+
+    <div class="controls">
+      <div class="card">
+        <div class="gauge" role="img" id="gauge" aria-label="One year">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle class="trk" cx="22" cy="22" r="18"/>
+            <circle class="prg" id="ring" cx="22" cy="22" r="18"/>
+            <line class="youmk" id="youMk" x1="22" y1="1.8" x2="22" y2="7"/>
+          </svg>
+          <output class="gval" id="meterVal">365<small>days</small></output>
+        </div>
+        <div class="cbody">
+          <div class="chead">
+            <span class="quest" id="quest">One year on Earth</span>
+            <span class="ytag" id="youSub">Earth · 365 days</span>
+          </div>
+          <p id="say"></p>
+        </div>
+      </div>
+
+      <div class="deck">
+      <div class="seg" role="tablist" aria-label="Choose what to do">
+        <button class="sgi here" data-view="planets" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><ellipse cx="12" cy="12" rx="9.5" ry="4.2"/></svg>Planets</button>
+        <button class="sgi" data-view="lab" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg>Experiments</button>
+      </div>
+
+      <div class="panel">
+        <div class="whorow">
+          <span class="who" id="whoLab">Which planet?</span>
+          <div class="chips" id="chipsA"></div>
+        </div>
+        <div class="whorow">
+          <span class="who" id="condLab">How fast?</span>
+          <div class="chips" id="chipsB"></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="actions">
+        <button id="layoutBtn" class="btn iconbtn" aria-label="Switch layout"><svg id="layoutIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></svg></button>
+        <button id="play" class="btn"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>Play</button>
+        <button id="whyBtn" class="btn t-only" aria-expanded="false" aria-controls="sheet"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>Summary</button>
+        <button id="nextBtn" class="btn primary s-only">
+          <span class="fill" id="nextFill"></span><span class="lbl" id="nextLbl">Next</span><small id="nextSub">Step 1 of 4</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<template id="sumTpl">
+    <div class="pcard">
+      <h3 class="blue">The big idea</h3>
+      <p>The Solar System is the Sun and everything that goes round it: eight planets, their moons, dwarf planets, asteroids and comets. The Sun is a star — the only thing in the Solar System that makes its own light. Planets and moons shine only because they reflect sunlight.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">The eight planets</h3>
+      <table class="stable">
+        <tr><th>Planet</th><th>Distance*</th><th>One year</th><th>Moons</th></tr>
+        <tr><td><i style="background:#A9A39A"></i>Mercury</td><td>0.4</td><td>88 days</td><td>0</td></tr>
+        <tr><td><i style="background:#E8C27A"></i>Venus</td><td>0.7</td><td>225 days</td><td>0</td></tr>
+        <tr><td><i style="background:#3C83D8"></i>Earth</td><td>1</td><td>365 days</td><td>1</td></tr>
+        <tr><td><i style="background:#D0633C"></i>Mars</td><td>1.5</td><td>1.9 years</td><td>2</td></tr>
+        <tr><td><i style="background:#D9A877"></i>Jupiter</td><td>5.2</td><td>12 years</td><td>101</td></tr>
+        <tr><td><i style="background:#E6CC8F"></i>Saturn</td><td>9.6</td><td>29 years</td><td>285</td></tr>
+        <tr><td><i style="background:#9ED6DD"></i>Uranus</td><td>19</td><td>84 years</td><td>29</td></tr>
+        <tr><td><i style="background:#4C6FE0"></i>Neptune</td><td>30</td><td>165 years</td><td>16</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:13px;color:var(--body)">*Distance from the Sun compared with Earth's (Earth = 1). Moon counts as of 2026 — astronomers keep finding more.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Farther means slower and longer</h3>
+      <p>A planet farther from the Sun has a longer path to travel and moves more slowly, so its year is much longer. Mercury goes round in 88 days; Neptune takes about 165 years — it has gone round only once since it was discovered in 1846.</p>
+      <p>Every planet also spins. One spin is a day; one trip round the Sun is a year. On Venus a day is longer than a year!</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Inner and outer planets</h3>
+      <p><b>Inner planets</b> — Mercury, Venus, Earth, Mars — are small and rocky. <b>Outer planets</b> — Jupiter, Saturn, Uranus, Neptune — are giants made mostly of gas and ice, with rings and many moons. The asteroid belt lies between Mars and Jupiter.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Hot and cold</h3>
+      <p>Planets usually get colder the farther they are from the Sun — but <b>Venus</b> is the hottest planet (about 465 °C), hotter than Mercury, because its thick carbon-dioxide air traps the heat like a blanket.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">How big, how far?</h3>
+      <p>About 1.3 million Earths could fit inside the Sun, and 1,300 Earths inside Jupiter.</p>
+      <p>Sunlight takes about 8 minutes to reach us — so we always see the Sun as it was 8 minutes ago. A car at 100 km/h would take about 170 years to drive to the Sun.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Asteroids, comets and meteors</h3>
+      <p><b>Asteroids</b> are rocky leftovers, most of them in the belt between Mars and Jupiter. <b>Dwarf planets</b> — Ceres, Pluto, Eris, Haumea and Makemake — are round and go round the Sun, but share their path with many other objects.</p>
+      <p><b>Comets</b> are balls of ice and dust. Near the Sun they warm up and grow a glowing tail that always points <b>away</b> from the Sun. A <b>meteor</b> ("shooting star") is a tiny grain burning up in our air; a piece that reaches the ground is a <b>meteorite</b>. Lonar Lake in Maharashtra fills a crater made by a space rock long ago.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Protecting the Earth</h3>
+      <p>In 2022 NASA's DART spacecraft crashed into a small asteroid moon, Dimorphos, and changed its orbit by about 32 minutes — the first time people moved a natural object in space. The lesson: a small push years early works far better than a big push at the last moment.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">India in space</h3>
+      <p><b>Mangalyaan</b> reached Mars on 24 September 2014 — India's first try. <b>Chandrayaan-3</b> landed near the Moon's south pole on 23 August 2023, now National Space Day. <b>Aditya-L1</b> has been watching the Sun since January 2024 from about 1.5 million km away.</p>
+    </div>
+
+    <div class="pcard">
+      <h3 class="blue">Why only Earth?</h3>
+      <p>Earth is at just the right distance from the Sun for liquid water. It has air to breathe and a layer (ozone) that blocks harmful rays from the Sun. As far as we know, it is the only place with life.</p>
+    </div>
+
+
+    <div class="pcard" style="padding-bottom:12px">
+      <h3 class="blue">Think about it</h3>
+      <p style="font-size:13.5px;color:var(--body)">Guess first, then tap to see the answer.</p>
+      <details class="think"><summary><i>1</i>A spacecraft has to fly through the asteroid belt. Will it have to dodge rocks all the way?<em>Answer</em></summary>
+        <div class="ans"><p><b>No — the belt is mostly empty space.</b> Asteroids are usually hundreds of thousands to millions of kilometres apart (the Moon is 3,84,000 km from us). Many spacecraft have crossed it since 1972 without dodging anything. Squash every asteroid together and you get a ball much smaller than our Moon — Ceres alone is about a third of it.</p><svg viewBox="0 0 320 110" style="color:var(--body)" aria-label="The Moon, all asteroids squashed together, and Ceres">
+          <circle cx="62" cy="52" r="42" fill="#C9CCD3"/><circle cx="48" cy="40" r="7" fill="#AEB2BA"/><circle cx="74" cy="64" r="9" fill="#AEB2BA"/>
+          <circle cx="170" cy="80" r="14" fill="#9C9185"/><circle cx="250" cy="83" r="11" fill="#8E8A84"/>
+          <text x="62" y="106" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Our Moon · 3,474 km</text>
+          <text x="170" y="106" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">ALL asteroids</text>
+          <text x="250" y="106" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">Ceres · 940 km</text></svg></div></details>
+      <details class="think"><summary><i>2</i>If the Sun were shrunk to the size of a football, how far away would Earth be?<em>Answer</em></summary>
+        <div class="ans"><p><b>About 24 metres — and Earth would be a peppercorn.</b> Jupiter would be a grape 123 m away and Neptune a chickpea about 710 m away. The nearest star would be another football about 6,300 km away — roughly as far as Delhi is from Paris! Space is mostly, hugely empty.</p></div></details>
+      <details class="think"><summary><i>3</i>Pluto is no longer called a planet. What is it now — and is it bigger than our Moon?<em>Answer</em></summary>
+        <div class="ans"><p><b>A dwarf planet — and it is smaller than our Moon.</b> There are five official dwarf planets: Ceres (in the asteroid belt), Pluto, Eris, Haumea and Makemake (far beyond Neptune). They are round and go round the Sun, but share their path with many other objects. All five are smaller than the Moon.</p><svg viewBox="0 0 320 124" style="color:var(--body)" aria-label="The five dwarf planets beside the Moon and Earth"><circle cx="-102" cy="60" r="124.7" fill="#3C83D8"/><text x="4" y="12" font-size="9.5" font-weight="700" fill="#fff">Earth</text><circle cx="62" cy="60" r="34.0" fill="#C9CCD3"/><text x="62" y="118" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Moon</text><circle cx="124" cy="60" r="23.3" fill="#C9A98A"/><text x="124" y="118" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Pluto</text><circle cx="174" cy="60" r="22.8" fill="#E4E1DC"/><text x="174" y="118" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Eris</text><ellipse cx="222" cy="60" rx="20.6" ry="10.7" fill="#D7D2CC"/><text x="222" y="118" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Haumea</text><circle cx="263" cy="60" r="14.0" fill="#C98A6A"/><text x="263" y="34" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Makemake</text><circle cx="297" cy="60" r="9.2" fill="#8E8A84"/><text x="297" y="118" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">Ceres</text></svg></div></details>
+    </div>
+
+    <div class="pcard warn">
+      <h3>Common mix-ups</h3>
+      <p>“The planets are close together.” Book pictures squeeze them to fit — really they are tiny and very far apart. · “Mercury is the hottest.” Venus is. · “A shooting star is a star.” It is a speck of dust burning up. · “A comet’s tail trails behind it.” It points away from the Sun.</p>
+    </div>
+
+    <div class="pcard good">
+      <h3>Try tonight</h3>
+      <p>Venus is the brightest "star" low in the west after sunset or in the east before sunrise, and Jupiter is bright too. Planets shine with a steady light, while stars twinkle. And mark your calendar: on 13 April 2029 the asteroid Apophis will pass closer to Earth than many satellites — bright enough to see without a telescope from some places.</p>
+    </div>
+</template>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" id="grab"><i></i></div>
+  <div class="shead"><h2 id="sheetTitle">Why?</h2>
+    <button class="x" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+  <div class="sfoot" id="sfoot" hidden><button class="btn primary" id="backLabBtn">Back to the lab</button></div>
+</div>
+
+<script>
+/* ================= Solar System engine ================= */
+(() => {
+  const $ = id => document.getElementById(id);
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const mix = (a, b, t) => a + (b - a) * t;
+  const ease = t => t * t * (3 - 2 * t);
+  const TAU = Math.PI * 2, RAD = Math.PI / 180;
+  const fmt = n => n.toLocaleString('en-IN');
+  const touch = () => window.dispatchEvent(new Event('lab-touch'));
+
+  // ---------- data (NASA planetary fact sheets, rounded; moons as of March 2026) ----------
+  const PL = [
+    {k: 'mercury', name: 'Mercury', hi: 'Budh',       n: 1, a: 0.387, per: 88.0,    d: 4879,   g: 0.38, rho: 5.43, moons: '0',  col: '#A9A39A', type: 'Rocky planet', L0: 252.25,
+     day: '59 Earth days to spin once', temp: '430 °C by day, −180 °C at night',
+     wow: 'Its year is only 88 days, but it roasts by day and freezes at night — there is no air to hold the heat in.',
+     say: 'Mercury is the smallest planet and the fastest: it races round the Sun in just 88 days.'},
+    {k: 'venus',   name: 'Venus',   hi: 'Shukra',     n: 2, a: 0.723, per: 224.7,   d: 12104,  g: 0.91, rho: 5.24, moons: '0',  col: '#E8C27A', type: 'Rocky planet', L0: 181.98,
+     day: '243 Earth days — longer than its year!', temp: 'about 465 °C — the hottest planet',
+     wow: 'Hotter than Mercury! Its thick carbon-dioxide air traps heat like a blanket. It spins backwards, so the Sun rises in the west.',
+     say: 'Venus is almost Earth’s size, but covered in thick clouds. It is the hottest planet — about 465 °C.'},
+    {k: 'earth',   name: 'Earth',   hi: 'Prithvi',    n: 3, a: 1.0,   per: 365.25,  d: 12756,  g: 1.00, rho: 5.51, moons: '1',  col: '#3C83D8', type: 'Rocky planet', L0: 100.46,
+     day: '24 hours', temp: 'about 15 °C on average',
+     wow: 'The only planet we know with life: liquid water, air to breathe, and an ozone layer that blocks harmful rays from the Sun.',
+     say: 'Earth — our home. It takes one year to go round the Sun and one day to spin once.'},
+    {k: 'mars',    name: 'Mars',    hi: 'Mangal',     n: 4, a: 1.524, per: 687.0,   d: 6792,   g: 0.38, rho: 3.93, moons: '2',  col: '#D0633C', type: 'Rocky planet', L0: 355.45,
+     day: '24 hours 37 minutes', temp: 'about −65 °C on average',
+     wow: 'Home of Olympus Mons, a volcano about 22 km tall — 2½ times Mount Everest. India’s Mangalyaan reached Mars on its very first try.',
+     say: 'Mars, the red planet, is red because of rusty dust. Its day is almost the same as ours.'},
+    {k: 'jupiter', name: 'Jupiter', hi: 'Brihaspati', n: 5, a: 5.203, per: 4332.6,  d: 142984, g: 2.53, rho: 1.33, moons: '101', col: '#D9A877', type: 'Gas giant', L0: 34.40,
+     day: 'about 10 hours — the fastest spin', temp: 'about −110 °C at the cloud tops',
+     wow: 'The biggest planet: about 1,300 Earths could fit inside. Its Great Red Spot is a storm wider than the whole Earth.',
+     say: 'Jupiter is the giant — bigger than all the other planets put together. It takes about 12 years to go round the Sun.'},
+    {k: 'saturn',  name: 'Saturn',  hi: 'Shani',      n: 6, a: 9.537, per: 10759,   d: 120536, g: 1.07, rho: 0.69, moons: '285', col: '#E6CC8F', type: 'Gas giant', L0: 49.94,
+     day: 'about 10½ hours', temp: 'about −140 °C',
+     wow: 'Its rings are made of chunks of ice and rock. Saturn is so light for its size that it would float in a giant bathtub!',
+     say: 'Saturn has the most beautiful rings — and the most moons: 285 found so far.'},
+    {k: 'uranus',  name: 'Uranus',  hi: 'Arun',       n: 7, a: 19.19, per: 30687,   d: 51118,  g: 0.89, rho: 1.27, moons: '29',  col: '#9ED6DD', type: 'Ice giant', L0: 313.23,
+     day: 'about 17 hours (spinning backwards)', temp: 'about −195 °C',
+     wow: 'Uranus rolls round the Sun on its side, so each pole gets about 42 years of daylight and then 42 years of night.',
+     say: 'Uranus is an icy giant tipped over on its side. One trip round the Sun takes 84 years.'},
+    {k: 'neptune', name: 'Neptune', hi: 'Varun',      n: 8, a: 30.07, per: 60190,   d: 49528,  g: 1.14, rho: 1.64, moons: '16',  col: '#4C6FE0', type: 'Ice giant', L0: 304.88,
+     day: 'about 16 hours', temp: 'about −200 °C',
+     wow: 'The windiest planet — winds faster than 2,000 km/h. It has gone round the Sun only once since it was discovered in 1846.',
+     say: 'Neptune is the farthest planet. It needs about 165 Earth years for one trip round the Sun.'},
+  ];
+  const EXTRA = {
+    sun:   {k: 'sun', name: 'The Sun', hi: 'Surya · a star', col: '#FFC23A', type: 'Star',
+            rows: [['⭐', 'What', 'A star — a giant ball of hot, glowing gas'], ['⚪', 'Size', '1.39 million km wide · 109 × Earth'], ['🌍', 'Fits inside', 'about 1.3 million Earths'],
+                   ['🌡️', 'Surface', 'about 5,500 °C'], ['💡', 'Light to Earth', '8 minutes 20 seconds'], ['⏳', 'Age', 'about 4.6 billion years']],
+            wow: 'The Sun is the only object in the Solar System that makes its own light. Planets and moons shine only by reflecting sunlight.',
+            say: 'The Sun is a star — the only thing in the Solar System that makes its own light and heat.'},
+    ceres: {k: 'ceres', name: 'Ceres', hi: 'Dwarf planet · asteroid belt', col: '#8E8A84', type: 'Dwarf planet', a: 2.77, per: 1680, L0: 153,
+            rows: [['📏', 'Distance', '414 million km from the Sun (2.8 × Earth’s)'], ['🔄', 'One year', '4.6 Earth years'], ['⚪', 'Size', '940 km wide'], ['🪨', 'Where', 'The biggest object in the asteroid belt']],
+            wow: 'Ceres is the only dwarf planet in the inner Solar System. It holds about a third of all the mass of the asteroid belt.',
+            say: 'Ceres is a dwarf planet hiding in the asteroid belt — the biggest object there.'},
+    pluto: {k: 'pluto', name: 'Pluto', hi: 'Dwarf planet · Kuiper belt', col: '#C9A98A', type: 'Dwarf planet', a: 39.5, per: 90560, L0: 238.9,
+            rows: [['📏', 'Distance', 'about 5.9 billion km (39 × Earth’s)'], ['🔄', 'One year', '248 Earth years'], ['⚪', 'Size', '2,377 km wide — smaller than our Moon'], ['🌙', 'Moons', '5 (Charon is half Pluto’s size)']],
+            wow: 'Pluto was called the ninth planet until 2006. It shares its icy neighbourhood, the Kuiper belt, with many other objects, so now it is a dwarf planet.',
+            say: 'Pluto is a dwarf planet far beyond Neptune, in the icy Kuiper belt.'},
+    comet: {k: 'comet', name: 'A comet', hi: 'Ice and dust on a stretched orbit', col: '#CFE6FF', type: 'Comet',
+            rows: [['🧊', 'Made of', 'ice, dust and rock — a “dirty snowball”'], ['🛤️', 'Orbit', 'long and stretched: close to the Sun, then far out'], ['☄️', 'Tail', 'grows near the Sun; always points away from it'], ['🔄', 'This one', 'comes back about every 30 years']],
+            wow: 'The tail is not left behind like smoke — sunlight and the solar wind push it away, so it always points away from the Sun.',
+            say: 'A comet! Watch its tail: it grows as the comet nears the Sun and always points away from the Sun.'},
+  };
+  const BODY = k => PL.find(p => p.k === k) || EXTRA[k];
+
+  // ---------- state ----------
+  const J2000 = Date.UTC(2000, 0, 1, 12);
+  const TODAY = (Date.now() - J2000) / 864e5;
+  const S = {t: TODAY, speed: 30, playing: false, sel: 'earth', scale: 'book', sb: 0, ib: 0, mode: 'system', view: 'planet', tool: null,
+             missions: false, msel: 'mangal', off: null, defend: null, exp: null, tub: 0, tubGo: false};
+  const SPEEDS = [[1, '1 day/s'], [30, '1 month/s'], [365.25, '1 year/s'], [3652.5, '10 years/s']];
+
+  // ---------- canvas ----------
+  const sky = $('cField'), ctx = sky.getContext('2d');
+  let W = 0, H = 0;
+  function fit(){
+    const r = sky.getBoundingClientRect(); W = r.width; H = r.height;
+    sky.width = Math.max(1, Math.round(W * DPR)); sky.height = Math.max(1, Math.round(H * DPR));
+  }
+  const TILT = 0.6;
+  let cx = 0, cy = 0, RM = 1;
+  function geo(){ cx = W / 2; cy = H / 2 + 8; RM = Math.max(10, Math.min(W / 2 - 12, (H / 2 - 22) / TILT)); }
+  const AMAX = 48;
+  const rBook = a => 0.12 + 0.88 * Math.log(Math.max(a, 0.3) / 0.3) / Math.log(AMAX / 0.3);
+  const rTrue = a => a / 41;
+  const rFrac = a => mix(mix(rBook(a), rTrue(a), ease(S.sb)), a / 1.75, ease(S.ib));
+  const pos = (a, th) => { const r = rFrac(a) * RM; return [cx + Math.cos(th) * r, cy - Math.sin(th) * r * TILT]; };
+  const ang = b => (b.L0 + 360 * S.t / b.per) * RAD;
+  const kz = () => RM / 180;
+  const pSize = d => mix(kz() * (2.2 + 1.05 * Math.sqrt(d / 1000)), 1.6, ease(S.sb));
+
+  // random but repeatable
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const STARS = Array.from({length: 140}, () => ({x: rnd(), y: rnd(), r: rnd() * 0.9 + 0.2, a: rnd() * 0.6 + 0.2}));
+  const BELT = Array.from({length: 520}, () => { const a = 2.15 + rnd() * 1.15; return {a, th: rnd() * TAU, per: Math.pow(a, 1.5) * 365.25}; });
+  const TROJ = Array.from({length: 70}, (_, i) => ({off: (i % 2 ? 60 : -60) * RAD + (rnd() - 0.5) * 0.45, a: 5.2 + (rnd() - 0.5) * 0.35}));
+  const KUIPER = Array.from({length: 280}, () => { const a = 30 + rnd() * 18; return {a, th: rnd() * TAU, per: Math.pow(a, 1.5) * 365.25}; });
+  const FIELD = Array.from({length: 3000}, () => { let x, y; do { x = rnd() * 2 - 1; y = rnd() * 2 - 1; } while (x * x + y * y < 0.00002); return {x, y, s: 0.6 + rnd() * 0.9}; });
+
+  // comet on a stretched orbit (a = 9.65 AU, e = 0.9 → back every ~30 years), next closest approach about a year from today
+  const COMET = {a: 9.65, e: 0.9, w: 205 * RAD, tp: TODAY + 330, P: Math.pow(9.65, 1.5) * 365.25};
+  function cometNow(){
+    const {a, e, w, tp, P} = COMET;
+    const M = ((((S.t - tp) / P) % 1) + 1) % 1 * TAU;
+    let E = M; for (let i = 0; i < 12; i++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    const r = a * (1 - e * Math.cos(E));
+    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+    return {r, th: w + nu};
+  }
+
+  function circle(x, y, r, f){ ctx.fillStyle = f; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
+  function label(txt, x, y, strong, col){
+    ctx.font = `${strong ? 800 : 600} ${strong ? 10.5 : 9.5}px ${FONT}`; ctx.textAlign = 'center';
+    ctx.fillStyle = col || (strong ? '#FFFFFF' : 'rgba(220,228,242,.72)');
+    ctx.fillText(txt, clamp(x, 26, W - 26), y); ctx.textAlign = 'left';
+  }
+  function pill(txt, x, y, bg, fg){
+    ctx.font = `800 9.5px ${FONT}`; ctx.textAlign = 'center';
+    const w = ctx.measureText(txt).width + 12; x = clamp(x, w / 2 + 4, W - w / 2 - 4);
+    ctx.fillStyle = bg || 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.roundRect(x - w / 2, y - 11, w, 16, 8); ctx.fill();
+    ctx.fillStyle = fg || '#1A2333'; ctx.fillText(txt, x, y + 1); ctx.textAlign = 'left';
+  }
+  function planetBall(p, x, y, r, dark){
+    if (dark){ circle(x, y, r, '#2A2F3A'); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke(); return; }
+    if (r < 2.2){ circle(x, y, Math.max(r, 1.4), p.col); return; }
+    const dx = cx - x, dy = cy - y, dl = Math.hypot(dx, dy) || 1;
+    const g = ctx.createRadialGradient(x + dx / dl * r * 0.45, y + dy / dl * r * 0.45, r * 0.1, x, y, r * 1.05);
+    g.addColorStop(0, p.col); g.addColorStop(0.6, p.col); g.addColorStop(1, 'rgba(8,10,20,.95)');
+    if (p.k === 'saturn'){ ctx.strokeStyle = 'rgba(230,211,163,.8)'; ctx.lineWidth = Math.max(1, r * 0.28); ctx.beginPath(); ctx.ellipse(x, y, r * 2.1, r * 0.7, -0.25, Math.PI * 1.02, Math.PI * 1.98); ctx.stroke(); }
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+    if (p.k === 'jupiter'){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.clip(); ctx.fillStyle = 'rgba(160,100,60,.45)'; ctx.fillRect(x - r, y - r * 0.35, r * 2, r * 0.18); ctx.fillRect(x - r, y + r * 0.2, r * 2, r * 0.16); circle(x + r * 0.3, y + r * 0.36, r * 0.16, 'rgba(190,80,50,.8)'); ctx.restore(); }
+    if (p.k === 'earth' && r > 4){ ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.clip(); circle(x - r * 0.25, y - r * 0.2, r * 0.38, 'rgba(90,170,80,.85)'); circle(x + r * 0.3, y + r * 0.3, r * 0.25, 'rgba(90,170,80,.8)'); ctx.restore(); }
+    if (p.k === 'saturn'){ ctx.strokeStyle = 'rgba(230,211,163,.9)'; ctx.lineWidth = Math.max(1, r * 0.28); ctx.beginPath(); ctx.ellipse(x, y, r * 2.1, r * 0.7, -0.25, -Math.PI * 0.02, Math.PI * 1.02); ctx.stroke(); }
+  }
+
+  // ---------- the whole Solar System ----------
+  let hits = [];                                     // tap targets
+  function drawStars(){
+    ctx.fillStyle = '#070B18'; ctx.fillRect(0, 0, W, H);
+    for (const s of STARS){ ctx.globalAlpha = s.a; circle(s.x * W, s.y * H, s.r, '#FFFFFF'); }
+    ctx.globalAlpha = 1;
+  }
+  function orbit(a, strokeStyle, lw){
+    const r = rFrac(a) * RM;
+    ctx.strokeStyle = strokeStyle; ctx.lineWidth = lw || 1;
+    ctx.beginPath(); ctx.ellipse(cx, cy, r, r * TILT, 0, 0, TAU); ctx.stroke();
+  }
+  function drawSystem(T){
+    drawStars(); geo(); hits = [];
+    const off = S.off, front = off ? off.sim / 499 : 0;         // light front radius in AU after the Sun is switched off
+    const litAt = a => !off || front < a;                       // still lit by old light?
+
+    // orbits
+    for (const p of PL) orbit(p.a, p.k === S.sel ? 'rgba(120,180,255,.75)' : 'rgba(255,255,255,.12)', p.k === S.sel ? 1.6 : 1);
+    orbit(39.5, S.sel === 'pluto' ? 'rgba(120,180,255,.75)' : 'rgba(255,255,255,.06)');
+
+    // Kuiper belt, asteroid belt, Trojans
+    ctx.fillStyle = 'rgba(170,190,220,.35)';
+    for (const b of KUIPER){ const [x, y] = pos(b.a, b.th + TAU * S.t / b.per); if (x > -2 && x < W + 2 && y > -2 && y < H + 2) ctx.fillRect(x, y, 1.1, 1.1); }
+    ctx.fillStyle = 'rgba(190,180,165,.62)';
+    for (const b of BELT){ const [x, y] = pos(b.a, b.th + TAU * S.t / b.per); ctx.fillRect(x, y, 1.2, 1.2); }
+    const jup = PL[4], thJ = ang(jup);
+    ctx.fillStyle = 'rgba(200,185,160,.6)';
+    for (const b of TROJ){ const [x, y] = pos(b.a, thJ + b.off); ctx.fillRect(x, y, 1.2, 1.2); }
+
+    // Sun
+    const sr = mix(kz() * 15, 2.6, ease(S.sb));
+    if (!off){
+      const g = ctx.createRadialGradient(cx, cy, sr * 0.3, cx, cy, sr * 4);
+      g.addColorStop(0, 'rgba(255,200,90,.55)'); g.addColorStop(1, 'rgba(255,200,90,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, sr * 4, 0, TAU); ctx.fill();
+      const g2 = ctx.createRadialGradient(cx - sr * 0.3, cy - sr * 0.3, sr * 0.1, cx, cy, sr);
+      g2.addColorStop(0, '#FFF6C4'); g2.addColorStop(0.6, '#FFC23A'); g2.addColorStop(1, '#FF8A1E');
+      ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(cx, cy, Math.max(sr, 2.6), 0, TAU); ctx.fill();
+    } else {
+      circle(cx, cy, Math.max(sr, 2.6), '#2A2A30'); ctx.strokeStyle = 'rgba(255,160,80,.35)'; ctx.beginPath(); ctx.arc(cx, cy, Math.max(sr, 2.6), 0, TAU); ctx.stroke();
+      // the last light leaving the Sun
+      if (front < AMAX){
+        const r = rFrac(Math.max(front, 0.02)) * RM;
+        ctx.strokeStyle = 'rgba(255,214,120,.85)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(cx, cy, r, r * TILT, 0, 0, TAU); ctx.stroke(); ctx.lineWidth = 1;
+      }
+    }
+    hits.push({k: 'sun', x: cx, y: cy, r: Math.max(sr, 10)});
+
+    // Ceres and Pluto
+    for (const k of ['ceres', 'pluto']){
+      const b = EXTRA[k], [x, y] = pos(b.a, ang(b));
+      if (x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
+      circle(x, y, S.sel === k ? 2.8 : 2, litAt(b.a) ? b.col : '#3A3E48');
+      if (S.sel === k){ ctx.strokeStyle = '#7FB6FA'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 7, 0, TAU); ctx.stroke(); ctx.lineWidth = 1; }
+      if (S.sel === k || S.sb < 0.5) label(b.name, x, y + 12, S.sel === k);
+      hits.push({k, x, y, r: 12});
+    }
+
+    // comet with its tail pointing away from the Sun
+    const cm = cometNow(), [kx, ky] = pos(cm.r, cm.th);
+    if (kx > -30 && kx < W + 30 && ky > -30 && ky < H + 30){
+      const dx = kx - cx, dy = ky - cy, dl = Math.hypot(dx, dy) || 1;
+      const len = clamp(55 / Math.pow(cm.r, 0.9), 0, 70) * (off ? 0.2 : 1) * kz() * (cm.r < 6 ? 1 : Math.max(0, 1 - (cm.r - 6) / 3));
+      if (len > 1){
+        const tx = kx + dx / dl * len, ty = ky + dy / dl * len;
+        const g = ctx.createLinearGradient(kx, ky, tx, ty); g.addColorStop(0, 'rgba(200,230,255,.85)'); g.addColorStop(1, 'rgba(200,230,255,0)');
+        ctx.strokeStyle = g; ctx.lineCap = 'round';
+        for (const [w, sp] of [[4, 0], [2, 0.12], [2, -0.12]]){
+          ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(kx, ky);
+          ctx.lineTo(kx + (dx / dl * Math.cos(sp) - dy / dl * Math.sin(sp)) * len, ky + (dy / dl * Math.cos(sp) + dx / dl * Math.sin(sp)) * len); ctx.stroke();
+        }
+        ctx.lineWidth = 1; ctx.lineCap = 'butt';
+      }
+      circle(kx, ky, 2.2, '#EAF4FF');
+      if (S.sel === 'comet'){ ctx.strokeStyle = '#7FB6FA'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(kx, ky, 7, 0, TAU); ctx.stroke(); ctx.lineWidth = 1; }
+      if (len > 18 || S.sel === 'comet') label('COMET', kx, ky - 8, S.sel === 'comet');
+      hits.push({k: 'comet', x: kx, y: ky, r: 14});
+    }
+
+    // planets (far ones first so near ones draw on top)
+    const drawn = PL.map(p => { const th = ang(p), [x, y] = pos(p.a, th); return {p, x, y, th}; }).sort((a, b) => a.y - b.y);
+    for (const {p, x, y} of drawn){
+      const r = pSize(p.d), sel = p.k === S.sel;
+      planetBall(p, x, y, r, !litAt(p.a));
+      if (sel){ ctx.strokeStyle = '#7FB6FA'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(x, y, r + 5, 0, TAU); ctx.stroke(); ctx.lineWidth = 1; }
+      if (sel || (S.sb > 0.5 ? p.a > 4 : r > 3)) label(p.name, x, y + r + 11, sel);
+      hits.push({k: p.k, x, y, r: Math.max(r + 6, 14)});
+    }
+
+    if (S.missions) drawMissions(T, drawn);
+
+    // notes on the view
+    if (S.sb > 0.5 && !off){ label('inner planets', cx, cy - rFrac(1.6) * RM * TILT - 6, false, 'rgba(255,214,120,.9)'); }
+    if (S.sb > 0.5 && !off) pill('TRUE DISTANCES · PLANETS TOO SMALL TO SEE', W / 2, H - 42, 'rgba(255,255,255,.88)');
+    if (off) drawOffClock();
+  }
+
+  // ---------- India’s missions ----------
+  function drawMissions(T, drawn){
+    const E = drawn.find(d => d.p.k === 'earth'), M = drawn.find(d => d.p.k === 'mars');
+    const dim = k => S.msel === k ? 1 : 0.45;
+    // Mangalyaan: half an ellipse from Earth's orbit out to Mars's orbit
+    ctx.globalAlpha = dim('mangal');
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = '#FF9F43'; ctx.lineWidth = 1.6; ctx.beginPath();
+    const th0 = E.th, r0 = rFrac(1) * RM, r1 = rFrac(1.524) * RM;
+    for (let i = 0; i <= 40; i++){ const f = i / 40, th = th0 + Math.PI * f, r = mix(r0, r1, (1 - Math.cos(Math.PI * f)) / 2); const x = cx + Math.cos(th) * r, y = cy - Math.sin(th) * r * TILT; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth = 1;
+    const f = (T * 0.12) % 1, th = th0 + Math.PI * f, r = mix(r0, r1, (1 - Math.cos(Math.PI * f)) / 2);
+    const sx = cx + Math.cos(th) * r, sy = cy - Math.sin(th) * r * TILT;
+    circle(sx, sy, 2.6, '#FFFFFF'); ctx.fillStyle = '#FF9F43'; ctx.fillRect(sx - 5, sy - 1, 10, 2);
+    const mth = th0 + Math.PI, mx = cx + Math.cos(mth) * r1, my = cy - Math.sin(mth) * r1 * TILT;
+    if (S.msel === 'mangal') pill('MANGALYAAN → MARS · 2014', mx, my - 14, '#FF9F43');
+    ctx.globalAlpha = 1;
+
+    // Chandrayaan-3 at the Moon
+    ctx.globalAlpha = dim('chandra');
+    const mr = Math.max(9, pSize(12756) + 7), ma = T * 0.8;
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(E.x, E.y, mr, mr * 0.7, 0, 0, TAU); ctx.stroke();
+    const lx = E.x + Math.cos(ma) * mr, ly = E.y + Math.sin(ma) * mr * 0.7;
+    circle(lx, ly, 2.4, '#DADCE2'); circle(lx + 1, ly - 2, 1.2, '#FF9F43');
+    if (S.msel === 'chandra') pill('CHANDRAYAAN-3 · MOON · 2023', E.x, E.y + mr + 16, '#FF9F43');
+    ctx.globalAlpha = 1;
+
+    // Aditya-L1 between Earth and the Sun
+    ctx.globalAlpha = dim('aditya');
+    const dx = cx - E.x, dy = cy - E.y, dl = Math.hypot(dx, dy) || 1;
+    const ax = E.x + dx / dl * (mr + 6), ay = E.y + dy / dl * (mr + 6);
+    circle(ax, ay, 2.6, '#FFFFFF'); ctx.fillStyle = '#FFC23A'; ctx.fillRect(ax - 4, ay - 0.8, 8, 1.6);
+    ctx.strokeStyle = 'rgba(255,200,90,.6)'; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(cx, cy); ctx.stroke(); ctx.setLineDash([]);
+    if (S.msel === 'aditya') pill('ADITYA-L1 · WATCHING THE SUN', ax, ay - 14, '#FF9F43');
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Switch off the Sun ----------
+  const hms = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60; return h ? `${h} h ${m} min` : m ? `${m} min ${ss} s` : `${ss} s`; };
+  // ---------- Save the Earth ----------
+  const WHEN = {'10y': [10, '10 years before'], '1y': [1, '1 year before'], '1m': [1 / 12, '1 month before']};
+  const PUSH = {small: [1, 'Small'], medium: [3, 'Medium'], big: [10, 'Big']};
+  const missKm = (w, p) => 1200 * PUSH[p][0] * WHEN[w][0];
+  function drawDefend(T){
+    drawStars();
+    const D = S.defend, RE = clamp(H * 0.1, 12, 24), xE = W * 0.82, yE = H * 0.5;
+    const x0 = W * 0.04, xp = {'10y': W * 0.14, '1y': W * 0.46, '1m': W * 0.7}[D.when];
+    const miss = D.fired ? missKm(D.when, D.push) : 0, mpx = Math.min(miss / 6371 * RE, H * 0.4);
+    const yAt = x => x <= xp ? yE : yE - mpx * (x - xp) / (xE - xp);
+    // Earth
+    const g = ctx.createRadialGradient(xE - RE * 0.3, yE - RE * 0.3, RE * 0.1, xE, yE, RE);
+    g.addColorStop(0, '#6FB0F0'); g.addColorStop(0.7, '#2F6FC0'); g.addColorStop(1, '#10254A');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(xE, yE, RE, 0, TAU); ctx.fill();
+    circle(xE - RE * 0.2, yE - RE * 0.1, RE * 0.35, 'rgba(90,170,80,.8)');
+    label('EARTH', xE, yE + RE + 13, true);
+    // old path
+    ctx.setLineDash([4, 5]); ctx.strokeStyle = 'rgba(255,110,90,.6)'; ctx.beginPath(); ctx.moveTo(x0, yE); ctx.lineTo(xE, yE); ctx.stroke(); ctx.setLineDash([]);
+    // time marks
+    for (const [k, x] of [['10y', W * 0.14], ['1y', W * 0.46], ['1m', W * 0.7]]){
+      ctx.strokeStyle = D.when === k ? '#FFC23A' : 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.moveTo(x, yE + 10); ctx.lineTo(x, yE + 18); ctx.stroke();
+      label(WHEN[k][1].replace(' before', ''), x, yE + 30, D.when === k, D.when === k ? '#FFC23A' : null);
+    }
+    if (!D.fired){ pill('AN ASTEROID IS HEADING FOR EARTH', W / 2, H - 14, '#FF8A6B', '#1A1206'); }
+    // new path + asteroid
+    const p = D.fired ? clamp((performance.now() - D.t0) / 3200, 0, 1) : 0;
+    const ax = mix(x0, xE + W * 0.1, p), ay = yAt(ax);
+    if (D.fired){
+      ctx.strokeStyle = 'rgba(120,200,255,.8)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x0, yE);
+      for (let x = x0; x <= ax; x += 4) ctx.lineTo(x, yAt(x)); ctx.stroke(); ctx.lineWidth = 1;
+      if (ax < xp + 4 && ax > xp - 30){ circle(xp, yE, 6, 'rgba(255,200,90,.7)'); }
+      if (ax >= xp){ label('PUSH!', xp, yE - 12, true, '#FFC23A'); }
+    }
+    const hit = D.fired && mpx < RE + 3;
+    const reached = ax >= xE - RE;
+    if (!(hit && reached)){
+      ctx.fillStyle = '#A89A8A'; ctx.beginPath();
+      for (let i = 0; i < 10; i++){ const a = i / 10 * TAU, k = 0.8 + 0.2 * Math.sin(i * 2.7); const x = ax + Math.cos(a) * 5 * k, y = ay + Math.sin(a) * 4 * k; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.fill();
+    }
+    if (D.fired && p >= 1 || (hit && reached)){
+      if (hit){ circle(xE - RE * 0.7, yE, RE * 0.6 + Math.sin(T * 12) * 2, 'rgba(255,140,60,.8)'); pill(`HIT! THE PUSH MOVED IT ONLY ${fmt(Math.round(miss))} KM`, W / 2, H - 14, '#FF8A6B', '#1A1206'); }
+      else pill(`MISSED EARTH BY ${fmt(Math.round(miss - 6371))} KM!`, W / 2, H - 14, '#79D6A2', '#0E2A18');
+      if (!D.reported){ D.reported = true; reportDefend(hit, miss); }
+    }
+  }
+
+  // ================= compared with Earth =================
+  // [distance, year, day, size, moons, temp] — short, and always against Earth
+  const STAT = {
+    mercury: ['0.4×', '88 days', '59 days', '0.38×', '0', '167 °C'],
+    venus:   ['0.7×', '225 days', '243 days', '0.95×', '0', '464 °C'],
+    earth:   ['1×', '365 days', '24 h', '1×', '1', '15 °C'],
+    mars:    ['1.5×', '1.9 yrs', '24.6 h', '0.53×', '2', '−65 °C'],
+    jupiter: ['5.2×', '12 yrs', '10 h', '11×', '101', '−110 °C'],
+    saturn:  ['9.5×', '29 yrs', '10.7 h', '9.4×', '285', '−140 °C'],
+    uranus:  ['19×', '84 yrs', '17 h', '4×', '29', '−195 °C'],
+    neptune: ['30×', '165 yrs', '16 h', '3.9×', '16', '−200 °C'],
+    sun:     ['—', '—', '27 days', '109×', '—', '5,500 °C'],
+    ceres:   ['2.8×', '4.6 yrs', '9 h', '0.07×', '0', '−105 °C'],
+    pluto:   ['39×', '248 yrs', '6.4 days', '0.19×', '5', '−230 °C'],
+    comet:   ['1–18×', '30 yrs', '—', 'tiny', '0', 'icy'],
+  };
+  const EARTH_REF = ['Earth = 1', 'Earth 365 d', 'Earth 24 h', 'Earth = 1', 'Earth 1', 'Earth 15 °C', 'Earth 8 min'];
+  const STAT_LAB = ['Distance', 'Year', 'Day', 'Size', 'Moons', 'Temp', 'Sunlight'];
+  const lightTxt = a => { const s = a * 499; return s < 3600 ? `${(s / 60).toFixed(s < 600 ? 1 : 0)} min` : `${(s / 3600).toFixed(1)} h`; };
+
+  // what the sky looks like from each place
+  const VIEWS = {
+    mercury: {tag: 'Standing on Mercury', sky: ['#04060D', '#0B0F1C'], stars: 1, ground: ['#8E8983', '#6F6A64'], craters: 1, sun: 2.58, note: 'No air, so the sky is black even by day'},
+    venus:   {tag: 'Standing on Venus', sky: ['#B5732C', '#E6B062'], stars: 0, ground: ['#8A5A2E', '#6B4322'], rocks: 1, sun: 1.38, hideSun: 1, note: 'Thick clouds hide the Sun'},
+    earth:   {tag: 'Standing on Earth', sky: ['#3F86DA', '#BFE1FA'], stars: 0, ground: ['#6DAE4E', '#4E8C38'], grass: 1, sun: 1, moon: 1, note: ''},
+    mars:    {tag: 'Standing on Mars', sky: ['#B98261', '#E6C4A0'], stars: 0, ground: ['#B5553A', '#8E3F29'], rocks: 1, sun: 0.66, phobos: 1, note: 'Dusty pink sky; the Sun looks smaller'},
+    jupiter: {tag: 'Above Jupiter’s clouds', sky: ['#050811', '#141D34'], stars: 1, clouds: ['#D9A877', '#C58A5B', '#E9D3B1', '#B87750'], sun: 0.19, moonsJ: 1, note: 'No solid ground — only deep clouds of gas'},
+    saturn:  {tag: 'Above Saturn’s clouds', sky: ['#050811', '#161D30'], stars: 1, clouds: ['#E6CC8F', '#D4B573', '#F0DEB0', '#C9A765'], sun: 0.105, rings: 1, note: 'The rings stretch right across the sky'},
+    uranus:  {tag: 'Above Uranus’s clouds', sky: ['#050811', '#121B2E'], stars: 1, clouds: ['#9ED6DD', '#8BC7CF', '#B4E2E7', '#7FB9C2'], sun: 0.052, note: 'The Sun is tiny from here'},
+    neptune: {tag: 'Above Neptune’s clouds', sky: ['#04060E', '#0E1630'], stars: 1, clouds: ['#4C6FE0', '#3F5FC8', '#6A88EA', '#3552B0'], sun: 0.033, note: 'The Sun is just a very bright star'},
+    ceres:   {tag: 'Standing on Ceres', sky: ['#04060D', '#0B0F1C'], stars: 1, ground: ['#77736E', '#5D5955'], craters: 1, sun: 0.36, note: 'A dwarf planet in the asteroid belt'},
+    pluto:   {tag: 'Standing on Pluto', sky: ['#03050B', '#0A0E1A'], stars: 1, ground: ['#D9C2A6', '#B79F84'], craters: 1, sun: 0.025, note: 'So far away the Sun is a bright star'},
+  };
+
+  // ---------- the view canvas ----------
+  const vc = $('cView'), vctx = vc.getContext('2d');
+  let VW = 0, VH = 0;
+  function fitView(){ const r = vc.getBoundingClientRect(); VW = r.width; VH = r.height; vc.width = Math.max(1, Math.round(VW * DPR)); vc.height = Math.max(1, Math.round(VH * DPR)); }
+  const VSTARS = Array.from({length: 90}, () => ({x: rnd(), y: rnd(), r: rnd() * 0.9 + 0.3, a: rnd() * 0.7 + 0.2}));
+  function vcirc(x, y, r, f){ vctx.fillStyle = f; vctx.beginPath(); vctx.arc(x, y, r, 0, TAU); vctx.fill(); }
+  function vpill(txt, x, y, bg, fg){
+    const c = vctx; c.font = `800 9.5px ${FONT}`; c.textAlign = 'center';
+    const w = c.measureText(txt).width + 12; x = clamp(x, w / 2 + 4, VW - w / 2 - 4);
+    c.fillStyle = bg || 'rgba(255,255,255,.9)'; c.beginPath(); c.roundRect(x - w / 2, y - 11, w, 16, 8); c.fill();
+    c.fillStyle = fg || '#1A2333'; c.fillText(txt, x, y + 1); c.textAlign = 'left';
+  }
+  const litNow = a => !S.off || S.off.sim / 499 < a;
+
+  function drawView(T){
+    if (VW < 4) return;
+    const c = vctx; c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (S.view === 'lab' && S.exp === 'float') return drawTub(T);
+    if (S.view === 'lab' && S.exp === 'sunoff') return drawOffGrid(T);
+    if (S.view === 'lab' && ['weight', 'defend', 'india'].includes(S.exp)){ const g0 = c.createLinearGradient(0, 0, 0, VH); g0.addColorStop(0, '#0E1526'); g0.addColorStop(1, '#070B18'); c.fillStyle = g0; c.fillRect(0, 0, VW, VH); return; }
+    const k = S.sel, V = VIEWS[k];
+    if (k === 'sun') return drawSunUp(T);
+    if (k === 'comet') return drawCometUp(T);
+    const a = BODY(k).a, lit = litNow(a);
+    const statsH = $('stats').hidden ? 0 : 46;
+    const hz = (VH - statsH) * 0.7;                                  // the horizon
+    const dark = lit ? 0 : 1;
+    // sky
+    const g = c.createLinearGradient(0, 0, 0, hz);
+    g.addColorStop(0, dark ? '#03050B' : V.sky[0]); g.addColorStop(1, dark ? '#0A0E1A' : V.sky[1]);
+    c.fillStyle = g; c.fillRect(0, 0, VW, VH);
+    if (V.stars || dark) for (const s of VSTARS){ c.globalAlpha = s.a; vcirc(s.x * VW, s.y * hz, s.r, '#FFFFFF'); } c.globalAlpha = 1;
+    // Saturn's rings across the sky
+    if (V.rings){
+      c.save(); c.globalAlpha = dark ? 0.25 : 0.75;
+      for (const [w, col] of [[9, '#E6D3A3'], [5, '#CDB684'], [3, '#F2E6C4']]){ c.strokeStyle = col; c.lineWidth = w; c.beginPath(); c.ellipse(VW * 0.5, hz + VH * 0.95, VW * 0.95, VH * 1.05, -0.12, Math.PI * 1.08, Math.PI * 1.92); c.stroke(); }
+      c.restore();
+    }
+    // the Sun, sized as it looks from here (compared with Earth)
+    const R0 = Math.min(VW, hz) * 0.075, sx = VW * 0.72, sy = hz * 0.34, rs = Math.max(1.3, R0 * V.sun);
+    if (!V.hideSun){
+      if (lit){
+        const glow = c.createRadialGradient(sx, sy, rs * 0.5, sx, sy, rs * 2.2 + 16 * Math.min(1, V.sun));
+        glow.addColorStop(0, 'rgba(255,236,170,.75)'); glow.addColorStop(1, 'rgba(255,236,170,0)');
+        c.fillStyle = glow; c.beginPath(); c.arc(sx, sy, rs * 2.2 + 16 * Math.min(1, V.sun), 0, TAU); c.fill();
+        vcirc(sx, sy, rs, '#FFF1B8');
+        if (V.sun < 0.2){ c.strokeStyle = 'rgba(255,240,200,.8)'; c.lineWidth = 1; c.beginPath(); c.moveTo(sx - 7, sy); c.lineTo(sx + 7, sy); c.moveTo(sx, sy - 7); c.lineTo(sx, sy + 7); c.stroke(); }
+      } else { c.strokeStyle = 'rgba(255,160,80,.4)'; c.beginPath(); c.arc(sx, sy, Math.max(rs, 3), 0, TAU); c.stroke(); }
+      const txt = !lit ? 'THE SUN HAS GONE DARK' : k === 'earth' ? 'THE SUN' : V.sun >= 1 ? `SUN · ${V.sun.toFixed(1)}× BIGGER THAN FROM EARTH` : `SUN · ${Math.round(1 / V.sun)}× SMALLER THAN FROM EARTH`;
+      vpill(txt, sx, sy + Math.max(rs, 6) + 16, lit ? 'rgba(255,255,255,.9)' : '#FFC23A');
+    } else {
+      const glow = c.createRadialGradient(sx, sy, 4, sx, sy, VW * 0.35);
+      glow.addColorStop(0, lit ? 'rgba(255,238,190,.55)' : 'rgba(0,0,0,0)'); glow.addColorStop(1, 'rgba(255,238,190,0)');
+      c.fillStyle = glow; c.fillRect(0, 0, VW, hz);
+      vpill(lit ? 'SUN HIDDEN BY THICK CLOUDS' : 'THE SUN HAS GONE DARK', sx, sy, lit ? 'rgba(255,255,255,.9)' : '#FFC23A');
+    }
+    // moons and Earth in the sky
+    if (V.moon){ vcirc(VW * 0.2, hz * 0.3, R0 * 0.95, lit ? 'rgba(235,238,244,.9)' : 'rgba(120,125,135,.6)'); vcirc(VW * 0.2 + R0 * 0.35, hz * 0.3, R0 * 0.8, dark ? '#0A0E1A' : 'rgba(110,160,225,.95)'); vpill('THE MOON', VW * 0.2, hz * 0.3 + R0 + 14); }
+    if (V.phobos){ vcirc(VW * 0.24, hz * 0.26, R0 * 0.45, 'rgba(120,100,90,.85)'); vpill('PHOBOS (MOON)', VW * 0.24, hz * 0.26 + R0 * 0.45 + 13); }
+    if (V.moonsJ){ [['#E8C35A', 0.18, 0.22, 0.5], ['#E8E4DA', 0.32, 0.4, 0.45], ['#B9A58A', 0.1, 0.5, 0.6]].forEach(([col, x, y, r]) => vcirc(VW * x, hz * y, R0 * r, dark ? '#333' : col)); vpill('3 OF ITS 101 MOONS', VW * 0.2, hz * 0.62); }
+    if (k !== 'earth'){ const ex = VW * 0.5, ey = Math.max(34, hz * 0.24); vcirc(ex, ey, 1.8, '#9CC8FF'); c.fillStyle = 'rgba(210,228,255,.85)'; c.font = `700 9px ${FONT}`; c.fillText('Earth', ex + 5, ey + 3); }
+    // ground or clouds
+    if (V.clouds){
+      for (let i = 0; i < 9; i++){
+        const y0 = hz + i * (VH - hz) / 8, amp = 2 + i * 0.6;
+        c.fillStyle = dark ? '#15171E' : V.clouds[i % 4]; c.beginPath(); c.moveTo(0, VH);
+        for (let x = 0; x <= VW; x += 8) c.lineTo(x, y0 + Math.sin(x * 0.03 + T * 0.4 + i) * amp);
+        c.lineTo(VW, VH); c.closePath(); c.fill();
+      }
+    } else {
+      const gg = c.createLinearGradient(0, hz, 0, VH); gg.addColorStop(0, dark ? '#16181D' : V.ground[0]); gg.addColorStop(1, dark ? '#0C0D10' : V.ground[1]);
+      c.fillStyle = gg; c.beginPath(); c.moveTo(0, VH);
+      for (let x = 0; x <= VW; x += 10) c.lineTo(x, hz + Math.sin(x * 0.02) * 4 + Math.sin(x * 0.07) * 2);
+      c.lineTo(VW, VH); c.closePath(); c.fill();
+      if (V.craters) for (let i = 0; i < 6; i++){ const x = VW * (0.1 + i * 0.16), y = hz + (VH - hz) * (0.25 + (i % 3) * 0.2), r = 6 + (i % 3) * 5; c.fillStyle = 'rgba(0,0,0,.18)'; c.beginPath(); c.ellipse(x, y, r * 1.6, r * 0.45, 0, 0, TAU); c.fill(); }
+      if (V.rocks) for (let i = 0; i < 9; i++){ const x = VW * ((i * 0.137 + 0.05) % 1), y = hz + (VH - hz) * (0.2 + (i % 4) * 0.18), r = 3 + (i % 3) * 2; c.fillStyle = 'rgba(40,20,10,.35)'; c.beginPath(); c.ellipse(x, y, r * 1.4, r, 0, 0, TAU); c.fill(); }
+      if (V.grass){
+        for (const [x, s] of [[0.14, 1], [0.86, 0.8]]){ const tx = VW * x, ty = hz + 4; c.fillStyle = '#6B4A30'; c.fillRect(tx - 2, ty - 26 * s, 4, 26 * s); vcirc(tx, ty - 30 * s, 13 * s, dark ? '#1E2A1E' : '#3E8A3A'); }
+        if (!dark){ vcirc(VW * 0.4, hz * 0.55, 9, 'rgba(255,255,255,.9)'); vcirc(VW * 0.43, hz * 0.52, 11, 'rgba(255,255,255,.9)'); vcirc(VW * 0.47, hz * 0.56, 8, 'rgba(255,255,255,.9)'); }
+      }
+    }
+    if (V.note && lit && VH - statsH - hz > 30) vpill(V.note.toUpperCase(), VW / 2, hz + 16, 'rgba(9,13,28,.78)', '#EAEEF6');
+  }
+  function drawSunUp(T){
+    const c = vctx, hz = VH - 46;
+    c.fillStyle = '#070B18'; c.fillRect(0, 0, VW, VH);
+    const r = Math.max(VW, hz) * 0.9, g = c.createRadialGradient(VW * 0.5, hz * 1.4, r * 0.2, VW * 0.5, hz * 1.4, r);
+    g.addColorStop(0, '#FFF3B0'); g.addColorStop(0.5, '#FFB42E'); g.addColorStop(0.8, '#FF7A1A'); g.addColorStop(1, 'rgba(255,120,30,0)');
+    c.fillStyle = g; c.fillRect(0, 0, VW, VH);
+    for (let i = 0; i < 5; i++){ const x = VW * (0.2 + i * 0.15), h = 18 + Math.sin(T * 1.5 + i) * 8; c.strokeStyle = 'rgba(255,190,90,.7)'; c.lineWidth = 3; c.beginPath(); c.arc(x, hz * 0.62, h, Math.PI, 0); c.stroke(); }
+    vcirc(VW * 0.14, hz * 0.2, 2.2, '#3C83D8'); c.fillStyle = '#EAEEF6'; c.font = `700 9px ${FONT}`; c.fillText('Earth to scale', VW * 0.14 + 5, hz * 0.2 + 3);
+    vpill('THE SUN — A STAR · 109 EARTHS WIDE', VW / 2, 20 + 12);
+  }
+  function drawCometUp(T){
+    const c = vctx; c.fillStyle = '#070B18'; c.fillRect(0, 0, VW, VH);
+    for (const s of VSTARS){ c.globalAlpha = s.a; vcirc(s.x * VW, s.y * VH, s.r, '#FFFFFF'); } c.globalAlpha = 1;
+    const x = VW * 0.62, y = (VH - 46) * 0.5;
+    const g = c.createLinearGradient(x, y, 0, y + 30); g.addColorStop(0, 'rgba(200,230,255,.8)'); g.addColorStop(1, 'rgba(200,230,255,0)');
+    c.fillStyle = g; c.beginPath(); c.moveTo(x, y - 10); c.lineTo(0, y - 30); c.lineTo(0, y + 60); c.closePath(); c.fill();
+    vcirc(x, y, 7, '#EAF4FF'); vcirc(VW * 0.95, y, 10, '#FFC23A');
+    vpill('THE SUN →', VW * 0.86, y - 18); vpill('TAIL POINTS AWAY FROM THE SUN', VW * 0.3, y + 40);
+  }
+
+  // Sun off: the eight planets, going dark one by one, each stamped with its time
+  function drawOffGrid(T){
+    const c = vctx, g0 = c.createLinearGradient(0, 0, 0, VH);
+    g0.addColorStop(0, '#0E1526'); g0.addColorStop(1, '#070B18'); c.fillStyle = g0; c.fillRect(0, 0, VW, VH);
+    const sim = S.off ? S.off.sim : 0, top = 30, cols = 4, rows = 2;
+    const cw = (VW - 16) / cols, ch = (VH - top - 30) / rows, r = Math.max(3.5, Math.min(cw * 0.2, ch * (ch < 55 ? 0.13 : 0.19)));
+    PL.forEach((p, i) => {
+      const x = 8 + cw * (i % cols) + cw / 2, cy0 = top + ch * Math.floor(i / cols), y = cy0 + ch * 0.46;
+      const t = p.a * 499, dark = S.off && sim >= t;
+      c.fillStyle = 'rgba(255,255,255,.05)'; c.beginPath(); c.roundRect(x - cw / 2 + 3, cy0 + 2, cw - 6, ch - 4, 10); c.fill();
+      if (dark){ vcirc(x, y, r, '#2A2F3A'); c.strokeStyle = 'rgba(255,255,255,.2)'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, r, 0, TAU); c.stroke(); }
+      else {
+        const gl = c.createRadialGradient(x, y, r * 0.8, x, y, r * 1.8); gl.addColorStop(0, 'rgba(255,230,160,.28)'); gl.addColorStop(1, 'rgba(255,230,160,0)');
+        c.fillStyle = gl; c.beginPath(); c.arc(x, y, r * 1.8, 0, TAU); c.fill();
+        const g = c.createRadialGradient(x - r * 0.4, y - r * 0.4, r * 0.1, x, y, r * 1.05); g.addColorStop(0, '#FFFFFF'); g.addColorStop(0.25, p.col); g.addColorStop(1, 'rgba(8,10,20,.9)');
+        c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill();
+        if (p.k === 'saturn'){ c.strokeStyle = 'rgba(230,211,163,.9)'; c.lineWidth = Math.max(1, r * 0.22); c.beginPath(); c.ellipse(x, y, r * 1.8, r * 0.55, -0.25, 0, TAU); c.stroke(); }
+      }
+      c.textAlign = 'center';
+      c.fillStyle = dark ? 'rgba(200,210,228,.6)' : '#EAEEF6'; c.font = `800 ${Math.max(9, Math.min(11.5, ch * 0.13))}px ${FONT}`; c.fillText(p.name, x, cy0 + Math.max(12, ch * 0.16));
+      c.font = `800 ${Math.max(9, Math.min(11, ch * 0.12))}px ${FONT}`;
+      c.fillStyle = dark ? '#FFC23A' : 'rgba(200,215,240,.7)';
+      c.fillText(dark ? `🌑 ${hms(t)}` : S.off ? 'still lit…' : 'lit', x, cy0 + ch - Math.max(6, ch * 0.08));
+      c.textAlign = 'left';
+    });
+    const msg = !S.off ? 'SWITCH OFF THE SUN AND WATCH' : S.off.sim > PL[7].a * 499 ? `ALL DARK · NEPTUNE LAST, AFTER ${hms(PL[7].a * 499).toUpperCase()}` : `SUN OFF · ${hms(sim).toUpperCase()} AGO`;
+    vpill(msg, VW / 2, VH - 14, S.off ? '#FFC23A' : 'rgba(255,255,255,.9)');
+  }
+
+  // bathtub: which planet floats?
+  function drawTub(T){
+    const c = vctx; c.fillStyle = '#0E1526'; c.fillRect(0, 0, VW, VH);
+    const f = S.tub, x0 = VW * 0.05, x1 = VW * 0.95, top = VH * 0.3, bot = VH * 0.92, wl = mix(bot, top + (bot - top) * 0.28, ease(clamp(f * 1.6, 0, 1)));
+    c.fillStyle = '#E8EEF5'; c.beginPath(); c.roundRect(x0, top, x1 - x0, bot - top, 16); c.fill();
+    c.fillStyle = 'rgba(80,150,230,.55)'; c.beginPath(); c.roundRect(x0 + 3, wl, x1 - x0 - 6, bot - wl - 3, 12); c.fill();
+    const n = PL.length, r = Math.min(13, (x1 - x0) / n / 2.6);
+    PL.forEach((p, i) => {
+      const x = x0 + (x1 - x0) * (i + 0.5) / n, drop = ease(clamp((f - 0.35) * 1.6, 0, 1));
+      const yEnd = p.rho < 1 ? wl - r * 0.2 : bot - r - 5, y = mix(top - r - 18, yEnd, drop) + (p.rho < 1 && drop >= 1 ? Math.sin(T * 2) * 1.5 : 0);
+      vcirc(x, y, r, p.col); c.fillStyle = '#1A2333'; c.font = `800 ${Math.round(r * 0.75)}px ${FONT}`; c.textAlign = 'center'; c.fillText(p.name.slice(0, 2), x, y + r * 0.28); c.textAlign = 'left';
+    });
+    vpill(f >= 1 ? 'ONLY SATURN FLOATS!' : 'A BATHTUB BIGGER THAN THE PLANETS', VW / 2, VH * 0.3 - 30);
+  }
+
+  // ================= the lab: panel, card, experiments =================
+  const EXPS = [['weight', '⚖️', 'My weight'], ['sunoff', '🌑', 'Sun off'], ['float', '🛁', 'Float test'], ['defend', '🛡️', 'Save Earth'], ['india', '🚀', 'India']];
+  const MISSIONS = [
+    {k: 'mangal', n: 'Mangalyaan', full: 'Mangalyaan · Mars Orbiter Mission', when: 'Launched 5 Nov 2013 · reached Mars 24 Sep 2014', t: 'India reached Mars on its very first try — the spacecraft travelled for about 300 days on a curved path out to Mars’s orbit.'},
+    {k: 'chandra', n: 'Chandrayaan-3', full: 'Chandrayaan-3', when: 'Landed 23 Aug 2023 · now National Space Day', t: 'The Vikram lander touched down near the Moon’s south pole — the first landing ever in that region — and the Pragyan rover explored it.'},
+    {k: 'aditya', n: 'Aditya-L1', full: 'Aditya-L1', when: 'Launched 2 Sep 2023 · in place since Jan 2024', t: 'India’s first mission to the Sun. It stays about 1.5 million km from Earth, towards the Sun, where it can watch the Sun without ever being blocked.'},
+  ];
+  const ME = {age: 12, kg: 40};
+  const log = [];
+  const setSay = t => { $('say').textContent = t; };
+  const who = (id, t) => { $(id).textContent = t; };
+
+  function buildPanel(){
+    const A = $('chipsA'), B = $('chipsB');
+    A.className = 'chips'; B.className = 'chips';
+    B.parentElement.hidden = false;
+    if (S.view === 'planets'){
+      who('whoLab', 'Which planet?'); who('condLab', 'How fast? (every second)');
+      A.classList.add('grid4');
+      A.innerHTML = PL.map(p => `<button data-k="${p.k}"><i style="background:${p.col}"></i><span>${p.name}</span></button>`).join('');
+      B.classList.add('grid4s'); B.innerHTML = SPEEDS.map(([v, l], i) => `<button data-sp="${i}">${l.replace('/s', '')}</button>`).join('');
+      A.onclick = e => { const b = e.target.closest('button'); if (b){ select(b.dataset.k); touch(); } };
+      B.onclick = e => { const b = e.target.closest('button'); if (!b) return; S.speed = SPEEDS[+b.dataset.sp][0]; if (!playing) startPlay(); sync(); touch();
+        setSay(S.speed >= 3652 ? 'Ten years every second! Mercury is a blur, while Neptune has hardly moved.' : S.speed >= 365 ? 'One year every second — Earth goes round once each second, Mercury four times.' : S.speed >= 30 ? 'One month every second. The planets nearest the Sun move fastest.' : 'One day every second — the planets seem almost still.'); };
+    } else {
+      who('whoLab', 'Try an experiment');
+      A.classList.add('exps');
+      A.innerHTML = EXPS.map(([k, i, l]) => `<button data-e="${k}"><i>${i}</i>${l}</button>`).join('');
+      A.onclick = e => { const b = e.target.closest('button'); if (b){ setExp(b.dataset.e); touch(); } };
+      buildExpRow();
+    }
+    sync();
+  }
+  function buildExpRow(){
+    const B = $('chipsB'); B.className = 'chips wrap'; B.onclick = null;
+    const e = S.exp;
+    if (e === 'weight'){
+      who('condLab', 'My weight on Earth');
+      B.className = 'chips wbar';
+      B.innerHTML = `<input id="kgS" type="range" min="15" max="100" step="1" value="${ME.kg}" aria-label="My weight on Earth"><output id="meKg"></output>`;
+      $('kgS').oninput = ev => { ME.kg = +ev.target.value; paintExp(); touch(); };
+    } else if (e === 'sunoff'){
+      who('condLab', 'The Sun');
+      B.innerHTML = `<button class="go" id="offBtn">${S.off ? '☀️ Switch the Sun back on' : '🌑 Switch off the Sun'}</button>`;
+      B.onclick = ev => { const b = ev.target.closest('button'); if (!b) return;
+        if (b.id === 'offBtn'){ if (S.off){ S.off = null; setSay('The Sun is back on.'); } else { S.off = {sim: 0}; startPlayOff(); setSay('The Sun is off — but the planets still glow with light that already left it. Watch the ring of the last sunlight travel outwards.'); } buildExpRow(); }
+        else { S.sel = b.dataset.k; paintCard(); }
+        sync(); touch(); };
+    } else if (e === 'float'){
+      who('condLab', 'The bathtub');
+      B.innerHTML = `<button class="go" id="fillBtn">${S.tub >= 1 ? '↺ Empty the tub' : '💧 Fill it and drop the planets in'}</button>`;
+      B.onclick = ev => { if (!ev.target.closest('button')) return; if (S.tub >= 1){ S.tub = 0; S.tubGo = false; } else { S.tubGo = true; setSay('Heavy-for-their-size things sink; light-for-their-size things float. Watch…'); } buildExpRow(); touch(); };
+    } else if (e === 'defend'){
+      who('condLab', 'How early? · How hard?');
+      B.className = 'chips dgrid';
+      B.innerHTML = Object.entries(WHEN).map(([k, v]) => `<button data-w="${k}">${{'10y': '10 yrs', '1y': '1 year', '1m': '1 month'}[k]}</button>`).join('') +
+                    '<button class="go" id="launchBtn">🚀<br>Push it</button>' +
+                    Object.entries(PUSH).map(([k, v]) => `<button data-p="${k}">${v[1]}</button>`).join('');
+      B.onclick = ev => { const b = ev.target.closest('button'); if (!b) return;
+        if (b.dataset.w) S.defend = {...S.defend, when: b.dataset.w, fired: false, reported: false};
+        else if (b.dataset.p) S.defend = {...S.defend, push: b.dataset.p, fired: false, reported: false};
+        else S.defend = {...S.defend, fired: true, reported: false, t0: performance.now()};
+        sync(); touch(); };
+    } else if (e === 'india'){
+      who('condLab', 'Which mission?');
+      B.innerHTML = MISSIONS.map(m => `<button data-m="${m.k}">${m.n}</button>`).join('');
+      B.onclick = ev => { const b = ev.target.closest('button'); if (!b) return; S.msel = b.dataset.m; paintExp(); sync(); touch(); };
+    }
+    paintExp();
+  }
+
+  function setExp(e){
+    stopPlay();
+    S.exp = e; S.off = null; S.missions = e === 'india'; S.defend = e === 'defend' ? {when: '10y', push: 'small', fired: false} : null;
+    if (e === 'float'){ S.tub = 0; S.tubGo = false; }
+    if (e === 'india'){ S.msel = S.msel || 'mangal'; S.speed = 1; }
+    if (e === 'sunoff' && S.scale !== 'book') setScale('book');
+    S.mode = e === 'defend' ? 'defend' : 'system';
+    setSay({weight: 'Gravity pulls differently on every planet. Slide your weight and see what the scales would say there.',
+            sunoff: 'Light takes time to travel. If the Sun suddenly went out, how long would each planet stay lit?',
+            float: 'Imagine a bathtub big enough to hold the planets. Which of them would float?',
+            defend: 'An asteroid is heading straight for Earth. Choose when and how hard your spacecraft pushes it.',
+            india: 'India’s spacecraft have gone to the Moon, to Mars, and out towards the Sun. Pick a mission.'}[e]);
+    buildExpRow(); sync();
+  }
+
+  function paintExp(){
+    const card = $('v2card'), e = S.view === 'lab' ? S.exp : null;
+    const showCard = e === 'weight' || e === 'defend' || e === 'india';
+    card.hidden = !showCard;
+    $('stats').hidden = showCard || e === 'float' || e === 'sunoff';
+    if (e === 'weight'){
+      if ($('meKg')){ $('meKg').textContent = `${ME.kg} kg`; const k = $('kgS'); k.style.setProperty('--p', ((ME.kg - 15) / 85 * 100).toFixed(1) + '%'); }
+      const rows = [...PL.map(p => [p.name, p.g, p.col]), ['Moon', 0.166, '#C9CCD3'], ['Pluto', 0.063, '#C9A98A']];
+      card.className = 'v2card wcard';
+      card.innerHTML = `<h4>You weigh ${ME.kg} kg on Earth. On…</h4><div class="wgrid">` + rows.map(([n, g, col]) =>
+        `<div class="${n === 'Earth' ? 'me' : ''}"><span><i style="background:${col}"></i>${n}</span><b>${Math.round(ME.kg * g)} kg</b><em><s style="width:${Math.min(100, g / 2.53 * 100).toFixed(0)}%;background:${col}"></s></em></div>`).join('') + `</div>`;
+    } else if (e === 'defend'){
+      card.className = 'v2card';
+      card.innerHTML = `<h4>Mission log</h4>` + (log.length ? log.slice(0, 3).map(l => `<div class="logrow"><b>${l.hit ? '💥' : '🎉'}</b>${l.txt}</div>`).join('') : '<p>No pushes yet. Choose when and how hard, then press <b>Push it</b>.</p>') +
+        `<p class="dart" style="margin-top:6px"><b>Real mission:</b> in 2022 NASA’s DART spacecraft hit the asteroid moon Dimorphos and changed its orbit by about 32 minutes.</p>`;
+    } else if (e === 'india'){
+      const m = MISSIONS.find(x => x.k === S.msel);
+      card.className = 'v2card';
+      card.innerHTML = `<h4>🚀 ${m.full}</h4><small>${m.when}</small><p>${m.t}</p>`;
+    }
+  }
+  function reportDefend(hit, miss){
+    const D = S.defend, w = WHEN[D.when][1], p = PUSH[D.push][1].toLowerCase();
+    log.unshift({hit, txt: `${PUSH[D.push][1]} push, ${w}: moved ${fmt(Math.round(miss))} km — ${hit ? 'hit' : 'saved'}`}); if (log.length > 6) log.pop();
+    paintExp();
+    setSay(hit ? (D.when === '1m' ? 'Even the biggest push a month before is too late — the push needs time to add up. Try pushing earlier.' : 'Not enough. Push harder — or, better, push earlier.')
+               : (D.when === '10y' && D.push === 'small' ? 'A tiny push, ten years early, is enough! The small change adds up over millions of kilometres.' : 'Saved! Now try the smallest push — how early do you need to be?'));
+  }
+
+  // ---------- selection, card and stats ----------
+  function select(k, say = true){
+    S.sel = k;
+    if (say) setSay(BODY(k).say);
+    paintCard(); sync();
+  }
+  function paintCard(){
+    const b = BODY(S.sel), st = STAT[S.sel];
+    // the dial: how far round its orbit this planet has gone this lap
+    const C = 2 * Math.PI * 18;
+    let frac = 1;
+    if (b.per){ frac = (((S.t / b.per + b.L0 / 360) % 1) + 1) % 1; }
+    $('ring').style.strokeDasharray = `${(frac * C).toFixed(1)} ${C.toFixed(1)}`;
+    $('gauge').style.setProperty('--gg', b.col);
+    const [n, u] = b.per ? (b.per < 400 ? [Math.round(b.per), 'days'] : [(b.per / 365.25) < 20 ? (b.per / 365.25).toFixed(1) : Math.round(b.per / 365.25), 'years']) : ['☀', ''];
+    $('meterVal').innerHTML = `${n}<small>${u}</small>`;
+    $('quest').textContent = b.per ? `One year on ${b.name.replace('A comet', 'this comet')}` : 'The Sun';
+    $('youSub').hidden = !b.per || S.sel === 'earth';
+    $('youSub').textContent = 'Earth · 365 days';
+    $('youMk').style.display = b.per && S.sel !== 'earth' ? '' : 'none';
+    $('youMk').style.transform = `rotate(${(90 + (((S.t / 365.25 + 100.46 / 360) % 1) + 1) % 1 * 360).toFixed(1)}deg)`;
+    // compared with Earth
+    const st7 = [...st, b.a ? lightTxt(b.a) : S.sel === 'sun' ? '—' : '—'];
+    $('stats').innerHTML = st7.map((v, i) => `<div><b>${v}</b><span>${STAT_LAB[i]}</span>${S.sel === 'earth' ? '' : `<small>${EARTH_REF[i]}</small>`}</div>`).join('');
+    paintTags();
+  }
+
+  function paintTags(){
+    const V = VIEWS[S.sel], e = S.view === 'lab' ? S.exp : null;
+    const tagX = {sunoff: 'When each planet goes dark', weight: 'You on other planets', float: 'A giant bathtub', defend: 'Mission control', india: 'India in space'}[e];
+    $('viewTag').textContent = tagX || (V ? V.tag : S.sel === 'sun' ? 'The Sun up close' : 'A comet up close');
+    $('viewBadge').hidden = !!tagX; $('viewBadge').textContent = BODY(S.sel).type;
+  }
+  function sync(){
+    for (const b of document.querySelectorAll('.sgi')){ const on = b.dataset.view === S.view; b.classList.toggle('here', on); b.setAttribute('aria-selected', on); }
+    document.body.dataset.view = S.view;
+    const A = $('chipsA'), B = $('chipsB');
+    if (S.view === 'planets'){
+      for (const b of A.querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.k === S.sel);
+      for (const b of B.querySelectorAll('button')) b.setAttribute('aria-pressed', SPEEDS[+b.dataset.sp][0] === S.speed && playing);
+    } else {
+      for (const b of A.querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.e === S.exp);
+      for (const b of B.querySelectorAll('button[data-k]')) b.setAttribute('aria-pressed', b.dataset.k === S.sel);
+      for (const b of B.querySelectorAll('button[data-m]')) b.setAttribute('aria-pressed', b.dataset.m === S.msel);
+      if (S.defend){ for (const b of B.querySelectorAll('button[data-w]')) b.setAttribute('aria-pressed', b.dataset.w === S.defend.when); for (const b of B.querySelectorAll('button[data-p]')) b.setAttribute('aria-pressed', b.dataset.p === S.defend.push); }
+    }
+    $('scaleSeg').hidden = S.mode !== 'system';
+    $('fieldTag').textContent = S.mode === 'defend' ? 'Save the Earth' : S.missions ? 'India in space' : 'Solar System · from above';
+    paintExp(); paintTags();
+  }
+
+  function setView(v){
+    stopPlay();
+    S.view = v;
+    if (v === 'planets'){ S.exp = null; S.off = null; S.missions = false; S.defend = null; S.mode = 'system'; setSay(BODY(S.sel).say); }
+    else if (!S.exp) setExp('weight');
+    buildPanel(); paintCard();
+  }
+  document.querySelector('.seg').addEventListener('click', e => { const b = e.target.closest('.sgi'); if (b){ setView(b.dataset.view); touch(); } });
+
+  function setScale(s){
+    S.scale = s;
+    for (const b of document.querySelectorAll('#scaleSeg button')) b.setAttribute('aria-pressed', b.dataset.s === s);
+  }
+  $('scaleSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; setScale(b.dataset.s); touch();
+    setSay(b.dataset.s === 'true' ? 'True distances! The four inner planets crowd close to the Sun, and the planets become too tiny to see. Book pictures squeeze space to fit the page.'
+                                  : 'Textbook view: distances squeezed and planets drawn much bigger, so everything fits on the screen.'); });
+
+  // tap a planet in the top picture
+  let down = null, spin = null, toldSpin = false;
+  const angAt = (x, y) => Math.atan2(-(y - cy) / TILT, x - cx);
+  const local = e => { const r = sky.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  sky.addEventListener('pointerdown', e => { down = {x: e.clientX, y: e.clientY}; spin = null; sky.setPointerCapture(e.pointerId); });
+  sky.addEventListener('pointermove', e => {
+    if (!down || S.mode !== 'system') return;
+    const [x, y] = local(e);
+    if (!spin){
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8) return;
+      stopPlay(); sync();                                      // the finger takes over from the Play button
+      spin = {a: angAt(x, y)};
+      if (!toldSpin){ toldSpin = true; setSay('Your finger is turning time! Planets go round the Sun only one way, so time only moves forwards.'); }
+      touch(); return;
+    }
+    const a = angAt(x, y); let d = a - spin.a; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU;
+    spin.a = a;
+    if (d > 0 && !S.off){                                      // forwards only
+      const per = BODY(S.sel).per || 365.25;                   // one lap of the finger = one lap of the chosen planet
+      S.t += d / TAU * per; paintCard();
+    }
+  });
+  sky.addEventListener('pointerup', e => {
+    const wasSpin = !!spin; spin = null;
+    if (wasSpin || !down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || S.mode !== 'system'){ down = null; return; }
+    const r = sky.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let best = null, bd = 1e9;
+    for (const h of hits){ const d = Math.hypot(h.x - x, h.y - y); if (d < h.r + 4 && d < bd){ bd = d; best = h; } }
+    if (best){ select(best.k); touch(); }
+    down = null;
+  });
+  sky.addEventListener('pointercancel', () => { down = null; spin = null; });
+
+  // play
+  let playing = false;
+  const playBtn = $('play'), PLAY = playBtn.innerHTML;
+  const PAUSE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>Pause';
+  function startPlay(){ playing = S.playing = true; playBtn.innerHTML = PAUSE; }
+  function stopPlay(){ playing = S.playing = false; playBtn.innerHTML = PLAY; }
+  function startPlayOff(){ stopPlay(); }
+  playBtn.onclick = () => { playing ? stopPlay() : startPlay(); sync(); touch(); };
+
+  // Switch off the Sun: time runs slowly until Earth goes dark, then hurries out to Neptune
+  let lastDark = '';
+  function stepOff(dt){
+    const o = S.off; if (!o) return;
+    o.sim += (o.sim < 560 ? 70 : 1100) * dt;
+    const key = PL.map(p => o.sim / 499 > p.a ? 1 : 0).join('');
+    if (key !== lastDark){
+      lastDark = key;
+      if (key[2] === '1' && key[3] === '0') setSay('8 minutes 20 seconds: Earth goes dark. So the Sun we see is always the Sun of 8 minutes ago!');
+      if (key[7] === '1') setSay('After about 4 hours even Neptune goes dark. That is how far away the planets reach.');
+    }
+  }
+  function drawOffClock(){
+    pill(`SUN SWITCHED OFF · ${hms(S.off.sim)} AGO`, W / 2, H - 44, '#FFC23A');
+  }
+
+  // ---------- loop ----------
+  const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  let last = performance.now(), T = 0, lastBadge = '', lastCard = 0;
+  function frame(now){
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; T += dt;
+    if (playing && !S.off) S.t += S.speed * dt;
+    S.sb += ((S.scale === 'true' ? 1 : 0) - S.sb) * Math.min(1, dt * 3.2);
+    S.ib += ((S.missions ? 1 : 0) - S.ib) * Math.min(1, dt * 2.6);
+    if (S.off) stepOff(dt);
+    if (S.tubGo && S.tub < 1){ S.tub = Math.min(1, S.tub + dt * 0.45); if (S.tub >= 1){ setSay('Only Saturn floats! It is lighter than water for its size (density 0.69). Every other planet sinks — Earth is the densest.'); buildExpRow(); } }
+    const d = new Date(J2000 + S.t * 864e5), badge = S.off ? 'Sun off' : `${d.getUTCDate()} ${MN[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    if (badge !== lastBadge){ $('fieldBadge').textContent = badge; lastBadge = badge; }
+    if (playing && now - lastCard > 120){ lastCard = now; paintCard(); }
+    if (document.body.dataset.screen === 'lab'){
+      if (W > 4){ ctx.setTransform(DPR, 0, 0, DPR, 0, 0); S.mode === 'defend' ? drawDefend(T) : drawSystem(T); }
+      drawView(T);
+    }
+    requestAnimationFrame(frame);
+  }
+  function draw(){ if (W > 4){ ctx.setTransform(DPR, 0, 0, DPR, 0, 0); S.mode === 'defend' ? drawDefend(T) : drawSystem(T); } drawView(T); }
+  function resize(){ fit(); fitView(); draw(); }
+
+  // scenario hook for the questions
+  function scene(sc){
+    if (sc.view && sc.view !== S.view){ S.view = sc.view; if (sc.view === 'planets'){ S.exp = null; S.off = null; S.missions = false; S.defend = null; S.mode = 'system'; } }
+    if (sc.scale) setScale(sc.scale);
+    if (sc.speed) S.speed = sc.speed;
+    if (sc.sel) S.sel = sc.sel;
+    if (sc.exp){ S.view = 'lab'; setExp(sc.exp); }
+    buildPanel(); paintCard();
+    if (sc.off){ S.off = {sim: 0}; buildExpRow(); }
+    if (sc.play) startPlay(); else stopPlay();
+    sync();
+    setSay(sc.say || BODY(S.sel).say);
+  }
+
+  window.__sim = {stop: stopPlay, resize, draw, scene, state: S};
+  addEventListener('resize', () => { if (window.__layout) window.__layout(); resize(); });
+  addEventListener('orientationchange', () => setTimeout(resize, 150));
+  if ('ResizeObserver' in window){ let key = ''; new ResizeObserver(() => { const k = [sky.clientWidth, sky.clientHeight, vc.clientWidth, vc.clientHeight].join(); if (k !== key){ key = k; resize(); } }).observe(document.querySelector('#scLab .app')); }
+  S.view = 'planets'; S.exp = null; S.tub = 0;
+  buildPanel(); select('earth', false); resize();
+  setSay('Pick a planet to land on it and see its sky, or press Play. Mercury races round the Sun in 88 days — Neptune needs 165 years.');
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+/* ========== Virtual Lab shell: intro → lab → questions → summary ========== */
+(() => {
+  const $ = id => document.getElementById(id);
+  const sim = window.__sim;
+
+  /* ---------- role ---------- */
+  const params = new URLSearchParams(location.search);
+  let role = params.get('role') === 'teacher' ? 'teacher' : 'student';
+  function setRole(r){
+    role = r;
+    document.body.classList.toggle('teacher', r === 'teacher');
+    for (const b of document.querySelectorAll('.roleswitch button')) b.setAttribute('aria-selected', b.dataset.role === r);
+    $('introNote').hidden = r !== 'teacher';
+  }
+  document.querySelector('.roleswitch').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (b) setRole(b.dataset.role);
+  });
+
+  /* ---------- screens ---------- */
+  function show(screen){
+    document.body.dataset.screen = screen;
+    if (screen === 'lab') requestAnimationFrame(() => { layout(); sim.resize(); });
+  }
+  $('startBtn').onclick = () => show('lab');
+  $('backLabBtn').onclick = closeSheet;
+
+  /* ---------- layout ---------- */
+  let force = null;
+  function layout(){
+    const side = force === null ? innerWidth > innerHeight : force === 'side';
+    document.querySelector('#scLab .app').classList.toggle('side', side);
+    $('layoutBtn').setAttribute('aria-label', side ? 'Switch to portrait view' : 'Switch to landscape view');
+    // the icon shows what you will switch to, not where you are
+    $('layoutIcon').innerHTML = side
+      ? '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>'
+      : '<rect x="3" y="5" width="18" height="13" rx="2"/><path d="M9 21h6"/>';
+  }
+  window.__layout = layout;
+  $('layoutBtn').onclick = () => {
+    force = document.querySelector('#scLab .app').classList.contains('side') ? 'port' : 'side';
+    layout(); sim.resize();
+  };
+
+  /* ---------- the three questions ---------- */
+  const Q = [
+    {q: 'Which planet takes the longest to go once round the Sun?',
+     opts: [['mercury', 'Mercury — it is closest to the Sun'], ['jupiter', 'Jupiter — it is the biggest'],
+            ['neptune', 'Neptune — it is the farthest'], ['same', 'They all take one year']],
+     a: 'neptune',
+     scene: {view: 'planets', sel: 'neptune', speed: 3652.5, play: true, scale: 'book'},
+     title: 'Farther means longer',
+     why: 'A far planet has a much longer path and moves more slowly. Neptune needs about 165 Earth years for one trip — since it was discovered in 1846 it has gone round only once. Watch it crawl while Mercury is a blur.'},
+
+    {q: 'Mercury is the closest planet to the Sun. Which planet is the hottest?',
+     opts: [['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['jupiter', 'Jupiter']],
+     a: 'venus',
+     scene: {view: 'planets', sel: 'venus'},
+     title: 'Venus — the blanket planet',
+     why: 'Venus is wrapped in thick air made mostly of carbon dioxide. It traps the Sun’s heat like a blanket, so Venus stays at about 465 °C day and night — hot enough to melt lead. Mercury has almost no air, so its heat escapes at night.'},
+
+    {q: 'Suppose the Sun suddenly switched off. When would we on Earth notice?',
+     opts: [['now', 'At that very instant'], ['eight', 'After about 8 minutes'],
+            ['day', 'After a whole day'], ['year', 'Only after a year']],
+     a: 'eight',
+     scene: {exp: 'sunoff', sel: 'earth', off: true},
+     title: 'About 8 minutes later',
+     why: 'Light is very fast — 3 lakh km every second — but the Sun is 15 crore km away, so sunlight takes about 8 minutes 20 seconds to reach us. We always see the Sun as it was 8 minutes ago. Neptune would stay lit for about 4 hours!'},
+  ];
+
+  let step = 0;
+  const answers = [];
+  let played = false;
+
+  function paintNext(){
+    const last = step >= Q.length;
+    $('nextLbl').textContent = last ? 'Summary' : 'Next';
+    $('nextSub').textContent = played ? `Step ${Math.min(step + 1, 4)} of 4` : 'Try the simulator first';
+    $('nextFill').style.width = (step / 4 * 100) + '%';
+    $('nextBtn').disabled = !played;
+  }
+  function firstTouch(){ if (!played){ played = true; paintNext(); } }
+  for (const el of [$('cField'), $('cView'), $('chipsA'), $('chipsB'), $('play'), $('scaleSeg'), document.querySelector('.seg')])
+    el.addEventListener('pointerdown', firstTouch);
+  addEventListener('lab-touch', firstTouch);
+  $('nextBtn').onclick = () => { if (step >= Q.length) buildSummary(); else askQuestion(step); };
+
+  /* ---------- sheet ---------- */
+  function openSheet(modal){
+    document.body.classList.toggle('qmodal', !!modal);
+    $('veil').classList.add('open'); $('sheet').classList.add('open'); $('sheet').setAttribute('aria-hidden', 'false');
+  }
+  function closeSheet(){
+    document.body.classList.remove('qmodal');
+    $('sheet').classList.remove('fixed');
+    $('sfoot').hidden = true; $('sfoot').classList.remove('held');
+    $('backLabBtn').disabled = false; $('backLabBtn').onclick = closeSheet;
+    $('veil').classList.remove('open'); $('sheet').classList.remove('open'); $('sheet').setAttribute('aria-hidden', 'true');
+    $('whyBtn').setAttribute('aria-expanded', 'false');
+  }
+  const block = e => { if (document.body.classList.contains('qmodal')){ e.stopPropagation(); e.preventDefault(); } };
+  for (const id of ['veil', 'sheetClose', 'grab'])
+    for (const ev of ['pointerdown', 'pointerup', 'click', 'pointermove'])
+      $(id).addEventListener(ev, block, true);
+  addEventListener('keydown', e => { if (e.key === 'Escape'){ block(e); if (!document.body.classList.contains('qmodal')) closeSheet(); } }, true);
+  $('veil').addEventListener('click', () => { if (!document.body.classList.contains('qmodal')) closeSheet(); });
+  $('sheetClose').addEventListener('click', () => { if (!document.body.classList.contains('qmodal')) closeSheet(); });
+
+  // swipe the sheet down to close
+  let sy = null;
+  $('grab').addEventListener('pointerdown', e => { sy = e.clientY; $('grab').setPointerCapture(e.pointerId); });
+  $('grab').addEventListener('pointermove', e => { if (sy !== null) $('sheet').style.transform = `translateY(${Math.max(0, e.clientY - sy)}px)`; });
+  $('grab').addEventListener('pointerup', e => {
+    const dy = e.clientY - (sy ?? e.clientY); sy = null; $('sheet').style.transform = '';
+    if (dy > 60 && !document.body.classList.contains('qmodal')) closeSheet();
+  });
+
+  /* ---------- the dash stepper: three questions, then the summary ---------- */
+  const reached = i => i <= step;                 // everything up to your furthest point, nothing beyond
+  function stepperHTML(active){
+    const dots = [0, 1, 2, 3].map(i => {
+      const open = reached(i);
+      let cls = 'stepdot';
+      if (i < 3 && answers[i]) cls += answers[i].right ? ' ok' : ' no';
+      if (i === 3 && step >= 4) cls += ' ok';       // grey until the summary is opened
+      if (i === active) cls += ' now';
+      if (!open) cls += ' shut';
+      const label = i < 3 ? `Question ${i + 1}` : 'Summary';
+      return `<button class="${cls}" data-go="${i}" ${open && i !== active ? '' : 'disabled'} aria-label="${label}"><i></i></button>`;
+    }).join('');
+    return `<div class="stepper">${dots}</div>`;
+  }
+  $('sheetBody').addEventListener('click', e => {
+    const b = e.target.closest('.stepdot'); if (!b || b.disabled) return;
+    const i = +b.dataset.go;
+    if (i === 3) buildSummary(); else askQuestion(i);       // backwards only — later dashes stay disabled
+  });
+
+  function askQuestion(i){
+    const q = Q[i];
+    sim.stop();
+    // the answer card and the footer are laid out from the start, only hidden,
+    // so the sheet is exactly as tall before the answer as after it
+    $('sheetTitle').textContent = `Question ${i + 1} of 3`;
+    $('sheetBody').innerHTML =
+      stepperHTML(i) +
+      `<p class="qtext">${q.q}</p>
+       <div class="mcq" id="mcq">${q.opts.map(([k, t]) => `<button data-k="${k}"><i></i><span>${t}</span></button>`).join('')}</div>
+       <div class="slot">
+         <div class="pcard warn held" id="result"><h3>Not quite · ${q.title}</h3><p>${q.why}</p></div>
+         <div class="ghost" id="ghost">Pick an answer — the explanation appears here</div>
+       </div>`;
+
+    $('sheet').classList.add('fixed');
+    // one button at the bottom of the sheet: submit, then on to the simulator
+    const foot = $('backLabBtn');
+    $('sfoot').hidden = false;
+    $('sfoot').classList.remove('held');
+    foot.textContent = 'Submit answer';
+    foot.disabled = true;
+
+    let picked = null;
+    $('mcq').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.disabled) return;
+      $('mcq').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+      picked = b.dataset.k; foot.disabled = false;
+    });
+
+    function reveal(chosen, scroll){
+      for (const b of $('mcq').querySelectorAll('button')){
+        b.disabled = true;
+        b.setAttribute('aria-pressed', b.dataset.k === chosen);
+        if (b.dataset.k === q.a) b.classList.add('right');
+        else if (b.dataset.k === chosen) b.classList.add('wrong');
+      }
+      const right = chosen === q.a, r = $('result');
+      const g = $('ghost'); if (g) g.remove();
+      r.className = 'pcard ' + (right ? 'good' : 'warn');
+      r.querySelector('h3').textContent = `${right ? 'Correct' : 'Not quite'} · ${q.title}`;
+      foot.textContent = 'See it in the simulator';
+      foot.disabled = false;
+      foot.onclick = closeSheet;
+      sim.scene(q.scene);
+      if (scroll) requestAnimationFrame(() => r.scrollIntoView({behavior: 'smooth', block: 'nearest'}));
+    }
+
+    if (answers[i]) reveal(answers[i].picked, false);       // coming back to one already answered
+    else foot.onclick = () => {
+      answers[i] = {picked, right: picked === q.a, label: q.opts.find(o => o[0] === picked)[1], title: q.title};
+      step = Math.max(step, i + 1); paintNext();
+      reveal(picked, true);
+      $('sheetBody').querySelector('.stepper').outerHTML = stepperHTML(i);
+    };
+    openSheet(true);
+  }
+
+  /* ---------- teacher notes: the same explainer the summary shows ---------- */
+  $('whyBtn').onclick = () => {
+    if ($('sheet').classList.contains('open')) return closeSheet();
+    $('sheet').classList.remove('fixed');
+    $('sheetTitle').textContent = 'What you found out';
+    $('sheetBody').innerHTML = explainer();
+    $('sheetBody').scrollTop = 0;
+    $('sfoot').hidden = true;
+    openSheet(false);
+    $('whyBtn').setAttribute('aria-expanded', 'true');
+  };
+
+  /* ---------- summary ---------- */
+  // one explainer, used by the summary and by the teacher's Summary button
+  function explainer(){ return $('sumTpl').innerHTML; }
+
+  function buildSummary(){
+    step = 4; paintNext();
+    $('sheet').classList.remove('fixed');
+    $('sheetTitle').textContent = 'What you found out';
+    $('sheetBody').innerHTML = stepperHTML(3) + explainer();
+    $('sheetBody').scrollTop = 0;
+    $('sfoot').hidden = false; $('sfoot').classList.remove('held');
+    $('backLabBtn').textContent = 'Back to the lab';
+    $('backLabBtn').disabled = false;
+    $('backLabBtn').onclick = closeSheet;
+    openSheet(true);
+  }
+
+  /* ---------- go ---------- */
+  setRole(role);
+  paintNext();
+  layout();
+})();
+</script>
+
+</body>
+</html>
