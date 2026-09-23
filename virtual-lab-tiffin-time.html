@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFBFC">
+<title>Virtual Lab · Tiffin Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFBFC;--card:#FFFFFF;--ink:#22303C;--mute:#5F6F7E;--line:#E2E7EC;--soft:#F1F4F7;
+  --accent:#D95926;--accent-ink:#fff;
+  --energy:#E8A317;--grow:#3987E5;--prot:#199E70;--some:#B95CA0;--danger:#C0392B;--ok:#199E70;
+  --font:'Nunito',"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --r:16px;--r2:12px;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:600;line-height:1.35;font-size:15px}
+body.inlab{overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid #8FB8F0;outline-offset:2px}
+.hidden{display:none!important}
+h1,h2,h3,p{margin:0}
+.teacher-only{display:none}
+body.teacher .teacher-only{display:initial}
+body.teacher button.teacher-only{display:inline-flex}
+body.teacher .student-only{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Intro ---------- */
+.intro{min-height:100%;overflow:auto}
+.intro .wrap{max-width:720px;margin:0 auto;padding:22px 20px 48px}
+.kicker{color:var(--mute);font-size:13px;margin-bottom:10px}
+.intro h1{font-size:clamp(26px,5.5vw,38px);font-weight:800;line-height:1.12;letter-spacing:-.01em}
+.lede{margin-top:12px;font-size:16px;color:var(--ink)}
+.hero{margin:20px 0 10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.hero svg{display:block;width:100%;height:auto}
+.intro h3{margin-top:22px;font-size:15px;font-weight:800}
+.intro h3+p{margin-top:6px;color:var(--mute)}
+.steps{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r2);padding:10px 12px}
+.steps b.n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.facts span{background:var(--soft);border-radius:999px;padding:6px 12px;font-size:13px}
+.roleSwitch{display:inline-flex;margin-top:22px;background:var(--soft);border-radius:999px;padding:3px}
+.roleSwitch button{padding:8px 16px;border-radius:999px;font-weight:700;color:var(--mute)}
+.roleSwitch button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,30,40,.12)}
+.tnote{margin-top:14px;background:#FFF6EA;border:1px solid #F3DDBF;border-radius:var(--r);padding:14px 16px;font-size:14px}
+.tnote h4{margin:0 0 6px;font-size:14px}
+.tnote ul{margin:6px 0 0;padding-left:18px}
+.tnote li{margin:4px 0}
+.primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border-radius:999px;font-weight:800}
+.primary:disabled{background:#CBD3DB;color:#fff;cursor:not-allowed}
+.big{margin-top:24px;padding:16px 28px;font-size:18px;width:100%}
+
+/* ---------- Lab ---------- */
+.lab{height:100%;display:flex;flex-direction:column;position:relative}
+.app{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;padding:8px}
+.scenes{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:8px}
+.scene{flex:1 1 0;min-height:0;position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.scene svg.full{display:block;width:100%;height:100%}
+.tag{position:absolute;top:8px;left:10px;z-index:2;font-size:12px;color:var(--mute);background:rgba(255,255,255,.85);border-radius:999px;padding:3px 9px;pointer-events:none}
+.tag.right{left:auto;right:10px}
+.side{display:flex;flex-direction:column;gap:8px;min-height:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+
+.dial{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:8px 10px;align-items:center}
+.dial svg{width:72px;height:72px;display:block}
+.dt{font-size:14px;font-weight:800}
+.ds{font-size:12px;color:var(--mute)}
+.say{margin-top:3px;font-size:13px;line-height:1.3;display:flex;gap:6px;align-items:flex-start;min-height:34px}
+.say span{flex:1}
+.spk{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--soft);font-size:15px;display:inline-grid;place-items:center}
+
+.deck{padding:6px 8px 4px}
+.seg{display:flex;background:var(--soft);border-radius:999px;padding:3px;margin-bottom:6px}
+.seg button{flex:1;padding:7px 0;border-radius:999px;font-weight:800;font-size:13px;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,30,40,.12)}
+.whorow{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:3px 2px 5px;scrollbar-width:none}
+.whorow::-webkit-scrollbar{display:none}
+.rowlab{font-size:11px;color:var(--mute);margin:2px 2px 0}
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--soft);border:2px solid transparent;font-size:13px;font-weight:700;white-space:nowrap}
+.chip.on{background:#FFF;border-color:var(--ink)}
+.chip.food{flex-direction:column;gap:0;padding:4px 4px 3px;width:58px;border-radius:12px;font-size:10px;line-height:1.1}
+.chip.food svg{width:38px;height:38px;display:block}
+.chip.food.bad{background:#FBEDEA}
+.chip.food:active{transform:scale(.94)}
+.chip.game{padding:7px 12px}
+.chip .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+
+.actions{display:flex;gap:6px;align-items:stretch}
+.actions button{flex:1;min-width:0;border-radius:14px;padding:8px 6px;font-weight:800;font-size:14px;background:var(--soft);display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.actions button.primary{background:var(--accent);color:#fff;flex:1.2}
+.actions button.icon{flex:0 0 46px;font-size:18px}
+.actions button small{font-weight:600;font-size:10px;opacity:.85}
+#nextBtn{position:relative;overflow:hidden;background:var(--ink);color:#fff}
+#nextBtn:disabled{background:#CBD3DB;color:#fff}
+#nextBtn .fill{position:absolute;left:0;bottom:0;height:4px;background:#fff;opacity:.8;width:0;transition:width .4s}
+
+/* landscape / projector */
+.app.side{flex-direction:row}
+.app.side .scenes{flex:1.5 1 0}
+.app.side .side{flex:1 1 0;max-width:430px;overflow:auto}
+@media (max-height:600px){.dial{grid-template-columns:56px 1fr}.dial svg{width:56px;height:56px}.say{min-height:0}}
+
+/* game overlays inside scenes */
+.gov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:26px 10px 8px}
+.gov .pic{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;width:100%}
+.gov .pic svg{height:100%;max-height:150px;width:auto}
+.gov .q{font-size:15px;font-weight:800;text-align:center}
+.opts{display:grid;gap:8px;width:100%;max-width:520px;align-content:center}
+.opts.n2{grid-template-columns:1fr 1fr}
+.opts.n3{grid-template-columns:1fr 1fr 1fr}
+.opt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--soft);border:3px solid transparent;border-radius:14px;padding:8px 6px;font-weight:800;font-size:13px;text-align:center;min-height:64px}
+.opt svg{width:44px;height:44px}
+.opt .em{font-size:26px;line-height:1}
+.opt.right{border-color:var(--ok);background:#E6F5EE}
+.opt.wrong{border-color:var(--danger);background:#FBEDEA;animation:shake .4s}
+.opt:disabled{cursor:default}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{font-size:13px;text-align:center;color:var(--mute);min-height:18px}
+.score{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.score .big{margin:0;padding:10px 22px;font-size:15px;width:auto}
+.stars{font-size:28px;letter-spacing:4px}
+
+/* ---------- Sheets ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(20,30,40,.35);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;height:78%;background:var(--card);border-radius:22px 22px 0 0;z-index:21;display:flex;flex-direction:column;box-shadow:0 -8px 30px rgba(20,30,40,.18);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet .sh{padding:16px 18px 8px;display:flex;align-items:flex-start;gap:10px}
+.sheet .sh .k{font-size:12px;color:var(--mute)}
+.sheet .sh h2{font-size:19px;font-weight:800;line-height:1.2}
+.sheet .sh .spk{margin-top:2px}
+.sheet .sb{flex:1;min-height:0;overflow:auto;padding:4px 18px 12px}
+.sheet .sf{padding:10px 18px 12px;border-top:1px solid var(--line)}
+.sheet .sf .primary{width:100%;padding:14px;font-size:16px}
+.sheet .sf .primary+.primary{margin-top:8px}
+.xbtn{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--soft);font-size:18px}
+.qopts{display:grid;gap:8px}
+.qopt{display:flex;align-items:center;gap:12px;background:var(--soft);border:3px solid transparent;border-radius:14px;padding:10px 12px;text-align:left;font-weight:700;font-size:15px}
+.qopt svg{width:46px;height:46px;flex:0 0 auto}
+.qopt.on{border-color:var(--ink);background:#fff}
+.qopt.right{border-color:var(--ok);background:#E6F5EE}
+.qopt.wrong{border-color:var(--danger);background:#FBEDEA}
+.qopt:disabled{cursor:default}
+.qopt .em{width:46px;font-size:28px;text-align:center;flex:0 0 auto}
+.verdict{margin-top:12px;border-radius:14px;padding:12px 14px;border:1px solid var(--line);background:#F7FAF8}
+.verdict.no{background:#FDF4F2}
+.verdict b{display:block;font-size:15px;margin-bottom:4px}
+.scard{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.scard h4{margin:0 0 6px;font-size:15px;font-weight:800}
+.scard p{color:var(--ink);font-size:14px}
+.scard ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.scard li{margin:3px 0}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.three div{border-radius:12px;padding:8px;font-size:12px;text-align:center;color:#fff;font-weight:800}
+.reveal{width:100%;text-align:left;border-radius:12px;background:var(--soft);padding:10px 12px;margin-top:8px;font-weight:800}
+.reveal+p{margin-top:8px}
+table.map{width:100%;border-collapse:collapse;font-size:12.5px}
+table.map th,table.map td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.map th{color:var(--mute);font-weight:700}
+code{background:var(--soft);border-radius:6px;padding:1px 5px;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* scene animations */
+.bounce{animation:bounce var(--dur,1.4s) ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--amp,4px) * -1))}}
+.germ{animation:drift 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(6px,-5px)}}
+.pop{animation:pop .5s ease-out both;transform-box:fill-box;transform-origin:center}
+@keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.puff{animation:puff .9s ease-out both;transform-box:fill-box;transform-origin:center}
+@keyframes puff{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-22px) scale(1.5)}}
+.chomp{animation:chomp .35s ease-in both;transform-box:fill-box;transform-origin:center}
+@keyframes chomp{to{transform:scale(0);opacity:0}}
+</style>
+</head>
+<body>
+<!-- ============ INTRO ============ -->
+<section id="intro" class="screen intro">
+  <div class="wrap">
+    <p class="kicker">Virtual Lab · Foundational Stage · Physical Development · Food (C-1.1)</p>
+    <h1>Tiffin Time: what does your food do inside you?</h1>
+    <p class="lede">You are the tiffin helper. Pick foods for the plate, check they are clean, then eat and watch your body fill up with energy, growth and protection.</p>
+
+    <div class="hero" aria-hidden="true">
+      <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EEF1F4"/><stop offset="1" stop-color="#C9D1D9"/></linearGradient>
+        </defs>
+        <rect width="720" height="260" fill="#FFFDF8"/>
+        <rect x="0" y="200" width="720" height="60" fill="#F3E7D3"/>
+        <!-- tiffin -->
+        <g transform="translate(60,52)">
+          <rect x="0" y="0" width="300" height="150" rx="22" fill="url(#steel)" stroke="#9AA6B2" stroke-width="2"/>
+          <rect x="0" y="-16" width="300" height="26" rx="10" fill="#DDE3E9" stroke="#9AA6B2" stroke-width="2"/>
+          <rect x="120" y="-30" width="60" height="16" rx="6" fill="#9AA6B2"/>
+          <g id="heroFoods"></g>
+          <text x="150" y="182" text-anchor="middle" font-family="Nunito,sans-serif" font-size="14" font-weight="800" fill="#5F6F7E">Your tiffin</text>
+        </g>
+        <!-- arrow -->
+        <path d="M385 128h60" stroke="#5F6F7E" stroke-width="4" stroke-linecap="round"/>
+        <path d="M436 118l14 10-14 10" fill="none" stroke="#5F6F7E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- child -->
+        <g transform="translate(470,40)">
+          <circle cx="45" cy="34" r="26" fill="#E7B58F"/>
+          <path d="M19 30c4-22 48-24 52 0-8-6-40-8-52 0z" fill="#3B2A22"/>
+          <circle cx="36" cy="36" r="3" fill="#2B2B2B"/><circle cx="54" cy="36" r="3" fill="#2B2B2B"/>
+          <path d="M37 47q8 7 16 0" fill="none" stroke="#2B2B2B" stroke-width="3" stroke-linecap="round"/>
+          <path d="M20 66h50l8 60H12z" fill="#3987E5"/>
+          <path d="M20 70l-16 34" stroke="#E7B58F" stroke-width="10" stroke-linecap="round"/>
+          <path d="M70 70l16 34" stroke="#E7B58F" stroke-width="10" stroke-linecap="round"/>
+          <rect x="22" y="124" width="18" height="36" rx="6" fill="#E7B58F"/>
+          <rect x="50" y="124" width="18" height="36" rx="6" fill="#E7B58F"/>
+        </g>
+        <g font-family="Nunito,sans-serif" font-size="14" font-weight="800" transform="translate(580,58)">
+          <text x="0" y="0" fill="#E8A317">Energy</text><rect x="0" y="6" width="110" height="12" rx="6" fill="#FBEBC8"/><rect x="0" y="6" width="80" height="12" rx="6" fill="#E8A317"/>
+          <text x="0" y="46" fill="#3987E5">Growth</text><rect x="0" y="52" width="110" height="12" rx="6" fill="#D8E6FA"/><rect x="0" y="52" width="66" height="12" rx="6" fill="#3987E5"/>
+          <text x="0" y="92" fill="#199E70">Protection</text><rect x="0" y="98" width="110" height="12" rx="6" fill="#D2EFE3"/><rect x="0" y="98" width="92" height="12" rx="6" fill="#199E70"/>
+        </g>
+      </svg>
+    </div>
+
+    <h3>What you will find out</h3>
+    <p>Which foods give you energy, which help you grow, and which keep you from falling sick; how to check food is safe before you eat it; and why taking a little and finishing it is better than a big plate with leftovers.</p>
+
+    <h3>How this lab works</h3>
+    <ol class="steps">
+      <li><b class="n">1</b><span>In <b>Thali</b>, tap foods to put them on the plate. Look carefully — some foods are dirty or spoiled and belong in the bin. The bottom picture shows what each food does inside you.</span></li>
+      <li><b class="n">2</b><span>Say how hungry you are, then tap <b>Eat!</b> and see if you finish your plate or leave food behind.</span></li>
+      <li><b class="n">3</b><span>In <b>Games</b>, play <b>Would you eat this?</b>, <b>What does it do?</b> and <b>Complete the thali</b>.</span></li>
+      <li><b class="n">4</b><span>Answer three questions as you go, then finish with a summary.</span></li>
+    </ol>
+    <div class="facts"><span>15 foods</span><span>3 games</span><span>Energy · Growth · Protective</span><span>Tap to hear it read aloud</span></div>
+
+    <div class="roleSwitch" role="group" aria-label="View">
+      <button data-role="student" class="on">Student view</button>
+      <button data-role="teacher">Teacher view</button>
+    </div>
+
+    <div class="tnote teacher-only">
+      <h4>Teacher notes</h4>
+      <p>Foundational Stage · Physical Development · CG-1 · C-1.1 "Shows a liking for and understanding of nutritious food and does not waste food". Best used with an adult at the screen for ages 3–6, and independently at 6–8.</p>
+      <ul>
+        <li><b>Predict first:</b> ask "Which food helps you run fast — roti or milk?" and "What happens to a roti that falls on the floor?" Note the answers, then let children test them here.</li>
+        <li><b>Real tiffin check:</b> at snack time, children sort their own tiffin into Energy, Growth and Protective foods, and check it is covered and clean (C1.1-S1-L4, S2-L4).</li>
+        <li><b>Rubric coverage:</b> the games are the auto-scored items in the rubric. <em>Would you eat this?</em> = S1-L1/L2, <em>What does it do?</em> = S2-L1/L2, <em>Complete the thali</em> = S2-L3/L4, building a plate in Thali = S2-L5, and <em>Eat!</em> with the hunger setting = S4-L4 "Serve it right". Trying and enjoying food (S3) and mealtime habits stay as observation checklists.</li>
+        <li>Open <b>Why?</b> in the lab for the full mapping.</li>
+      </ul>
+    </div>
+
+    <button id="startBtn" class="primary big">Start Tiffin Time</button>
+  </div>
+</section>
+
+<!-- ============ LAB ============ -->
+<section id="lab" class="screen lab hidden">
+  <div class="app" id="app">
+    <div class="scenes">
+      <div class="scene" id="scene1">
+        <span class="tag" id="tag1">Kitchen counter</span>
+        <svg class="full" id="svg1" viewBox="0 0 400 230" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="gov hidden" id="gameTop"></div>
+      </div>
+      <div class="scene" id="scene2">
+        <span class="tag" id="tag2">Inside you</span>
+        <svg class="full" id="svg2" viewBox="0 0 400 230" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="gov hidden" id="gameOpts"></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="dial card">
+        <svg id="dial" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div>
+          <div class="dt" id="dt">Your plate</div>
+          <div class="ds" id="ds">Tap a food to begin</div>
+          <div class="say"><span id="say">Pick foods for your plate. Look carefully — is each one clean?</span><button class="spk" id="spk" aria-label="Read aloud">🔊</button></div>
+        </div>
+      </div>
+      <div class="deck card">
+        <div class="seg" role="tablist">
+          <button data-tab="thali" class="on" role="tab">Thali</button>
+          <button data-tab="games" role="tab">Games</button>
+        </div>
+        <div class="panel" id="panelThali">
+          <div class="rowlab">Tap a food to put it on the plate</div>
+          <div class="whorow" id="foodRow"></div>
+          <div class="rowlab">How hungry are you?</div>
+          <div class="whorow" id="hungryRow"></div>
+        </div>
+        <div class="panel hidden" id="panelGames">
+          <div class="rowlab">Pick a game</div>
+          <div class="whorow" id="gameRow"></div>
+          <div class="rowlab" id="gameStatus">Tap the picture that is right</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="layoutBtn" class="teacher-only icon" title="Portrait / landscape">⤢</button>
+        <button id="whyBtn" class="teacher-only">Why?</button>
+        <button id="playBtn" class="primary">Eat!</button>
+        <button id="clearBtn">New plate</button>
+        <button id="sumBtn" class="teacher-only">Summary</button>
+        <button id="nextBtn" class="student-only" disabled><span>Next</span><small id="nextSub">Try the simulator first</small><i class="fill"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="backdrop hidden" id="backdrop"></div>
+
+  <div class="sheet hidden" id="sheetQ" role="dialog" aria-modal="true">
+    <div class="sh">
+      <div style="flex:1"><div class="k" id="qk">Question 1 of 3</div><h2 id="qt"></h2></div>
+      <button class="spk" id="qspk" aria-label="Read the question aloud">🔊</button>
+    </div>
+    <div class="sb">
+      <div class="qopts" id="qopts"></div>
+      <div id="qverdict"></div>
+    </div>
+    <div class="sf">
+      <button class="primary" id="qsubmit" disabled>Choose an answer</button>
+      <button class="primary hidden" id="qsee">See it in the simulator</button>
+    </div>
+  </div>
+
+  <div class="sheet hidden" id="sheetSum" role="dialog" aria-modal="true">
+    <div class="sh"><div><div class="k">Summary</div><h2>What food does for you</h2></div></div>
+    <div class="sb" id="sumBody"></div>
+    <div class="sf"><button class="primary" id="sumBack">Back to the lab</button></div>
+  </div>
+
+  <div class="sheet hidden" id="sheetWhy" role="dialog" aria-modal="true">
+    <div class="sh"><div><div class="k">Teacher</div><h2>Why this lab looks like this</h2></div><button class="xbtn" id="whyClose" aria-label="Close">×</button></div>
+    <div class="sb" id="whyBody"></div>
+  </div>
+</section>
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+
+/* ---------------- data ---------------- */
+const GROUP={
+  e:{n:'Energy',c:'#E8A317',lite:'#FBEBC8',em:'⚡',does:'gives you energy to run and play'},
+  g:{n:'Growth',c:'#3987E5',lite:'#D8E6FA',em:'💪',does:'helps you grow taller and stronger'},
+  p:{n:'Protective',c:'#199E70',lite:'#D2EFE3',em:'🛡️',does:'protects you from falling sick'},
+  s:{n:'Sometimes',c:'#B95CA0',lite:'#F1DBEA',em:'🍬',does:'is a sometimes food — tasty, but not for every day'}
+};
+const FOOD={
+  roti:{n:'Roti',g:'e'},rice:{n:'Rice',g:'e'},aloo:{n:'Aloo sabzi',g:'e'},bread:{n:'Bread',g:'e'},
+  dal:{n:'Dal',g:'g'},milk:{n:'Milk',g:'g'},egg:{n:'Egg',g:'g'},paneer:{n:'Paneer',g:'g'},
+  banana:{n:'Banana',g:'p'},apple:{n:'Apple',g:'p'},sabzi:{n:'Green sabzi',g:'p'},carrot:{n:'Carrot',g:'p'},
+  chips:{n:'Chips',g:'s'},ladoo:{n:'Ladoo',g:'s'},cola:{n:'Cold drink',g:'s'}
+};
+const BAD={
+  floor:{n:'fell on the floor',why:'dust and germs stick to it'},
+  flies:{n:'was left uncovered and flies sat on it',why:'flies carry germs from dirty places'},
+  mould:{n:'has mould growing on it',why:'mould means it has gone bad'},
+  sour:{n:'has gone sour',why:'it smells bad and can upset your stomach'},
+  rotten:{n:'has gone rotten',why:'soft brown patches mean it is spoiled'}
+};
+const PICK=[{f:'roti'},{f:'dal'},{f:'banana'},{f:'roti',bad:'floor'},{f:'rice'},{f:'milk'},{f:'sabzi'},{f:'milk',bad:'sour'},{f:'egg'},{f:'apple'},{f:'banana',bad:'rotten'},{f:'aloo'},{f:'paneer'},{f:'carrot'},{f:'rice',bad:'flies'},{f:'bread'},{f:'bread',bad:'mould'},{f:'ladoo'},{f:'chips'},{f:'cola'}];
+const HUNGRY=[{n:'A little',cap:3},{n:'Hungry',cap:5},{n:'Very hungry',cap:7}];
+const ADD=34;
+
+/* ---------------- food art (64×64) ---------------- */
+function bowl(fill,extra){
+  return `<ellipse cx="32" cy="29" rx="22" ry="8" fill="${fill}"/>${extra||''}<path d="M10 30h44l-5 22H15z" fill="#CFD6DE" stroke="#9AA6B2" stroke-width="1.5"/><path d="M10 30h44" stroke="#9AA6B2" stroke-width="1.5"/>`;
+}
+function fly(x,y){return `<g><circle cx="${x}" cy="${y}" r="2.2" fill="#222"/><ellipse cx="${x-2.6}" cy="${y-2}" rx="2.6" ry="1.4" fill="#9AB6D6" opacity=".85"/><ellipse cx="${x+2.6}" cy="${y-2}" rx="2.6" ry="1.4" fill="#9AB6D6" opacity=".85"/></g>`;}
+function foodSVG(f,bad){
+  let s='';
+  const sour=bad==='sour';
+  switch(f){
+    case 'roti': s=`<circle cx="32" cy="32" r="24" fill="#E9C994" stroke="#C69C5A" stroke-width="2"/><circle cx="24" cy="26" r="3" fill="#D5AC6A"/><circle cx="38" cy="38" r="4" fill="#D5AC6A"/><circle cx="41" cy="22" r="2.5" fill="#D5AC6A"/><circle cx="22" cy="41" r="2" fill="#D5AC6A"/>`;break;
+    case 'rice': s=bowl('#F4F1E6',`<ellipse cx="32" cy="24" rx="16" ry="8" fill="#FFFDF7" stroke="#E4DCC6"/><g fill="#EFE7D0"><circle cx="24" cy="22" r="1.4"/><circle cx="34" cy="19" r="1.4"/><circle cx="40" cy="24" r="1.4"/><circle cx="30" cy="27" r="1.4"/></g>`);break;
+    case 'aloo': s=bowl('#E0A030',`<g fill="#F2C462" stroke="#C88A20" stroke-width="1"><rect x="20" y="22" width="9" height="8" rx="2"/><rect x="32" y="20" width="9" height="8" rx="2"/><rect x="27" y="14" width="9" height="8" rx="2"/></g>`);break;
+    case 'bread': s=`<path d="M14 26a9 9 0 0 1 9-9h18a9 9 0 0 1 9 9v26H14z" fill="#E9C48E" stroke="#C69C5A" stroke-width="2"/><path d="M19 28h26v20H19z" fill="#F7E8C8"/>`;break;
+    case 'dal': s=bowl('#F2C230',`<g fill="#D9A31A"><circle cx="24" cy="25" r="1.6"/><circle cx="36" cy="23" r="1.6"/><circle cx="42" cy="28" r="1.6"/></g><path d="M30 20c4-6 12-4 12 2" stroke="#3E9A45" stroke-width="2" fill="none"/>`);break;
+    case 'milk': s=`<path d="M19 10h26l-3 44H22z" fill="#EEF2F5" stroke="#9AA6B2" stroke-width="1.5"/><path d="M22 22h20l-2 30H24z" fill="${sour?'#EFE6B8':'#FFFFFF'}"/>${sour?'<path d="M26 8c2-4-2-6 0-10M32 8c2-4-2-6 0-10M38 8c2-4-2-6 0-10" transform="translate(0,6)" stroke="#8FB56A" stroke-width="2" fill="none" stroke-linecap="round"/>':''}`;break;
+    case 'egg': s=`<ellipse cx="32" cy="34" rx="16" ry="20" fill="#FFF8EC" stroke="#E0D5BE" stroke-width="1.5"/><ellipse cx="32" cy="36" rx="8" ry="9" fill="#F5C542"/>`;break;
+    case 'paneer': s=bowl('#4E9A3C',`<g fill="#FFF9EE" stroke="#D8CDB6" stroke-width="1"><rect x="18" y="20" width="11" height="9" rx="2"/><rect x="33" y="19" width="11" height="9" rx="2"/><rect x="26" y="12" width="11" height="9" rx="2"/></g>`);break;
+    case 'banana': s=`<path d="M12 18C13 40 27 53 47 51C50 55 44 59 36 59C18 57 7 40 12 18Z" fill="#F4D03F" stroke="#C9A81E" stroke-width="2"/><path d="M12 18l-2-5" stroke="#6B4A2B" stroke-width="3" stroke-linecap="round"/>`;break;
+    case 'apple': s=`<circle cx="32" cy="36" r="20" fill="#E0412E"/><path d="M32 17v-7" stroke="#6B4A2B" stroke-width="3" stroke-linecap="round"/><path d="M33 14c6-6 12-4 12 0-4 3-9 2-12 0z" fill="#3E9A45"/>`;break;
+    case 'sabzi': s=bowl('#4E9A3C',`<g fill="#3A7A2C"><circle cx="22" cy="26" r="2.5"/><circle cx="34" cy="22" r="2.5"/><circle cx="42" cy="27" r="2.5"/></g><circle cx="29" cy="20" r="2" fill="#F08A24"/>`);break;
+    case 'carrot': s=`<path d="M22 20l10 38 10-38z" fill="#F08A24"/><path d="M27 34h10M25 26h14" stroke="#D9701C" stroke-width="1.5"/><path d="M32 20c-6-2-8-8-4-12M32 20c0-6 4-10 9-10M32 20c6-2 10-2 12 2" stroke="#3E9A45" stroke-width="3" fill="none" stroke-linecap="round"/>`;break;
+    case 'chips': s=`<rect x="16" y="10" width="32" height="46" rx="4" fill="#3B7DD8"/><path d="M20 12l6 3h12l6-3" fill="none" stroke="#2A5FA8" stroke-width="2"/><ellipse cx="32" cy="34" rx="11" ry="9" fill="#F5C542"/><ellipse cx="32" cy="34" rx="6" ry="4" fill="#E8A317"/>`;break;
+    case 'ladoo': s=`<circle cx="32" cy="34" r="18" fill="#F0A030"/><g fill="#D98A1A"><circle cx="24" cy="30" r="2"/><circle cx="36" cy="26" r="2"/><circle cx="40" cy="40" r="2"/><circle cx="28" cy="42" r="2"/></g><ellipse cx="33" cy="34" rx="3" ry="1.8" fill="#3E9A45"/>`;break;
+    case 'cola': s=`<path d="M24 8h16v8l5 7v31H19V23l5-7z" fill="#5A2A12"/><rect x="24" y="8" width="16" height="4" fill="#D33"/><rect x="21" y="30" width="22" height="11" fill="#D33"/>`;break;
+  }
+  if(bad==='floor') s=`<path d="M4 58h56" stroke="#8B6B4A" stroke-width="3" stroke-linecap="round"/>`+s+`<g fill="#7A5A3A" opacity=".8"><circle cx="20" cy="30" r="1.6"/><circle cx="40" cy="26" r="1.6"/><circle cx="30" cy="44" r="1.6"/><circle cx="44" cy="42" r="1.6"/></g><g fill="#9AA6B2"><circle cx="8" cy="52" r="1.5"/><circle cx="56" cy="50" r="1.5"/><circle cx="14" cy="46" r="1.2"/></g>`;
+  if(bad==='flies') s+=fly(18,12)+fly(48,16)+fly(40,6)+`<path d="M18 12c8-8 22-8 30 4" stroke="#222" stroke-width="1" stroke-dasharray="2 2" fill="none"/>`;
+  if(bad==='mould') s+=`<g><circle cx="24" cy="36" r="5" fill="#6E8F5A"/><circle cx="30" cy="30" r="4" fill="#9DB48A"/><circle cx="38" cy="40" r="5" fill="#6E8F5A"/><circle cx="42" cy="34" r="3" fill="#B7C7A5"/></g>`;
+  if(bad==='rotten') s+=`<g fill="#6B4A2B" opacity=".9"><ellipse cx="${f==='banana'?22:30}" cy="${f==='banana'?42:42}" rx="5" ry="3.5"/><ellipse cx="${f==='banana'?34:40}" cy="${f==='banana'?51:34}" rx="5" ry="3"/><ellipse cx="${f==='banana'?44:22}" cy="${f==='banana'?54:30}" rx="3" ry="2.5"/></g>`+fly(50,14);
+  return s;
+}
+function foodIcon(f,bad,attrs){return `<svg viewBox="0 0 64 64" ${attrs||''} xmlns="${NS}">${foodSVG(f,bad)}</svg>`;}
+function foodName(it){return FOOD[it.f].n+(it.bad?' ('+BAD[it.bad].n.replace('was ','').replace('has ','')+')':'');}
+
+/* ---------------- state ---------------- */
+const S={tab:'thali',hungry:1,plate:[],eaten:{e:0,g:0,p:0,s:0},busy:false,game:null,msg:'',interacted:false,step:0,layout:null,binPop:0,lastAdded:0,ate:false,ateNote:''};
+let uid=0;
+const cap=()=>HUNGRY[S.hungry].cap;
+function planned(){const o={e:0,g:0,p:0,s:0};S.plate.forEach((it,i)=>{if(i<cap()&&!it.left&&!it.gone)add(o,it.f);});return o;}
+function add(o,f){const g=FOOD[f].g;if(g==='s'){o.s=Math.min(100,o.s+ADD);o.e=Math.min(100,o.e+12);}else o[g]=Math.min(100,o[g]+ADD);}
+function groupsOn(){const set=new Set();S.plate.forEach(it=>{if(!it.gone)set.add(FOOD[it.f].g);});return set;}
+
+/* ---------------- top scene: counter + plate ---------------- */
+function arc(cx,cy,r,a0,a1){const p=a=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];const [x0,y0]=p(a0),[x1,y1]=p(a1);return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${r} ${r} 0 ${(a1-a0)>180?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;}
+function renderPlate(){
+  const svg=$('#svg1');const cx=150,cy=114;
+  let h=`<defs><radialGradient id="pl" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#F6F8FA"/><stop offset="1" stop-color="#C7D0D9"/></radialGradient></defs>
+  <rect width="400" height="230" fill="#FFFDF8"/><rect x="0" y="176" width="400" height="54" fill="#EAD5B2"/><rect x="0" y="176" width="400" height="4" fill="#D9BE94"/>
+  <circle cx="${cx}" cy="${cy}" r="86" fill="url(#pl)" stroke="#9AA6B2" stroke-width="2"/><circle cx="${cx}" cy="${cy}" r="66" fill="none" stroke="#B8C2CC" stroke-width="1.5"/>`;
+  const c=cap();
+  for(let i=0;i<8;i++){const a=(-90+i*45)*Math.PI/180;const x=cx+56*Math.cos(a),y=cy+56*Math.sin(a);
+    h+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="22" fill="${i<c?'#FFFFFF':'#E6EBF0'}" stroke="${i<c?'#B8C2CC':'#D3DAE1'}" stroke-width="1.5" ${i>=c?'stroke-dasharray="3 3"':''}/>`;}
+  S.plate.forEach((it,i)=>{if(i>=8)return;const a=(-90+i*45)*Math.PI/180;const x=cx+56*Math.cos(a)-19.5,y=cy+56*Math.sin(a)-19.5;
+    const cls=it.gone?'chomp':(it.id===S.lastAdded?'pop':'');const dim=it.left?' opacity=".45"':'';
+    h+=`<g class="${cls}" data-id="${it.id}" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(.61)"${dim} style="cursor:pointer">${foodSVG(it.f,it.bad)}</g>`;
+    if(it.left) h+=`<text x="${(x+19.5).toFixed(1)}" y="${(y+47).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="800" fill="#C0392B">left over</text>`;});
+  if(!S.plate.length&&!S.ate) h+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="12" font-weight="800" fill="#8A96A3">tap a food below</text>`;
+  if(S.ate&&!S.plate.some(it=>!it.gone)) h+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="16" font-weight="800" fill="#199E70">Clean plate!</text><text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="11" font-weight="700" fill="#5F6F7E">nothing wasted</text>`;
+  h+=`<text x="${cx}" y="221" text-anchor="middle" font-size="11" font-weight="700" fill="#5F6F7E">${c} white bowls = room in your tummy</text>`;
+  // bin
+  h+=`<g transform="translate(300,86)"><path d="M6 24h64l-7 76H13z" fill="#8FA0B0" stroke="#6C7B8A" stroke-width="2"/><rect x="0" y="14" width="76" height="12" rx="4" fill="#6C7B8A"/><rect x="28" y="6" width="20" height="9" rx="3" fill="#6C7B8A"/><path d="M24 40l3 48M38 40v48M52 40l-3 48" stroke="#6C7B8A" stroke-width="2"/><text x="38" y="120" text-anchor="middle" font-size="11" font-weight="800" fill="#5F6F7E">bin</text>`;
+  if(Date.now()-S.binPop<1200) h+=`<g class="puff"><circle cx="20" cy="14" r="8" fill="#8FBF5A" stroke="#5C8A32" stroke-width="2"/><circle cx="46" cy="4" r="7" fill="#8FBF5A" stroke="#5C8A32" stroke-width="2"/><circle cx="62" cy="18" r="6" fill="#8FBF5A" stroke="#5C8A32" stroke-width="2"/><text x="38" y="-4" text-anchor="middle" font-size="16" font-weight="800" fill="#C0392B">germs!</text></g>`;
+  h+=`</g>`;
+  svg.innerHTML=h;
+  svg.querySelectorAll('g[data-id]').forEach(g=>g.addEventListener('click',()=>putBack(+g.dataset.id)));
+}
+
+/* ---------------- bottom scene: inside you ---------------- */
+function childSVG(e,g,p,sc,bounce){
+  const tot=(e+g+p)/3;const mouth=tot>60?'M-9 -100q9 9 18 0':tot>15?'M-8 -100q8 5 16 0':'M-7 -99h14';
+  const dur=(1.6-1.1*e/100).toFixed(2)+'s',amp=(2+e/100*10).toFixed(0)+'px';
+  return `<g transform="translate(100,208) scale(${sc.toFixed(3)})"><g class="${bounce?'bounce':''}" style="--dur:${dur};--amp:${amp}">
+  <circle cx="0" cy="-118" r="24" fill="#E7B58F"/><path d="M-24 -122c4-22 44-24 48 0-8-6-36-8-48 0z" fill="#3B2A22"/>
+  <circle cx="-8" cy="-118" r="2.8" fill="#2B2B2B"/><circle cx="8" cy="-118" r="2.8" fill="#2B2B2B"/><path d="${mouth}" fill="none" stroke="#2B2B2B" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M-22 -92h44l7 56h-58z" fill="#3987E5"/><path d="M-22 -88l-14 30" stroke="#E7B58F" stroke-width="9" stroke-linecap="round"/><path d="M22 -88l14 30" stroke="#E7B58F" stroke-width="9" stroke-linecap="round"/>
+  <rect x="-20" y="-36" width="16" height="36" rx="6" fill="#E7B58F"/><rect x="4" y="-36" width="16" height="36" rx="6" fill="#E7B58F"/>
+  <ellipse cx="-12" cy="0" rx="10" ry="4" fill="#4A4A4A"/><ellipse cx="12" cy="0" rx="10" ry="4" fill="#4A4A4A"/></g></g>`;
+}
+function germ(x,y,op){return `<g class="germ" opacity="${op.toFixed(2)}"><circle cx="${x}" cy="${y}" r="8" fill="#8FBF5A" stroke="#5C8A32" stroke-width="2"/><path d="M${x-11} ${y}h-4M${x+11} ${y}h4M${x} ${y-11}v-4M${x} ${y+11}v4" stroke="#5C8A32" stroke-width="2"/><circle cx="${x-3}" cy="${y-2}" r="1.5" fill="#2B2B2B"/><circle cx="${x+3}" cy="${y-2}" r="1.5" fill="#2B2B2B"/></g>`;}
+function meter(y,k,eaten,plan){
+  const G=GROUP[k];const x=195,w=190;const small=k==='s';
+  return `<text x="${x}" y="${y-7}" font-size="${small?11:13}" font-weight="800" fill="${G.c}">${G.em} ${G.n}</text>
+  <rect x="${x}" y="${y}" width="${w}" height="${small?9:14}" rx="7" fill="${G.lite}"/>
+  <rect x="${x}" y="${y}" width="${(w*Math.min(100,eaten+plan)/100).toFixed(1)}" height="${small?9:14}" rx="7" fill="${G.c}" opacity=".35"/>
+  <rect x="${x}" y="${y}" width="${(w*eaten/100).toFixed(1)}" height="${small?9:14}" rx="7" fill="${G.c}"/>`;
+}
+function renderBody(){
+  const P=planned();const E=S.eaten;
+  const p=E.p,e=E.e,g=E.g;
+  let h=`<rect width="400" height="230" fill="#FFFFFF"/><rect x="0" y="208" width="400" height="22" fill="#F1F4F7"/>`;
+  if(p>0) h+=`<circle cx="100" cy="140" r="74" fill="none" stroke="#199E70" stroke-width="5" stroke-dasharray="8 7" opacity="${(0.15+0.85*p/100).toFixed(2)}"/>`;
+  h+=germ(28,70,1-0.9*p/100)+germ(22,140,1-0.9*p/100)+germ(34,196,1-0.9*p/100);
+  h+=childSVG(e,g,p,0.82+0.28*g/100,e>0);
+  h+=meter(50,'e',e,P.e)+meter(100,'g',g,P.g)+meter(150,'p',p,P.p)+meter(196,'s',E.s,P.s);
+  const cap=`<text x="100" y="226" text-anchor="middle" font-size="11" font-weight="700" fill="#5F6F7E">${p>=60?'germs bounce off!':p>0?'a little protection':'no protection yet'}</text>`;
+  $('#svg2').innerHTML=h+cap;
+}
+
+/* ---------------- dial ---------------- */
+function renderDial(){
+  const d=$('#dial');let h='';
+  if(S.tab==='games'&&S.game){
+    const G=GAMES[S.game.gi],N=G.rounds.length;
+    for(let i=0;i<N;i++){const a0=-90+i*(360/N)+2,a1=-90+(i+1)*(360/N)-2;const r=S.game.results[i];
+      h+=`<path d="${arc(50,50,42,a0,a1)}" fill="none" stroke="${r===true?'#199E70':r===false?'#C0392B':'#E2E7EC'}" stroke-width="9" stroke-linecap="butt"/>`;}
+    h+=`<text x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#22303C">${S.game.score}<tspan font-size="12" fill="#5F6F7E">/${N}</tspan></text><text x="50" y="70" text-anchor="middle" font-size="9" fill="#5F6F7E">right</text>`;
+    $('#dt').textContent=G.n;$('#ds').textContent=S.game.done?'Finished — tap Play again':`Round ${S.game.round+1} of ${N}`;
+  }else{
+    const P=planned();const keys=['e','g','p'];
+    keys.forEach((k,i)=>{const a0=-90+i*120+3,a1=-90+(i+1)*120-3;const G=GROUP[k];
+      h+=`<path d="${arc(50,50,42,a0,a1)}" fill="none" stroke="${G.lite}" stroke-width="9"/>`;
+      const tot=Math.min(100,S.eaten[k]+P[k]);
+      if(tot>0) h+=`<path d="${arc(50,50,42,a0,a0+(a1-a0)*tot/100)}" fill="none" stroke="${G.c}" stroke-width="9" opacity=".4"/>`;
+      if(S.eaten[k]>0) h+=`<path d="${arc(50,50,42,a0,a0+(a1-a0)*S.eaten[k]/100)}" fill="none" stroke="${G.c}" stroke-width="9"/>`;});
+    const n=S.plate.filter(it=>!it.gone).length;
+    h+=`<text x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="${n>cap()?'#C0392B':'#22303C'}">${n}<tspan font-size="12" fill="#5F6F7E">/${cap()}</tspan></text><text x="50" y="70" text-anchor="middle" font-size="9" fill="#5F6F7E">on plate</text>`;
+    const gs=groupsOn();const bal=['e','g','p'].every(k=>gs.has(k));
+    $('#dt').textContent=bal?'Balanced plate!':'Your plate';
+    $('#ds').textContent=n>cap()?`Too much — ${n-cap()} more than fits`:`${HUNGRY[S.hungry].n}: ${cap()} foods fit`;
+  }
+  d.innerHTML=h;
+}
+
+/* ---------------- games ---------------- */
+const GAMES=[
+  {id:'eat',n:'Would you eat this?',c:'#C0392B',q:'Would you eat this?',
+   rounds:[{f:'roti',bad:'floor',a:1},{f:'banana',a:0},{f:'milk',bad:'sour',a:1},{f:'dal',a:0},{f:'rice',bad:'flies',a:1},{f:'egg',a:0},{f:'apple',bad:'rotten',a:1},{f:'bread',bad:'mould',a:1}],
+   opts:[{em:'😋',t:'Yes, it is safe'},{em:'🚫',t:'No, into the bin'}],
+   fb:r=>r.bad?`It ${BAD[r.bad].n} — ${BAD[r.bad].why}. Into the bin!`:`${FOOD[r.f].n} is clean and fresh. Enjoy it!`},
+  {id:'does',n:'What does it do?',c:'#3987E5',q:'What does this food do for you?',
+   rounds:[{f:'roti',a:0},{f:'milk',a:1},{f:'apple',a:2},{f:'dal',a:1},{f:'rice',a:0},{f:'sabzi',a:2},{f:'egg',a:1},{f:'banana',a:2}],
+   opts:[{em:'⚡',t:'Gives energy'},{em:'💪',t:'Helps me grow'},{em:'🛡️',t:'Keeps me safe'}],
+   fb:r=>`${FOOD[r.f].n} ${GROUP[FOOD[r.f].g].does}.`},
+  {id:'thali',n:'Complete the thali',c:'#199E70',q:'Which food is missing from this thali?',
+   rounds:[{plate:['roti','dal'],opts:['banana','rice','ladoo'],a:0},{plate:['rice','sabzi'],opts:['chips','milk','bread'],a:1},{plate:['milk','apple'],opts:['egg','roti','carrot'],a:1},{plate:['bread','carrot'],opts:['cola','paneer','aloo'],a:1},{plate:['egg','aloo'],opts:['rice','sabzi','ladoo'],a:1},{plate:['dal','banana'],opts:['paneer','apple','roti'],a:2}],
+   fb:r=>{const have=r.plate.map(f=>GROUP[FOOD[f].g].n);const miss=['e','g','p'].find(k=>!r.plate.some(f=>FOOD[f].g===k));return `The thali had ${have.join(' and ')} foods. ${GROUP[miss].n} was missing — ${FOOD[r.opts[r.a]].n} is a ${GROUP[miss].n} food.`;}}
+];
+function startGame(gi,round){S.game={gi,round:round||0,score:0,results:[],answered:null,done:false};S.msg=GAMES[gi].q;renderGame();renderDial();renderSay();}
+function renderGame(){
+  const top=$('#gameTop'),bot=$('#gameOpts');
+  if(S.tab!=='games'||!S.game){top.classList.add('hidden');bot.classList.add('hidden');return;}
+  top.classList.remove('hidden');bot.classList.remove('hidden');
+  const G=GAMES[S.game.gi],st=S.game;
+  if(st.done){
+    const N=G.rounds.length,sc=st.score,stars=sc>=N*0.9?'⭐⭐⭐':sc>=N*0.6?'⭐⭐':'⭐';
+    top.innerHTML=`<div class="score"><div class="stars">${stars}</div><div class="q">You got ${sc} of ${N} right</div></div>`;
+    bot.innerHTML=`<div class="score"><div class="fb">${sc===N?'Perfect! Try another game.':'Play again to get them all.'}</div><button class="primary big" id="againBtn">Play again</button></div>`;
+    $('#againBtn').addEventListener('click',()=>startGame(st.gi,0));
+    return;
+  }
+  const r=G.rounds[st.round];
+  let pic;
+  if(G.id==='thali'){
+    pic=`<svg viewBox="0 0 200 120" xmlns="${NS}" style="height:100%;max-height:150px"><circle cx="100" cy="60" r="56" fill="#E6EBF0" stroke="#9AA6B2" stroke-width="2"/><circle cx="66" cy="60" r="20" fill="#fff" stroke="#B8C2CC"/><circle cx="134" cy="60" r="20" fill="#fff" stroke="#B8C2CC"/><circle cx="100" cy="24" r="20" fill="#fff" stroke="#B8C2CC" stroke-dasharray="4 3"/><text x="100" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#8A96A3">?</text>
+      <g transform="translate(48,42) scale(.56)">${foodSVG(r.plate[0])}</g><g transform="translate(116,42) scale(.56)">${foodSVG(r.plate[1])}</g></svg>`;
+  }else pic=foodIcon(r.f,r.bad,'style="height:100%;max-height:150px"');
+  top.innerHTML=`<div class="pic">${pic}</div><div class="q">${G.q}</div>`;
+  const opts=G.id==='thali'?r.opts.map(f=>({svg:foodIcon(f),t:FOOD[f].n})):G.opts;
+  bot.innerHTML=`<div class="opts n${opts.length}">${opts.map((o,i)=>{let cls='opt';if(st.answered!==null){if(i===r.a)cls+=' right';else if(i===st.answered)cls+=' wrong';}
+    return `<button class="${cls}" data-i="${i}" ${st.answered!==null?'disabled':''}>${o.svg||`<span class="em">${o.em}</span>`}<span>${o.t}</span></button>`;}).join('')}</div><div class="fb">${st.answered!==null?G.fb(r):''}</div>`;
+  bot.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.i)));
+}
+function answer(i){
+  const st=S.game,G=GAMES[st.gi],r=G.rounds[st.round];if(st.answered!==null)return;
+  interact();st.answered=i;const ok=i===r.a;st.results[st.round]=ok;if(ok)st.score++;
+  S.msg=(ok?'Yes! ':'Not quite. ')+G.fb(r);renderGame();renderDial();renderSay();
+  setTimeout(()=>{if(!S.game||S.game!==st)return;st.round++;st.answered=null;if(st.round>=G.rounds.length){st.done=true;S.msg=`You got ${st.score} of ${G.rounds.length} right.`;}else S.msg=G.q;renderGame();renderDial();renderSay();},1500);
+}
+
+/* ---------------- say / speech ---------------- */
+function renderSay(){$('#say').textContent=S.msg;}
+function speak(t){if(!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-IN';u.rate=0.9;speechSynthesis.speak(u);}catch(e){}}
+
+/* ---------------- actions ---------------- */
+function interact(){if(S.interacted)return;S.interacted=true;updateNext();}
+function tapFood(it){
+  if(S.busy)return;interact();
+  if(S.ate){S.plate=[];S.ate=false;S.eaten={e:0,g:0,p:0,s:0};}
+  if(it.bad){S.binPop=Date.now();S.msg=`${FOOD[it.f].n} ${BAD[it.bad].n} — ${BAD[it.bad].why}. Germs! Into the bin.`;renderAll();setTimeout(renderPlate,1300);return;}
+  const n=S.plate.length;
+  if(n>=8){S.msg='The plate is full! Tap Eat!, or tap a food on the plate to put it back.';renderSay();return;}
+  const item={f:it.f,id:++uid};S.plate.push(item);S.lastAdded=item.id;
+  const F=FOOD[it.f];S.msg=`${F.n} ${GROUP[F.g].does}.`;
+  if(S.plate.length>cap())S.msg+=` But that is more than fits in your tummy — you may leave some.`;
+  else if(['e','g','p'].every(k=>groupsOn().has(k))&&S.plate.length===3)S.msg+=' Energy, Growth and Protective — a balanced plate!';
+  renderAll();
+}
+function putBack(id){if(S.busy||S.ate)return;interact();S.plate=S.plate.filter(it=>it.id!==id);S.lastAdded=0;S.msg='Put back. Take only what you can finish.';renderAll();}
+function eat(){
+  if(S.busy)return;interact();
+  if(S.tab==='games'){if(S.game)startGame(S.game.gi,0);return;}
+  const items=S.plate.filter(it=>!it.gone);
+  if(!items.length){S.msg='Your plate is empty. Tap a food first.';renderSay();return;}
+  S.busy=true;$('#playBtn').disabled=true;const c=cap();let i=0;
+  const step=()=>{
+    if(i>=S.plate.length){finish();return;}
+    const it=S.plate[i];
+    if(i<c){it.gone=true;add(S.eaten,it.f);S.msg=`Munch! ${FOOD[it.f].n} — ${GROUP[FOOD[it.f].g].n}.`;}
+    else{it.left=true;S.msg=`${FOOD[it.f].n} is left over…`;}
+    S.lastAdded=0;renderAll();i++;setTimeout(step,420);
+  };
+  const finish=()=>{
+    const left=S.plate.filter(it=>it.left).length;S.ate=true;S.busy=false;$('#playBtn').disabled=false;
+    const gs=new Set(S.plate.filter(it=>it.gone).map(it=>FOOD[it.f].g));const bal=['e','g','p'].every(k=>gs.has(k));
+    if(left) S.msg=`You could not finish — ${left} food${left>1?'s':''} left over, and that is waste. Next time take a little, finish it, then ask for more.`;
+    else S.msg=`Clean plate — nothing wasted!`+(bal?' And it was balanced: Energy, Growth and Protective.':gs.has('s')&&gs.size===1?' But only sometimes foods… your body got very little.':' Try adding '+['e','g','p'].filter(k=>!gs.has(k)).map(k=>GROUP[k].n).join(' and ')+' next time.');
+    S.plate=S.plate.filter(it=>it.left);renderAll();
+  };
+  step();
+}
+function newPlate(){if(S.busy)return;if(S.tab==='games'){nextGame();return;}S.plate=[];S.eaten={e:0,g:0,p:0,s:0};S.ate=false;S.lastAdded=0;S.msg='A fresh plate. Pick foods — is each one clean?';renderAll();}
+function nextGame(){const gi=S.game?(S.game.gi+1)%GAMES.length:0;startGame(gi,0);renderGameChips();}
+function setHungry(i){if(S.busy)return;interact();S.hungry=i;S.msg=`${HUNGRY[i].n}: ${HUNGRY[i].cap} foods fit in your tummy.`+(S.plate.filter(it=>!it.gone).length>HUNGRY[i].cap?' Your plate has more than that.':'');renderHungryChips();renderAll();}
+function setTab(t){
+  S.tab=t;$$('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  $('#panelThali').classList.toggle('hidden',t!=='thali');$('#panelGames').classList.toggle('hidden',t!=='games');
+  if(t==='games'){if(!S.game)startGame(0,0);renderGameChips();$('#tag1').textContent=GAMES[S.game.gi].n;$('#tag2').textContent='Your answer';$('#playBtn').textContent='Play again';$('#clearBtn').textContent='Next game';}
+  else{$('#tag1').textContent='Kitchen counter';$('#tag2').textContent='Inside you';$('#playBtn').textContent='Eat!';$('#clearBtn').textContent='New plate';if(!S.msg||S.msg===GAMES[0].q)S.msg='Pick foods for your plate. Look carefully — is each one clean?';}
+  renderGame();renderDial();renderSay();
+}
+function renderAll(){renderPlate();renderBody();renderDial();renderSay();}
+
+/* ---------------- chips ---------------- */
+function renderFoodChips(){
+  $('#foodRow').innerHTML=PICK.map((it,i)=>`<button class="chip food${it.bad?' bad':''}" data-i="${i}" title="${foodName(it)}">${foodIcon(it.f,it.bad)}<span>${FOOD[it.f].n}</span></button>`).join('');
+  $$('#foodRow .chip').forEach(b=>b.addEventListener('click',()=>tapFood(PICK[+b.dataset.i])));
+}
+function renderHungryChips(){
+  $('#hungryRow').innerHTML=HUNGRY.map((h,i)=>`<button class="chip${i===S.hungry?' on':''}" data-i="${i}">${['🙂','😀','😋'][i]} ${h.n} <span style="color:var(--mute)">· ${h.cap}</span></button>`).join('');
+  $$('#hungryRow .chip').forEach(b=>b.addEventListener('click',()=>setHungry(+b.dataset.i)));
+}
+function renderGameChips(){
+  $('#gameRow').innerHTML=GAMES.map((g,i)=>`<button class="chip game${S.game&&S.game.gi===i?' on':''}" data-i="${i}"><i class="dot" style="background:${g.c}"></i>${g.n}</button>`).join('');
+  $$('#gameRow .chip').forEach(b=>b.addEventListener('click',()=>{interact();startGame(+b.dataset.i,0);renderGameChips();$('#tag1').textContent=GAMES[+b.dataset.i].n;}));
+}
+
+/* ---------------- questions ---------------- */
+const QS=[
+  {t:'Your roti fell on the floor. What do you do?',
+   opts:[{f:'roti',bad:'floor',t:'Pick it up and eat it quickly'},{em:'🗑️',t:'Put it in the bin and ask for a fresh one'},{f:'roti',t:'Give it to a friend'}],a:1,
+   yes:'Right — into the bin.',no:'Not this time.',
+   why:'Dust and germs stick to food that falls on the floor, even if you cannot see them. Eating it can give you a stomach ache. Put it in the bin, wash your hands, and ask for a fresh roti.',
+   scen:()=>{setTab('thali');S.plate=[];S.eaten={e:0,g:0,p:0,s:0};S.ate=false;tapFood({f:'roti',bad:'floor'});}},
+  {t:'What does milk do for you?',
+   opts:[{em:'😴',t:'Makes me sleepy'},{f:'milk',t:'Helps me grow taller and stronger'},{em:'🍬',t:'It is a sometimes food'}],a:1,
+   yes:'Yes — milk is a Growth food.',no:'Not quite.',
+   why:'Milk, dal, egg and paneer are Growth foods. They build your bones and muscles so you grow taller and stronger. Roti and rice give energy; fruit and vegetables protect you from falling sick.',
+   scen:()=>{setTab('games');startGame(1,1);renderGameChips();$('#tag1').textContent=GAMES[1].n;}},
+  {t:'This plate has roti, rice and a ladoo. What is missing?',
+   opts:[{f:'rice',t:'More rice'},{f:'sabzi',t:'A sabzi or a fruit'},{f:'ladoo',t:'Another ladoo'}],a:1,
+   yes:'Yes — something to protect you.',no:'Look at the colours of the plate.',
+   why:'Roti and rice are both Energy foods, and a ladoo is a sometimes food. Nothing on this plate protects you from falling sick, and nothing helps you grow. Add a sabzi or a fruit for protection, and dal or milk for growth.',
+   scen:()=>{setTab('thali');S.plate=[];S.eaten={e:0,g:0,p:0,s:0};S.ate=false;S.hungry=1;renderHungryChips();['roti','rice','ladoo'].forEach(f=>S.plate.push({f,id:++uid}));S.lastAdded=0;S.msg='Only Energy and Sometimes foods. The green part of the ring is empty — add a sabzi or fruit!';renderAll();}}
+];
+let qi=0,qPick=null,qDone=false;
+function optIcon(o){return o.f?foodIcon(o.f,o.bad):`<span class="em">${o.em}</span>`;}
+function openQ(i){
+  qi=i;qPick=null;qDone=false;const q=QS[i];
+  $('#qk').textContent=`Question ${i+1} of 3`;$('#qt').textContent=q.t;$('#qverdict').innerHTML='';
+  $('#qopts').innerHTML=q.opts.map((o,k)=>`<button class="qopt" data-k="${k}">${optIcon(o)}<span>${o.t}</span></button>`).join('');
+  $$('#qopts .qopt').forEach(b=>b.addEventListener('click',()=>{if(qDone)return;qPick=+b.dataset.k;$$('#qopts .qopt').forEach(x=>x.classList.toggle('on',+x.dataset.k===qPick));const s=$('#qsubmit');s.disabled=false;s.textContent='Check my answer';}));
+  const s=$('#qsubmit');s.disabled=true;s.textContent='Choose an answer';s.classList.remove('hidden');$('#qsee').classList.add('hidden');
+  openSheet('#sheetQ');
+}
+function submitQ(){
+  if(qPick===null||qDone)return;qDone=true;const q=QS[qi];const ok=qPick===q.a;
+  $$('#qopts .qopt').forEach(b=>{const k=+b.dataset.k;b.disabled=true;b.classList.remove('on');if(k===q.a)b.classList.add('right');else if(k===qPick)b.classList.add('wrong');});
+  $('#qverdict').innerHTML=`<div class="verdict${ok?'':' no'}"><b>${ok?q.yes:q.no}</b>${q.why}</div>`;
+  $('#qsubmit').classList.add('hidden');$('#qsee').classList.remove('hidden');
+  $('#sheetQ .sb').scrollTop=9999;
+}
+function seeQ(){closeSheets();QS[qi].scen();S.interacted=true;if(S.step===qi)S.step=qi+1;updateNext();}
+
+/* ---------------- summary ---------------- */
+const SUM=`
+<div class="scard"><h4>The big idea</h4><p>Food is not only for taste. Every food does a job inside you: some give you energy, some help you grow, and some keep you from falling sick. A good plate has all three, and only as much as you can finish.</p></div>
+<div class="scard"><h4>Three friends on your plate</h4>
+<div class="three"><div style="background:#E8A317">⚡ Energy<br><small>roti · rice · bread · aloo</small></div><div style="background:#3987E5">💪 Growth<br><small>dal · milk · egg · paneer</small></div><div style="background:#199E70">🛡️ Protective<br><small>fruit · sabzi · carrot</small></div></div>
+<p style="margin-top:8px">Check your tiffin: can you find one friend from each colour?</p></div>
+<div class="scard"><h4>Check before you eat</h4><ul><li>Is it covered? Flies sit on open food.</li><li>Is it washed? Fruit and hands both.</li><li>Does it look and smell fresh? Mould, brown soft patches or a sour smell mean bin, not mouth.</li><li>Did it fall on the floor? Bin — even if it looks clean.</li></ul></div>
+<div class="scard"><h4>Sometimes foods</h4><p>Chips, sweets and cold drinks are tasty, but they only give a little energy and nothing else. Have them sometimes, in small amounts — not every day, and not instead of a meal.</p></div>
+<div class="scard"><h4>Take a little, finish it, ask for more</h4><p>Food left on the plate is wasted. Farmers worked hard to grow it, and many children do not have enough. Serve a small portion first, finish it, and ask for more if you are still hungry.</p></div>
+<div class="scard"><h4>New foods take time</h4><p>The first taste of a new vegetable can feel strange. It can take many small tries before you like it — so take one bite today, and one more next time.</p></div>
+<div class="scard"><h4>Buddy task</h4><button class="reveal" id="rev1">Tap to see your task ▾</button><p class="hidden" id="rev1p">Help a younger child pick one fruit or vegetable for their tiffin tomorrow. Tell them which friend it is — Energy, Growth or Protective — and why it is good for them.</p></div>
+<div class="scard"><h4>Common mix-up</h4><p><b>"A big plate is a healthy plate."</b> No — a big plate you cannot finish means waste. A healthy plate is a small, colourful one with all three friends on it, eaten up completely.</p></div>`;
+function openSum(){$('#sumBody').innerHTML=SUM;$('#rev1').addEventListener('click',()=>{$('#rev1p').classList.toggle('hidden');});openSheet('#sheetSum');$('#sheetSum .sb').scrollTop=0;}
+function closeSum(){closeSheets();if(S.step===3){S.step=4;updateNext();}}
+
+/* ---------------- teacher: why ---------------- */
+const WHY=`
+<div class="scard"><h4>Why a tiffin, and why a body you can see inside</h4><p>Children at this stage already know mealtime, tiffin and "dirty food"; the lab starts from that. What they cannot see is what food does after it is eaten, so the second picture shows it: a child whose energy, growth and protection fill up as foods are eaten. That turns "eat your dal" from a rule into a visible cause and effect.</p></div>
+<div class="scard"><h4>Design choices</h4><ul><li><b>Plan, then eat.</b> Placing a food only lightly fills the meter; <em>Eat!</em> fills it solid. Children see that a food only helps once it is actually eaten.</li><li><b>Tummy room.</b> The hunger chips set how many foods fit. Anything beyond is left over — the plate shows the waste, and the message asks for a smaller helping next time (S4).</li><li><b>Spoiled foods sit next to clean ones.</b> Children must look, not read: dust and a floor line, flies, mould, brown patches, a sour smell. Tapping one sends it to the bin with a germ puff, and the meters do not change.</li><li><b>Sometimes foods are allowed.</b> They give a little energy and fill a small "Sometimes" bar, so the message is "not every day", not "never".</li><li><b>Read-aloud.</b> Every message and question has a speaker button (uses the device voice), so pre-readers can use the lab.</li></ul></div>
+<div class="scard"><h4>Rubric mapping · C-1.1</h4>
+<table class="map"><tr><th>In the lab</th><th>Rubric cell</th></tr>
+<tr><td>Would you eat this? (8 rounds)</td><td><code>C1.1-S1-L1</code> <code>S1-L2</code> auto-scored picture sort</td></tr>
+<tr><td>Food chips: names read aloud on tap</td><td><code>C1.1-S2-L1</code> "Tap the food"</td></tr>
+<tr><td>What does it do? (8 rounds)</td><td><code>C1.1-S2-L2</code> picture MCQ</td></tr>
+<tr><td>Complete the thali (6 rounds)</td><td><code>C1.1-S2-L3</code> <code>S2-L4</code></td></tr>
+<tr><td>Build a balanced plate in Thali</td><td><code>C1.1-S2-L5</code> "Build a thali" simulation</td></tr>
+<tr><td>Hunger chips + Eat! (leftover check)</td><td><code>C1.1-S4-L4</code> "Serve it right"</td></tr>
+<tr><td>Question 1 · floor roti</td><td><code>S1-L2</code></td></tr>
+<tr><td>Question 2 · milk</td><td><code>S2-L2</code></td></tr>
+<tr><td>Question 3 · what is missing</td><td><code>S2-L4</code></td></tr>
+</table>
+<p style="margin-top:8px">Not covered on screen: trying and enjoying varied food (S3) and eating neatly / finishing at real mealtimes (S4-L1 to L3). Those stay as yes / not-yet checklists.</p></div>
+<div class="scard"><h4>Talk prompts</h4><ul><li>"Which friend is your tiffin missing today?"</li><li>"Show me a food that is clean and one that is not. How do you know?"</li><li>"You took too much and could not finish. What will you do differently tomorrow?"</li></ul></div>`;
+function openWhy(){$('#whyBody').innerHTML=WHY;openSheet('#sheetWhy');}
+
+/* ---------------- sheets ---------------- */
+function openSheet(sel){closeSheets();$('#backdrop').classList.remove('hidden');$(sel).classList.remove('hidden');}
+function closeSheets(){$('#backdrop').classList.add('hidden');$$('.sheet').forEach(s=>s.classList.add('hidden'));}
+$('#backdrop').addEventListener('click',e=>{e.stopPropagation();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#backdrop').classList.contains('hidden'))e.preventDefault();});
+
+/* ---------------- next / stepper ---------------- */
+function updateNext(){
+  const b=$('#nextBtn'),sub=$('#nextSub'),fill=b.querySelector('.fill');
+  if(!S.interacted){b.disabled=true;sub.textContent='Try the simulator first';fill.style.width='0';return;}
+  b.disabled=false;
+  const n=Math.min(S.step,4);fill.style.width=(n/4*100)+'%';
+  if(S.step<3){b.firstElementChild.textContent='Next';sub.textContent=`Step ${S.step+1} of 4 · Question ${S.step+1}`;}
+  else if(S.step===3){b.firstElementChild.textContent='Next';sub.textContent='Step 4 of 4 · Summary';}
+  else{b.firstElementChild.textContent='Done';sub.textContent='See the summary again';}
+}
+$('#nextBtn').addEventListener('click',()=>{if(S.step<3)openQ(S.step);else openSum();});
+$('#qsubmit').addEventListener('click',submitQ);
+$('#qsee').addEventListener('click',seeQ);
+$('#sumBack').addEventListener('click',closeSum);
+$('#sumBtn').addEventListener('click',openSum);
+$('#whyBtn').addEventListener('click',openWhy);
+$('#whyClose').addEventListener('click',closeSheets);
+$('#qspk').addEventListener('click',()=>speak(QS[qi].t+'. '+QS[qi].opts.map(o=>o.t).join('. ')));
+$('#spk').addEventListener('click',()=>speak(S.msg));
+
+/* ---------------- role, layout, tabs, start ---------------- */
+function setRole(r){document.body.classList.toggle('teacher',r==='teacher');$$('.roleSwitch button').forEach(b=>b.classList.toggle('on',b.dataset.role===r));}
+$$('.roleSwitch button').forEach(b=>b.addEventListener('click',()=>setRole(b.dataset.role)));
+const mq=window.matchMedia?matchMedia('(orientation: landscape) and (min-width: 640px)'):{matches:false,addEventListener(){}};
+function applyLayout(){const side=S.layout===null?mq.matches:S.layout;$('#app').classList.toggle('side',side);}
+$('#layoutBtn').addEventListener('click',()=>{S.layout=!$('#app').classList.contains('side');applyLayout();});
+mq.addEventListener('change',applyLayout);window.addEventListener('resize',applyLayout);
+$$('.seg button').forEach(b=>b.addEventListener('click',()=>{interact();setTab(b.dataset.tab);}));
+$('#playBtn').addEventListener('click',eat);
+$('#clearBtn').addEventListener('click',newPlate);
+$('#startBtn').addEventListener('click',()=>{$('#intro').classList.add('hidden');$('#lab').classList.remove('hidden');document.body.classList.add('inlab');applyLayout();renderAll();});
+
+(function init(){
+  const role=new URLSearchParams(location.search).get('role');setRole(role==='teacher'?'teacher':'student');
+  // hero tiffin foods
+  const hf=document.getElementById('heroFoods');if(hf){const items=['roti','dal','banana','rice'];hf.innerHTML=items.map((f,i)=>`<g transform="translate(${18+i*70},40) scale(1.1)">${foodSVG(f)}</g>`).join('');}
+  renderFoodChips();renderHungryChips();S.msg='Pick foods for your plate. Look carefully — is each one clean?';renderAll();updateNext();applyLayout();
+  window.__sim={S,setTab,tapFood,eat,newPlate,setHungry,startGame,answer,openQ,submitQ,seeQ,openSum,FOOD,GAMES,QS,draw:renderAll};
+})();
+</script>
+</body>
+</html>
